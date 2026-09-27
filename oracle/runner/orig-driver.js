@@ -262,7 +262,7 @@ function doAction(move) {
         if (r && r.itemBought === false) actionLog.push({ tick: tickIndex, action, args, reason: r.reason });
         return;
       }
-      case "hunt": game.huntAll(); return;
+      case "hunt": game.huntAll({ preventDefault: function () {} }); return; // orig reads event.preventDefault
       case "praise": game.religion.praise(); return;
       case "observe": return;
       case "save": game.save(); return;
