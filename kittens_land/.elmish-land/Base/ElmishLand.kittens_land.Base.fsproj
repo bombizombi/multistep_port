@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net11.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+        <WarnOn></WarnOn>
+        <NoWarn></NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="Router.fs"/>
+        <Compile Include="Routes.fs"/>
+        <Compile Include="Command.fs"/>
+        <Compile Include="Layout.fs"/>
+        <Compile Include="Page.fs"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FSharp.Core" />
+        <PackageReference Include="Fable.Core" />
+        <PackageReference Include="Fable.Elmish" />
+        <PackageReference Include="Fable.Elmish.HMR" />
+        <PackageReference Include="Fable.Elmish.React" />
+        <PackageReference Include="Fable.Promise" />
+        <PackageReference Include="Feliz" />
+    </ItemGroup>
+
+    <ItemGroup>
+    </ItemGroup>
+
+</Project>

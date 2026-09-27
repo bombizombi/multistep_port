@@ -1,0 +1,23 @@
+{
+  "$doc": "Source-side work-unit registry. Mapping of orig symbols -> work unit ids + dependency edges. STATUS LIVES IN ledger/migration.yaml, not here — this file is the splitting/dependency picture, owned by recon units. Schema documented in $schema; example entries under $example are illustrative, delete when real entries exist.",
+
+  "$schema": {
+    "unitId": "<area>-NN (must exist in ledger/migration.yaml)",
+    "source": { "file": "path in orig", "symbols": ["dojo.declare or function names"], "lines": "orientation only, drifts" },
+    "layer": "core | shell | data | infra",
+    "dependsOn": ["unitId"],
+    "coversLines": "approximate original lines claimed by this unit — sum over units per file feeds reports/coverage.md"
+  },
+
+  "$example": [
+    {
+      "unitId": "calendar-01",
+      "source": { "file": "js/calendar.js", "symbols": ["classes.CalendarManager", "seasons", "weatherEffect"], "lines": "1-240" },
+      "layer": "core",
+      "dependsOn": ["resources-01"],
+      "coversLines": "1-240"
+    }
+  ],
+
+  "units": []
+}

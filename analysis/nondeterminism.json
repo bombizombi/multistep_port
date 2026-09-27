@@ -1,0 +1,1094 @@
+{
+  "generatedBy": "tools/scan.js",
+  "origGitCommit": "781e379f79f1e7512d168849cba21ed111502644",
+  "byFile": {
+    "core.js": {
+      "STORAGE": [
+        {
+          "api": "localStorage",
+          "line": 6
+        },
+        {
+          "api": "localStorage",
+          "line": 10
+        },
+        {
+          "api": "localStorage",
+          "line": 11
+        },
+        {
+          "api": "LCstorage",
+          "line": 10
+        },
+        {
+          "api": "LCstorage",
+          "line": 12
+        },
+        {
+          "api": "LCstorage",
+          "line": 13
+        }
+      ]
+    },
+    "game.js": {
+      "RANDOM": [
+        {
+          "api": "Math.random",
+          "line": 180
+        },
+        {
+          "api": "Math.random",
+          "line": 6392
+        },
+        {
+          "api": "Math.random",
+          "line": 6398
+        },
+        {
+          "api": "Math.random",
+          "line": 6416
+        }
+      ],
+      "TIME": [
+        {
+          "api": "Date.now",
+          "line": 2797
+        },
+        {
+          "api": "Date.now",
+          "line": 3005
+        },
+        {
+          "api": "Date.now",
+          "line": 5332
+        },
+        {
+          "api": "Date.now",
+          "line": 5338
+        },
+        {
+          "api": "Date.now",
+          "line": 5812
+        },
+        {
+          "api": "new Date",
+          "line": 128
+        },
+        {
+          "api": "new Date",
+          "line": 134
+        },
+        {
+          "api": "new Date",
+          "line": 476
+        },
+        {
+          "api": "new Date",
+          "line": 491
+        },
+        {
+          "api": "new Date",
+          "line": 3148
+        },
+        {
+          "api": "new Date",
+          "line": 5249
+        },
+        {
+          "api": "new Date",
+          "line": 6380
+        },
+        {
+          "api": "performance.now",
+          "line": 5249
+        },
+        {
+          "api": "getTime(",
+          "line": 128
+        },
+        {
+          "api": "getTime(",
+          "line": 134
+        },
+        {
+          "api": "getTime(",
+          "line": 476
+        },
+        {
+          "api": "getTime(",
+          "line": 491
+        },
+        {
+          "api": "getTime(",
+          "line": 3148
+        },
+        {
+          "api": "getTime(",
+          "line": 5249
+        }
+      ],
+      "STORAGE": [
+        {
+          "api": "localStorage",
+          "line": 2873
+        },
+        {
+          "api": "localStorage",
+          "line": 2927
+        },
+        {
+          "api": "localStorage",
+          "line": 2952
+        },
+        {
+          "api": "localStorage",
+          "line": 3044
+        },
+        {
+          "api": "localStorage",
+          "line": 3049
+        },
+        {
+          "api": "localStorage",
+          "line": 3053
+        },
+        {
+          "api": "localStorage",
+          "line": 3054
+        },
+        {
+          "api": "localStorage",
+          "line": 3056
+        },
+        {
+          "api": "localStorage",
+          "line": 3065
+        },
+        {
+          "api": "localStorage",
+          "line": 3067
+        },
+        {
+          "api": "localStorage",
+          "line": 5559
+        },
+        {
+          "api": "LCstorage",
+          "line": 563
+        },
+        {
+          "api": "LCstorage",
+          "line": 2886
+        },
+        {
+          "api": "LCstorage",
+          "line": 2924
+        },
+        {
+          "api": "LCstorage",
+          "line": 2967
+        },
+        {
+          "api": "LCstorage",
+          "line": 2968
+        },
+        {
+          "api": "LCstorage",
+          "line": 3051
+        },
+        {
+          "api": "LCstorage",
+          "line": 3070
+        },
+        {
+          "api": "LCstorage",
+          "line": 3273
+        },
+        {
+          "api": "LCstorage",
+          "line": 5849
+        }
+      ],
+      "TIMERS": [
+        {
+          "api": "setInterval",
+          "line": 5263
+        },
+        {
+          "api": "setInterval",
+          "line": 5274
+        },
+        {
+          "api": "setInterval",
+          "line": 5286
+        },
+        {
+          "api": "setTimeout",
+          "line": 5278
+        },
+        {
+          "api": "requestAnimationFrame",
+          "line": 5309
+        },
+        {
+          "api": "clearInterval",
+          "line": 5285
+        }
+      ],
+      "ENV": [
+        {
+          "api": "location.",
+          "line": 360
+        },
+        {
+          "api": "location.",
+          "line": 361
+        },
+        {
+          "api": "location.",
+          "line": 546
+        },
+        {
+          "api": "location.",
+          "line": 2645
+        },
+        {
+          "api": "location.",
+          "line": 2646
+        },
+        {
+          "api": "location.",
+          "line": 2652
+        },
+        {
+          "api": "location.",
+          "line": 2855
+        },
+        {
+          "api": "location.",
+          "line": 2969
+        },
+        {
+          "api": "location.",
+          "line": 5433
+        }
+      ],
+      "CONCURRENCY": [
+        {
+          "api": "new Worker",
+          "line": 5266
+        },
+        {
+          "api": "postMessage",
+          "line": 5263
+        },
+        {
+          "api": "postMessage",
+          "line": 5270
+        }
+      ]
+    },
+    "i18n.js": {
+      "STORAGE": [
+        {
+          "api": "LCstorage",
+          "line": 80
+        },
+        {
+          "api": "LCstorage",
+          "line": 98
+        },
+        {
+          "api": "LCstorage",
+          "line": 158
+        }
+      ],
+      "ENV": [
+        {
+          "api": "navigator.",
+          "line": 54
+        },
+        {
+          "api": "navigator.",
+          "line": 57
+        },
+        {
+          "api": "navigator.",
+          "line": 86
+        }
+      ]
+    },
+    "index.html": {
+      "RANDOM": [
+        {
+          "api": "Math.random",
+          "line": 96
+        }
+      ],
+      "TIME": [
+        {
+          "api": "Date.now",
+          "line": 47
+        },
+        {
+          "api": "Date.now",
+          "line": 100
+        },
+        {
+          "api": "new Date",
+          "line": 41
+        }
+      ],
+      "STORAGE": [
+        {
+          "api": "localStorage",
+          "line": 56
+        },
+        {
+          "api": "localStorage",
+          "line": 60
+        },
+        {
+          "api": "localStorage",
+          "line": 61
+        },
+        {
+          "api": "LCstorage",
+          "line": 60
+        },
+        {
+          "api": "LCstorage",
+          "line": 62
+        },
+        {
+          "api": "LCstorage",
+          "line": 63
+        },
+        {
+          "api": "LCstorage",
+          "line": 173
+        }
+      ],
+      "ENV": [
+        {
+          "api": "location.",
+          "line": 74
+        },
+        {
+          "api": "location.",
+          "line": 75
+        },
+        {
+          "api": "location.",
+          "line": 128
+        },
+        {
+          "api": "location.",
+          "line": 130
+        },
+        {
+          "api": "location.",
+          "line": 257
+        }
+      ]
+    },
+    "js/achievements.js": {
+      "TIME": [
+        {
+          "api": "new Date",
+          "line": 11
+        }
+      ],
+      "ENV": [
+        {
+          "api": "location.",
+          "line": 307
+        },
+        {
+          "api": "location.",
+          "line": 308
+        }
+      ]
+    },
+    "js/buildings.js": {
+      "TIMERS": [
+        {
+          "api": "setTimeout",
+          "line": 3221
+        },
+        {
+          "api": "clearTimeout",
+          "line": 3220
+        }
+      ]
+    },
+    "js/calendar.js": {
+      "RANDOM": [
+        {
+          "api": "Math.random",
+          "line": 451
+        },
+        {
+          "api": "Math.random",
+          "line": 886
+        },
+        {
+          "api": "Math.random",
+          "line": 1152
+        },
+        {
+          "api": "Math.random",
+          "line": 1160
+        }
+      ]
+    },
+    "js/diplomacy.js": {
+      "RANDOM": [
+        {
+          "api": "Math.random",
+          "line": 521
+        }
+      ]
+    },
+    "js/jsx/toolbar.jsx.js": {
+      "TIME": [
+        {
+          "api": "new Date",
+          "line": 572
+        },
+        {
+          "api": "new Date",
+          "line": 729
+        },
+        {
+          "api": "getTime(",
+          "line": 729
+        }
+      ],
+      "ENV": [
+        {
+          "api": "navigator.",
+          "line": 475
+        },
+        {
+          "api": "navigator.",
+          "line": 476
+        }
+      ]
+    },
+    "js/math.js": {
+      "RANDOM": [
+        {
+          "api": "Math.random",
+          "line": 11
+        },
+        {
+          "api": "Math.random",
+          "line": 17
+        },
+        {
+          "api": "Math.random",
+          "line": 18
+        },
+        {
+          "api": "Math.random",
+          "line": 25
+        },
+        {
+          "api": "Math.random",
+          "line": 34
+        },
+        {
+          "api": "Math.random",
+          "line": 101
+        }
+      ]
+    },
+    "js/preview.js": {
+      "STORAGE": [
+        {
+          "api": "localStorage",
+          "line": 29
+        },
+        {
+          "api": "localStorage",
+          "line": 195
+        },
+        {
+          "api": "localStorage",
+          "line": 222
+        },
+        {
+          "api": "LCstorage",
+          "line": 64
+        },
+        {
+          "api": "LCstorage",
+          "line": 183
+        },
+        {
+          "api": "LCstorage",
+          "line": 204
+        },
+        {
+          "api": "LCstorage",
+          "line": 221
+        }
+      ],
+      "ENV": [
+        {
+          "api": "location.",
+          "line": 170
+        }
+      ]
+    },
+    "js/resources.js": {
+      "TIME": [
+        {
+          "api": "new Date",
+          "line": 740
+        }
+      ]
+    },
+    "js/time.js": {
+      "TIME": [
+        {
+          "api": "Date.now",
+          "line": 36
+        },
+        {
+          "api": "Date.now",
+          "line": 82
+        },
+        {
+          "api": "Date.now",
+          "line": 111
+        },
+        {
+          "api": "Date.now",
+          "line": 136
+        },
+        {
+          "api": "Date.now",
+          "line": 236
+        },
+        {
+          "api": "new Date",
+          "line": 990
+        },
+        {
+          "api": "new Date",
+          "line": 994
+        },
+        {
+          "api": "new Date",
+          "line": 999
+        },
+        {
+          "api": "new Date",
+          "line": 1003
+        },
+        {
+          "api": "new Date",
+          "line": 1008
+        },
+        {
+          "api": "new Date",
+          "line": 1012
+        },
+        {
+          "api": "getTime(",
+          "line": 996
+        },
+        {
+          "api": "getTime(",
+          "line": 1004
+        },
+        {
+          "api": "getTime(",
+          "line": 1013
+        },
+        {
+          "api": "getTime(",
+          "line": 1017
+        },
+        {
+          "api": "getTime(",
+          "line": 1022
+        }
+      ]
+    },
+    "js/ui.js": {
+      "TIME": [
+        {
+          "api": "Date.now",
+          "line": 1186
+        },
+        {
+          "api": "new Date",
+          "line": 598
+        }
+      ],
+      "STORAGE": [
+        {
+          "api": "LCstorage",
+          "line": 1140
+        },
+        {
+          "api": "LCstorage",
+          "line": 1154
+        }
+      ],
+      "ENV": [
+        {
+          "api": "location.",
+          "line": 784
+        }
+      ]
+    },
+    "js/village.js": {
+      "RANDOM": [
+        {
+          "api": "Math.random",
+          "line": 1518
+        },
+        {
+          "api": "Math.random",
+          "line": 2251
+        },
+        {
+          "api": "Math.random",
+          "line": 2252
+        },
+        {
+          "api": "Math.random",
+          "line": 2581
+        },
+        {
+          "api": "Math.random",
+          "line": 3445
+        },
+        {
+          "api": "Math.random",
+          "line": 6072
+        }
+      ]
+    },
+    "lib/babel/systemjs-babel-browser.js": {
+      "RANDOM": [
+        {
+          "api": "Math.random",
+          "line": 1
+        }
+      ],
+      "TIME": [
+        {
+          "api": "Date.now",
+          "line": 1
+        },
+        {
+          "api": "new Date",
+          "line": 1
+        },
+        {
+          "api": "getTime(",
+          "line": 1
+        }
+      ],
+      "STORAGE": [
+        {
+          "api": "localStorage",
+          "line": 1
+        },
+        {
+          "api": "sessionStorage",
+          "line": 1
+        }
+      ],
+      "TIMERS": [
+        {
+          "api": "setInterval",
+          "line": 1
+        },
+        {
+          "api": "setTimeout",
+          "line": 1
+        },
+        {
+          "api": "requestAnimationFrame",
+          "line": 1
+        },
+        {
+          "api": "clearInterval",
+          "line": 1
+        },
+        {
+          "api": "clearTimeout",
+          "line": 1
+        }
+      ],
+      "NETWORK": [
+        {
+          "api": "XMLHttpRequest",
+          "line": 1
+        },
+        {
+          "api": "WebSocket",
+          "line": 1
+        },
+        {
+          "api": "EventSource",
+          "line": 1
+        }
+      ],
+      "ENV": [
+        {
+          "api": "navigator.",
+          "line": 1
+        },
+        {
+          "api": "process.env",
+          "line": 1
+        },
+        {
+          "api": "userAgent",
+          "line": 1
+        }
+      ],
+      "CONCURRENCY": [
+        {
+          "api": "postMessage",
+          "line": 1
+        }
+      ]
+    },
+    "lib/dojo.js": {
+      "TIME": [
+        {
+          "api": "new Date",
+          "line": 15
+        },
+        {
+          "api": "getTime(",
+          "line": 15
+        }
+      ],
+      "TIMERS": [
+        {
+          "api": "setInterval",
+          "line": 15
+        },
+        {
+          "api": "setTimeout",
+          "line": 15
+        },
+        {
+          "api": "clearInterval",
+          "line": 15
+        },
+        {
+          "api": "clearTimeout",
+          "line": 15
+        }
+      ],
+      "NETWORK": [
+        {
+          "api": "XMLHttpRequest",
+          "line": 15
+        }
+      ],
+      "ENV": [
+        {
+          "api": "navigator.",
+          "line": 15
+        },
+        {
+          "api": "location.",
+          "line": 15
+        },
+        {
+          "api": "userAgent",
+          "line": 15
+        }
+      ]
+    },
+    "lib/dojo.xd.js": {
+      "TIME": [
+        {
+          "api": "new Date",
+          "line": 14
+        },
+        {
+          "api": "getTime(",
+          "line": 14
+        }
+      ],
+      "TIMERS": [
+        {
+          "api": "setInterval",
+          "line": 14
+        },
+        {
+          "api": "setTimeout",
+          "line": 14
+        },
+        {
+          "api": "clearInterval",
+          "line": 14
+        },
+        {
+          "api": "clearTimeout",
+          "line": 14
+        }
+      ],
+      "NETWORK": [
+        {
+          "api": "XMLHttpRequest",
+          "line": 14
+        }
+      ],
+      "ENV": [
+        {
+          "api": "navigator.",
+          "line": 14
+        },
+        {
+          "api": "location.",
+          "line": 14
+        },
+        {
+          "api": "userAgent",
+          "line": 14
+        }
+      ]
+    },
+    "lib/jQuery.js": {
+      "RANDOM": [
+        {
+          "api": "Math.random",
+          "line": 2
+        }
+      ],
+      "TIME": [
+        {
+          "api": "Date.now",
+          "line": 2
+        },
+        {
+          "api": "new Date",
+          "line": 2
+        }
+      ],
+      "TIMERS": [
+        {
+          "api": "setTimeout",
+          "line": 2
+        },
+        {
+          "api": "requestAnimationFrame",
+          "line": 2
+        },
+        {
+          "api": "clearTimeout",
+          "line": 2
+        }
+      ],
+      "NETWORK": [
+        {
+          "api": "XMLHttpRequest",
+          "line": 2
+        }
+      ],
+      "ENV": [
+        {
+          "api": "location.",
+          "line": 2
+        }
+      ]
+    },
+    "lib/react.min.js": {
+      "RANDOM": [
+        {
+          "api": "Math.random",
+          "line": 12
+        },
+        {
+          "api": "Math.random",
+          "line": 17
+        }
+      ],
+      "TIME": [
+        {
+          "api": "Date.now",
+          "line": 17
+        }
+      ],
+      "TIMERS": [
+        {
+          "api": "setInterval",
+          "line": 17
+        },
+        {
+          "api": "setTimeout",
+          "line": 14
+        },
+        {
+          "api": "setTimeout",
+          "line": 17
+        },
+        {
+          "api": "clearTimeout",
+          "line": 14
+        }
+      ]
+    },
+    "lib/system.js": {
+      "STORAGE": [
+        {
+          "api": "localStorage",
+          "line": 4
+        },
+        {
+          "api": "sessionStorage",
+          "line": 4
+        }
+      ],
+      "NETWORK": [
+        {
+          "api": "fetch(",
+          "line": 4
+        },
+        {
+          "api": "XMLHttpRequest",
+          "line": 4
+        }
+      ],
+      "ENV": [
+        {
+          "api": "navigator.",
+          "line": 4
+        },
+        {
+          "api": "location.",
+          "line": 4
+        },
+        {
+          "api": "userAgent",
+          "line": 4
+        }
+      ]
+    },
+    "simulate-combat.js": {
+      "RANDOM": [
+        {
+          "api": "Math.random",
+          "line": 75
+        },
+        {
+          "api": "Math.random",
+          "line": 86
+        }
+      ]
+    },
+    "test/challenges.test.js": {
+      "STORAGE": [
+        {
+          "api": "LCstorage",
+          "line": 6
+        }
+      ]
+    },
+    "test/game.test.js": {
+      "STORAGE": [
+        {
+          "api": "LCstorage",
+          "line": 6
+        },
+        {
+          "api": "LCstorage",
+          "line": 33
+        }
+      ]
+    },
+    "test/necrocorn.test.js": {
+      "STORAGE": [
+        {
+          "api": "LCstorage",
+          "line": 6
+        }
+      ]
+    },
+    "test/setup.js": {
+      "STORAGE": [
+        {
+          "api": "localStorage",
+          "line": 74
+        },
+        {
+          "api": "localStorage",
+          "line": 75
+        },
+        {
+          "api": "LCstorage",
+          "line": 74
+        },
+        {
+          "api": "LCstorage",
+          "line": 76
+        },
+        {
+          "api": "LCstorage",
+          "line": 77
+        }
+      ]
+    },
+    "tests.html": {
+      "TIME": [
+        {
+          "api": "Date.now",
+          "line": 38
+        },
+        {
+          "api": "new Date",
+          "line": 21
+        }
+      ],
+      "TIMERS": [
+        {
+          "api": "setInterval",
+          "line": 93
+        },
+        {
+          "api": "setTimeout",
+          "line": 92
+        },
+        {
+          "api": "clearInterval",
+          "line": 95
+        },
+        {
+          "api": "clearTimeout",
+          "line": 94
+        }
+      ]
+    },
+    "tools/mock-kgnet/server.js": {
+      "TIME": [
+        {
+          "api": "Date.now",
+          "line": 177
+        }
+      ],
+      "ENV": [
+        {
+          "api": "process.env",
+          "line": 24
+        },
+        {
+          "api": "process.env",
+          "line": 26
+        }
+      ]
+    }
+  }
+}

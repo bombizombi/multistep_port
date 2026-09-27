@@ -1,0 +1,133 @@
+# ============================================================================
+# MIGRATION LEDGER — single source of truth for port status.
+#
+# Rules:
+#  - One entry per work unit. Ids: <area>-NN. Never reuse an id.
+#  - layer: core | shell | data | infra
+#  - status: not-started | in-progress | translated | verified | blocked
+#  - 'verified' (core) requires: dotnet build green + oracle agreement for the
+#    unit's scenarios + session report written. (infra/data: build green + checks.)
+#  - contract: required for core units BEFORE implementation begins.
+#  - session: id of the session report that last touched the unit.
+#  - Analysis/regeneration facts live in analysis/; statuses live ONLY here.
+# ============================================================================
+
+meta:
+  orig_commit: 781e379f79f1e7512d168849cba21ed111502644
+  orig_version: "1.6.1.6"
+  target: kittens_land (Elmish.Land 2.0, Fable 5.17.0, .NET SDK 11.0.100-rc.1)
+  coverage_target: all game-role + ui-jsx + html files in analysis/files.json
+  excluded_from_port: lib/ (babel runtime), test/ (orig's own tests), tools/ (mock server) — see decisions D004
+
+units:
+  # ---------------------------------------------------------------- bootstrap
+  - id: bootstrap-01
+    title: multistep_port structure, plan, and session protocol
+    layer: infra
+    target: PLAN.md, README.md, ledger/, reports/, oracle/, analysis/
+    status: verified
+    session: 2026-09-27-01
+
+  - id: bootstrap-02
+    title: Mechanical orig scanner (files.json, nondeterminism.json)
+    layer: infra
+    source: { file: "<orig root>", symbols: [], lines: "all" }
+    target: tools/scan.js, analysis/files.json, analysis/nondeterminism.json
+    status: verified
+    verification:
+      checks: "82 files / 51,623 lines scanned; counts sane vs manual wc; sha256 recorded"
+    session: 2026-09-27-01
+
+  - id: bootstrap-03
+    title: kittens_land Elmish.Land 2.0 scaffold, both builds green
+    layer: infra
+    target: kittens_land/
+    status: verified
+    verification:
+      build: "dotnet build 0w/0e; elmish-land build produced dist/"
+      notes: "SDK pin fixed to 11.0.100-rc.1 (global.json), fable 5.17.0 tool manifest added (decisions D008)"
+    session: 2026-09-27-01
+
+  # ------------------------------------------------------------------- oracle
+  - id: oracle-01
+    title: Orig headless runner (node harness over jest bootloader stubs)
+    layer: infra
+    contract: >
+      Load orig game in Node using the test/setup.js approach (portable declare,
+      mocked dojo, React/jQuery from lib/). Inject: seeded Math.random, fake Date
+      (advances 1000ms per tick), in-memory localStorage, no Web Worker (drive
+      game.tick() synchronously), KGNet stubbed. CLI: run scenario file -> write
+      snapshot JSON at checkpoint ticks. Orig source untouched.
+    depends_on: [oracle-02]
+    status: not-started
+
+  - id: oracle-02
+    title: Scenario format + parser + first scenarios
+    layer: infra
+    contract: >
+      Scenario = comment header (name, seed, checkpoints) + lines "<tick> <action>".
+      Action vocabulary (mapped to orig UI controllers like test/game.test.js does):
+      gather | buy <building>[.stage] | craft <resource> [count] | assign <job> <count>
+      | unassign <job> <count> | research <tech> | upgrade <name> | hunt | praise |
+      save | load | assert <json-pointer> <value>. First scenarios:
+      fresh-100-ticks.cat, gather-hut-field.cat.
+    status: not-started
+
+  - id: oracle-03
+    title: Golden fixture capture + determinism self-check
+    layer: infra
+    contract: >
+      Run each scenario twice on orig with same seed; snapshots must be identical
+      (determinism self-check). Store pass #2 as oracle/fixtures/<scenario>.json.
+      Record RNG draw count per checkpoint in every snapshot.
+    depends_on: [oracle-01, oracle-02]
+    status: not-started
+
+  - id: oracle-04
+    title: Port-side F# runner + snapshot diff tool
+    layer: infra
+    contract: >
+      Console runner (tools or kittens_land sim host) executes a scenario against
+      the F# core and emits the same snapshot JSON shape. tools/diff-snapshots.js
+      compares two snapshots exactly (floats bit-identical), reports first
+      divergence with tick + pointer context.
+    depends_on: [oracle-02]
+    status: not-started
+
+  # ------------------------------------------------------------------- verify
+  - id: verify-01
+    title: Verify elmishKittens specs against orig; re-emit under analysis/specs/
+    layer: data
+    contract: >
+      For each ../elmishKittens/specs/*.fs.md: write tools/verify-specs.js that
+      re-extracts the same values from orig source (prices, ratios, effects,
+      unlock rules) and diffs against the spec file. All diffs either fixed in the
+      re-emitted spec or recorded as discrepancies. Output: analysis/specs/*.fs.md
+      marked verified.
+    status: not-started
+
+  # -------------------------------------------------------------------- recon
+  # Recon units: describe file semantics into analysis/inventory.md + split into
+  # migration work units (with layer + depends-on) in ledger + work-units.json.
+  # 2-3 per session. Order below follows PLAN.md §4 dependency guidance; adjust
+  # freely as the dependency picture clarifies.
+  - { id: recon-01, layer: core, source: game.js,     status: not-started, note: "6432 ln — GamePage, tick loop, unlock dispatch, save" }
+  - { id: recon-02, layer: core, source: js/village.js,   status: not-started, note: "6074 ln — kittens, jobs, traits, combat" }
+  - { id: recon-03, layer: core, source: js/buildings.js, status: not-started, note: "3798 ln — building defs + effects" }
+  - { id: recon-04, layer: core, source: js/workshop.js,  status: not-started, note: "3538 ln — upgrades + crafts" }
+  - { id: recon-05, layer: core, source: js/science.js,   status: not-started, note: "2820 ln — techs + policies" }
+  - { id: recon-06, layer: core, source: js/calendar.js,  status: not-started, note: "1268 ln — seasons, events, crypto price" }
+  - { id: recon-07, layer: core, source: js/resources.js, status: not-started, note: "1178 ln — resource defs + caps" }
+  - { id: recon-08, layer: core, source: js/religion.js,  status: not-started, note: "3273 ln — faith/ziggurat/transcend" }
+  - { id: recon-09, layer: core, source: js/time.js,      status: not-started, note: "2791 ln — chronoforge/void space" }
+  - { id: recon-10, layer: core, source: js/diplomacy.js, status: not-started, note: "2232 ln — races, trade, embassies" }
+  - { id: recon-11, layer: core, source: js/space.js,     status: not-started, note: "1603 ln — programs, planets, missions" }
+  - { id: recon-12, layer: core, source: js/challenges.js,  status: not-started, note: "1328 ln" }
+  - { id: recon-13, layer: core, source: js/prestige.js,    status: not-started, note: "715 ln — perks, paragon" }
+  - { id: recon-14, layer: core, source: js/achievements.js, status: not-started, note: "883 ln" }
+  - { id: recon-15, layer: core, source: js/stats.js + js/void.js + js/math.js, status: not-started, note: "246+76+104 ln" }
+  - { id: recon-16, layer: core, source: js/settings.js + i18n.js + config.js, status: not-started, note: "392+190+? ln" }
+  - { id: recon-17, layer: shell, source: core.js,      status: not-started, note: "2856 ln — TabManager, button/tooltip system" }
+  - { id: recon-18, layer: shell, source: js/ui.js,       status: not-started, note: "1197 ln — rendering framework" }
+  - { id: recon-19, layer: shell, source: js/toolbar.js + js/preview.js + js/jsx/*, status: not-started, note: "241+229+2352 ln" }
+  - { id: recon-20, layer: shell, source: index.html + emulator.html + tests.html, status: not-started, note: "854 ln — page shell" }
