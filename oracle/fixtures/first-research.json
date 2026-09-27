@@ -18,7 +18,8 @@
    },
    "kittens": {
     "count": 0,
-    "free": 0
+    "free": 0,
+    "jobs": []
    },
    "resources": {
     "catnip": {
@@ -819,7 +820,8 @@
    },
    "kittens": {
     "count": 0,
-    "free": 0
+    "free": 0,
+    "jobs": []
    },
    "resources": {
     "catnip": {
@@ -1620,7 +1622,11 @@
    },
    "kittens": {
     "count": 2,
-    "free": 2
+    "free": 2,
+    "jobs": [
+     null,
+     null
+    ]
    },
    "resources": {
     "catnip": {
@@ -2421,7 +2427,11 @@
    },
    "kittens": {
     "count": 2,
-    "free": 2
+    "free": 2,
+    "jobs": [
+     null,
+     null
+    ]
    },
    "resources": {
     "catnip": {
@@ -3222,7 +3232,11 @@
    },
    "kittens": {
     "count": 2,
-    "free": 0
+    "free": 0,
+    "jobs": [
+     "scholar",
+     "scholar"
+    ]
    },
    "resources": {
     "catnip": {
@@ -3298,10 +3312,10 @@
      "p": 0
     },
     "science": {
-     "v": 0,
+     "v": 7.699999999999997,
      "m": 500,
-     "u": false,
-     "p": 0
+     "u": true,
+     "p": 0.077
     },
     "culture": {
      "v": 0,
@@ -4023,7 +4037,11 @@
    },
    "kittens": {
     "count": 2,
-    "free": 0
+    "free": 0,
+    "jobs": [
+     "scholar",
+     "scholar"
+    ]
    },
    "resources": {
     "catnip": {
@@ -4099,10 +4117,10 @@
      "p": 0
     },
     "science": {
-     "v": 0,
+     "v": 23.100000000000154,
      "m": 500,
-     "u": false,
-     "p": 0
+     "u": true,
+     "p": 0.077
     },
     "culture": {
      "v": 0,
@@ -4824,7 +4842,11 @@
    },
    "kittens": {
     "count": 2,
-    "free": 0
+    "free": 0,
+    "jobs": [
+     "scholar",
+     "scholar"
+    ]
    },
    "resources": {
     "catnip": {
@@ -4900,10 +4922,10 @@
      "p": 0
     },
     "science": {
-     "v": 0,
+     "v": 38.5000000000002,
      "m": 500,
-     "u": false,
-     "p": 0
+     "u": true,
+     "p": 0.077
     },
     "culture": {
      "v": 0,
@@ -5625,7 +5647,11 @@
    },
    "kittens": {
     "count": 2,
-    "free": 0
+    "free": 0,
+    "jobs": [
+     "scholar",
+     "scholar"
+    ]
    },
    "resources": {
     "catnip": {
@@ -5701,10 +5727,10 @@
      "p": 0
     },
     "science": {
-     "v": 0,
+     "v": 53.899999999999835,
      "m": 500,
-     "u": false,
-     "p": 0
+     "u": true,
+     "p": 0.077
     },
     "culture": {
      "v": 0,
@@ -6426,7 +6452,11 @@
    },
    "kittens": {
     "count": 2,
-    "free": 0
+    "free": 0,
+    "jobs": [
+     "scholar",
+     "scholar"
+    ]
    },
    "resources": {
     "catnip": {
@@ -6502,10 +6532,10 @@
      "p": 0
     },
     "science": {
-     "v": 0,
+     "v": 69.29999999999947,
      "m": 500,
-     "u": false,
-     "p": 0
+     "u": true,
+     "p": 0.077
     },
     "culture": {
      "v": 0,
@@ -7227,7 +7257,11 @@
    },
    "kittens": {
     "count": 2,
-    "free": 0
+    "free": 0,
+    "jobs": [
+     "scholar",
+     "scholar"
+    ]
    },
    "resources": {
     "catnip": {
@@ -7303,10 +7337,10 @@
      "p": 0
     },
     "science": {
-     "v": 0,
+     "v": 84.69999999999911,
      "m": 500,
-     "u": false,
-     "p": 0
+     "u": true,
+     "p": 0.077
     },
     "culture": {
      "v": 0,
@@ -8028,7 +8062,11 @@
    },
    "kittens": {
     "count": 2,
-    "free": 0
+    "free": 0,
+    "jobs": [
+     "scholar",
+     "scholar"
+    ]
    },
    "resources": {
     "catnip": {
@@ -8104,10 +8142,10 @@
      "p": 0
     },
     "science": {
-     "v": 0,
+     "v": 100.09999999999874,
      "m": 500,
-     "u": false,
-     "p": 0
+     "u": true,
+     "p": 0.077
     },
     "culture": {
      "v": 0,
@@ -8829,7 +8867,11 @@
    },
    "kittens": {
     "count": 2,
-    "free": 0
+    "free": 0,
+    "jobs": [
+     "scholar",
+     "scholar"
+    ]
    },
    "resources": {
     "catnip": {
@@ -8905,10 +8947,10 @@
      "p": 0
     },
     "science": {
-     "v": 0,
+     "v": 115.49999999999838,
      "m": 500,
-     "u": false,
-     "p": 0
+     "u": true,
+     "p": 0.077
     },
     "culture": {
      "v": 0,
@@ -9630,7 +9672,11 @@
    },
    "kittens": {
     "count": 2,
-    "free": 0
+    "free": 0,
+    "jobs": [
+     "scholar",
+     "scholar"
+    ]
    },
    "resources": {
     "catnip": {
@@ -9706,10 +9752,10 @@
      "p": 0
     },
     "science": {
-     "v": 0,
+     "v": 30.899999999998197,
      "m": 500,
-     "u": false,
-     "p": 0
+     "u": true,
+     "p": 0.077
     },
     "culture": {
      "v": 0,
@@ -10069,7 +10115,7 @@
      "val": 0,
      "on": 0,
      "unlocked": false,
-     "unlockable": false,
+     "unlockable": true,
      "stage": 0
     },
     "warehouse": {
@@ -10283,7 +10329,7 @@
     },
     "farmer": {
      "value": 0,
-     "unlocked": false
+     "unlocked": true
     },
     "scholar": {
      "value": 2,
@@ -10408,7 +10454,9 @@
      "value": 0
     }
    },
-   "techs": [],
+   "techs": [
+    "agriculture"
+   ],
    "upgrades": [],
    "policies": [],
    "effects": {
@@ -10428,14 +10476,6 @@
     "2"
    ],
    "reason": "assigned 2/2 (freeBefore=1, jobLimit=100000)"
-  },
-  {
-   "tick": 2950,
-   "action": "research",
-   "args": [
-    "agriculture"
-   ],
-   "reason": "cannot-afford"
   }
  ]
 }

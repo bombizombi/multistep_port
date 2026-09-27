@@ -109,3 +109,13 @@ conflicts between recon sessions and keep reports reviewable in isolation.
 - GamePage internals note: modern building controller's `build()` returns `undefined`
   on ALL paths — success detection must use state delta (`metadata.val`), see
   `oracle/runner/orig-driver.js` buy case.
+
+## D012 — Harness mirrors the UI render side effect for job unlocks (2026-09-28)
+
+In orig, job modifiers (`scholar → {science: 0.035}` etc.) live in `calculateEffects`
+on the job def, populated by `game.upgrade({jobs})` — which in the browser runs as part
+of the UI render pass after a building unlocks jobs. Headless (no render), modifiers
+stay `{}` and all job production is 0 (see discrepancies OBS-1). The harness therefore
+calls `game.upgrade({jobs: …})` after a successful building purchase whose def has
+`unlocks.jobs` — orig source untouched; the F# port must instead call job
+`calculateEffects` at unlock time directly (recorded in village-04's contract).

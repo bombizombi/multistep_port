@@ -9,10 +9,11 @@ entry in `ledger/decisions.md` and mark the discrepancy `accepted`.
 
 | id | date | area | observation | plan |
 |---|---|---|---|---|
-| OBS-1 | 2026-09-28 | science production | With library built + 2 scholars assigned, `science` resource stays at 0 for 1800+ ticks (`perTickCached` 0, `unlocked` false, cap 250→500 fine). Production path (`updateResourceProduction`, village.js L626-728 → `getResourcePerTickStack` village entry) returns 0 — the unlock/production gate was not identified during oracle bring-up. Orig's own jest tests bypass this by setting `researched = true` directly. | The gate is orig logic that must be ported faithfully; resolve while implementing village-04 / resources-05, then re-author `first-research.cat` so the research action succeeds and re-capture its fixture. |
+| — | — | — | none open | — |
 
 ## Discrepancy log
 
 | id | date | unit | scenario/tick | symptom | root cause | resolution | status |
 |---|---|---|---|---|---|---|---|
-| — | — | — | — | none recorded yet (no port-side runs yet) | — | — | — |
+| OBS-1 | 2026-09-28 | science production | first-research | Science stayed 0 for 1800+ ticks despite library + 2 scholars (perTickCached 0, cap fine). | **SOLVED**: job modifiers are computed by `calculateEffects` on the job def (e.g. scholar sets `{science: 0.035}`); in orig this is triggered by the UI render pass via `game.upgrade({jobs})` after a building unlocks jobs. Headless there is no render pass, so modifiers stayed `{}` and job production × 0. | Harness mirrors the render side effect after successful building purchases (`orig-driver.js`, decision D012); agriculture now researches end-to-end. **Port requirement recorded:** the F# core must call job `calculateEffects` at unlock time, not rely on any UI pass (village-04). | resolved 2026-09-28 |
+| OBS-2 | 2026-09-28 | job assignment | first-research/t1350 | `village.assignJob` reported "assigned 2/2" with only 1 free kitten. | orig quirk: manager `assignJob` adds `amt` to `jobRef.value` regardless of how many kittens `sim.assignJob` actually assigned. | Captured as oracle fixture behavior; port must reproduce the counter/kitten divergence faithfully (village-04 contract). | observed (expected orig behavior) |

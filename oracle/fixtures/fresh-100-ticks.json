@@ -18,7 +18,8 @@
    },
    "kittens": {
     "count": 0,
-    "free": 0
+    "free": 0,
+    "jobs": []
    },
    "resources": {
     "catnip": {
@@ -819,7 +820,8 @@
    },
    "kittens": {
     "count": 0,
-    "free": 0
+    "free": 0,
+    "jobs": []
    },
    "resources": {
     "catnip": {
@@ -1620,7 +1622,8 @@
    },
    "kittens": {
     "count": 0,
-    "free": 0
+    "free": 0,
+    "jobs": []
    },
    "resources": {
     "catnip": {
@@ -2421,7 +2424,8 @@
    },
    "kittens": {
     "count": 0,
-    "free": 0
+    "free": 0,
+    "jobs": []
    },
    "resources": {
     "catnip": {
@@ -3222,7 +3226,8 @@
    },
    "kittens": {
     "count": 0,
-    "free": 0
+    "free": 0,
+    "jobs": []
    },
    "resources": {
     "catnip": {
@@ -4023,7 +4028,8 @@
    },
    "kittens": {
     "count": 0,
-    "free": 0
+    "free": 0,
+    "jobs": []
    },
    "resources": {
     "catnip": {

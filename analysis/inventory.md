@@ -31,7 +31,7 @@ Orig snapshot: `781e379f79f1e7512d168849cba21ed111502644` — 82 files,
 | `js/preview.js` | 230 | game | — | pending |
 | `js/religion.js` | 3274 | game | — | pending |
 | `js/resources.js` | 1179 | game | `analysis/recon/resources.md` | **described** |
-| `js/science.js` | 2821 | game | — | pending |
+| `js/science.js` | 2821 | game | `analysis/recon/science.md` | **described** |
 | `js/settings.js` | 393 | game | — | pending |
 | `js/space.js` | 1604 | game | — | pending |
 | `js/stats.js` | 247 | game | — | pending |
@@ -40,7 +40,7 @@ Orig snapshot: `781e379f79f1e7512d168849cba21ed111502644` — 82 files,
 | `js/ui.js` | 1198 | game | — | pending |
 | `js/village.js` | 6075 | game | `analysis/recon/village.md` | **described** |
 | `js/void.js` | 77 | game | — | pending |
-| `js/workshop.js` | 3539 | game | — | pending |
+| `js/workshop.js` | 3539 | game | `analysis/recon/workshop.md` | **described** |
 | `simulate-combat.js` | 270 | game | — | pending |
 | `tests.html` | 147 | html | — | pending |
 

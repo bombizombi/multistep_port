@@ -12,10 +12,10 @@ Units defined = ported work units in `ledger/migration.yaml`.
 | game.js | 6432 | **done** (recon-01) | game-01..20 (20) | 0% |
 | js/village.js | 6074 | **done** (recon-02) | village-01..20 (20) | 0% |
 | js/buildings.js | 3798 | **done** (recon-03) | buildings-01..15 (15) | 0% |
-| js/workshop.js | 3538 | running (recon-04) | pending | 0% |
+| js/workshop.js | 3538 | **done** (recon-04) | workshop-01..15 (15) | 0% |
 | js/religion.js | 3273 | pending (recon-08) | — | 0% |
 | core.js | 2856 | pending (recon-17) | — | 0% |
-| js/science.js | 2820 | running (recon-05) | pending | 0% |
+| js/science.js | 2820 | **done** (recon-05) | science-01..14 (14) | 0% |
 | js/time.js | 2791 | pending (recon-09) | — | 0% |
 | js/diplomacy.js | 2232 | pending (recon-10) | — | 0% |
 | js/space.js | 1603 | pending (recon-11) | — | 0% |
@@ -35,4 +35,4 @@ Units defined = ported work units in `ledger/migration.yaml`.
 | js/math.js | 104 | pending (recon-15) | — | 0% |
 | i18n.js + config.js | ~200 | pending (recon-16) | — | 0% |
 
-Totals: **78 work units** defined; ~29,750 / 43,800 core+shell lines described (**68%**).
+Totals: **107 work units** defined; ~34,900 / 43,800 core+shell lines described (**80%**).

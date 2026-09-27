@@ -205,6 +205,13 @@ function doAction(move) {
             reason: `built ${built}/${n} (enabled=${model.enabled}, affordBefore=${affordBefore})`,
           });
         }
+        // D012: in the browser, the UI render pass calls job calculateEffects via the
+        // upgrade path after a building unlocks jobs. Headless has no render pass, so
+        // mirror that side effect here (otherwise e.g. scholars never produce science).
+        const unlocks = model.metadata.unlocks;
+        if (built > 0 && unlocks && unlocks.jobs && unlocks.jobs.length) {
+          game.upgrade({ jobs: unlocks.jobs });
+        }
         return;
       }
       case "craft": {
@@ -308,6 +315,8 @@ function takeSnapshot() {
   const policies = (g.science.policies || []).filter((p) => p.researched).map((p) => p.name).sort();
   const cal = g.calendar;
   const seasonName = (cal.seasons && cal.seasons[cal.season] && cal.seasons[cal.season].name) || null;
+  // kitten-level ground truth: jobRef.value and sim kitten jobs can diverge (OBS-1)
+  const kittenJobs = g.village.sim.kittens.map((k) => k.job || null).sort();
   return {
     tick: g.ticks,
     rngDraws,
@@ -315,7 +324,7 @@ function takeSnapshot() {
       year: cal.year, day: cal.day, season: seasonName, weather: cal.weather,
       cycle: cal.cycle, cycleYear: cal.cycleYear,
     },
-    kittens: { count: g.village.sim.kittens.length, free: g.village.getFreeKittens() },
+    kittens: { count: g.village.sim.kittens.length, free: g.village.getFreeKittens(), jobs: kittenJobs },
     resources, buildings, jobs, crafts, techs, upgrades, policies,
     effects: snapEffects(g),
   };
