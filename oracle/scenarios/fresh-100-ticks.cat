@@ -1,0 +1,5 @@
+# name: fresh-100-ticks
+# seed: 20260927
+# checkpoints: 0, 10, 25, 50, 75, 100
+# No moves: pure determinism check of the fresh-game tick pipeline
+# (calendar progression + baseline production, no player actions).

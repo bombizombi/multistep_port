@@ -1,0 +1,18 @@
+# name: gather-hut-field
+# seed: 20260927
+# checkpoints: 0, 100, 200, 300, 400, 500, 600, 700, 800, 900
+# Early-game bring-up scenario: gather, fields, wood crafting, first hut, kitten, job assign.
+# Costs: field 10 catnip (x1.12^val), wood 100 catnip/unit, hut 5 wood.
+0 gather 30
+15 buy field
+50 gather 50
+90 buy field 3
+130 gather 60
+170 buy field 3
+210 gather 80
+250 buy field 2
+290 gather 100
+420 craft wood 5
+460 buy hut
+800 assign woodcutter 1
+850 gather 30

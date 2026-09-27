@@ -1,13 +1,14 @@
 # analysis/ — machine facts + semantic inventory
 
-| File | Kind | Owner |
+| File / dir | Kind | Owner |
 |---|---|---|
 | `files.json` | generated | `node tools/scan.js` — never hand-edit |
 | `nondeterminism.json` | generated | `node tools/scan.js` — never hand-edit |
-| `inventory.md` | semantic (LLM-written) | recon units `recon-01..20` |
-| `work-units.json` | semantic (LLM-written) | recon units — symbol→unit mapping + dependency edges |
+| `inventory.md` | generated index | `node tools/gen-inventory.js` — never hand-edit |
+| `recon/<stem>.md` | semantic (LLM-written) | recon units — THE authoritative per-file description + proposed work-unit tables |
+| `work-units.json` | schema | conventions for unit splitting; the actual tables live in `recon/*.md`, statuses in `ledger/migration.yaml` |
 | `specs/` | data (verified) | verify-01 — re-emitted from `../elmishKittens/specs/` after mechanical verification |
 
-The two-layer split (machine facts vs LLM interpretation) is deliberate: the scanner
-regenerates truth cheaply and identically every time; the LLM layers add meaning on top
-and are version-controlled separately so a re-scan never destroys written descriptions.
+Three-layer split (D009): **machine facts** (scanner, regenerable), **semantic recon**
+(per-file LLM reports, version-controlled), **statuses** (ledger only). A re-scan never
+destroys written descriptions; the index (`inventory.md`) is rebuilt from both.

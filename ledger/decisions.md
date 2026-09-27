@@ -72,3 +72,40 @@ under `kittens_land/src/Pages/` + `Game/`.
 `global.json` inside kittens_land, matching repo root), fable `5.17.0`
 (`.config/dotnet-tools.json`), Elmish.Land `2.0.0`, React 19 / vite 8 (template defaults).
 These are the versions proven by the first port; do not bump mid-migration.
+
+## D009 — Recon reports are per-file; inventory.md is a generated index (2026-09-28)
+
+Semantic file descriptions live in `analysis/recon/<stem>.md` (one file per recon unit,
+with Description / Functionality / Proposed work units / Dependencies / State &
+determinism / Port notes sections). `analysis/inventory.md` is a generated index
+(`node tools/gen-inventory.js`) linking them; statuses stay in the ledger. This replaces
+the original plan of one monolithic `inventory.md` — per-file reports avoid merge
+conflicts between recon sessions and keep reports reviewable in isolation.
+
+## D010 — Oracle scenario semantics & snapshot v1 pinned (2026-09-28)
+
+- Moves at tick T execute BEFORE tick T's `game.tick()`; snapshot at tick T is taken
+  AFTER that tick; tick 0 = fresh state + tick-0 moves, snapshotted first.
+- Snapshot fields (bit-exact floats via JSON): per-resource `v`/`m`(axValue)/`u`(nlocked)/`p`(erTickCached);
+  per-building `val/on/unlocked/unlockable/stage`; per-job `value/unlocked`; crafts
+  `unlocked/value`; sorted techs/upgrades/policies name lists; calendar
+  year/day/season/weather/cycle/cycleYear; kitten count+free; `rngDraws` (total PRNG
+  calls); effects sample (`catnipPerTickBase`, `catnipDemandRatio`, `maxKittensRatio`,
+  `woodPerTick` when numeric).
+- Fake clock: fixed base `1759000000000` + tick×1000 ms. PRNG: splitmix32-seeded sfc32.
+  Seed convention: scenario header `# seed:` (default 20260927).
+- Failed actions are recorded with deterministic reason strings in `actionLog` — never
+  silently dropped (a silently-failed action would make a scenario vacuous).
+- Scenario vocabulary v1 implemented: gather/buy/craft/assign/research/upgrade/policy/
+  hunt/praise/observe/save/load. `unassign` deferred (needs kitten-level targeting).
+
+## D011 — Harness quirks that mirror jest exactly (2026-09-28)
+
+- `dojo.hitch` mock keeps jest's quirky `method.bind(ctx, arguments)` semantics.
+- `$I` mock (`"$"+key+"$"`) is installed between i18n and core loads, jest-style.
+- jsdom window gets mirrored globals (`classes/com/mixin/dojo/React/$/LZString`) because
+  GamePage looks managers up on `window["classes"]["managers"]` — in jest window IS the
+  global; in plain Node they must be the same object references.
+- GamePage internals note: modern building controller's `build()` returns `undefined`
+  on ALL paths — success detection must use state delta (`metadata.val`), see
+  `oracle/runner/orig-driver.js` buy case.

@@ -1,0 +1,9 @@
+{
+  "name": "kg-oracle-runner",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Headless deterministic driver for the ORIGINAL kittens game (oracle side). See ../README.md.",
+  "dependencies": {
+    "jsdom": "^24.1.0"
+  }
+}

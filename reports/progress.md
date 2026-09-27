@@ -1,42 +1,47 @@
 # Progress dashboard
 
 Human-readable view. **Ledger (`ledger/migration.yaml`) is the source of truth** — update
-that first, then this. Last synced: 2026-09-27 (session 2026-09-27-01).
+that first, then this. Last synced: 2026-09-28 (sessions 2026-09-28-02, -03).
 
 ## Phase status
 
 | Phase | Status | Notes |
 |---|---|---|
 | 0 Bootstrap | **done** | structure + scan + scaffold (both builds green) |
-| 1 Reconnaissance | **ready to start** | mechanical half done (`analysis/files.json`, `inventory.md` skeleton); recon-01..20 defined, 0/20 described |
-| 2 Deterministic oracle | **ready to start** (oracle-01..04 defined) | design in `oracle/README.md` |
-| 3 Incremental migration | not started | starts after first recon batches + oracle-03 |
+| 1 Reconnaissance | **in progress** | 5/33 port-relevant files described (68% of lines); 78 port units defined; science/workshop recon running |
+| 2 Deterministic oracle | **core done** | orig runs headless + deterministic; 3 golden fixtures bit-exact self-checked; F# port-side runner pending (phase 3) |
+| 3 Incremental migration | **ready to start** | first targets: resources-01..03 against captured fixtures |
 | 4 Closure | not started | |
 
 ## Unit counts (from ledger)
 
 | Status | count |
 |---|---|
-| verified | 3 (bootstrap-01..03) |
-| in-progress | 0 |
+| verified | 11 (bootstrap×3, oracle×3, recon×5) |
+| in-progress | 1 (oracle-04 — F# runner half) |
 | translated | 0 |
-| not-started | 27 (oracle-01..04, verify-01, recon-01..20) |
+| not-started | 78 ported units + 15 recon + verify-01 |
 | blocked | 0 |
 
 ## Next available units (dependencies satisfied)
 
-- `oracle-02` (scenario format + parser) — no deps
-- `verify-01` (spec verification) — no deps
-- `recon-01`, `recon-02`, `recon-03` … — recon has no hard deps; do 2–3 per session
+- **First port units (phase 3 start):** `resources-01` (resource defs data) →
+  `resources-02` (per-tick calc core) — verified against `fresh-100-ticks` +
+  `gather-hut-field` fixtures via the F# runner (oracle-04 completion).
+- Recon batch 2: `recon-04` (workshop), `recon-05` (science) running; then
+  `recon-08` religion, `recon-09` time, `recon-10` diplomacy.
+- `verify-01` (mechanical spec verification) — no deps, high value before data porting.
 
-## Blocked / waiting
+## Open observations
 
-- `oracle-01`, `oracle-03`, `oracle-04` — depend on oracle-02 / oracle-01
+- OBS-1: science production gate not yet identified (see `reports/discrepancies.md`) —
+  resolve during village-04/resources-05 porting.
 
 ## Milestones
 
-- [ ] First scenario runs twice-identically on orig (determinism self-check)
-- [ ] First core unit (data: resource defs) verified against orig fixtures
-- [ ] First 1000-tick scenario agrees bit-exact
+- [x] Orig runs headless, deterministic (self-check identical)
+- [x] Golden fixtures captured (3 scenarios, bit-exact ×2 runs)
+- [ ] First core unit (resources-01/02) verified against orig fixtures
+- [ ] First 1000-tick scenario agrees bit-exact (port vs orig)
 - [ ] Temple-baseline scenario (627k ticks) agrees
 - [ ] All 12 tabs render in kittens_land from ported core
