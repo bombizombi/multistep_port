@@ -29,13 +29,13 @@ Orig snapshot: `781e379f79f1e7512d168849cba21ed111502644` — 82 files,
 | `js/math.js` | 105 | game | — | pending |
 | `js/prestige.js` | 716 | game | — | pending |
 | `js/preview.js` | 230 | game | — | pending |
-| `js/religion.js` | 3274 | game | — | pending |
+| `js/religion.js` | 3274 | game | `analysis/recon/religion.md` | **described** |
 | `js/resources.js` | 1179 | game | `analysis/recon/resources.md` | **described** |
 | `js/science.js` | 2821 | game | `analysis/recon/science.md` | **described** |
 | `js/settings.js` | 393 | game | — | pending |
 | `js/space.js` | 1604 | game | — | pending |
 | `js/stats.js` | 247 | game | — | pending |
-| `js/time.js` | 2792 | game | — | pending |
+| `js/time.js` | 2792 | game | `analysis/recon/time.md` | **described** |
 | `js/toolbar.js` | 242 | game | — | pending |
 | `js/ui.js` | 1198 | game | — | pending |
 | `js/village.js` | 6075 | game | `analysis/recon/village.md` | **described** |
