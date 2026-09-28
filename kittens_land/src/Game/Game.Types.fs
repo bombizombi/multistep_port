@@ -34,12 +34,17 @@ type ResourceState =
     { Def: ResourceDef
       Value: float
       Unlocked: bool
-      MaxValue: float }
+      MaxValue: float
+      PerTickCached: float } // set by game.updateResources (game-10 slice); read by fastforward
 
 /// The resPool registry. Order mirrors orig's resPool.resources array.
 /// KarmaKittens is game.karmaKittens in orig — parked here until game-06 owns
-/// GamePage state (see Game.Resources.addRes karma branch).
+/// GamePage state (see Game.Resources.addRes karma branch). Energy fields are
+/// resPool.energyProd/energyWinterProd/energyCons (resources-07).
 type ResPool =
     { Order: string list
       ByName: Map<string, ResourceState>
-      KarmaKittens: int }
+      KarmaKittens: int
+      EnergyProd: float
+      EnergyWinterProd: float
+      EnergyCons: float }

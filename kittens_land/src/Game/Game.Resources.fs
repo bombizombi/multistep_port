@@ -18,11 +18,15 @@ let init (defs: ResourceDef list) : ResPool =
             { Def = d
               Value = 0.0
               Unlocked = false
-              MaxValue = 0.0 })
+              MaxValue = 0.0
+              PerTickCached = 0.0 })
         |> Map.ofList
     { Order = defs |> List.map (fun d -> d.Name)
       ByName = byName
-      KarmaKittens = 0 }
+      KarmaKittens = 0
+      EnergyProd = 0.0
+      EnergyWinterProd = 0.0
+      EnergyCons = 0.0 }
 
 /// orig get(): the resource or None (orig returns false).
 let get (pool: ResPool) (name: string) : ResourceState option = pool.ByName |> Map.tryFind name
@@ -269,3 +273,233 @@ let updateMaxValueAll (ctx: CapContext) (pool: ResPool) : ResPool =
         ByName =
             pool.ByName
             |> Map.map (fun _ res -> updateMaxValue ctx res) }
+
+// ---------------------------------------------------------------------------
+// resources-05: per-tick update loop (orig js/resources.js L728-778).
+
+/// Dependency seam for update(): production values come from game.getResourcePerTick
+/// (game-10 slice — until then the runner injects an override map, mirroring how the
+/// orig harness patches the method). Pasture/energy-loss terms are buildings-01;
+/// at fresh state PastureOn = 0 makes EnergyLoss irrelevant.
+type UpdateContext =
+    { Cap: CapContext
+      GetResourcePerTick: string -> float
+      CalendarSeason: int // calendar-01 seam (0 = spring at fresh)
+      PastureOn: int
+      EnergyLoss: float
+      EnergyChallengeResearched: bool
+      EnergyChallengeActive: bool }
+
+/// orig updateKarma(): karma resource value tracks getUnlimitedDR(karmaKittens, 5).
+/// The chapel/frescoes effect recalc on change needs religion/building managers —
+/// at fresh the value never changes; wire the recalc when those units land.
+let updateKarma (pool: ResPool) : ResPool =
+    let karma = getUnlimitedDR (float pool.KarmaKittens) 5.0
+    let res = pool.ByName["karma"]
+    if karma <> res.Value then
+        { pool with ByName = pool.ByName |> Map.add "karma" { res with Value = karma } }
+    else
+        pool
+
+/// orig resPool.update(): per resource — cap recompute, unlock flips, production
+/// accrual; then karma; then energy accounting. Iterates in resPool order.
+let update (uctx: UpdateContext) (calendarDay: int) (pool: ResPool) : ResPool =
+    let mutable pool' = pool
+
+    for name in pool'.Order do
+        let res = pool'.ByName[name]
+        let res1 = updateMaxValue uctx.Cap res
+
+        if name = "sorrow" then
+            pool' <- { pool' with ByName = pool'.ByName |> Map.add name res1 }
+        else
+            // (spice title hack skipped: October/spooky title swap is UI-only)
+            let unlocked' =
+                if not res1.Unlocked && res1.Value > 0.0 then true
+                elif res1.Value = 0.0
+                     && res1.Unlocked
+                     && (name = "zebras" || name = "paragon" || name = "elderBox") then false
+                else res1.Unlocked
+
+            let res2 = { res1 with Unlocked = unlocked' }
+            let pool1 = { pool' with ByName = pool'.ByName |> Map.add name res2 }
+            let perTick = uctx.GetResourcePerTick name
+            let pool2, _ = addResPerTick calendarDay name perTick pool1
+            pool' <- pool2
+
+    // karma
+    let poolK = updateKarma pool'
+
+    // energy accounting (resources-07)
+    let energyProdRatio = 1.0 + uctx.Cap.GetEffect("energyProductionRatio")
+    let energyProd = uctx.Cap.GetEffect("energyProduction") * energyProdRatio
+    let energyWinterProd0 = energyProd
+    let energyConsRatio =
+        (1.0 + uctx.Cap.GetEffect("energyConsumptionRatio") + uctx.Cap.GetEffect("energyConsumptionIncrease"))
+        * (if uctx.EnergyChallengeActive then 2.0 else 1.0)
+    let energyCons = uctx.Cap.GetEffect("energyConsumption") * energyConsRatio
+
+    let energyWinterProd =
+        if uctx.CalendarSeason <> 3 then
+            // orig: energyWinterProd -= solarFarm.get("on") * energyLoss * energyProdRatio
+            energyWinterProd0 - float uctx.PastureOn * uctx.EnergyLoss * energyProdRatio
+        else
+            energyWinterProd0
+
+    { poolK with
+        EnergyProd = energyProd
+        EnergyWinterProd = energyWinterProd
+        EnergyCons = energyCons }
+
+// ---------------------------------------------------------------------------
+// resources-07: energy accounting accessors (orig js/resources.js L829-840, 1089).
+
+let getEnergyProductionRatio (ctx: CapContext) : float = 1.0 + ctx.GetEffect("energyProductionRatio")
+
+let getEnergyConsumptionRatio (ctx: CapContext) (energyChallengeActive: bool) : float =
+    (1.0 + ctx.GetEffect("energyConsumptionRatio") + ctx.GetEffect("energyConsumptionIncrease"))
+    * (if energyChallengeActive then 2.0 else 1.0)
+
+/// orig getEnergyDelta() — includes the energy-challenge softening branch.
+let getEnergyDelta
+    (energyChallengeResearched: bool)
+    (energyChallengeActive: bool)
+    (energyProd: float)
+    (energyCons: float)
+    : float =
+    if energyCons = 0.0 then
+        0.0
+    else
+        let mutable delta = energyProd / energyCons
+        if delta < 0.25 then delta <- 0.25
+        if energyChallengeResearched && not energyChallengeActive then
+            delta <- 1.0 - (1.0 - delta) / 2.0
+        delta
+
+// ---------------------------------------------------------------------------
+// resources-08: redshift fast-forward & limits (orig js/resources.js L843-890).
+
+/// orig fastforward(daysOffset): pre-accrues perTickCached * days * ticksPerDay
+/// with limits relaxed; returns the limits map for enforceLimits. ticksPerDay is
+/// a calendar constant (10, js/calendar.js L217) — threaded as a parameter.
+let fastforward (ticksPerDay: float) (daysOffset: float) (calendarDay: int) (pool: ResPool) : ResPool * Map<string, float> =
+    let mutable limits = Map.empty<string, float>
+    let mutable pool' = pool
+
+    for name in pool.Order do
+        let res = pool.ByName[name]
+
+        if res.PerTickCached <> 0.0 && (name <> "catnip" || res.PerTickCached >= 0.0) then
+            if res.MaxValue <> 0.0 then
+                limits <- Map.add name (max res.Value res.MaxValue) limits
+
+            let p, _ = addRes calendarDay (res.PerTickCached * daysOffset * ticksPerDay) true true name pool'
+            pool' <- p
+
+    pool', limits
+
+/// orig enforceLimits(limits): re-clamp values after a relaxed fast-forward.
+let enforceLimits (limits: Map<string, float>) (pool: ResPool) : ResPool =
+    { pool with
+        ByName =
+            pool.ByName
+            |> Map.map (fun name res ->
+                if res.MaxValue <> 0.0 then
+                    match Map.tryFind name limits with
+                    | Some limit -> { res with Value = min res.Value limit }
+                    | None -> res
+                else
+                    res) }
+
+/// orig resConsHackForResTable(): tops up resources whose net conversion drains
+/// them while gross production still covers it. Production/conversion seams are
+/// game-10 slices (fresh: convertion 0 → branch never taken).
+let resConsHackForResTable
+    (calendarDay: int)
+    (getConvertion: string -> float)
+    (getRptWithConversion: string -> float)
+    (pool: ResPool)
+    : ResPool =
+    if calendarDay >= 0 then
+        let mutable pool' = pool
+        for name in pool.Order do
+            let res = pool'.ByName[name]
+            if res.MaxValue <> 0.0 then
+                let perTickConvertion = getConvertion name
+                if perTickConvertion < 0.0
+                   && getRptWithConversion name > 0.0
+                   && res.MaxValue + perTickConvertion <= res.Value then
+                    let res' = { res with Value = res.Value + -perTickConvertion }
+                    pool' <- { pool' with ByName = pool'.ByName |> Map.add name res' }
+        pool'
+    else
+        pool
+
+// ---------------------------------------------------------------------------
+// resources-09: price affordability & payment (orig js/resources.js L1037-1087).
+
+/// orig hasRes(prices, amt) — JS quirk preserved: an unknown resource reads
+/// `undefined < x` which is false, so the price check PASSES (loop continues).
+let hasRes (pool: ResPool) (prices: (string * float) list) (amt: float) : bool =
+    let amt' = if amt = 0.0 then 1.0 else amt
+    prices
+    |> List.forall (fun (name, val') ->
+        match get pool name with
+        | Some res -> not (res.Value < val' * amt')
+        | None -> true)
+
+/// workshop seam for isStorageLimited's craftable branch (fresh: nothing unlocked).
+type CraftContext =
+    { CraftUnlocked: string -> bool
+      CraftIsLimited: string -> bool }
+
+let freshCraftContext : CraftContext =
+    { CraftUnlocked = fun _ -> false
+      CraftIsLimited = fun _ -> false }
+
+/// orig isStorageLimited(prices)
+let isStorageLimited (craftCtx: CraftContext) (pool: ResPool) (prices: (string * float) list) : bool =
+    let mutable found = false
+    for (name, val') in prices do
+        if not found then
+            match get pool name with
+            | Some res ->
+                if val' = System.Double.PositiveInfinity
+                   || (res.MaxValue > 0.0 && val' > res.MaxValue && val' > res.Value) then
+                    found <- true
+                elif res.Def.Craftable && val' > res.Value then
+                    if craftCtx.CraftUnlocked name && craftCtx.CraftIsLimited name then
+                        found <- true
+            | None -> ()
+    found
+
+/// orig payPrices(prices): addResEvent(-val) per price, in order.
+let payPrices (calendarDay: int) (pool: ResPool) (prices: (string * float) list) : ResPool =
+    let mutable pool' = pool
+    for (name, val') in prices do
+        let p, _ = addResEvent calendarDay name (-val') pool'
+        pool' <- p
+    pool'
+
+// ---------------------------------------------------------------------------
+// resources-10: void & karma special math, cheat fill (orig L1089-1096, 1113).
+
+/// orig getVoidQuantity(): -1..2+ at start, 0.5 on average — one RNG draw
+/// (game.rand(n) = uniformRandomInteger(0, n)).
+let getVoidQuantity (ctx: CapContext) (rand: unit -> float) (pool: ResPool) : float =
+    uniformRandomInteger rand 0.0 (ctx.GetEffect("temporalParadoxVoid") + 4.0) - 1.0
+
+/// orig getVoidQuantityStatistically(): median of the void distribution.
+let getVoidQuantityStatistically (ctx: CapContext) : float =
+    (ctx.GetEffect("temporalParadoxVoid") + 1.0) / 2.0
+
+/// orig maxAll(): cheat fill to caps.
+let maxAll (pool: ResPool) : ResPool =
+    { pool with
+        ByName =
+            pool.ByName
+            |> Map.map (fun _ res ->
+                if res.MaxValue <> 0.0 && res.Value < res.MaxValue then
+                    { res with Value = res.MaxValue }
+                else
+                    res) }

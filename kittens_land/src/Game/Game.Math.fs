@@ -39,3 +39,11 @@ let getLimitedDR (effect: float) (limit: float) : float =
         let diminishedEffect = (1.0 - (delta / (diminishedPortion + delta))) * delta
         let totalEffect = maxUndiminished + diminishedEffect
         if effect < 0.0 then -totalEffect else totalEffect
+
+/// game.rand via js/math.js uniformRandomInteger(0, ratio): one Math.random draw.
+/// `rand` is the harness-owned PRNG stream (orig patches Math.random; the F#
+/// runner owns the same splitmix32+sfc32 stream).
+let uniformRandomInteger (rand: unit -> float) (min': float) (max': float) : float =
+    let lo = jsRound min'
+    let hi = jsRound max'
+    lo + floor (rand () * (hi - lo))

@@ -10,24 +10,24 @@ that first, then this. Last synced: 2026-09-28 (sessions 2026-09-28-02, -03).
 | 0 Bootstrap | **done** | structure + scan + scaffold (both builds green) |
 | 1 Reconnaissance | **done** | 33/33 files described (100%); 244 port units defined with layers+deps |
 | 2 Deterministic oracle | **core done** | orig runs headless + deterministic; 3 golden fixtures bit-exact self-checked; F# port-side runner pending (phase 3) |
-| 3 Incremental migration | **in progress** | 6/244 units verified (resources-01..04, 06 + oracle-04); all verified bit-exact vs orig |
+| 3 Incremental migration | **in progress** | 11/244 units verified (resources core complete except shell unit); all bit-exact vs orig incl. RNG-stream parity |
 | 4 Closure | not started | |
 
 ## Unit counts (from ledger)
 
 | Status | count |
 |---|---|
-| verified | 32 (bootstrap×3, oracle×4, recon×20, resources×5) |
+| verified | 37 (bootstrap×3, oracle×4, recon×20, resources×10) |
 | in-progress | 0 |
 | translated | 0 |
-| not-started | 238 ported units + verify-01 |
+| not-started | 233 ported units + verify-01 |
 | blocked | 0 |
 
 ## Next available units (dependencies satisfied)
 
-- **Next port units:** `resources-05` (per-tick update loop) with the first slice of
-  `game-10` (production calc) — then `fresh-100-ticks` verifies bit-exact on the full
-  resources subtree including caps and perTick.
+- **Next port units:** `game-10` first slice (calcResourcePerTick fresh state) +
+  `resources-11` — then `fresh-100-ticks` verifies the full resources subtree on a
+  live tick pipeline, retiring the injected-production seams.
 - Recon is complete (20/20); remaining recon slots only matter for late-phase files.
 - `verify-01` (mechanical spec verification) — no deps; workshop recon already found
   the first spec discrepancy (143 upgrades / 23 crafts vs spec's 142/20).

@@ -82,9 +82,13 @@ function sfc32(a, b, c, d) {
   };
 }
 const sm = splitmix32(scenario ? scenario.seed : 20260927);
-const rng = sfc32(sm(), sm(), sm(), sm());
 let rngDraws = 0;
-Math.random = function () { rngDraws++; return rng(); };
+function installRng(seed) {
+  const sm = splitmix32(seed);
+  const rng = sfc32(sm(), sm(), sm(), sm());
+  Math.random = function () { rngDraws++; return rng(); };
+}
+installRng(scenario ? scenario.seed : 20260927);
 
 // fake clock: logical time = base + tick*1000ms (the game's own tick period)
 const BASE_MS = 1759000000000;
@@ -172,6 +176,8 @@ game.resetState();
 // ---------------------------------------------------------------------------
 // Action executor (player-equivalent paths)
 const actionLog = [];
+const productionOverrides = {}; // resop prod test hook (D014)
+let lastLimits = {}; // resop ff/limits test hooks
 function doAction(move) {
   const { action } = move;
   const args = move.args;
@@ -276,6 +282,79 @@ function doAction(move) {
         const [fn, arg1, arg2] = args;
         if (fn === "caps") {
           game.resPool.updateMaxValueAll();
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "prod") {
+          // resource-per-tick override map; patches getResourcePerTick once (D001-style
+          // harness injection — orig source untouched, restored never needed: test-only)
+          productionOverrides[arg1] = Number(arg2);
+          if (!game.getResourcePerTick.__overridden) {
+            const real = game.getResourcePerTick.bind(game);
+            game.getResourcePerTick = (name, conv) =>
+              (name in productionOverrides) ? productionOverrides[name] : real(name, conv);
+            game.getResourcePerTick.__overridden = true;
+          }
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "pertick") {
+          // set perTickCached directly (normally cached by game.updateResources)
+          game.resPool.get(arg1).perTickCached = Number(arg2);
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "update") {
+          game.resPool.update();
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "hasRes" || fn === "limited" || fn === "pay") {
+          const spec = String(arg1).split(",").map((p) => {
+            const [r, a] = p.split(":");
+            return { res: r, amt: Number(a), name: r, val: Number(a) };
+          });
+          let result;
+          if (fn === "hasRes") result = game.resPool.hasRes(spec, Number(arg2) || 0);
+          else if (fn === "limited") result = game.resPool.isStorageLimited(spec);
+          else { game.resPool.payPrices(spec); result = true; }
+          actionLog.push({ tick: tickIndex, action: "resop", args, result });
+          return;
+        }
+        if (fn === "ff") {
+          lastLimits = game.resPool.fastforward(Number(arg1));
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "limits") {
+          game.resPool.enforceLimits(lastLimits);
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "voidq") {
+          const result = game.resPool.getVoidQuantity();
+          actionLog.push({ tick: tickIndex, action: "resop", args, result });
+          return;
+        }
+        if (fn === "voidstat") {
+          const result = game.resPool.getVoidQuantityStatistically();
+          actionLog.push({ tick: tickIndex, action: "resop", args, result });
+          return;
+        }
+        if (fn === "maxall") {
+          game.resPool.maxAll();
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "energydelta") {
+          const result = game.resPool.getEnergyDelta();
+          actionLog.push({ tick: tickIndex, action: "resop", args, result });
+          return;
+        }
+        if (fn === "seed") {
+          // re-seed the PRNG stream (D014: position-independent RNG verification —
+          // orig's bootstrap consumed draws the F# runner never makes)
+          installRng(Number(arg1) >>> 0);
           actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
           return;
         }

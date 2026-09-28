@@ -1,0 +1,33 @@
+# name: unit-res-misc
+# seed: 20260927
+# checkpoints: 0
+# Unit verification for resources-05 (update loop), resources-07 (energy
+# accessors), resources-08 (fastforward/enforceLimits), resources-09 (prices),
+# resources-10 (void math + maxAll). All at tick 0 (zero-effect state).
+# The `seed` hook re-seeds the PRNG so voidq draws are position-independent —
+# orig's bootstrap consumed 33 draws the F# runner never makes.
+0 resop caps
+0 resop prod catnip 1.5
+0 resop prod wood 30
+0 resop pertick titanium 0.5
+0 resop pertick coal -1
+0 resop update
+0 resop update
+0 resop addResEvent zebras 5
+0 resop update
+0 resop pay zebras:1
+0 resop update
+0 resop hasRes catnip:2
+0 resop hasRes catnip:5,wood:100
+0 resop hasRes catnip:1,energy:5
+0 resop limited catnip:100
+0 resop limited catnip:0.5
+0 resop pay catnip:2
+0 resop ff 10
+0 resop limits
+0 resop seed 42
+0 resop voidq
+0 resop voidq
+0 resop voidstat
+0 resop energydelta
+0 resop maxall

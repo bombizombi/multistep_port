@@ -4,15 +4,46 @@ module FsRunner.Program
 // snapshots in the same JSON shape as oracle/runner/orig-driver.js, so
 // tools/diff-snapshots.js can compare implementations bit-exactly.
 //
-// Scope note (session 2026-09-28-04): only the resources pipeline exists in the
-// core so far (resources-01..03). Actions other than `resop` are logged to
-// actionLog as not-yet-ported rather than executed. Snapshot comparison is done
-// with --include filters on the subtrees the port owns (see D014).
+// Scope note (sessions 2026-09-28-04/-05/-06): the resources pipeline exists in
+// the core (resources-01..10). Player actions are still logged as
+// not-yet-ported; snapshot comparison uses --include filters on the subtrees
+// the port owns (see D014).
 
 open System
 open System.IO
 open Game.Types
 open Game.Resources
+
+// ---------------------------------------------------------------------------
+// Seeded PRNG — bit-exact port of orig-driver.js (splitmix32 seeds sfc32;
+// JS |0 / >>> 0 semantics are mod-2^32 arithmetic, matching uint32 ops).
+
+module Rng =
+    let splitmix32 (seed: uint32) : unit -> uint32 =
+        let mutable a = seed
+        fun () ->
+            a <- a + 0x9E3779B9u
+            let mutable t = a ^^^ (a >>> 16)
+            t <- t * 0x21F0AAADu
+            t <- t ^^^ (t >>> 15)
+            t <- t * 0x735A2D97u
+            t <- t ^^^ (t >>> 15)
+            t + 0x61D88E45u
+
+    let sfc32 (a0: uint32) (b0: uint32) (c0: uint32) (d0: uint32) : unit -> float =
+        let mutable a = a0
+        let mutable b = b0
+        let mutable c = c0
+        let mutable d = d0
+        fun () ->
+            let t0 = a + b
+            a <- b ^^^ (b >>> 9)
+            b <- c + (c <<< 3)
+            c <- (c <<< 21) ||| (c >>> 11)
+            d <- d + 1u
+            let t1 = t0 + d
+            c <- c + t1
+            float t1 / 4294967296.0
 
 // ---------------------------------------------------------------------------
 // Minimal JSON writer (hand-rolled: exact float formatting control).
@@ -84,27 +115,44 @@ let parseScenario (text: string) : Scenario =
 // ---------------------------------------------------------------------------
 // Scenario execution against the F# core
 
+/// resop result kinds: numbers, booleans, or absent (orig: undefined → key dropped)
+type ResKind =
+    | RNum of float
+    | RBool of bool
+    | RNone
+
 type ExecResult =
-    { Snapshots: (int * (string * (float * float * bool * float)) list * int) list // tick, resources((name,(v,m,u,p))), rngDraws
-      ActionLog: (int * string * string list * float option * string option) list } // tick, action, args, result?, reason?
+    { Snapshots: (int * (string * (float * float * bool * float)) list * int) list
+      ActionLog: (int * string * string list * ResKind) list }
+
+let parseSpec (s: string) : (string * float) list =
+    s.Split(',')
+    |> Array.map (fun p ->
+        let parts = p.Split(':')
+        (parts.[0], float parts.[1]))
+    |> Array.toList
 
 let execute (scenario: Scenario) : ExecResult =
     let mutable pool = init Game.Catalog.Resources.resourceDefs
     // calendarDay: owned by calendar-01. Verified against the golden fixture:
-    // after resetState the calendar sits at day = 0 (spring, year 0). The
-    // paradox gate (day < 0) therefore does not trigger at tick 0.
+    // after resetState the calendar sits at day = 0 (spring, year 0).
     let mutable calendarDay = 0
     let mutable rngDraws = 0
+    let mutable rand =
+        let sm = Rng.splitmix32 (uint32 scenario.Seed)
+        let r = Rng.sfc32 (sm ()) (sm ()) (sm ()) (sm ())
+        fun () -> r ()
+    let mutable prodOverrides = Map.empty<string, float>
+    let mutable lastLimits = Map.empty<string, float>
     let mutable actionLog = []
     let mutable snapshots = []
-    let cpSet = Set.ofList scenario.Checkpoints
 
     let takeSnapshot () =
         let resources =
             pool.Order
             |> List.choose (fun n ->
                 match get pool n with
-                | Some r -> Some(n, (r.Value, r.MaxValue, r.Unlocked, 0.0)) // p: perTickCached is resources-05
+                | Some r -> Some(n, (r.Value, r.MaxValue, r.Unlocked, r.PerTickCached))
                 | None -> None)
         (0, resources, rngDraws)
 
@@ -113,20 +161,80 @@ let execute (scenario: Scenario) : ExecResult =
         | "resop" ->
             match m.Args with
             | [ "caps" ] ->
-                pool <- updateMaxValueAll zeroCapContext pool // t0: effects cache still empty (see Game.Resources.zeroCapContext)
-                actionLog <- (m.Tick, "resop", m.Args, Some 0.0, None) :: actionLog
+                pool <- updateMaxValueAll zeroCapContext pool // t0: effects cache still empty
+                actionLog <- (m.Tick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "prod"; resName; valueArg ] ->
+                prodOverrides <- prodOverrides |> Map.add resName (float valueArg)
+                actionLog <- (m.Tick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "pertick"; resName; valueArg ] ->
+                let res = pool.ByName[resName]
+                pool <- { pool with ByName = pool.ByName |> Map.add resName { res with PerTickCached = float valueArg } }
+                actionLog <- (m.Tick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "update" ] ->
+                let uctx =
+                    { Cap = zeroCapContext
+                      // orig getResourcePerTick(name, false): override map first
+                      // (harness injection), else perTickCached for
+                      // calculatePerTick resources, else 0
+                      GetResourcePerTick =
+                        fun n ->
+                            match Map.tryFind n prodOverrides with
+                            | Some v -> v
+                            | None ->
+                                match get pool n with
+                                | Some r when r.Def.CalculatePerTick -> r.PerTickCached
+                                | _ -> 0.0
+                      CalendarSeason = 0 // calendar-01 seam (spring at fresh)
+                      PastureOn = 0 // buildings-01 seam
+                      EnergyLoss = 0.0
+                      EnergyChallengeResearched = false
+                      EnergyChallengeActive = false }
+                pool <- update uctx calendarDay pool
+                actionLog <- (m.Tick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "hasRes"; spec ] ->
+                actionLog <- (m.Tick, "resop", m.Args, RBool(hasRes pool (parseSpec spec) 0.0)) :: actionLog
+            | [ "hasRes"; spec; amt ] ->
+                actionLog <- (m.Tick, "resop", m.Args, RBool(hasRes pool (parseSpec spec) (float amt))) :: actionLog
+            | [ "limited"; spec ] ->
+                actionLog <-
+                    (m.Tick, "resop", m.Args, RBool(isStorageLimited freshCraftContext pool (parseSpec spec))) :: actionLog
+            | [ "pay"; spec ] ->
+                pool <- payPrices calendarDay pool (parseSpec spec)
+                actionLog <- (m.Tick, "resop", m.Args, RBool true) :: actionLog
+            | [ "ff"; days ] ->
+                let pool', limits = fastforward 10.0 (float days) calendarDay pool // ticksPerDay = 10
+                pool <- pool'
+                lastLimits <- limits
+                actionLog <- (m.Tick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "limits" ] ->
+                pool <- enforceLimits lastLimits pool
+                actionLog <- (m.Tick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "voidq" ] ->
+                let result = getVoidQuantity zeroCapContext (fun () -> rngDraws <- rngDraws + 1; rand ()) pool
+                actionLog <- (m.Tick, "resop", m.Args, RNum result) :: actionLog
+            | [ "voidstat" ] ->
+                actionLog <- (m.Tick, "resop", m.Args, RNum(getVoidQuantityStatistically zeroCapContext)) :: actionLog
+            | [ "maxall" ] ->
+                pool <- maxAll pool
+                actionLog <- (m.Tick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "energydelta" ] ->
+                actionLog <-
+                    (m.Tick,
+                     "resop",
+                     m.Args,
+                     RNum(getEnergyDelta false false pool.EnergyProd pool.EnergyCons))
+                    :: actionLog
+            | [ "seed"; seedArg ] ->
+                let sm = Rng.splitmix32 (uint32 (int seedArg))
+                let r = Rng.sfc32 (sm ()) (sm ()) (sm ()) (sm ())
+                rand <- fun () -> r ()
+                actionLog <- (m.Tick, "resop", m.Args, RNum 0.0) :: actionLog
             | [ "stock"; amtArg; specArg ] ->
-                // spec "wood:5,catnip:10" (order-significant), mirrors orig driver
                 let amt = float amtArg
-                let spec =
-                    specArg.Split(',')
-                    |> Array.map (fun p ->
-                        let parts = p.Split(':')
-                        (parts.[0], float parts.[1]))
-                    |> Array.toList
+                let spec = parseSpec specArg
                 let pool', fraction = getAmtDependsOnStock calendarDay spec amt pool
                 pool <- pool'
-                actionLog <- (m.Tick, "resop", m.Args, Some fraction, None) :: actionLog
+                actionLog <- (m.Tick, "resop", m.Args, RNum fraction) :: actionLog
             | [ fn; resName; valueArg ] ->
                 let v = float valueArg
                 // orig get(name) returns false for unknown names; addRes then
@@ -141,11 +249,12 @@ let execute (scenario: Scenario) : ExecResult =
                         | "addResEvent" -> addResEvent calendarDay resName v pool
                         | "addResPerTick" -> addResPerTick calendarDay resName v pool
                         | other ->
-                            actionLog <- (0, m.Action, m.Args, None, Some(sprintf "unknown fn %s" other)) :: actionLog
+                            actionLog <- (m.Tick, "resop", m.Args, RNone) :: actionLog
+                            eprintfn "resop: unknown fn %s" other
                             pool, 0.0
                 pool <- pool'
-                actionLog <- (m.Tick, "resop", m.Args, Some delta, None) :: actionLog
-            | _ -> actionLog <- (m.Tick, "resop", m.Args, None, Some "bad args") :: actionLog
+                actionLog <- (m.Tick, "resop", m.Args, RNum delta) :: actionLog
+            | _ -> actionLog <- (m.Tick, "resop", m.Args, RNone) :: actionLog
         | "gather"
         | "buy"
         | "craft"
@@ -156,9 +265,9 @@ let execute (scenario: Scenario) : ExecResult =
         | "hunt"
         | "praise"
         | "save"
-        | "load" -> actionLog <- (m.Tick, m.Action, m.Args, None, Some "not-yet-ported") :: actionLog
+        | "load" -> actionLog <- (m.Tick, m.Action, m.Args, RNone) :: actionLog
         | "observe" -> ()
-        | other -> actionLog <- (m.Tick, other, m.Args, None, Some(sprintf "unknown action %s" other)) :: actionLog
+        | other -> actionLog <- (m.Tick, other, m.Args, RNone) :: actionLog
 
     // tick-0 moves, then snapshot (same semantics as orig-driver, D010)
     for m in scenario.Moves do
@@ -169,7 +278,7 @@ let execute (scenario: Scenario) : ExecResult =
     // beyond tick 0 are recorded as not-yet-ported so nothing executes silently.
     for t in 1..scenario.MaxTick do
         for m in scenario.Moves do
-            if m.Tick = t then actionLog <- (t, m.Action, m.Args, None, Some "not-yet-ported") :: actionLog
+            if m.Tick = t then actionLog <- (t, m.Action, m.Args, RNone) :: actionLog
 
     { Snapshots = List.rev snapshots
       ActionLog = List.rev actionLog }
@@ -209,14 +318,15 @@ let snapshotJson (tick: int, resources: (string * (float * float * bool * float)
         |> String.concat ","
     sprintf "{\"tick\":%d,\"rngDraws\":%d,\"resources\":{%s}}" tick rngDraws resItems
 
-let logJson ((tick, action, args, result, reason): int * string * string list * float option * string option) : string =
+let resKindJson (rk: ResKind) : string =
+    match rk with
+    | RNum v -> sprintf "\"result\":%s" (num v)
+    | RBool b -> sprintf "\"result\":%s" (if b then "true" else "false")
+    | RNone -> "\"reason\":null"
+
+let logJson ((tick, action, args, rk): int * string * string list * ResKind) : string =
     let argStr = args |> List.map (fun a -> sprintf "\"%s\"" (esc a)) |> String.concat ","
-    let tail =
-        match result, reason with
-        | Some r, _ -> sprintf "\"result\":%s" (num r)
-        | None, Some w -> sprintf "\"reason\":\"%s\"" (esc w)
-        | None, None -> "\"reason\":null"
-    sprintf "{\"tick\":%d,\"action\":\"%s\",\"args\":[%s],%s}" tick (esc action) argStr tail
+    sprintf "{\"tick\":%d,\"action\":\"%s\",\"args\":[%s],%s}" tick (esc action) argStr (resKindJson rk)
 
 [<EntryPoint>]
 let main argv =
