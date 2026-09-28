@@ -10,25 +10,46 @@ module Game.Diplomacy
 open Game.Types
 open Game.Catalog.World
 
-/// Live race state (orig mutates the def: unlocked/embassyLevel/energy/duration).
+/// Live race state (orig mutates the def: unlocked/embassyLevel/energy/duration
+/// AND the sells/buys params via updateSharkScribes — diplomacy-04).
 type RaceState =
     { Unlocked: bool
       EmbassyLevel: int
       Energy: float
-      Duration: float }
+      Duration: float
+      Sells: SellDef list
+      Buys: Price list }
 
 type DiplomacyPool =
     { Races: Map<string, RaceState>
       RaceOrder: string list
       NonRandomTrades: float
-      NonRandomResetDays: float }
+      NonRandomResetDays: float
+      BaseGoldCost: float       // IW blackSky mutations seam (15 default)
+      BaseManpowerCost: float }
+
+let private freshRace (n: string) : RaceState =
+    let def = Game.Catalog.World.raceDefs |> List.find (fun r -> r.Name = n)
+    { Unlocked = false; EmbassyLevel = 0; Energy = 0.0; Duration = 0.0; Sells = def.Sells; Buys = def.Buys }
 
 let init () : DiplomacyPool =
     let order = Game.Catalog.World.raceDefs |> List.map (fun r -> r.Name)
-    { Races = order |> List.map (fun n -> (n, { Unlocked = false; EmbassyLevel = 0; Energy = 0.0; Duration = 0.0 })) |> Map.ofList
+    { Races = order |> List.map (fun n -> (n, freshRace n)) |> Map.ofList
       RaceOrder = order
       NonRandomTrades = 0.0
-      NonRandomResetDays = 0.0 }
+      NonRandomResetDays = 0.0
+      BaseGoldCost = 15.0
+      BaseManpowerCost = 50.0 }
+
+/// Per-tick seam context (no manager object in the port; callers supply live reads).
+type DiplomacyContext =
+    { GetEffect: string -> float
+      GetResValue: string -> float
+      GetResMax: string -> float
+      IsResUnlocked: string -> bool
+      Season: string            // current season name (getCurSeason().name)
+      NuclearFissionResearched: bool
+      IronWill: bool }
 
 let getRace (dp: DiplomacyPool) (name: string) : RaceState = dp.Races.[name]
 
@@ -40,19 +61,102 @@ let getSumEmbassyLevels (dp: DiplomacyPool) : int =
 
 let resetState (dp: DiplomacyPool) : DiplomacyPool =
     { dp with
-        Races = dp.RaceOrder |> List.map (fun n -> (n, { Unlocked = false; EmbassyLevel = 0; Energy = 0.0; Duration = 0.0 })) |> Map.ofList
+        Races = dp.RaceOrder |> List.map (fun n -> (n, freshRace n)) |> Map.ofList
         NonRandomTrades = 0.0
-        NonRandomResetDays = 0.0 }
+        NonRandomResetDays = 0.0
+        BaseGoldCost = 15.0
+        BaseManpowerCost = 50.0 }
 
-/// Per-tick seam context (no manager object in the port; callers supply live reads).
-type DiplomacyContext =
-    { GetEffect: string -> float
-      GetResValue: string -> float
-      GetResMax: string -> float
-      IsResUnlocked: string -> bool
-      Season: string            // current season name (getCurSeason().name)
-      NuclearFissionResearched: bool
-      IronWill: bool }
+/// orig updateSharkScribes (L531-583): per-day scaling of the sharks' sell/buy
+/// params. timeElapsed = year + trueYear (flux seam 0); chronosphere branch
+/// seam false; blackLibrary ratio seam 1. Mutates a COPY in the race state.
+let updateSharkScribes (dp: DiplomacyPool) (timeElapsed: float) (scribesResearched: bool) : DiplomacyPool =
+    let sharks = dp.Races.["sharks"]
+    if not scribesResearched then
+        let sells =
+            sharks.Sells
+            |> List.mapi (fun i sl ->
+                if i = 1 then { sl with Value = 5.0; Chance = 0.25 }
+                elif i = 2 then { sl with Value = 3.0; Chance = 0.15 }
+                else sl)
+        let buys = sharks.Buys |> List.mapi (fun i b -> if i = 0 then { b with Val = 100.0 } else b)
+        { dp with Races = dp.Races |> Map.add "sharks" { sharks with Sells = sells; Buys = buys } }
+    else
+        let te = if timeElapsed < 0.0 then 0.0 else timeElapsed
+        let libraryRatio = 1.0 // 1 + 0.03 * blackLibrary.on (seam 0)
+        let parchmentChance = min (0.40 + te / 33333.0) 1.0
+        let parchmentValue = (5.0 + te ** 1.25 / 1000.0) * libraryRatio
+        let manuscriptChance = min (0.20 + te / 100000.0) 1.0
+        let manuscriptValue = (3.3 + te / 545.0) * libraryRatio
+        let mutable rawValue = te / 8.0
+        if rawValue < 301.0 then rawValue <- 50.0 * floor (rawValue / 50.0)
+        elif rawValue < 501.0 then rawValue <- 100.0 * floor (rawValue / 100.0)
+        elif rawValue < 1501.0 then rawValue <- 250.0 * floor (rawValue / 250.0)
+        elif rawValue < 2501.0 then rawValue <- 500.0 * floor (rawValue / 500.0)
+        elif rawValue < 10001.0 then rawValue <- 1250.0 * floor (rawValue / 1250.0)
+        else rawValue <- 11111.0
+        let ironVal = max 125.0 rawValue
+        let sells =
+            sharks.Sells
+            |> List.mapi (fun i sl ->
+                if i = 1 then { sl with Value = parchmentValue; Chance = parchmentChance }
+                elif i = 2 then { sl with Value = manuscriptValue; Chance = manuscriptChance }
+                else sl)
+        let buys = sharks.Buys |> List.mapi (fun i b -> if i = 0 then { b with Val = ironVal } else b)
+        { dp with Races = dp.Races |> Map.add "sharks" { sharks with Sells = sells; Buys = buys } }
+
+/// orig diplomacy.onNewDay (L723-744): nonRandom anti-exploit decay, scribes
+/// refresh, leviathan visit expiry/countdown.
+let onNewDay (dp: DiplomacyPool) (timeElapsed: float) (scribesResearched: bool) : DiplomacyPool =
+    let dp =
+        if dp.NonRandomResetDays > 0.0 then { dp with NonRandomResetDays = dp.NonRandomResetDays - 1.0 }
+        else { dp with NonRandomTrades = 0.0 }
+    let dp = updateSharkScribes dp timeElapsed scribesResearched
+    let elders = dp.Races.["leviathans"]
+    if elders.Duration <= 0.0 && elders.Unlocked then
+        { dp with Races = dp.Races |> Map.add "leviathans" { elders with Unlocked = false } }
+    elif elders.Duration > 0.0 then
+        { dp with Races = dp.Races |> Map.add "leviathans" { elders with Duration = elders.Duration - 1.0 } }
+    else
+        dp
+
+/// orig unlockElders (L707-720): leviathans visit for 5 years (+1/energy);
+/// no stacking, elders do not like being first.
+let unlockElders (dp: DiplomacyPool) (daysPerYear: float) : DiplomacyPool =
+    let elders = dp.Races.["leviathans"]
+    if elders.Duration <> 0.0 || not (hasUnlockedRaces dp) then
+        dp
+    else
+        { dp with
+            Races =
+                dp.Races
+                |> Map.add "leviathans" { elders with Unlocked = true; Duration = daysPerYear * (5.0 + floor elders.Energy) } }
+
+/// orig getMarkerCap (L1162-1168): marker.getEffectiveValue = val × (1 +
+/// corruptionBoostRatioChallenge seam 1), × 5 + 5, scaled by leviathansEnergyModifier.
+let getMarkerCap (rp: Game.Religion.ReligionPool) (ctx: DiplomacyContext) : float =
+    let marker = Game.Religion.getZU rp "marker"
+    floor ((float marker.Val * 5.0 + 5.0) * (1.0 + ctx.GetEffect "leviathansEnergyModifier"))
+
+/// orig feedElders (L1170-1197): necrocorns → leviathan energy, clamped at the
+/// marker cap. amt floors to necrocorn stock; 0 → displeased (duration reset).
+let feedElders (dp: DiplomacyPool) (ctx: DiplomacyContext) (rp: Game.Religion.ReligionPool) (pool: ResPool) (amtRequested: float) : DiplomacyPool * ResPool =
+    let ncorns = Game.Resources.get pool "necrocorn" |> Option.map (fun r -> r.Value) |> Option.defaultValue 0.0
+    let elders = dp.Races.["leviathans"]
+    let cleanRequest = if amtRequested < 1.0 then 1.0 else amtRequested
+    let amt = floor (min cleanRequest ncorns)
+    if amt > 0.0 then
+        let efficiency = 1.0 + ctx.GetEffect "feedEldersEfficiencyRatio"
+        let mutable energy = elders.Energy + amt * efficiency
+        let markerCap = getMarkerCap rp ctx
+        if energy > markerCap then energy <- markerCap
+        let res = pool.ByName["necrocorn"]
+        let pool' = { pool with ByName = pool.ByName |> Map.add "necrocorn" { res with Value = res.Value - amt } }
+        { dp with Races = dp.Races |> Map.add "leviathans" { elders with Energy = energy } }, pool'
+    else
+        let res = pool.ByName["necrocorn"]
+        let pool' = { pool with ByName = pool.ByName |> Map.add "necrocorn" { res with Value = 0.0 } }
+        { dp with Races = dp.Races |> Map.add "leviathans" { elders with Duration = 0.0 } }, pool'
 
 /// Side effects of deterministic unlock gates (zebras: caravanserai upgrade +
 /// zebra relation policies become unlocked — orig L510-513).
@@ -115,12 +219,12 @@ let update (dp: DiplomacyPool) (ctx: DiplomacyContext) (year: float) (karmaKitte
 
 // --- trade costs / volume (L998-1108) ------------------------------------------
 
-let getManpowerCost (ctx: DiplomacyContext) : float =
-    let manpowerCost = 50.0 - ctx.GetEffect "tradeCatpowerDiscount"
+let getManpowerCost (dp: DiplomacyPool) (ctx: DiplomacyContext) : float =
+    let manpowerCost = dp.BaseManpowerCost - ctx.GetEffect "tradeCatpowerDiscount"
     if manpowerCost < 0.0 then 0.0 else manpowerCost
 
-let getGoldCost (ctx: DiplomacyContext) : float =
-    let goldCost = 15.0 - ctx.GetEffect "tradeGoldDiscount"
+let getGoldCost (dp: DiplomacyPool) (ctx: DiplomacyContext) : float =
+    let goldCost = dp.BaseGoldCost - ctx.GetEffect "tradeGoldDiscount"
     if goldCost < 0.0 then 0.0 else goldCost
 
 /// orig getTradeVolume (L1082): (1 + tradeVolume) * (1 + ambassador tradeVolume)
@@ -219,8 +323,10 @@ let fuzzGainedAmount (rand: unit -> float) (amount: float) (width: float) : floa
 
 /// orig tradeImpl (L859-961): pure computation + nonRandom bookkeeping.
 /// Returns bought resources (name → amount) + updated NonRandomTrades state.
-let tradeImpl (dp: DiplomacyPool) (ctx: DiplomacyContext) (rand: unit -> float) (raceName: string) (totalTradeAmount: float) (ambassadorEffects: Map<string, float>) : DiplomacyPool * Map<string, float> =
+/// Returns (pool, boughtResources, successfulTradeAmount).
+let tradeImpl (dp: DiplomacyPool) (ctx: DiplomacyContext) (rand: unit -> float) (raceName: string) (totalTradeAmount: float) (ambassadorEffects: Map<string, float>) : DiplomacyPool * Map<string, float> * float =
     let def = Game.Catalog.World.raceDefs |> List.find (fun r -> r.Name = raceName)
+    let raceState = dp.Races.[raceName]
     let tradeResults = calculateFailedNormalBonusTrades ctx rand (getFinalStanding dp ctx raceName) totalTradeAmount dp.NonRandomTrades
     let dp = { dp with NonRandomTrades = max (dp.NonRandomTrades - tradeResults.Failed) 0.0 }
     let normalTradeAmount = tradeResults.Normal
@@ -228,7 +334,7 @@ let tradeImpl (dp: DiplomacyPool) (ctx: DiplomacyContext) (rand: unit -> float) 
     let successfullTradeAmount = normalTradeAmount + bonusTradeAmount
 
     if successfullTradeAmount = 0.0 then
-        (dp, Map.empty)
+        (dp, Map.empty, 0.0)
     else
         let mutable dp = dp
         // race.duration clamp (L886-887): at most 1 year + 1 season per energy unit
@@ -249,7 +355,7 @@ let tradeImpl (dp: DiplomacyPool) (ctx: DiplomacyContext) (rand: unit -> float) 
         let currentSeason = ctx.Season
 
         let mutable bought = Map.empty<string, float>
-        for sell in def.Sells do
+        for sell in raceState.Sells do
             let tradeChance = getResourceTradeChance dp ctx sell raceName ambassadorEffects
             if tradeChance <> 0.0 then
                 let mutable eligibleForResNormal = normalTradeAmount
@@ -307,7 +413,7 @@ let tradeImpl (dp: DiplomacyPool) (ctx: DiplomacyContext) (rand: unit -> float) 
 
         // consume non-random trades (L976)
         dp <- { dp with NonRandomTrades = max (dp.NonRandomTrades - successfullTradeAmount) 0.0 }
-        (dp, bought)
+        (dp, bought, successfullTradeAmount)
 
 /// orig getMaxTradeAmt (L1084-1107): min of affordable trades across gold /
 /// manpower / the buy resource; None when 0 or unbounded. (JS returns undefined.)
@@ -317,17 +423,49 @@ let getMaxTradeAmt
     (ambassadorEffects: Map<string, float>)
     (raceName: string)
     : float option =
-    let def = Game.Catalog.World.raceDefs |> List.find (fun r -> r.Name = raceName)
-    let manpowerCost = getManpowerCost ctx
-    let goldCost = getGoldCost ctx
+    let raceState = dp.Races.[raceName]
+    let manpowerCost = getManpowerCost dp ctx
+    let goldCost = getGoldCost dp ctx
     let volume = getTradeVolume ctx ambassadorEffects
     let goldAmt = floor (ctx.GetResValue "gold" / max goldCost 1.0)
     let manpAmt = floor (ctx.GetResValue "manpower" / max manpowerCost 1.0)
-    let buyAmt = floor (ctx.GetResValue def.Buys.[0].Resource / (def.Buys.[0].Val * volume))
+    let buyAmt = floor (ctx.GetResValue raceState.Buys.[0].Resource / (raceState.Buys.[0].Val * volume))
     let amt1 = goldAmt + (if goldCost > 0.0 then 0.0 else System.Double.MaxValue)
     let amt2 = manpAmt + (if manpowerCost > 0.0 then 0.0 else System.Double.MaxValue)
     let minAmt = min amt1 (min amt2 buyAmt)
     if minAmt = System.Double.MaxValue || minAmt = 0.0 then None else Some minAmt
+
+// --- game-19: diplomacy.undo — trade (js/diplomacy.js L760-789) ---------------
+
+/// orig trade undo: only while every gained resource is still in stock; then
+/// un-gain, un-spend, and re-arm the anti-exploit nonRandom counter.
+let undoTrade
+    (calendarDay: int)
+    (trades: float)
+    (spent: (string * float) list)
+    (gained: (string * float) list)
+    (pool: ResPool)
+    (dp: DiplomacyPool)
+    : DiplomacyPool * ResPool * bool =
+    let canUndo =
+        gained
+        |> List.forall (fun (name, required) ->
+            Game.Resources.get pool name |> Option.map (fun r -> r.Value) |> Option.defaultValue 0.0 >= required)
+    if not canUndo then
+        dp, pool, false
+    else
+        let mutable pool = pool
+        for (name, amount) in gained do
+            let p, _ = Game.Resources.addResEvent calendarDay name (-amount) pool
+            pool <- p
+        for (name, amount) in spent do
+            let p, _ = Game.Resources.addResEvent calendarDay name amount pool
+            pool <- p
+        { dp with
+            NonRandomTrades = dp.NonRandomTrades + trades
+            NonRandomResetDays = 45.0 },
+        pool,
+        true
 
 // --- embassy purchase (L1528-1648) ---------------------------------------------
 

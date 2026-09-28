@@ -1,0 +1,4848 @@
+{
+ "driver": "orig-driver.js",
+ "origCommit": "unknown",
+ "races": [
+  {
+   "name": "lizards",
+   "unlocked": false,
+   "standing": 0.25,
+   "hidden": false,
+   "embassyPrices": [
+    {
+     "name": "culture",
+     "val": 100
+    }
+   ],
+   "embassyLevel": 0,
+   "attitude": null,
+   "raceEffects": null,
+   "buys": [
+    {
+     "name": "minerals",
+     "val": 1000
+    }
+   ],
+   "sells": [
+    {
+     "name": "wood",
+     "value": 500,
+     "chance": 1,
+     "width": 0.08,
+     "seasons": {
+      "spring": -0.05,
+      "summer": 0.35,
+      "autumn": 0.15,
+      "winter": 0.05
+     }
+    },
+    {
+     "name": "beam",
+     "value": 10,
+     "chance": 0.25,
+     "width": 0.15,
+     "minLevel": 5,
+     "seasons": {
+      "spring": -0.15,
+      "summer": 0.2,
+      "autumn": 0.2,
+      "winter": 0.1
+     }
+    },
+    {
+     "name": "scaffold",
+     "value": 1,
+     "chance": 0.1,
+     "width": 0.1,
+     "minLevel": 10,
+     "seasons": {
+      "spring": -0.1,
+      "summer": 0.05,
+      "autumn": 0.3,
+      "winter": 0.1
+     }
+    },
+    {
+     "name": "manuscript",
+     "value": 4,
+     "chance": -0.03,
+     "width": 0.42,
+     "minLevel": 25,
+     "seasons": {
+      "spring": 0.08,
+      "summer": 0.5,
+      "autumn": -0.04,
+      "winter": -0.12
+     }
+    },
+    {
+     "name": "furs",
+     "value": 12,
+     "chance": -0.06,
+     "width": 0.25,
+     "minLevel": 40,
+     "seasons": {
+      "spring": -0.05,
+      "summer": 0.2,
+      "autumn": 0.1,
+      "winter": -0.5
+     }
+    }
+   ],
+   "unlocks": null
+  },
+  {
+   "name": "sharks",
+   "unlocked": false,
+   "standing": 0,
+   "hidden": false,
+   "embassyPrices": [
+    {
+     "name": "culture",
+     "val": 100
+    }
+   ],
+   "embassyLevel": 0,
+   "attitude": null,
+   "raceEffects": null,
+   "buys": [
+    {
+     "name": "iron",
+     "val": 100
+    }
+   ],
+   "sells": [
+    {
+     "name": "catnip",
+     "value": 35000,
+     "chance": 1,
+     "width": 0.15,
+     "seasons": {
+      "spring": 0.2,
+      "summer": -0.05,
+      "autumn": 0.15,
+      "winter": 0.45
+     }
+    },
+    {
+     "name": "parchment",
+     "value": 5,
+     "chance": 0.25,
+     "width": 0.25,
+     "minLevel": 5,
+     "seasons": {
+      "spring": 0.15,
+      "summer": -0.35,
+      "autumn": -0.05,
+      "winter": 0.4
+     }
+    },
+    {
+     "name": "manuscript",
+     "value": 3,
+     "chance": 0.15,
+     "width": 0.25,
+     "minLevel": 10,
+     "seasons": {
+      "spring": -0.15,
+      "summer": -0.35,
+      "autumn": 0.35,
+      "winter": 0.1
+     }
+    },
+    {
+     "name": "compedium",
+     "value": 1,
+     "chance": 0.1,
+     "width": 0.25,
+     "minLevel": 15,
+     "seasons": {
+      "spring": 0.4,
+      "summer": 0.2,
+      "autumn": -0.15,
+      "winter": -0.3
+     }
+    },
+    {
+     "name": "oil",
+     "value": 160,
+     "chance": -0.01,
+     "width": 0.7,
+     "minLevel": 25,
+     "seasons": {
+      "spring": 0.2,
+      "summer": -0.1,
+      "autumn": -0.1,
+      "winter": 0.3
+     }
+    },
+    {
+     "name": "plastic",
+     "value": 0.5,
+     "chance": -0.2,
+     "width": 0.7,
+     "minLevel": 40,
+     "seasons": {
+      "spring": 0.25,
+      "summer": 0.1,
+      "autumn": -0.2,
+      "winter": -0.1
+     }
+    }
+   ],
+   "unlocks": null
+  },
+  {
+   "name": "griffins",
+   "unlocked": false,
+   "standing": -0.15,
+   "hidden": false,
+   "embassyPrices": [
+    {
+     "name": "culture",
+     "val": 1000
+    }
+   ],
+   "embassyLevel": 0,
+   "attitude": null,
+   "raceEffects": null,
+   "buys": [
+    {
+     "name": "wood",
+     "val": 500
+    }
+   ],
+   "sells": [
+    {
+     "name": "iron",
+     "value": 250,
+     "chance": 1,
+     "width": 0.12,
+     "seasons": {
+      "spring": -0.25,
+      "summer": -0.05,
+      "autumn": 0.35,
+      "winter": -0.2
+     }
+    },
+    {
+     "name": "steel",
+     "value": 25,
+     "chance": 0.25,
+     "width": 0.1,
+     "minLevel": 5,
+     "seasons": {
+      "spring": -0.15,
+      "summer": 0.1,
+      "autumn": 0.15,
+      "winter": -0.4
+     }
+    },
+    {
+     "name": "gear",
+     "value": 5,
+     "chance": 0.1,
+     "width": 0.25,
+     "minLevel": 10,
+     "seasons": {
+      "spring": 0,
+      "summer": 0.1,
+      "autumn": 0.25,
+      "winter": -0.35
+     }
+    },
+    {
+     "name": "alloy",
+     "value": 2,
+     "chance": -0.05,
+     "width": 0.18,
+     "minLevel": 20,
+     "seasons": {
+      "spring": -0.05,
+      "summer": 0.05,
+      "autumn": 0.2,
+      "winter": -0.2
+     }
+    },
+    {
+     "name": "microchip",
+     "value": 6,
+     "chance": -0.125,
+     "width": 0.5,
+     "minLevel": 30,
+     "seasons": {
+      "spring": -0.25,
+      "summer": 0.05,
+      "autumn": 0.3,
+      "winter": -0.7
+     }
+    }
+   ],
+   "unlocks": null
+  },
+  {
+   "name": "nagas",
+   "unlocked": false,
+   "standing": 0,
+   "hidden": true,
+   "embassyPrices": [
+    {
+     "name": "culture",
+     "val": 500
+    }
+   ],
+   "embassyLevel": 0,
+   "attitude": null,
+   "raceEffects": null,
+   "buys": [
+    {
+     "name": "ivory",
+     "val": 500
+    }
+   ],
+   "sells": [
+    {
+     "name": "minerals",
+     "value": 1000,
+     "chance": 1,
+     "width": 0.18,
+     "seasons": {
+      "spring": 0.25,
+      "summer": 0.05,
+      "autumn": -0.35,
+      "winter": -0.05
+     }
+    },
+    {
+     "name": "slab",
+     "value": 5,
+     "chance": 0.75,
+     "width": 0.15,
+     "minLevel": 5,
+     "seasons": {
+      "spring": 0.3,
+      "summer": 0.075,
+      "autumn": -0.4,
+      "winter": -0.075
+     }
+    },
+    {
+     "name": "concrate",
+     "value": 5,
+     "chance": 0.25,
+     "width": 0.05,
+     "minLevel": 10,
+     "seasons": {
+      "spring": 0.4,
+      "summer": 0.1,
+      "autumn": -0.45,
+      "winter": -0.1
+     }
+    },
+    {
+     "name": "megalith",
+     "value": 1,
+     "chance": 0.1,
+     "width": 0.1,
+     "minLevel": 15,
+     "seasons": {
+      "spring": 0.48,
+      "summer": 0.12,
+      "autumn": -0.48,
+      "winter": -0.12
+     }
+    },
+    {
+     "name": "uranium",
+     "value": 0.2,
+     "chance": -0.08,
+     "width": 0.1,
+     "minLevel": 40,
+     "seasons": {
+      "spring": 0.6,
+      "summer": 0.1,
+      "autumn": -0.4,
+      "winter": -0.3
+     }
+    },
+    {
+     "name": "thorium",
+     "value": 0.05,
+     "chance": -0.16,
+     "width": 0.04,
+     "minLevel": 55,
+     "seasons": {
+      "spring": 0.5,
+      "summer": 0.2,
+      "autumn": -0.7,
+      "winter": -0.3
+     }
+    }
+   ],
+   "unlocks": null
+  },
+  {
+   "name": "zebras",
+   "unlocked": false,
+   "standing": -0.3,
+   "hidden": true,
+   "embassyPrices": [
+    {
+     "name": "culture",
+     "val": 25000
+    }
+   ],
+   "embassyLevel": 0,
+   "attitude": null,
+   "raceEffects": null,
+   "buys": [
+    {
+     "name": "slab",
+     "val": 50
+    }
+   ],
+   "sells": [
+    {
+     "name": "iron",
+     "value": 300,
+     "chance": 1,
+     "width": 0.08,
+     "seasons": {
+      "spring": 0,
+      "summer": 0.15,
+      "autumn": -0.1,
+      "winter": -0.2
+     }
+    },
+    {
+     "name": "plate",
+     "value": 2,
+     "chance": 0.65,
+     "width": 0.25,
+     "seasons": {
+      "spring": 0.05,
+      "summer": -0.15,
+      "autumn": 0.05,
+      "winter": 0.25
+     }
+    },
+    {
+     "name": "alloy",
+     "value": 0.25,
+     "chance": 0.05,
+     "width": 0.05,
+     "minLevel": 5,
+     "seasons": {
+      "spring": -0.02,
+      "summer": 0,
+      "autumn": 0.03,
+      "winter": 0.08
+     }
+    },
+    {
+     "name": "steel",
+     "value": 0.01,
+     "chance": -0.05,
+     "width": 0.1,
+     "minLevel": 15,
+     "seasons": {
+      "spring": -0.15,
+      "summer": -0.15,
+      "autumn": 0,
+      "winter": 0.3
+     }
+    },
+    {
+     "name": "starchart",
+     "value": 0.05,
+     "chance": -0.15,
+     "width": 0.6,
+     "minLevel": 30,
+     "seasons": {
+      "spring": 0.2,
+      "summer": -0.5,
+      "autumn": 0.15,
+      "winter": -0.8
+     }
+    },
+    {
+     "name": "coal",
+     "value": 0.004,
+     "chance": -0.2,
+     "width": 0.25,
+     "minLevel": 50,
+     "seasons": {
+      "spring": 0.05,
+      "summer": 0.2,
+      "autumn": 0.05,
+      "winter": -0.15
+     }
+    },
+    {
+     "name": "unobtainium",
+     "value": 0.000001,
+     "chance": -0.245,
+     "width": 0.3,
+     "minLevel": 80,
+     "seasons": {
+      "spring": -0.1,
+      "summer": 0.6,
+      "autumn": 0.2,
+      "winter": -0.4
+     }
+    }
+   ],
+   "unlocks": {
+    "policies": [
+     "zebraRelationsAppeasement",
+     "zebraRelationsBellicosity"
+    ]
+   }
+  },
+  {
+   "name": "spiders",
+   "unlocked": false,
+   "standing": 0.15,
+   "hidden": true,
+   "embassyPrices": [
+    {
+     "name": "culture",
+     "val": 5000
+    }
+   ],
+   "embassyLevel": 0,
+   "attitude": null,
+   "raceEffects": null,
+   "buys": [
+    {
+     "name": "scaffold",
+     "val": 50
+    }
+   ],
+   "sells": [
+    {
+     "name": "coal",
+     "value": 350,
+     "chance": 1,
+     "width": 0.15,
+     "seasons": {
+      "spring": 0,
+      "summer": 0.05,
+      "autumn": 0.15,
+      "winter": -0.05
+     }
+    },
+    {
+     "name": "oil",
+     "value": 100,
+     "chance": 0.25,
+     "width": 0.15,
+     "minLevel": 5,
+     "seasons": {
+      "spring": 0.11,
+      "summer": -0.01,
+      "autumn": 0.04,
+      "winter": -0.06
+     }
+    },
+    {
+     "name": "plastic",
+     "value": 1,
+     "chance": -0.2,
+     "width": 0.8,
+     "minLevel": 15,
+     "seasons": {
+      "spring": 1,
+      "summer": -0.3,
+      "autumn": -0.6,
+      "winter": 2
+     }
+    }
+   ],
+   "unlocks": null
+  },
+  {
+   "name": "dragons",
+   "unlocked": false,
+   "standing": 0,
+   "hidden": true,
+   "embassyPrices": [
+    {
+     "name": "culture",
+     "val": 7500
+    }
+   ],
+   "embassyLevel": 0,
+   "attitude": null,
+   "raceEffects": null,
+   "buys": [
+    {
+     "name": "titanium",
+     "val": 250
+    }
+   ],
+   "sells": [
+    {
+     "name": "uranium",
+     "value": 1,
+     "chance": 0.95,
+     "width": 0.25
+    },
+    {
+     "name": "thorium",
+     "value": 1,
+     "chance": 0.5,
+     "width": 0.25,
+     "minLevel": 5
+    },
+    {
+     "name": "temporalFlux",
+     "value": 0.2,
+     "chance": -0.075,
+     "width": 0.18,
+     "minLevel": 30
+    },
+    {
+     "name": "antimatter",
+     "value": 0.1,
+     "chance": -0.175,
+     "width": 0.18,
+     "minLevel": 50
+    }
+   ],
+   "unlocks": null
+  },
+  {
+   "name": "leviathans",
+   "unlocked": false,
+   "standing": 0,
+   "hidden": true,
+   "embassyPrices": null,
+   "embassyLevel": 0,
+   "attitude": null,
+   "raceEffects": null,
+   "buys": [
+    {
+     "name": "unobtainium",
+     "val": 5000
+    }
+   ],
+   "sells": [
+    {
+     "name": "starchart",
+     "value": 250,
+     "chance": 0.5,
+     "width": 0.8
+    },
+    {
+     "name": "timeCrystal",
+     "value": 0.25,
+     "chance": 0.98,
+     "width": 0.15
+    },
+    {
+     "name": "sorrow",
+     "value": 1,
+     "chance": 0.15,
+     "width": 0.1
+    },
+    {
+     "name": "relic",
+     "value": 1,
+     "chance": 0.05,
+     "width": 0
+    },
+    {
+     "name": "temporalFlux",
+     "value": 3,
+     "chance": -0.1,
+     "width": 0.2
+    },
+    {
+     "name": "tears",
+     "value": 1500,
+     "chance": -0.1,
+     "width": 0.8
+    }
+   ],
+   "unlocks": {
+    "policies": [
+     "transkittenism",
+     "necrocracy",
+     "radicalXenophobia"
+    ]
+   }
+  }
+ ],
+ "zu": [
+  {
+   "name": "unicornTomb",
+   "prices": [
+    {
+     "name": "ivory",
+     "val": 500
+    },
+    {
+     "name": "tears",
+     "val": 5
+    }
+   ],
+   "val": 0,
+   "unlocked": true,
+   "effects": {
+    "unicornsRatioReligion": 0.05,
+    "faithMax": 0,
+    "tearsMax": 0
+   },
+   "priceRatio": 1.15,
+   "unlocks": {
+    "zigguratUpgrades": [
+     "ivoryTower"
+    ]
+   },
+   "upgrades": null
+  },
+  {
+   "name": "ivoryTower",
+   "prices": [
+    {
+     "name": "ivory",
+     "val": 25000
+    },
+    {
+     "name": "tears",
+     "val": 25
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "effects": {
+    "unicornsRatioReligion": 0.1,
+    "riftChance": 0.0005,
+    "tearsMax": 0
+   },
+   "priceRatio": 1.15,
+   "unlocks": {
+    "zigguratUpgrades": [
+     "ivoryCitadel"
+    ]
+   },
+   "upgrades": null
+  },
+  {
+   "name": "ivoryCitadel",
+   "prices": [
+    {
+     "name": "ivory",
+     "val": 50000
+    },
+    {
+     "name": "tears",
+     "val": 50
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "effects": {
+    "unicornsRatioReligion": 0.25,
+    "ivoryMeteorChance": 0.0005,
+    "unicornsMax": 0,
+    "tearsMax": 0
+   },
+   "priceRatio": 1.15,
+   "unlocks": {
+    "zigguratUpgrades": [
+     "skyPalace"
+    ]
+   },
+   "upgrades": null
+  },
+  {
+   "name": "skyPalace",
+   "prices": [
+    {
+     "name": "ivory",
+     "val": 125000
+    },
+    {
+     "name": "tears",
+     "val": 500
+    },
+    {
+     "name": "megalith",
+     "val": 5
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "effects": {
+    "goldMaxRatio": 0,
+    "unicornsRatioReligion": 0,
+    "alicornChance": 0,
+    "alicornPerTick": 0,
+    "ivoryMeteorRatio": 0,
+    "unicornsMax": 0,
+    "tearsMax": 0,
+    "alicornMax": 0
+   },
+   "priceRatio": 1.15,
+   "unlocks": {
+    "zigguratUpgrades": [
+     "unicornUtopia"
+    ]
+   },
+   "upgrades": null
+  },
+  {
+   "name": "unicornUtopia",
+   "prices": [
+    {
+     "name": "gold",
+     "val": 500
+    },
+    {
+     "name": "ivory",
+     "val": 1000000
+    },
+    {
+     "name": "tears",
+     "val": 5000
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "effects": {
+    "unicornsRatioReligion": 0,
+    "alicornChance": 0,
+    "alicornPerTick": 0,
+    "tcRefineRatio": 0,
+    "ivoryMeteorRatio": 0,
+    "unicornsMax": 0,
+    "tearsMax": 0,
+    "alicornMax": 0
+   },
+   "priceRatio": 1.15,
+   "unlocks": {
+    "zigguratUpgrades": [
+     "sunspire"
+    ]
+   },
+   "upgrades": null
+  },
+  {
+   "name": "sunspire",
+   "prices": [
+    {
+     "name": "gold",
+     "val": 1250
+    },
+    {
+     "name": "ivory",
+     "val": 750000
+    },
+    {
+     "name": "tears",
+     "val": 25000
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "effects": {
+    "unicornsRatioReligion": 0,
+    "alicornChance": 0,
+    "alicornPerTick": 0,
+    "tcRefineRatio": 0,
+    "ivoryMeteorRatio": 0,
+    "unicornsMaxRatio": 0,
+    "tearsMax": 0,
+    "alicornMax": 0
+   },
+   "priceRatio": 1.15,
+   "unlocks": null,
+   "upgrades": null
+  },
+  {
+   "name": "marker",
+   "prices": [
+    {
+     "name": "unobtainium",
+     "val": 2500
+    },
+    {
+     "name": "spice",
+     "val": 50000
+    },
+    {
+     "name": "tears",
+     "val": 5000
+    },
+    {
+     "name": "megalith",
+     "val": 750
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "effects": {
+    "corruptionRatio": 0.000001
+   },
+   "priceRatio": 1.15,
+   "unlocks": {
+    "policies": [
+     "siphoning",
+     "feedingFrenzy",
+     "upfrontPayment"
+    ]
+   },
+   "upgrades": null
+  },
+  {
+   "name": "unicornGraveyard",
+   "prices": [
+    {
+     "name": "necrocorn",
+     "val": 5
+    },
+    {
+     "name": "megalith",
+     "val": 1000
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "effects": {
+    "cultureMaxRatioBonus": 0.01,
+    "blackLibraryBonus": 0.02
+   },
+   "priceRatio": 1.15,
+   "unlocks": {
+    "zigguratUpgrades": [
+     "unicornNecropolis"
+    ]
+   },
+   "upgrades": {
+    "buildings": [
+     "ziggurat"
+    ]
+   }
+  },
+  {
+   "name": "unicornNecropolis",
+   "prices": [
+    {
+     "name": "alicorn",
+     "val": 100
+    },
+    {
+     "name": "necrocorn",
+     "val": 15
+    },
+    {
+     "name": "void",
+     "val": 5
+    },
+    {
+     "name": "megalith",
+     "val": 2500
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "effects": {
+    "corruptionBoostRatio": 0.1
+   },
+   "priceRatio": 1.15,
+   "unlocks": null,
+   "upgrades": null
+  },
+  {
+   "name": "blackPyramid",
+   "prices": [
+    {
+     "name": "unobtainium",
+     "val": 5000
+    },
+    {
+     "name": "spice",
+     "val": 150000
+    },
+    {
+     "name": "sorrow",
+     "val": 5
+    },
+    {
+     "name": "megalith",
+     "val": 2500
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "effects": {
+    "pyramidGlobalResourceRatio": 0,
+    "pyramidGlobalProductionRatio": 0,
+    "pyramidFaithRatio": 0,
+    "deficitRecoveryRatio": 0,
+    "blackLibraryBonus": 0,
+    "pyramidSpaceCompendiumRatio": 0,
+    "craftRatio": 0,
+    "UniversalKnowHow": 0,
+    "pyramidPerYearRatio": 0,
+    "timeRatio": 0
+   },
+   "priceRatio": 1.15,
+   "unlocks": null,
+   "upgrades": {
+    "spaceBuilding": [
+     "spaceBeacon"
+    ],
+    "chronoforge": [
+     "temporalImpedance"
+    ]
+   }
+  }
+ ],
+ "ru": [
+  {
+   "name": "solarchant",
+   "prices": [
+    {
+     "name": "faith",
+     "val": 100
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "faithRatioReligion": 0.1
+   },
+   "priceRatio": 2.5,
+   "faith": 150,
+   "noStackable": true,
+   "unlocks": null,
+   "upgrades": null
+  },
+  {
+   "name": "scholasticism",
+   "prices": [
+    {
+     "name": "faith",
+     "val": 250
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {},
+   "priceRatio": 2.5,
+   "faith": 300,
+   "noStackable": true,
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "temple",
+     "ziggurat"
+    ]
+   }
+  },
+  {
+   "name": "goldenSpire",
+   "prices": [
+    {
+     "name": "gold",
+     "val": 150
+    },
+    {
+     "name": "faith",
+     "val": 350
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {},
+   "priceRatio": 2.5,
+   "faith": 500,
+   "noStackable": true,
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "temple",
+     "ziggurat"
+    ]
+   }
+  },
+  {
+   "name": "sunAltar",
+   "prices": [
+    {
+     "name": "gold",
+     "val": 250
+    },
+    {
+     "name": "faith",
+     "val": 500
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {},
+   "priceRatio": 2.5,
+   "faith": 750,
+   "noStackable": true,
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "temple",
+     "ziggurat"
+    ]
+   }
+  },
+  {
+   "name": "stainedGlass",
+   "prices": [
+    {
+     "name": "gold",
+     "val": 250
+    },
+    {
+     "name": "faith",
+     "val": 500
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {},
+   "priceRatio": 2.5,
+   "faith": 750,
+   "noStackable": true,
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "temple",
+     "ziggurat"
+    ]
+   }
+  },
+  {
+   "name": "solarRevolution",
+   "prices": [
+    {
+     "name": "gold",
+     "val": 500
+    },
+    {
+     "name": "faith",
+     "val": 750
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "solarRevolutionRatio": 0
+   },
+   "priceRatio": null,
+   "faith": 1000,
+   "noStackable": true,
+   "unlocks": null,
+   "upgrades": null
+  },
+  {
+   "name": "basilica",
+   "prices": [
+    {
+     "name": "gold",
+     "val": 750
+    },
+    {
+     "name": "faith",
+     "val": 1250
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {},
+   "priceRatio": 2.5,
+   "faith": 10000,
+   "noStackable": true,
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "temple",
+     "ziggurat"
+    ]
+   }
+  },
+  {
+   "name": "templars",
+   "prices": [
+    {
+     "name": "gold",
+     "val": 3000
+    },
+    {
+     "name": "faith",
+     "val": 3500
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {},
+   "priceRatio": 2.5,
+   "faith": 75000,
+   "noStackable": true,
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "temple",
+     "ziggurat"
+    ]
+   }
+  },
+  {
+   "name": "apocripha",
+   "prices": [
+    {
+     "name": "gold",
+     "val": 5000
+    },
+    {
+     "name": "faith",
+     "val": 5000
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {},
+   "priceRatio": null,
+   "faith": 100000,
+   "noStackable": true,
+   "unlocks": null,
+   "upgrades": null
+  },
+  {
+   "name": "transcendence",
+   "prices": [
+    {
+     "name": "gold",
+     "val": 7500
+    },
+    {
+     "name": "faith",
+     "val": 7500
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {},
+   "priceRatio": null,
+   "faith": 125000,
+   "noStackable": true,
+   "unlocks": null,
+   "upgrades": {
+    "religion": [
+     "solarchant",
+     "scholasticism",
+     "goldenSpire",
+     "sunAltar",
+     "stainedGlass",
+     "basilica",
+     "templars",
+     "frescoes"
+    ]
+   }
+  },
+  {
+   "name": "frescoes",
+   "prices": [
+    {
+     "name": "gold",
+     "val": 5000
+    },
+    {
+     "name": "faith",
+     "val": 4000
+    },
+    {
+     "name": "spice",
+     "val": 8000
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {},
+   "priceRatio": 2.5,
+   "faith": 200000,
+   "noStackable": true,
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "chapel"
+    ]
+   }
+  }
+ ],
+ "tu": [
+  {
+   "name": "blackObelisk",
+   "prices": [
+    {
+     "name": "relic",
+     "val": 100
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "solarRevolutionLimit": 0.05
+   },
+   "priceRatio": 1.15,
+   "unlocks": null,
+   "upgrades": null
+  },
+  {
+   "name": "blackNexus",
+   "prices": [
+    {
+     "name": "relic",
+     "val": 5000
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "relicRefineRatio": 1
+   },
+   "priceRatio": 1.15,
+   "unlocks": null,
+   "upgrades": {
+    "spaceBuilding": [
+     "spaceBeacon"
+    ]
+   }
+  },
+  {
+   "name": "blackCore",
+   "prices": [
+    {
+     "name": "relic",
+     "val": 10000
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "blsLimit": 1
+   },
+   "priceRatio": 1.15,
+   "unlocks": null,
+   "upgrades": null
+  },
+  {
+   "name": "singularity",
+   "prices": [
+    {
+     "name": "relic",
+     "val": 25000
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "globalResourceRatio": 0.1
+   },
+   "priceRatio": 1.15,
+   "unlocks": null,
+   "upgrades": null
+  },
+  {
+   "name": "blackLibrary",
+   "prices": [
+    {
+     "name": "relic",
+     "val": 30000
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "compendiaTTBoostRatio": 0.02
+   },
+   "priceRatio": 1.15,
+   "unlocks": null,
+   "upgrades": null
+  },
+  {
+   "name": "blackRadiance",
+   "prices": [
+    {
+     "name": "relic",
+     "val": 37500
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "blsCorruptionRatio": 0.0012
+   },
+   "priceRatio": 1.15,
+   "unlocks": null,
+   "upgrades": null
+  },
+  {
+   "name": "blazar",
+   "prices": [
+    {
+     "name": "relic",
+     "val": 50000
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "timeRatio": 0.1,
+    "rrRatio": 0.02
+   },
+   "priceRatio": 1.15,
+   "unlocks": {
+    "chronoforge": [
+     "temporalPress"
+    ]
+   },
+   "upgrades": {
+    "chronoforge": [
+     "temporalImpedance",
+     "temporalPress"
+    ]
+   }
+  },
+  {
+   "name": "darkNova",
+   "prices": [
+    {
+     "name": "relic",
+     "val": 75000
+    },
+    {
+     "name": "void",
+     "val": 7500
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "energyProductionRatio": 0.02
+   },
+   "priceRatio": 1.15,
+   "unlocks": null,
+   "upgrades": null
+  },
+  {
+   "name": "mausoleum",
+   "prices": [
+    {
+     "name": "relic",
+     "val": 50000
+    },
+    {
+     "name": "void",
+     "val": 12500
+    },
+    {
+     "name": "necrocorn",
+     "val": 10
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "pactsAvailable": 1
+   },
+   "priceRatio": 1.15,
+   "unlocks": {
+    "pacts": [
+     "pactOfCleansing",
+     "pactOfDestruction",
+     "pactOfExtermination",
+     "pactOfPurity",
+     "pactOfArcane",
+     "pactOfChronicler"
+    ],
+    "policies": [
+     "siphoning",
+     "feedingFrenzy",
+     "upfrontPayment"
+    ]
+   },
+   "upgrades": {
+    "pacts": [
+     "fractured"
+    ],
+    "policies": [
+     "feedingFrenzy"
+    ]
+   }
+  },
+  {
+   "name": "holyGenocide",
+   "prices": [
+    {
+     "name": "relic",
+     "val": 100000
+    },
+    {
+     "name": "void",
+     "val": 25000
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "maxKittensRatio": -0.01,
+    "simScalingRatio": 0.02,
+    "activeHG": 0
+   },
+   "priceRatio": 1.15,
+   "unlocks": {
+    "challenges": [
+     "postApocalypse"
+    ]
+   },
+   "upgrades": {
+    "jobs": [
+     "ambassador"
+    ]
+   }
+  },
+  {
+   "name": "darkParacosm",
+   "prices": [
+    {
+     "name": "relic",
+     "val": 230000
+    },
+    {
+     "name": "void",
+     "val": 29000
+    },
+    {
+     "name": "paragon",
+     "val": 8,
+     "priceRatio": 2
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "milleninumParagon": 1
+   },
+   "priceRatio": 1.75,
+   "unlocks": null,
+   "upgrades": null
+  }
+ ],
+ "pacts": [
+  {
+   "name": "pactOfCleansing",
+   "prices": [
+    {
+     "name": "relic",
+     "val": 100
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "pactsAvailable": -1,
+    "necrocornPerDay": 0,
+    "pactDeficitRecoveryRatio": 0.003,
+    "pactGlobalResourceRatio": 0.0005
+   }
+  },
+  {
+   "name": "pactOfDestruction",
+   "prices": [
+    {
+     "name": "relic",
+     "val": 100
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "pactsAvailable": -1,
+    "necrocornPerDay": 0,
+    "pactDeficitRecoveryRatio": -0.0001,
+    "pactGlobalProductionRatio": 0.0005
+   }
+  },
+  {
+   "name": "pactOfExtermination",
+   "prices": [
+    {
+     "name": "relic",
+     "val": 100
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "pactsAvailable": -1,
+    "necrocornPerDay": 0,
+    "pactFaithRatio": 0.001
+   }
+  },
+  {
+   "name": "pactOfPurity",
+   "prices": [
+    {
+     "name": "relic",
+     "val": 100
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "pactsAvailable": -1,
+    "necrocornPerDay": 0,
+    "pactDeficitRecoveryRatio": 0.005,
+    "pactBlackLibraryBoost": 0.0005,
+    "pactSpaceCompendiumRatio": 0.001
+   }
+  },
+  {
+   "name": "pactOfArcane",
+   "prices": [
+    {
+     "name": "relic",
+     "val": 100
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "pactsAvailable": -1,
+    "necrocornPerDay": 0,
+    "pactcraftRatio": 0.001,
+    "pactUniversalKnowHow": 0.1
+   }
+  },
+  {
+   "name": "pactOfChronicler",
+   "prices": [
+    {
+     "name": "relic",
+     "val": 100
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "pactsAvailable": -1,
+    "necrocornPerDay": 0,
+    "pactPerYearRatio": 0.003,
+    "umbraBoostRatio": 0.1,
+    "pacttimeRatio": 0.1
+   }
+  },
+  {
+   "name": "payDebt",
+   "prices": [
+    {
+     "name": "necrocorn",
+     "val": 0
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "pactsAvailable": 0
+   }
+  },
+  {
+   "name": "fractured",
+   "prices": [
+    {
+     "name": "catnip",
+     "val": 1
+    }
+   ],
+   "val": 0,
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "pyramidGlobalResourceRatio": -0.5,
+    "pyramidGlobalProductionRatio": -0.5,
+    "pyramidFaithRatio": -0.5,
+    "pactsAvailable": 0
+   }
+  }
+ ],
+ "programs": [
+  {
+   "name": "orbitalLaunch",
+   "unlocked": true,
+   "researched": false,
+   "prices": [
+    {
+     "name": "oil",
+     "val": 15000
+    },
+    {
+     "name": "manpower",
+     "val": 5000
+    },
+    {
+     "name": "science",
+     "val": 100000
+    },
+    {
+     "name": "starchart",
+     "val": 250
+    }
+   ]
+  },
+  {
+   "name": "moonMission",
+   "unlocked": false,
+   "researched": false,
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 5000
+    },
+    {
+     "name": "oil",
+     "val": 45000
+    },
+    {
+     "name": "science",
+     "val": 125000
+    },
+    {
+     "name": "starchart",
+     "val": 500
+    }
+   ]
+  },
+  {
+   "name": "duneMission",
+   "unlocked": false,
+   "researched": false,
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 7000
+    },
+    {
+     "name": "science",
+     "val": 175000
+    },
+    {
+     "name": "starchart",
+     "val": 1000
+    },
+    {
+     "name": "kerosene",
+     "val": 75
+    }
+   ]
+  },
+  {
+   "name": "piscineMission",
+   "unlocked": false,
+   "researched": false,
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 9000
+    },
+    {
+     "name": "science",
+     "val": 200000
+    },
+    {
+     "name": "starchart",
+     "val": 1500
+    },
+    {
+     "name": "kerosene",
+     "val": 250
+    }
+   ]
+  },
+  {
+   "name": "heliosMission",
+   "unlocked": false,
+   "researched": false,
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 15000
+    },
+    {
+     "name": "science",
+     "val": 250000
+    },
+    {
+     "name": "starchart",
+     "val": 3000
+    },
+    {
+     "name": "kerosene",
+     "val": 1250
+    }
+   ]
+  },
+  {
+   "name": "terminusMission",
+   "unlocked": false,
+   "researched": false,
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 12000
+    },
+    {
+     "name": "science",
+     "val": 225000
+    },
+    {
+     "name": "starchart",
+     "val": 2500
+    },
+    {
+     "name": "kerosene",
+     "val": 750
+    }
+   ]
+  },
+  {
+   "name": "kairoMission",
+   "unlocked": false,
+   "researched": false,
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 20000
+    },
+    {
+     "name": "science",
+     "val": 300000
+    },
+    {
+     "name": "starchart",
+     "val": 5000
+    },
+    {
+     "name": "kerosene",
+     "val": 7500
+    }
+   ]
+  },
+  {
+   "name": "rorschachMission",
+   "unlocked": false,
+   "researched": false,
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 80000
+    },
+    {
+     "name": "science",
+     "val": 500000
+    },
+    {
+     "name": "starchart",
+     "val": 15000
+    },
+    {
+     "name": "kerosene",
+     "val": 25000
+    }
+   ]
+  },
+  {
+   "name": "yarnMission",
+   "unlocked": false,
+   "researched": false,
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 35000
+    },
+    {
+     "name": "science",
+     "val": 350000
+    },
+    {
+     "name": "starchart",
+     "val": 7500
+    },
+    {
+     "name": "kerosene",
+     "val": 12000
+    }
+   ]
+  },
+  {
+   "name": "umbraMission",
+   "unlocked": false,
+   "researched": false,
+   "prices": [
+    {
+     "name": "science",
+     "val": 500000
+    },
+    {
+     "name": "starchart",
+     "val": 25000
+    },
+    {
+     "name": "kerosene",
+     "val": 25000
+    },
+    {
+     "name": "thorium",
+     "val": 15000
+    }
+   ]
+  },
+  {
+   "name": "charonMission",
+   "unlocked": false,
+   "researched": false,
+   "prices": [
+    {
+     "name": "science",
+     "val": 750000
+    },
+    {
+     "name": "starchart",
+     "val": 75000
+    },
+    {
+     "name": "kerosene",
+     "val": 35000
+    },
+    {
+     "name": "thorium",
+     "val": 35000
+    }
+   ]
+  },
+  {
+   "name": "centaurusSystemMission",
+   "unlocked": false,
+   "researched": false,
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 40000
+    },
+    {
+     "name": "science",
+     "val": 800000
+    },
+    {
+     "name": "starchart",
+     "val": 100000
+    },
+    {
+     "name": "kerosene",
+     "val": 50000
+    },
+    {
+     "name": "thorium",
+     "val": 50000
+    }
+   ]
+  },
+  {
+   "name": "furthestRingMission",
+   "unlocked": false,
+   "researched": false,
+   "prices": [
+    {
+     "name": "science",
+     "val": 1250000
+    },
+    {
+     "name": "starchart",
+     "val": 500000
+    },
+    {
+     "name": "kerosene",
+     "val": 75000
+    },
+    {
+     "name": "thorium",
+     "val": 75000
+    }
+   ]
+  }
+ ],
+ "planets": [
+  {
+   "name": "cath",
+   "unlocked": false,
+   "buildings": [
+    "spaceElevator",
+    "sattelite",
+    "spaceStation"
+   ]
+  },
+  {
+   "name": "moon",
+   "unlocked": false,
+   "buildings": [
+    "moonOutpost",
+    "moonBase"
+   ]
+  },
+  {
+   "name": "dune",
+   "unlocked": false,
+   "buildings": [
+    "planetCracker",
+    "hydrofracturer",
+    "spiceRefinery"
+   ]
+  },
+  {
+   "name": "piscine",
+   "unlocked": false,
+   "buildings": [
+    "researchVessel",
+    "orbitalArray"
+   ]
+  },
+  {
+   "name": "helios",
+   "unlocked": false,
+   "buildings": [
+    "sunlifter",
+    "containmentChamber",
+    "heatsink",
+    "sunforge"
+   ]
+  },
+  {
+   "name": "terminus",
+   "unlocked": false,
+   "buildings": [
+    "cryostation"
+   ]
+  },
+  {
+   "name": "kairo",
+   "unlocked": false,
+   "buildings": [
+    "spaceBeacon"
+   ]
+  },
+  {
+   "name": "yarn",
+   "unlocked": false,
+   "buildings": [
+    "terraformingStation",
+    "hydroponics"
+   ]
+  },
+  {
+   "name": "umbra",
+   "unlocked": false,
+   "buildings": [
+    "hrHarvester",
+    "navigationRelay",
+    "spaceShuttle"
+   ]
+  },
+  {
+   "name": "charon",
+   "unlocked": false,
+   "buildings": [
+    "entangler"
+   ]
+  },
+  {
+   "name": "centaurusSystem",
+   "unlocked": false,
+   "buildings": [
+    "tectonic",
+    "moltenCore"
+   ]
+  },
+  {
+   "name": "furthestRing",
+   "unlocked": false,
+   "buildings": []
+  }
+ ],
+ "spaceBuildings": [
+  {
+   "name": "spaceElevator",
+   "planet": "cath",
+   "val": 0,
+   "on": 0,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 6000
+    },
+    {
+     "name": "unobtainium",
+     "val": 50
+    },
+    {
+     "name": "science",
+     "val": 75000
+    }
+   ],
+   "effects": {
+    "oilReductionRatio": 0,
+    "spaceRatio": 0,
+    "prodTransferBonus": 0
+   }
+  },
+  {
+   "name": "sattelite",
+   "planet": "cath",
+   "val": 0,
+   "on": 0,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 2500
+    },
+    {
+     "name": "oil",
+     "val": 15000
+    },
+    {
+     "name": "science",
+     "val": 100000
+    },
+    {
+     "name": "starchart",
+     "val": 325
+    }
+   ],
+   "effects": {
+    "observatoryRatio": 0,
+    "starchartPerTickBaseSpace": 0,
+    "energyConsumption": 0,
+    "energyProduction": 0
+   }
+  },
+  {
+   "name": "spaceStation",
+   "planet": "cath",
+   "val": 0,
+   "on": 0,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "oil",
+     "val": 35000
+    },
+    {
+     "name": "science",
+     "val": 150000
+    },
+    {
+     "name": "starchart",
+     "val": 425
+    },
+    {
+     "name": "alloy",
+     "val": 750
+    }
+   ],
+   "effects": {
+    "scienceRatio": 0,
+    "maxKittens": 0,
+    "energyConsumption": 0
+   }
+  },
+  {
+   "name": "moonOutpost",
+   "planet": "moon",
+   "val": 0,
+   "on": 0,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "oil",
+     "val": 55000
+    },
+    {
+     "name": "uranium",
+     "val": 500
+    },
+    {
+     "name": "science",
+     "val": 100000
+    },
+    {
+     "name": "starchart",
+     "val": 650
+    },
+    {
+     "name": "concrate",
+     "val": 150
+    },
+    {
+     "name": "alloy",
+     "val": 750
+    }
+   ],
+   "effects": {
+    "uraniumPerTickCon": 0,
+    "unobtainiumPerTickSpace": 0,
+    "energyConsumption": 0
+   }
+  },
+  {
+   "name": "moonBase",
+   "planet": "moon",
+   "val": 0,
+   "on": 0,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 9500
+    },
+    {
+     "name": "oil",
+     "val": 70000
+    },
+    {
+     "name": "unobtainium",
+     "val": 50
+    },
+    {
+     "name": "science",
+     "val": 100000
+    },
+    {
+     "name": "starchart",
+     "val": 700
+    },
+    {
+     "name": "concrate",
+     "val": 250
+    }
+   ],
+   "effects": {
+    "catnipMax": 0,
+    "woodMax": 0,
+    "mineralsMax": 0,
+    "coalMax": 0,
+    "ironMax": 0,
+    "titaniumMax": 0,
+    "oilMax": 0,
+    "unobtainiumMax": 0,
+    "energyConsumption": 0
+   }
+  },
+  {
+   "name": "planetCracker",
+   "planet": "dune",
+   "val": 0,
+   "on": 0,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "science",
+     "val": 125000
+    },
+    {
+     "name": "starchart",
+     "val": 2500
+    },
+    {
+     "name": "alloy",
+     "val": 1750
+    },
+    {
+     "name": "kerosene",
+     "val": 50
+    }
+   ],
+   "effects": {
+    "uraniumPerTickSpace": 0,
+    "uraniumMax": 0
+   }
+  },
+  {
+   "name": "hydrofracturer",
+   "planet": "dune",
+   "val": 0,
+   "on": 0,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "science",
+     "val": 150000
+    },
+    {
+     "name": "starchart",
+     "val": 750
+    },
+    {
+     "name": "alloy",
+     "val": 1025
+    },
+    {
+     "name": "kerosene",
+     "val": 100
+    }
+   ],
+   "effects": {
+    "oilPerTickAutoprodSpace": 0
+   }
+  },
+  {
+   "name": "spiceRefinery",
+   "planet": "dune",
+   "val": 0,
+   "on": 0,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "science",
+     "val": 75000
+    },
+    {
+     "name": "starchart",
+     "val": 500
+    },
+    {
+     "name": "alloy",
+     "val": 500
+    },
+    {
+     "name": "kerosene",
+     "val": 125
+    }
+   ],
+   "effects": {
+    "spicePerTickAutoprodSpace": 0
+   }
+  },
+  {
+   "name": "researchVessel",
+   "planet": "piscine",
+   "val": 0,
+   "on": 0,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 12500
+    },
+    {
+     "name": "starchart",
+     "val": 100
+    },
+    {
+     "name": "alloy",
+     "val": 2500
+    },
+    {
+     "name": "kerosene",
+     "val": 250
+    }
+   ],
+   "effects": {
+    "scienceMax": 0,
+    "starchartPerTickBaseSpace": 0
+   }
+  },
+  {
+   "name": "orbitalArray",
+   "planet": "piscine",
+   "val": 0,
+   "on": 0,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "science",
+     "val": 250000
+    },
+    {
+     "name": "starchart",
+     "val": 2000
+    },
+    {
+     "name": "eludium",
+     "val": 100
+    },
+    {
+     "name": "kerosene",
+     "val": 500
+    }
+   ],
+   "effects": {
+    "spaceRatio": 0,
+    "energyConsumption": 0
+   }
+  },
+  {
+   "name": "sunlifter",
+   "planet": "helios",
+   "val": 0,
+   "on": 0,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "science",
+     "val": 500000
+    },
+    {
+     "name": "eludium",
+     "val": 225
+    },
+    {
+     "name": "kerosene",
+     "val": 2500
+    }
+   ],
+   "effects": {
+    "antimatterProduction": 0,
+    "energyProduction": 0
+   }
+  },
+  {
+   "name": "containmentChamber",
+   "planet": "helios",
+   "val": 0,
+   "on": 0,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "science",
+     "val": 500000
+    },
+    {
+     "name": "kerosene",
+     "val": 2500
+    }
+   ],
+   "effects": {
+    "antimatterMax": 0,
+    "energyConsumption": 0
+   }
+  },
+  {
+   "name": "heatsink",
+   "planet": "helios",
+   "val": 0,
+   "on": 0,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "science",
+     "val": 125000
+    },
+    {
+     "name": "relic",
+     "val": 1
+    },
+    {
+     "name": "kerosene",
+     "val": 5000
+    },
+    {
+     "name": "thorium",
+     "val": 12500
+    }
+   ],
+   "effects": {}
+  },
+  {
+   "name": "sunforge",
+   "planet": "helios",
+   "val": 0,
+   "on": 0,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "antimatter",
+     "val": 250
+    },
+    {
+     "name": "science",
+     "val": 100000
+    },
+    {
+     "name": "relic",
+     "val": 1
+    },
+    {
+     "name": "kerosene",
+     "val": 1250
+    }
+   ],
+   "effects": {
+    "baseMetalMaxRatio": 0.01
+   }
+  },
+  {
+   "name": "cryostation",
+   "planet": "terminus",
+   "val": 0,
+   "on": 0,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "science",
+     "val": 200000
+    },
+    {
+     "name": "concrate",
+     "val": 1500
+    },
+    {
+     "name": "eludium",
+     "val": 25
+    },
+    {
+     "name": "kerosene",
+     "val": 500
+    }
+   ],
+   "effects": {
+    "woodMax": 0,
+    "mineralsMax": 0,
+    "coalMax": 0,
+    "ironMax": 0,
+    "titaniumMax": 0,
+    "oilMax": 0,
+    "uraniumMax": 0,
+    "unobtainiumMax": 0
+   }
+  },
+  {
+   "name": "spaceBeacon",
+   "planet": "kairo",
+   "val": 0,
+   "on": 0,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "antimatter",
+     "val": 50
+    },
+    {
+     "name": "starchart",
+     "val": 25000
+    },
+    {
+     "name": "alloy",
+     "val": 25000
+    },
+    {
+     "name": "kerosene",
+     "val": 7500
+    }
+   ],
+   "effects": {
+    "scienceMax": 25000,
+    "starchartPerTickBaseSpace": 0.025,
+    "relicPerDay": 0
+   }
+  },
+  {
+   "name": "terraformingStation",
+   "planet": "yarn",
+   "val": 0,
+   "on": 0,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "uranium",
+     "val": 5000
+    },
+    {
+     "name": "antimatter",
+     "val": 25
+    },
+    {
+     "name": "kerosene",
+     "val": 5000
+    }
+   ],
+   "effects": {
+    "maxKittens": 1
+   }
+  },
+  {
+   "name": "hydroponics",
+   "planet": "yarn",
+   "val": 0,
+   "on": 0,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "unobtainium",
+     "val": 1
+    },
+    {
+     "name": "kerosene",
+     "val": 500
+    }
+   ],
+   "effects": {
+    "catnipRatio": 0.025,
+    "catnipMaxRatio": 0.1,
+    "terraformingMaxKittensRatio": 0
+   }
+  },
+  {
+   "name": "hrHarvester",
+   "planet": "umbra",
+   "val": 0,
+   "on": 0,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "antimatter",
+     "val": 1250
+    },
+    {
+     "name": "relic",
+     "val": 25
+    }
+   ],
+   "effects": {
+    "energyProduction": 1
+   }
+  },
+  {
+   "name": "navigationRelay",
+   "planet": "umbra",
+   "val": 0,
+   "on": 0,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 50000
+    },
+    {
+     "name": "concrate",
+     "val": 5000
+    }
+   ],
+   "effects": {}
+  },
+  {
+   "name": "spaceShuttle",
+   "planet": "umbra",
+   "val": 0,
+   "on": 0,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "antimatter",
+     "val": 50
+    },
+    {
+     "name": "eludium",
+     "val": 500
+    }
+   ],
+   "effects": {}
+  },
+  {
+   "name": "entangler",
+   "planet": "charon",
+   "val": 0,
+   "on": 0,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "antimatter",
+     "val": 5250
+    },
+    {
+     "name": "relic",
+     "val": 1250
+    },
+    {
+     "name": "eludium",
+     "val": 5000
+    }
+   ],
+   "effects": {
+    "gflopsConsumption": 0.1,
+    "hashrate": 0,
+    "hashRateLevel": 0,
+    "nextHashLevelAt": 0,
+    "hrProgress": 0,
+    "energyConsumption": 25
+   }
+  },
+  {
+   "name": "tectonic",
+   "planet": "centaurusSystem",
+   "val": 0,
+   "on": 0,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "antimatter",
+     "val": 500
+    },
+    {
+     "name": "thorium",
+     "val": 75000
+    }
+   ],
+   "effects": {
+    "energyProduction": 0
+   }
+  },
+  {
+   "name": "moltenCore",
+   "planet": "centaurusSystem",
+   "val": 0,
+   "on": 0,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "uranium",
+     "val": 5000000
+    },
+    {
+     "name": "science",
+     "val": 25000000
+    }
+   ],
+   "effects": {
+    "tectonicBonus": 0.05
+   }
+  }
+ ],
+ "perks": [
+  {
+   "name": "engeneering",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 5
+    }
+   ],
+   "unlocked": true,
+   "researched": false,
+   "effects": {
+    "priceRatio": -0.01
+   },
+   "defaultUnlocked": true,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "megalomania",
+     "goldenRatio",
+     "codexVox"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "codexVox",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 25
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "manuscriptCraftRatio": 0.25,
+    "manuscriptGlobalCraftRatio": 0.05
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "codexLogos"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "codexLogos",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 50
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "manuscriptGlobalCraftRatio": 0.05,
+    "compediumCraftRatio": 0.25,
+    "compediumGlobalCraftRatio": 0.05
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "codexAgrum",
+     "codexLeviathanianus"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "codexAgrum",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 75
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "manuscriptGlobalCraftRatio": 0.05,
+    "compediumGlobalCraftRatio": 0.05,
+    "blueprintCraftRatio": 0.25,
+    "blueprintGlobalCraftRatio": 0.05
+   },
+   "defaultUnlocked": false,
+   "unlocks": null,
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "megalomania",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 10
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "blackCodex"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "blackCodex",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 25
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "codexLeviathanianus",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 75
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "goldenRatio",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 50
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "priceRatio": -0.016180339887498948,
+    "queueCap": 1
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "divineProportion"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "divineProportion",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 100
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "priceRatio": -0.017777777777777778,
+    "queueCap": 2
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "vitruvianFeline"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "vitruvianFeline",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "priceRatio": -0.02
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "renaissance"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "renaissance",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 750
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "priceRatio": -0.0225,
+    "queueCap": 2
+   },
+   "defaultUnlocked": false,
+   "unlocks": null,
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "diplomacy",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 5
+    }
+   ],
+   "unlocked": true,
+   "researched": false,
+   "effects": {
+    "standingRatio": 0.1
+   },
+   "defaultUnlocked": true,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "zebraDiplomacy",
+     "ambassadors"
+    ],
+    "stages": []
+   },
+   "upgrades": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [
+     "lizardRelationsEcologists"
+    ],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [],
+    "stages": []
+   },
+   "hasHandler": true
+  },
+  {
+   "name": "zebraDiplomacy",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 35
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "zebraCovenant"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "zebraCovenant",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 75
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "navigationDiplomacy"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "navigationDiplomacy",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 300
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": null,
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "ambassadors",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 100
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [
+     "ambassador"
+    ],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "treaties"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "treaties",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "embassiesPerAmbassadorSlot": 30,
+    "ambassadorBoostPerRank": 0.1
+   },
+   "defaultUnlocked": false,
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [
+     "ambassador"
+    ],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [],
+    "stages": []
+   },
+   "hasHandler": false
+  },
+  {
+   "name": "chronomancy",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 25
+    }
+   ],
+   "unlocked": true,
+   "researched": false,
+   "effects": null,
+   "defaultUnlocked": true,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "astromancy",
+     "anachronomancy",
+     "unicornmancy"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "astromancy",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 50
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "unicornmancy",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 125
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "alicornmancy"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "alicornmancy",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 200
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [],
+    "stages": []
+   },
+   "hasHandler": false
+  },
+  {
+   "name": "anachronomancy",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 125
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": null,
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "carnivals",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 25
+    }
+   ],
+   "unlocked": true,
+   "researched": false,
+   "effects": null,
+   "defaultUnlocked": true,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "numerology"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "willenfluff",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 150
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "kittenGrowthRatio": 0.75
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "pawgan"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "pawgan",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 400
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "kittenGrowthRatio": 1.5
+   },
+   "defaultUnlocked": false,
+   "unlocks": null,
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "numerology",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 50
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "numeromancy",
+     "willenfluff",
+     "voidOrder"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "numeromancy",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "malkuth"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "malkuth",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "paragonRatio": 0.05
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "yesod"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "yesod",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 750
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "paragonRatio": 0.05
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "hod"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "hod",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 1250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "paragonRatio": 0.05
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "netzach"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "netzach",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 1750
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "paragonRatio": 0.05
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "tiferet"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "tiferet",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 2500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "paragonRatio": 0.05
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "gevurah"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "gevurah",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 5000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "paragonRatio": 0.05
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "chesed"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "chesed",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 7500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "paragonRatio": 0.05
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "binah"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "binah",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 15000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "paragonRatio": 0.05
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "chokhmah"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "chokhmah",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 30000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "paragonRatio": 0.05
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "keter"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "keter",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 60000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "paragonRatio": 0.05
+   },
+   "defaultUnlocked": false,
+   "unlocks": null,
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "voidOrder",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 75
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": null,
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "adjustmentBureau",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 5
+    }
+   ],
+   "unlocked": true,
+   "researched": false,
+   "effects": null,
+   "defaultUnlocked": true,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [
+     "challenges"
+    ],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "ascoh"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
+  },
+  {
+   "name": "ascoh",
+   "prices": [
+    {
+     "name": "paragon",
+     "val": 5
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": null,
+   "upgrades": null,
+   "hasHandler": false
+  }
+ ],
+ "achievements": [
+  {
+   "name": "theElderLegacy",
+   "unlocked": false,
+   "starred": false,
+   "hidden": true,
+   "hasCondition": true,
+   "hasStarCondition": false
+  },
+  {
+   "name": "unicornConspiracy",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
+  },
+  {
+   "name": "uniception",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
+  },
+  {
+   "name": "sinsOfEmpire",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
+  },
+  {
+   "name": "anachronox",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
+  },
+  {
+   "name": "deadSpace",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
+  },
+  {
+   "name": "sadnessAbyss",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
+  },
+  {
+   "name": "ironWill",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
+  },
+  {
+   "name": "uberkatzhen",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
+  },
+  {
+   "name": "hundredYearsSolitude",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
+  },
+  {
+   "name": "soilUptuned",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
+  },
+  {
+   "name": "atlasUnmeowed",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
+  },
+  {
+   "name": "meowMeowRevolution",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
+  },
+  {
+   "name": "spaceOddity",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": true
+  },
+  {
+   "name": "jupiterAscending",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": true
+  },
+  {
+   "name": "veryLargeArray",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
+  },
+  {
+   "name": "shadowOfTheColossus",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
+  },
+  {
+   "name": "sunGod",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
+  },
+  {
+   "name": "heartOfDarkness",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
+  },
+  {
+   "name": "winterIsComing",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
+  },
+  {
+   "name": "youMonster",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": true
+  },
+  {
+   "name": "superUnethicalClimax",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
+  },
+  {
+   "name": "systemShock",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
+  },
+  {
+   "name": "lotusMachine",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
+  },
+  {
+   "name": "serenity",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": true
+  },
+  {
+   "name": "utopiaProject",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": true
+  },
+  {
+   "name": "deathStranding",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
+  },
+  {
+   "name": "cathammer",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": true
+  },
+  {
+   "name": "eternalBacchanalia",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
+  },
+  {
+   "name": "challenger",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": true
+  },
+  {
+   "name": "betterSafeThanSorry",
+   "unlocked": false,
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": true
+  }
+ ],
+ "badges": [
+  {
+   "name": "lotus",
+   "difficulty": "A",
+   "unlocked": false,
+   "hasCondition": true
+  },
+  {
+   "name": "ivoryTower",
+   "difficulty": "S+",
+   "unlocked": false,
+   "hasCondition": false
+  },
+  {
+   "name": "useless",
+   "difficulty": "F",
+   "unlocked": false,
+   "hasCondition": true
+  },
+  {
+   "name": "beta",
+   "difficulty": "B",
+   "unlocked": false,
+   "hasCondition": true
+  },
+  {
+   "name": "silentHill",
+   "difficulty": "S",
+   "unlocked": false,
+   "hasCondition": true
+  },
+  {
+   "name": "evergreen",
+   "difficulty": "F",
+   "unlocked": false,
+   "hasCondition": false
+  },
+  {
+   "name": "deadSpace",
+   "difficulty": "S",
+   "unlocked": false,
+   "hasCondition": true
+  },
+  {
+   "name": "reginaNoctis",
+   "difficulty": "S",
+   "unlocked": false,
+   "hasCondition": true
+  },
+  {
+   "name": "ghostInTheMachine",
+   "difficulty": "S",
+   "unlocked": false,
+   "hasCondition": false
+  },
+  {
+   "name": "abOwo",
+   "difficulty": "A",
+   "unlocked": false,
+   "hasCondition": false
+  },
+  {
+   "name": "cleanPaws",
+   "difficulty": "C",
+   "unlocked": false,
+   "hasCondition": false
+  },
+  {
+   "name": "sequenceBreak",
+   "difficulty": "D",
+   "unlocked": false,
+   "hasCondition": true
+  },
+  {
+   "name": "fantasticFurColor",
+   "difficulty": "F",
+   "unlocked": false,
+   "hasCondition": true
+  },
+  {
+   "name": "whatYearIsIt",
+   "difficulty": "C",
+   "unlocked": false,
+   "hasCondition": false
+  },
+  {
+   "name": "tardis",
+   "difficulty": "C",
+   "unlocked": false,
+   "hasCondition": false
+  },
+  {
+   "name": "wheredThisComeFrom",
+   "difficulty": "S",
+   "unlocked": false,
+   "hasCondition": false
+  },
+  {
+   "name": "lostDates",
+   "difficulty": "B",
+   "unlocked": false,
+   "hasCondition": true
+  },
+  {
+   "name": "buffet",
+   "difficulty": "A",
+   "unlocked": false,
+   "hasCondition": true
+  },
+  {
+   "name": "newHome",
+   "difficulty": "D",
+   "unlocked": false,
+   "hasCondition": true
+  },
+  {
+   "name": "betterSafeThanSorry",
+   "difficulty": "E",
+   "unlocked": false,
+   "hasCondition": false
+  },
+  {
+   "name": "soLongAndThanksForAllTheHay",
+   "difficulty": "S",
+   "unlocked": false,
+   "hasCondition": true
+  }
+ ],
+ "stats": [
+  {
+   "name": "totalKittens",
+   "val": 0,
+   "defaultUnlocked": true,
+   "hasCalculate": false
+  },
+  {
+   "name": "kittensDead",
+   "val": 0,
+   "defaultUnlocked": true,
+   "hasCalculate": false
+  },
+  {
+   "name": "totalYears",
+   "val": 0,
+   "defaultUnlocked": true,
+   "hasCalculate": false
+  },
+  {
+   "name": "totalResets",
+   "val": 0,
+   "defaultUnlocked": true,
+   "hasCalculate": false
+  },
+  {
+   "name": "totalParagon",
+   "val": 0,
+   "defaultUnlocked": false,
+   "hasCalculate": false
+  },
+  {
+   "name": "eventsObserved",
+   "val": 0,
+   "defaultUnlocked": false,
+   "hasCalculate": false
+  },
+  {
+   "name": "unicornsSacrificed",
+   "val": 0,
+   "defaultUnlocked": false,
+   "hasCalculate": false
+  },
+  {
+   "name": "buildingsConstructed",
+   "val": 0,
+   "defaultUnlocked": false,
+   "hasCalculate": false
+  },
+  {
+   "name": "totalClicks",
+   "val": 0,
+   "defaultUnlocked": false,
+   "hasCalculate": false
+  },
+  {
+   "name": "totalTrades",
+   "val": 0,
+   "defaultUnlocked": false,
+   "hasCalculate": false
+  },
+  {
+   "name": "totalCrafts",
+   "val": 0,
+   "defaultUnlocked": false,
+   "hasCalculate": false
+  },
+  {
+   "name": "averageKittens",
+   "val": 0,
+   "defaultUnlocked": false,
+   "hasCalculate": true
+  },
+  {
+   "name": "transcendenceTier",
+   "val": 0,
+   "defaultUnlocked": false,
+   "hasCalculate": true
+  },
+  {
+   "name": "totalChallengesCompleted",
+   "val": 0,
+   "defaultUnlocked": false,
+   "hasCalculate": true
+  }
+ ],
+ "statsCurrent": [
+  {
+   "name": "totalTrades",
+   "hasCalculate": false
+  },
+  {
+   "name": "totalCrafts",
+   "hasCalculate": false
+  },
+  {
+   "name": "averageKittens",
+   "hasCalculate": true
+  },
+  {
+   "name": "timePlayed",
+   "hasCalculate": true
+  }
+ ],
+ "cfu": [
+  {
+   "name": "temporalBattery",
+   "prices": [
+    {
+     "name": "timeCrystal",
+     "val": 5
+    }
+   ],
+   "unlocked": true,
+   "researched": false,
+   "effects": {
+    "temporalFluxMax": 750
+   }
+  },
+  {
+   "name": "blastFurnace",
+   "prices": [
+    {
+     "name": "timeCrystal",
+     "val": 25
+    },
+    {
+     "name": "relic",
+     "val": 5
+    }
+   ],
+   "unlocked": true,
+   "researched": false,
+   "effects": {
+    "heatPerTick": 0.02,
+    "heatMax": 100
+   }
+  },
+  {
+   "name": "timeBoiler",
+   "prices": [
+    {
+     "name": "timeCrystal",
+     "val": 25000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "heatMaxExpansion": 10,
+    "energyConsumption": 1
+   }
+  },
+  {
+   "name": "controlledDelay",
+   "prices": [
+    {
+     "name": "timeCrystal",
+     "val": 1
+    },
+    {
+     "name": "gear",
+     "val": 10
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "energyConsumption": 0.75
+   }
+  },
+  {
+   "name": "temporalAccelerator",
+   "prices": [
+    {
+     "name": "timeCrystal",
+     "val": 10
+    },
+    {
+     "name": "relic",
+     "val": 1000
+    }
+   ],
+   "unlocked": true,
+   "researched": false,
+   "effects": {
+    "timeRatio": 0.05
+   }
+  },
+  {
+   "name": "temporalImpedance",
+   "prices": [
+    {
+     "name": "timeCrystal",
+     "val": 100
+    },
+    {
+     "name": "relic",
+     "val": 250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "timeImpedance": 1000
+   }
+  },
+  {
+   "name": "ressourceRetrieval",
+   "prices": [
+    {
+     "name": "timeCrystal",
+     "val": 1000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "shatterTCGain": 0.01
+   }
+  },
+  {
+   "name": "temporalPress",
+   "prices": [
+    {
+     "name": "timeCrystal",
+     "val": 100
+    },
+    {
+     "name": "void",
+     "val": 10
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "shatterYearBoost": 0,
+    "energyConsumption": 5
+   }
+  }
+ ],
+ "vsu": [
+  {
+   "name": "cryochambers",
+   "prices": [
+    {
+     "name": "karma",
+     "val": 1
+    },
+    {
+     "name": "timeCrystal",
+     "val": 2
+    },
+    {
+     "name": "void",
+     "val": 100
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "maxKittens": 1
+   }
+  },
+  {
+   "name": "usedCryochambers",
+   "prices": [],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "voidHoover",
+   "prices": [
+    {
+     "name": "antimatter",
+     "val": 1000
+    },
+    {
+     "name": "timeCrystal",
+     "val": 10
+    },
+    {
+     "name": "void",
+     "val": 250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "temporalParadoxVoid": 1
+   }
+  },
+  {
+   "name": "voidRift",
+   "prices": [
+    {
+     "name": "void",
+     "val": 75
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "umbraBoostRatio": 0.1,
+    "globalResourceRatio": 0.02
+   }
+  },
+  {
+   "name": "chronocontrol",
+   "prices": [
+    {
+     "name": "temporalFlux",
+     "val": 3000
+    },
+    {
+     "name": "timeCrystal",
+     "val": 30
+    },
+    {
+     "name": "void",
+     "val": 500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "temporalParadoxDay": 0,
+    "energyConsumption": 15
+   }
+  },
+  {
+   "name": "voidResonator",
+   "prices": [
+    {
+     "name": "timeCrystal",
+     "val": 1000
+    },
+    {
+     "name": "relic",
+     "val": 10000
+    },
+    {
+     "name": "void",
+     "val": 50
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "voidResonance": 0.1
+   }
+  }
+ ],
+ "cycles": [
+  {
+   "name": "charon",
+   "effects": {
+    "moonOutpost-unobtainiumPerTickSpace": 0.9,
+    "entangler-gflopsConsumption": 2
+   }
+  },
+  {
+   "name": "umbra",
+   "effects": {
+    "hydrofracturer-oilPerTickAutoprodSpace": 0.75,
+    "planetCracker-uraniumPerTickSpace": 0.9,
+    "hrHarvester-energyProduction": 1.5
+   }
+  },
+  {
+   "name": "yarn",
+   "effects": {
+    "hydroponics-catnipRatio": 2,
+    "researchVessel-starchartPerTickBaseSpace": 0.5
+   }
+  },
+  {
+   "name": "helios",
+   "effects": {
+    "cryostation-woodMax": 0.9,
+    "cryostation-mineralsMax": 0.9,
+    "cryostation-coalMax": 0.9,
+    "cryostation-ironMax": 0.9,
+    "cryostation-titaniumMax": 0.9,
+    "cryostation-oilMax": 0.9,
+    "cryostation-uraniumMax": 0.9,
+    "cryostation-unobtainiumMax": 0.9,
+    "sunlifter-energyProduction": 1.5
+   }
+  },
+  {
+   "name": "cath",
+   "effects": {
+    "spaceStation-scienceRatio": 1.5,
+    "sattelite-observatoryRatio": 2,
+    "sattelite-starchartPerTickBaseSpace": 2,
+    "spaceBeacon-starchartPerTickBaseSpace": 0.1,
+    "spaceElevator-prodTransferBonus": 2
+   }
+  },
+  {
+   "name": "redmoon",
+   "effects": {
+    "moonOutpost-unobtainiumPerTickSpace": 1.2,
+    "entangler-gflopsConsumption": 0.5
+   }
+  },
+  {
+   "name": "dune",
+   "effects": {
+    "hydrofracturer-oilPerTickAutoprodSpace": 1.5,
+    "planetCracker-uraniumPerTickSpace": 1.1,
+    "hrHarvester-energyProduction": 0.75
+   }
+  },
+  {
+   "name": "piscine",
+   "effects": {
+    "hydroponics-catnipRatio": 0.5,
+    "researchVessel-starchartPerTickBaseSpace": 1.5
+   }
+  },
+  {
+   "name": "terminus",
+   "effects": {
+    "cryostation-woodMax": 1.2,
+    "cryostation-mineralsMax": 1.2,
+    "cryostation-coalMax": 1.2,
+    "cryostation-ironMax": 1.2,
+    "cryostation-titaniumMax": 1.2,
+    "cryostation-oilMax": 1.2,
+    "cryostation-uraniumMax": 1.2,
+    "cryostation-unobtainiumMax": 1.2,
+    "sunlifter-energyProduction": 0.5
+   }
+  },
+  {
+   "name": "kairo",
+   "effects": {
+    "spaceStation-scienceRatio": 0.75,
+    "sattelite-observatoryRatio": 0.75,
+    "sattelite-starchartPerTickBaseSpace": 0.75,
+    "spaceBeacon-starchartPerTickBaseSpace": 5,
+    "spaceElevator-prodTransferBonus": 0.5
+   }
+  }
+ ],
+ "biomes": [
+  {
+   "name": "village",
+   "faunaNames": null,
+   "faunaPenalty": 0
+  },
+  {
+   "name": "plains",
+   "faunaNames": [
+    "grass snake",
+    "raptor",
+    "vole"
+   ],
+   "faunaPenalty": 1
+  },
+  {
+   "name": "hills",
+   "faunaNames": [
+    "rock lizard",
+    "centipede",
+    "stone toad",
+    "cave bat"
+   ],
+   "faunaPenalty": 1
+  },
+  {
+   "name": "forest",
+   "faunaNames": null,
+   "faunaPenalty": 1.5
+  },
+  {
+   "name": "boneForest",
+   "faunaNames": [
+    "bone spider"
+   ],
+   "faunaPenalty": 1
+  },
+  {
+   "name": "rainForest",
+   "faunaNames": [
+    "poison frog",
+    "razor leech",
+    "jaguar",
+    "giant centipede"
+   ],
+   "faunaPenalty": 1
+  },
+  {
+   "name": "mountain",
+   "faunaNames": [
+    "mountain goat",
+    "rock worm",
+    "yeti cub"
+   ],
+   "faunaPenalty": 1
+  },
+  {
+   "name": "volcano",
+   "faunaNames": [
+    "magma slug",
+    "lava beetle"
+   ],
+   "faunaPenalty": 1
+  },
+  {
+   "name": "desert",
+   "faunaNames": [
+    "sand viper",
+    "scorpion",
+    "dune beetle",
+    "sand raptor"
+   ],
+   "faunaPenalty": 1
+  },
+  {
+   "name": "bloodDesert",
+   "faunaNames": [
+    "blood scarab",
+    "crimson basilisk"
+   ],
+   "faunaPenalty": 1
+  },
+  {
+   "name": "swamp",
+   "faunaNames": [
+    "bog toad",
+    "swamp serpent",
+    "poison spore"
+   ],
+   "faunaPenalty": 1
+  },
+  {
+   "name": "cath",
+   "faunaNames": null,
+   "faunaPenalty": 1
+  },
+  {
+   "name": "redmoon",
+   "faunaNames": null,
+   "faunaPenalty": 1
+  }
+ ]
+}

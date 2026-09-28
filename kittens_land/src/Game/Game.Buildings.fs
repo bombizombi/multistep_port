@@ -107,6 +107,37 @@ let providerEffect (b: BuildingState) (effectName: string) : float =
     else
         effectValue * float b.On
 
+// --- game-19: bld build undo (sellInternal at 50% refund, core.js L1949-1972) --
+
+/// Sell ONE unit back at the CURRENT ladder: decrement val/on, recompute the
+/// price ladder at the new val, refund prices × refundPercentage (0.5) for
+/// refundable resources. Returns updated pools + whether the sale happened.
+let sellOne
+    (calendarDay: int)
+    (cache: Game.Effects.EffectsCache)
+    (pool: ResPool)
+    (name: string)
+    (refundPercentage: float)
+    (bpool: BldPool)
+    : BldPool * ResPool * bool =
+    match get bpool name with
+    | None -> bpool, pool, false
+    | Some b when b.Val <= 0 -> bpool, pool, false
+    | Some b ->
+        let b' = { b with Val = b.Val - 1; On = if b.On > b.Val - 1 then b.Val - 1 else b.On }
+        let bpool' = { bpool with ByName = bpool.ByName |> Map.add name b' }
+        let prices = getPrices cache b' // ladder at the post-decrement val
+        let mutable pool' = pool
+        for p in prices do
+            let refundable =
+                match Game.Resources.get pool' p.Resource with
+                | Some r -> not r.Def.IsNotRefundable
+                | None -> false
+            if refundable then
+                let pool2, _ = Game.Resources.addResEvent calendarDay p.Resource (p.Val * refundPercentage) pool'
+                pool' <- pool2
+        bpool', pool', true
+
 // --- buy (buildings-02/03) -----------------------------------------------------
 
 /// orig build(): buy up to n while affordable; increments val (and on for

@@ -505,6 +505,7 @@ function takeSnapshot() {
 // World dump (--dump-world): all remaining static data tables.
 {
   const clone = (o) => JSON.parse(JSON.stringify(o === undefined ? null : o));
+  const unlockShape = (u) => (u ? { buildings: u.buildings || [], tabs: u.tabs || [], jobs: u.jobs || [], tech: u.tech || [], policies: u.policies || [], upgrades: u.upgrades || [], zebraUpgrades: u.zebraUpgrades || [], religion: u.religion || [], crafts: u.crafts || [], perks: u.perks || [], stages: [] } : null);
   const races = game.diplomacy.races.map((r) => ({
     name: r.name, unlocked: !!r.unlocked,
     standing: r.standing === undefined ? null : r.standing,
@@ -556,12 +557,25 @@ function takeSnapshot() {
   const perks = game.prestige.perks.map((p) => ({
     name: p.name, prices: clone(p.prices) || [], unlocked: !!p.unlocked, researched: !!p.researched,
     effects: clone(p.effects) || null,
+    defaultUnlocked: !!p.defaultUnlocked,
+    unlocks: unlockShape(p.unlocks), upgrades: unlockShape(p.upgrades),
+    hasHandler: typeof p.handler === "function",
   }));
   const achievements = game.achievements.achievements.map((a) => ({
     name: a.name, unlocked: !!a.unlocked, starred: !!a.starred || false,
+    hidden: !!a.hidden, hasCondition: typeof a.condition === "function",
+    hasStarCondition: typeof a.starCondition === "function",
+  }));
+  const badges = game.achievements.badges.map((b) => ({
+    name: b.name, difficulty: b.difficulty === undefined ? null : b.difficulty,
+    unlocked: !!b.unlocked, hasCondition: typeof b.condition === "function",
   }));
   const stats = (game.stats.stats || game.stats.getStats ? game.stats.stats : []).map((s) => ({
     name: s.name, val: s.val || 0,
+    defaultUnlocked: !!s.defaultUnlocked, hasCalculate: typeof s.calculate === "function",
+  }));
+  const statsCurrent = (game.stats.statsCurrent || []).map((s) => ({
+    name: s.name, hasCalculate: typeof s.calculate === "function",
   }));
   const cfu = game.time.chronoforgeUpgrades.map((z) => ({
     name: z.name, prices: clone(z.prices) || [], unlocked: !!z.unlocked, researched: !!z.researched,
@@ -572,11 +586,16 @@ function takeSnapshot() {
     effects: clone(z.effects) || {},
   }));
   const cycles = game.calendar.cycles.map((c) => ({ name: c.name, effects: clone(c.effects) || {} }));
+  const biomes = game.village.map.biomes.map((b) => ({
+    name: b.name,
+    faunaNames: b.faunaNames || null, // null = defaultFaunaNames (len 3)
+    faunaPenalty: b.faunaPenalty === undefined ? 1.0 : b.faunaPenalty,
+  }));
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   fs.writeFileSync(outPath, JSON.stringify({
     driver: "orig-driver.js", origCommit: (typeof origCommit === "function" ? origCommit() : "unknown"),
-    races, zu, ru, tu, pacts, programs, planets, spaceBuildings, perks, achievements, stats, cfu, vsu, cycles,
+    races, zu, ru, tu, pacts, programs, planets, spaceBuildings, perks, achievements, badges, stats, statsCurrent, cfu, vsu, cycles, biomes,
   }, null, 1));
-  console.log("world -> " + outPath + " (races " + races.length + ", zu " + zu.length + ", ru " + ru.length + ", tu " + tu.length + ", pacts " + pacts.length + ", programs " + programs.length + ", planets " + planets.length + ", spaceBld " + spaceBuildings.length + ", perks " + perks.length + ", ach " + achievements.length + ", stats " + stats.length + ", cfu " + cfu.length + ", vsu " + vsu.length + ")");
+  console.log("world -> " + outPath + " (races " + races.length + ", badges " + badges.length + ", zu " + zu.length + ", ru " + ru.length + ", tu " + tu.length + ", pacts " + pacts.length + ", programs " + programs.length + ", planets " + planets.length + ", spaceBld " + spaceBuildings.length + ", perks " + perks.length + ", ach " + achievements.length + ", stats " + stats.length + ", cfu " + cfu.length + ", vsu " + vsu.length + ")");
   process.exit(0);
 }

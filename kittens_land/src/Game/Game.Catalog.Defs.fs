@@ -45,7 +45,7 @@ let buildingDefs : BuildingDef list =
         { StageKey = None; Prices = [{ Resource = "minerals"; Val = 75 }]; UnlockRatio = None; Effects = Map.ofList ["catnipRatio", 0.03] }
         { StageKey = None; Prices = [{ Resource = "titanium"; Val = 2500 }; { Resource = "concrate"; Val = 100 }; { Resource = "gear"; Val = 5 }]; UnlockRatio = None; Effects = Map.ofList ["energyProduction", 5] }
       ];
-        Unlocks = None; Upgrades = Some({ Buildings = ["magneto"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] });
+        Unlocks = None; Upgrades = Some({ Buildings = ["magneto"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] });
         UnlockScheme = None }
       { Name = "hut"; Tab = None; Stage = 0;
         UnlockRatio = Some 0.3; DefaultUnlockable = true;
@@ -54,7 +54,7 @@ let buildingDefs : BuildingDef list =
         NoStackable = false; BreaksIronWill = true;
         Effects = Map.ofList ["manpowerMax", 75; "maxKittens", 2]; StartsUnlocked = false; StartsUnlockable = true;
         Stages = [];
-        Unlocks = Some({ Buildings = []; Tabs = ["village"]; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["authocracy"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] });
+        Unlocks = Some({ Buildings = []; Tabs = ["village"]; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["authocracy"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] });
         UnlockScheme = None }
       { Name = "logHouse"; Tab = None; Stage = 0;
         UnlockRatio = Some 0.3; DefaultUnlockable = false;
@@ -63,7 +63,7 @@ let buildingDefs : BuildingDef list =
         NoStackable = false; BreaksIronWill = true;
         Effects = Map.ofList ["manpowerMax", 50; "maxKittens", 1]; StartsUnlocked = false; StartsUnlockable = false;
         Stages = [];
-        Unlocks = Some({ Buildings = []; Tabs = ["village"]; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["authocracy"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] });
+        Unlocks = Some({ Buildings = []; Tabs = ["village"]; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["authocracy"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] });
         UnlockScheme = None }
       { Name = "mansion"; Tab = None; Stage = 0;
         UnlockRatio = None; DefaultUnlockable = false;
@@ -72,7 +72,7 @@ let buildingDefs : BuildingDef list =
         NoStackable = false; BreaksIronWill = true;
         Effects = Map.ofList ["manpowerMax", 50; "maxKittens", 1]; StartsUnlocked = false; StartsUnlockable = false;
         Stages = [];
-        Unlocks = Some({ Buildings = []; Tabs = ["village"]; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["authocracy"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] });
+        Unlocks = Some({ Buildings = []; Tabs = ["village"]; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["authocracy"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] });
         UnlockScheme = None }
       { Name = "library"; Tab = None; Stage = 0;
         UnlockRatio = None; DefaultUnlockable = true;
@@ -84,7 +84,7 @@ let buildingDefs : BuildingDef list =
         { StageKey = None; Prices = [{ Resource = "wood"; Val = 25 }]; UnlockRatio = Some 0.3; Effects = Map.ofList ["scienceRatio", 0.1; "scienceMax", 250; "cultureMax", 10] }
         { StageKey = None; Prices = [{ Resource = "steel"; Val = 100 }; { Resource = "concrate"; Val = 10 }; { Resource = "microchip"; Val = 5 }]; UnlockRatio = None; Effects = Map.ofList ["scienceMaxCompendia", 1000; "cultureMax", 25; "energyConsumption", 2] }
       ];
-        Unlocks = Some({ Buildings = []; Tabs = ["science"]; Jobs = ["scholar"]; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = Some({ Buildings = ["biolab"; "observatory"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] });
+        Unlocks = Some({ Buildings = []; Tabs = ["science"]; Jobs = ["scholar"]; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = ["biolab"; "observatory"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] });
         UnlockScheme = None }
       { Name = "academy"; Tab = None; Stage = 0;
         UnlockRatio = Some 0.3; DefaultUnlockable = false;
@@ -102,7 +102,7 @@ let buildingDefs : BuildingDef list =
         NoStackable = false; BreaksIronWill = false;
         Effects = Map.ofList ["starEventChance", 0.002; "starAutoSuccessChance", 0.01; "scienceRatio", 0.25; "scienceMax", 1000]; StartsUnlocked = false; StartsUnlockable = false;
         Stages = [];
-        Unlocks = None; Upgrades = Some({ Buildings = ["library"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] });
+        Unlocks = None; Upgrades = Some({ Buildings = ["library"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] });
         UnlockScheme = None }
       { Name = "biolab"; Tab = None; Stage = 0;
         UnlockRatio = None; DefaultUnlockable = false;
@@ -111,7 +111,7 @@ let buildingDefs : BuildingDef list =
         NoStackable = false; BreaksIronWill = false;
         Effects = Map.ofList ["scienceRatio", 0.35; "refineRatio", 0.1; "scienceMax", 1500; "catnipPerTickCon", 0; "oilPerTickProd", 0; "energyConsumption", 0; "compediumCraftRatio", 0; "compediumGlobalCraftRatio", 0]; StartsUnlocked = false; StartsUnlockable = false;
         Stages = [];
-        Unlocks = None; Upgrades = Some({ Buildings = ["library"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] });
+        Unlocks = None; Upgrades = Some({ Buildings = ["library"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] });
         UnlockScheme = None }
       { Name = "barn"; Tab = None; Stage = 0;
         UnlockRatio = Some 0.3; DefaultUnlockable = false;
@@ -132,7 +132,7 @@ let buildingDefs : BuildingDef list =
         { StageKey = None; Prices = [{ Resource = "beam"; Val = 1.5 }; { Resource = "slab"; Val = 2 }]; UnlockRatio = None; Effects = Map.ofList ["catnipMax", 0; "woodMax", 150; "mineralsMax", 200; "coalMax", 30; "ironMax", 25; "titaniumMax", 10; "goldMax", 5] }
         { StageKey = None; Prices = [{ Resource = "titanium"; Val = 10000 }; { Resource = "eludium"; Val = 500 }; { Resource = "kerosene"; Val = 1000 }; { Resource = "blueprint"; Val = 500 }; { Resource = "starchart"; Val = 100000 }]; UnlockRatio = None; Effects = Map.ofList ["moonBaseStorageBonus", 0; "planetCrackerStorageBonus", 0; "cryostationStorageBonus", 0; "energyConsumption", 0; "tradeVolume", 0] }
       ];
-        Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["transportSuperposition"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] });
+        Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["transportSuperposition"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] });
         UnlockScheme = Some("minimalist", 10) }
       { Name = "harbor"; Tab = None; Stage = 0;
         UnlockRatio = None; DefaultUnlockable = false;
@@ -150,7 +150,7 @@ let buildingDefs : BuildingDef list =
         NoStackable = false; BreaksIronWill = false;
         Effects = Map.ofList ["mineralsRatio", 0.2; "coalPerTickBase", 0; "cathPollutionPerTickProd", 0.08]; StartsUnlocked = false; StartsUnlockable = false;
         Stages = [];
-        Unlocks = Some({ Buildings = []; Tabs = []; Jobs = ["miner"]; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None;
+        Unlocks = Some({ Buildings = []; Tabs = []; Jobs = ["miner"]; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None;
         UnlockScheme = Some("anthracite", 92) }
       { Name = "quarry"; Tab = None; Stage = 0;
         UnlockRatio = Some 0.3; DefaultUnlockable = false;
@@ -222,7 +222,7 @@ let buildingDefs : BuildingDef list =
         NoStackable = false; BreaksIronWill = false;
         Effects = Map.ofList ["craftRatio", 0.06]; StartsUnlocked = false; StartsUnlockable = true;
         Stages = [];
-        Unlocks = Some({ Buildings = []; Tabs = ["workshop"]; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None;
+        Unlocks = Some({ Buildings = []; Tabs = ["workshop"]; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None;
         UnlockScheme = None }
       { Name = "factory"; Tab = None; Stage = 0;
         UnlockRatio = None; DefaultUnlockable = false;
@@ -231,7 +231,7 @@ let buildingDefs : BuildingDef list =
         NoStackable = false; BreaksIronWill = false;
         Effects = Map.ofList ["craftRatio", 0.05; "energyConsumption", 2; "cathPollutionPerTickProd", 2; "cathPollutionPerTickCon", 0]; StartsUnlocked = false; StartsUnlockable = false;
         Stages = [];
-        Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["liberalism"; "communism"; "fascism"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None;
+        Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["liberalism"; "communism"; "fascism"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None;
         UnlockScheme = Some("factory", 20) }
       { Name = "reactor"; Tab = None; Stage = 0;
         UnlockRatio = None; DefaultUnlockable = false;
@@ -240,7 +240,7 @@ let buildingDefs : BuildingDef list =
         NoStackable = false; BreaksIronWill = false;
         Effects = Map.ofList ["uraniumPerTick", -0.001; "thoriumPerTick", 0; "productionRatio", 0.05; "uraniumMax", 250; "energyProduction", 10]; StartsUnlocked = false; StartsUnlockable = false;
         Stages = [];
-        Unlocks = None; Upgrades = Some({ Buildings = ["harbor"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] });
+        Unlocks = None; Upgrades = Some({ Buildings = ["harbor"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] });
         UnlockScheme = None }
       { Name = "accelerator"; Tab = None; Stage = 0;
         UnlockRatio = None; DefaultUnlockable = false;
@@ -258,7 +258,7 @@ let buildingDefs : BuildingDef list =
         NoStackable = false; BreaksIronWill = false;
         Effects = Map.ofList ["fursDemandRatio", -0.04; "ivoryDemandRatio", -0.04; "spiceDemandRatio", -0.04; "tradeRatio", 0.015; "standingRatio", 0]; StartsUnlocked = false; StartsUnlockable = false;
         Stages = [];
-        Unlocks = None; Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] });
+        Unlocks = None; Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] });
         UnlockScheme = None }
       { Name = "mint"; Tab = None; Stage = 0;
         UnlockRatio = None; DefaultUnlockable = false;
@@ -276,7 +276,7 @@ let buildingDefs : BuildingDef list =
         NoStackable = false; BreaksIronWill = false;
         Effects = Map.ofList ["catnipPerTickCon", -1; "spicePerTickCon", -0.1; "festivalRatio", 0.01; "festivalArrivalRatio", 0.001; "manpowerRatio", 0]; StartsUnlocked = false; StartsUnlockable = false;
         Stages = [];
-        Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = ["darkBrew"]; Religion = []; Crafts = []; Stages = [] }); Upgrades = None;
+        Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = ["darkBrew"]; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None;
         UnlockScheme = Some("chocolate", 10) }
       { Name = "amphitheatre"; Tab = None; Stage = 0;
         UnlockRatio = None; DefaultUnlockable = false;
@@ -306,7 +306,7 @@ let buildingDefs : BuildingDef list =
         NoStackable = false; BreaksIronWill = false;
         Effects = Map.ofList ["culturePerTickBase", 0.1; "faithPerTickBase", 0; "happiness", 0; "manpowerMax", 0; "scienceMax", 0; "cultureMax", 0; "faithMax", 100]; StartsUnlocked = false; StartsUnlockable = false;
         Stages = [];
-        Unlocks = None; Upgrades = Some({ Buildings = ["ziggurat"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] });
+        Unlocks = None; Upgrades = Some({ Buildings = ["ziggurat"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] });
         UnlockScheme = None }
       { Name = "unicornPasture"; Tab = None; Stage = 0;
         UnlockRatio = Some 0.3; DefaultUnlockable = false;
@@ -324,7 +324,7 @@ let buildingDefs : BuildingDef list =
         NoStackable = false; BreaksIronWill = false;
         Effects = Map.ofList ["cultureMaxRatio", 0.08; "unicornsMax", 0; "tearsMax", 0]; StartsUnlocked = false; StartsUnlockable = false;
         Stages = [];
-        Unlocks = None; Upgrades = Some({ Buildings = ["temple"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] });
+        Unlocks = None; Upgrades = Some({ Buildings = ["temple"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] });
         UnlockScheme = None }
       { Name = "chronosphere"; Tab = None; Stage = 0;
         UnlockRatio = None; DefaultUnlockable = false;
@@ -333,7 +333,7 @@ let buildingDefs : BuildingDef list =
         NoStackable = false; BreaksIronWill = false;
         Effects = Map.ofList ["temporalParadoxChance", 0.01; "resStasisRatio", 0.015; "temporalFluxProduction", 0; "energyConsumption", 20]; StartsUnlocked = false; StartsUnlockable = false;
         Stages = [];
-        Unlocks = None; Upgrades = Some({ Buildings = ["stasisPod"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] });
+        Unlocks = None; Upgrades = Some({ Buildings = ["stasisPod"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] });
         UnlockScheme = None }
       { Name = "aiCore"; Tab = None; Stage = 0;
         UnlockRatio = Some 0.01; DefaultUnlockable = false;
@@ -342,7 +342,7 @@ let buildingDefs : BuildingDef list =
         NoStackable = false; BreaksIronWill = false;
         Effects = Map.ofList ["gflopsPerTickBase", 0.02; "energyConsumption", 2]; StartsUnlocked = false; StartsUnlockable = false;
         Stages = [];
-        Unlocks = None; Upgrades = Some({ Buildings = ["library"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] });
+        Unlocks = None; Upgrades = Some({ Buildings = ["library"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] });
         UnlockScheme = Some("cyber", 5) }
       { Name = "zebraOutpost"; Tab = None; Stage = 0;
         UnlockRatio = Some 0.01; DefaultUnlockable = false;
@@ -351,7 +351,7 @@ let buildingDefs : BuildingDef list =
         NoStackable = false; BreaksIronWill = false;
         Effects = Map.ofList ["manpowerMax", 5; "hunterRatio", 0.05; "zebraPreparations", 0]; StartsUnlocked = false; StartsUnlockable = false;
         Stages = [];
-        Unlocks = None; Upgrades = Some({ Buildings = ["zebraWorkshop"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] });
+        Unlocks = None; Upgrades = Some({ Buildings = ["zebraWorkshop"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] });
         UnlockScheme = None }
       { Name = "zebraWorkshop"; Tab = None; Stage = 0;
         UnlockRatio = Some 0.01; DefaultUnlockable = false;
@@ -360,7 +360,7 @@ let buildingDefs : BuildingDef list =
         NoStackable = false; BreaksIronWill = false;
         Effects = Map.ofList ["bloodstoneRatio", 0; "manpowerMax", 25; "missingZebraPreparations", 0]; StartsUnlocked = false; StartsUnlockable = false;
         Stages = [];
-        Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = ["darkRevolution"]; Religion = []; Crafts = []; Stages = [] }); Upgrades = Some({ Buildings = ["zebraWorkshop"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] });
+        Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = ["darkRevolution"]; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = ["zebraWorkshop"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] });
         UnlockScheme = None }
       { Name = "zebraForge"; Tab = None; Stage = 0;
         UnlockRatio = Some 0.01; DefaultUnlockable = false;
@@ -369,7 +369,7 @@ let buildingDefs : BuildingDef list =
         NoStackable = false; BreaksIronWill = false;
         Effects = Map.ofList ["tMythrilCraftRatio", 0.01; "bloodstoneRatio", 0; "manpowerMax", 50; "preparationRatio", 0]; StartsUnlocked = false; StartsUnlockable = false;
         Stages = [];
-        Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = ["whispers"]; Religion = []; Crafts = ["bloodstone"; "tMythril"]; Stages = [] }); Upgrades = Some({ Buildings = ["zebraOutpost"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] });
+        Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = ["whispers"]; Religion = []; Crafts = ["bloodstone"; "tMythril"]; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = ["zebraOutpost"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] });
         UnlockScheme = None }
       { Name = "stasisPod"; Tab = None; Stage = 0;
         UnlockRatio = Some 0.01; DefaultUnlockable = false;
@@ -378,7 +378,7 @@ let buildingDefs : BuildingDef list =
         NoStackable = false; BreaksIronWill = false;
         Effects = Map.ofList ["zebrasMax", 1]; StartsUnlocked = false; StartsUnlockable = false;
         Stages = [];
-        Unlocks = None; Upgrades = Some({ Buildings = ["zebraOutpost"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] });
+        Unlocks = None; Upgrades = Some({ Buildings = ["zebraOutpost"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] });
         UnlockScheme = None }
       { Name = "ivoryTemple"; Tab = None; Stage = 0;
         UnlockRatio = Some 0.1; DefaultUnlockable = true;
@@ -393,136 +393,136 @@ let buildingDefs : BuildingDef list =
 
 let techDefs : TechDef list =
     [
-      { Name = "calendar"; Prices = [{ Resource = "science"; Val = 30 }]; Unlocks = Some({ Buildings = []; Tabs = ["time"]; Jobs = []; Tech = ["agriculture"]; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "agriculture"; Prices = [{ Resource = "science"; Val = 100 }]; Unlocks = Some({ Buildings = ["barn"]; Tabs = ["queue"]; Jobs = ["farmer"]; Tech = ["mining"; "archery"]; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "archery"; Prices = [{ Resource = "science"; Val = 300 }]; Unlocks = Some({ Buildings = ["zebraOutpost"; "zebraWorkshop"; "zebraForge"]; Tabs = []; Jobs = ["hunter"]; Tech = ["animal"]; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "mining"; Prices = [{ Resource = "science"; Val = 500 }]; Unlocks = Some({ Buildings = ["mine"; "workshop"]; Tabs = []; Jobs = []; Tech = ["metal"]; Policies = []; Upgrades = ["bolas"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "metal"; Prices = [{ Resource = "science"; Val = 900 }]; Unlocks = Some({ Buildings = ["smelter"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["huntingArmor"; "prospecting"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "animal"; Prices = [{ Resource = "science"; Val = 500 }]; Unlocks = Some({ Buildings = ["pasture"; "unicornPasture"]; Tabs = []; Jobs = []; Tech = ["civil"; "math"; "construction"]; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
+      { Name = "calendar"; Prices = [{ Resource = "science"; Val = 30 }]; Unlocks = Some({ Buildings = []; Tabs = ["time"]; Jobs = []; Tech = ["agriculture"]; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "agriculture"; Prices = [{ Resource = "science"; Val = 100 }]; Unlocks = Some({ Buildings = ["barn"]; Tabs = ["queue"]; Jobs = ["farmer"]; Tech = ["mining"; "archery"]; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "archery"; Prices = [{ Resource = "science"; Val = 300 }]; Unlocks = Some({ Buildings = ["zebraOutpost"; "zebraWorkshop"; "zebraForge"]; Tabs = []; Jobs = ["hunter"]; Tech = ["animal"]; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "mining"; Prices = [{ Resource = "science"; Val = 500 }]; Unlocks = Some({ Buildings = ["mine"; "workshop"]; Tabs = []; Jobs = []; Tech = ["metal"]; Policies = []; Upgrades = ["bolas"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "metal"; Prices = [{ Resource = "science"; Val = 900 }]; Unlocks = Some({ Buildings = ["smelter"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["huntingArmor"; "prospecting"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "animal"; Prices = [{ Resource = "science"; Val = 500 }]; Unlocks = Some({ Buildings = ["pasture"; "unicornPasture"]; Tabs = []; Jobs = []; Tech = ["civil"; "math"; "construction"]; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
       { Name = "brewery"; Prices = [{ Resource = "science"; Val = 1200 }]; Unlocks = None; Upgrades = None }
-      { Name = "civil"; Prices = [{ Resource = "science"; Val = 1500 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["currency"]; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "math"; Prices = [{ Resource = "science"; Val = 1000 }]; Unlocks = Some({ Buildings = ["academy"]; Tabs = ["stats"]; Jobs = []; Tech = []; Policies = []; Upgrades = ["celestialMechanics"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "construction"; Prices = [{ Resource = "science"; Val = 1300 }]; Unlocks = Some({ Buildings = ["logHouse"; "warehouse"; "lumberMill"; "ziggurat"]; Tabs = []; Jobs = []; Tech = ["engineering"]; Policies = []; Upgrades = ["compositeBow"; "advancedRefinement"; "reinforcedSaw"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "engineering"; Prices = [{ Resource = "science"; Val = 1500 }]; Unlocks = Some({ Buildings = ["aqueduct"]; Tabs = []; Jobs = []; Tech = ["writing"]; Policies = ["stripMining"; "clearCutting"; "environmentalism"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "currency"; Prices = [{ Resource = "science"; Val = 2200 }]; Unlocks = Some({ Buildings = ["tradepost"]; Tabs = []; Jobs = []; Tech = []; Policies = ["diplomacy"; "isolationism"]; Upgrades = ["goldOre"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "writing"; Prices = [{ Resource = "science"; Val = 3600 }]; Unlocks = Some({ Buildings = ["amphitheatre"]; Tabs = []; Jobs = []; Tech = ["philosophy"; "machinery"; "steel"]; Policies = ["liberty"; "tradition"]; Upgrades = ["register"]; ZebraUpgrades = []; Religion = []; Crafts = ["parchment"]; Stages = [] }); Upgrades = None }
-      { Name = "philosophy"; Prices = [{ Resource = "science"; Val = 9500 }]; Unlocks = Some({ Buildings = ["temple"]; Tabs = []; Jobs = []; Tech = ["theology"]; Policies = ["stoicism"; "epicurianism"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = ["compedium"]; Stages = [] }); Upgrades = None }
-      { Name = "machinery"; Prices = [{ Resource = "science"; Val = 15000 }]; Unlocks = Some({ Buildings = ["steamworks"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["printingPress"; "factoryAutomation"; "crossbow"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "steel"; Prices = [{ Resource = "science"; Val = 12000 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["deepMining"; "coalFurnace"; "combustionEngine"; "reinforcedWarehouses"; "steelAxe"; "steelArmor"]; ZebraUpgrades = []; Religion = []; Crafts = ["steel"]; Stages = [] }); Upgrades = None }
-      { Name = "theology"; Prices = [{ Resource = "science"; Val = 20000 }; { Resource = "manuscript"; Val = 35 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = ["priest"]; Tech = ["astronomy"; "cryptotheology"]; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = Some({ Buildings = ["temple"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "astronomy"; Prices = [{ Resource = "science"; Val = 28000 }; { Resource = "manuscript"; Val = 65 }]; Unlocks = Some({ Buildings = ["observatory"]; Tabs = []; Jobs = []; Tech = ["navigation"]; Policies = ["knowledgeSharing"; "culturalExchange"; "bigStickPolicy"; "cityOnAHill"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "navigation"; Prices = [{ Resource = "science"; Val = 35000 }; { Resource = "manuscript"; Val = 100 }]; Unlocks = Some({ Buildings = ["harbor"]; Tabs = []; Jobs = []; Tech = ["physics"; "archeology"; "architecture"]; Policies = []; Upgrades = ["caravanserai"; "cargoShips"; "astrolabe"; "titaniumMirrors"; "titaniumAxe"]; ZebraUpgrades = []; Religion = []; Crafts = ["ship"]; Stages = [] }); Upgrades = None }
-      { Name = "architecture"; Prices = [{ Resource = "science"; Val = 42000 }; { Resource = "compedium"; Val = 10 }]; Unlocks = Some({ Buildings = ["mansion"; "mint"]; Tabs = []; Jobs = []; Tech = ["acoustics"]; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "physics"; Prices = [{ Resource = "science"; Val = 50000 }; { Resource = "compedium"; Val = 35 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["chemistry"; "electricity"; "metaphysics"]; Policies = []; Upgrades = ["pneumaticPress"; "pyrolysis"; "steelSaw"]; ZebraUpgrades = []; Religion = []; Crafts = ["blueprint"]; Stages = [] }); Upgrades = None }
+      { Name = "civil"; Prices = [{ Resource = "science"; Val = 1500 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["currency"]; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "math"; Prices = [{ Resource = "science"; Val = 1000 }]; Unlocks = Some({ Buildings = ["academy"]; Tabs = ["stats"]; Jobs = []; Tech = []; Policies = []; Upgrades = ["celestialMechanics"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "construction"; Prices = [{ Resource = "science"; Val = 1300 }]; Unlocks = Some({ Buildings = ["logHouse"; "warehouse"; "lumberMill"; "ziggurat"]; Tabs = []; Jobs = []; Tech = ["engineering"]; Policies = []; Upgrades = ["compositeBow"; "advancedRefinement"; "reinforcedSaw"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "engineering"; Prices = [{ Resource = "science"; Val = 1500 }]; Unlocks = Some({ Buildings = ["aqueduct"]; Tabs = []; Jobs = []; Tech = ["writing"]; Policies = ["stripMining"; "clearCutting"; "environmentalism"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "currency"; Prices = [{ Resource = "science"; Val = 2200 }]; Unlocks = Some({ Buildings = ["tradepost"]; Tabs = []; Jobs = []; Tech = []; Policies = ["diplomacy"; "isolationism"]; Upgrades = ["goldOre"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "writing"; Prices = [{ Resource = "science"; Val = 3600 }]; Unlocks = Some({ Buildings = ["amphitheatre"]; Tabs = []; Jobs = []; Tech = ["philosophy"; "machinery"; "steel"]; Policies = ["liberty"; "tradition"]; Upgrades = ["register"]; ZebraUpgrades = []; Religion = []; Crafts = ["parchment"]; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "philosophy"; Prices = [{ Resource = "science"; Val = 9500 }]; Unlocks = Some({ Buildings = ["temple"]; Tabs = []; Jobs = []; Tech = ["theology"]; Policies = ["stoicism"; "epicurianism"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = ["compedium"]; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "machinery"; Prices = [{ Resource = "science"; Val = 15000 }]; Unlocks = Some({ Buildings = ["steamworks"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["printingPress"; "factoryAutomation"; "crossbow"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "steel"; Prices = [{ Resource = "science"; Val = 12000 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["deepMining"; "coalFurnace"; "combustionEngine"; "reinforcedWarehouses"; "steelAxe"; "steelArmor"]; ZebraUpgrades = []; Religion = []; Crafts = ["steel"]; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "theology"; Prices = [{ Resource = "science"; Val = 20000 }; { Resource = "manuscript"; Val = 35 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = ["priest"]; Tech = ["astronomy"; "cryptotheology"]; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = ["temple"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "astronomy"; Prices = [{ Resource = "science"; Val = 28000 }; { Resource = "manuscript"; Val = 65 }]; Unlocks = Some({ Buildings = ["observatory"]; Tabs = []; Jobs = []; Tech = ["navigation"]; Policies = ["knowledgeSharing"; "culturalExchange"; "bigStickPolicy"; "cityOnAHill"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "navigation"; Prices = [{ Resource = "science"; Val = 35000 }; { Resource = "manuscript"; Val = 100 }]; Unlocks = Some({ Buildings = ["harbor"]; Tabs = []; Jobs = []; Tech = ["physics"; "archeology"; "architecture"]; Policies = []; Upgrades = ["caravanserai"; "cargoShips"; "astrolabe"; "titaniumMirrors"; "titaniumAxe"]; ZebraUpgrades = []; Religion = []; Crafts = ["ship"]; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "architecture"; Prices = [{ Resource = "science"; Val = 42000 }; { Resource = "compedium"; Val = 10 }]; Unlocks = Some({ Buildings = ["mansion"; "mint"]; Tabs = []; Jobs = []; Tech = ["acoustics"]; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "physics"; Prices = [{ Resource = "science"; Val = 50000 }; { Resource = "compedium"; Val = 35 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["chemistry"; "electricity"; "metaphysics"]; Policies = []; Upgrades = ["pneumaticPress"; "pyrolysis"; "steelSaw"]; ZebraUpgrades = []; Religion = []; Crafts = ["blueprint"]; Perks = []; Stages = [] }); Upgrades = None }
       { Name = "metaphysics"; Prices = [{ Resource = "unobtainium"; Val = 5 }; { Resource = "science"; Val = 55000 }]; Unlocks = None; Upgrades = None }
-      { Name = "chemistry"; Prices = [{ Resource = "science"; Val = 60000 }; { Resource = "compedium"; Val = 50 }]; Unlocks = Some({ Buildings = ["calciner"; "oilWell"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["alloyAxe"; "alloyArmor"; "alloyWarehouses"; "alloyBarns"]; ZebraUpgrades = []; Religion = []; Crafts = ["alloy"]; Stages = [] }); Upgrades = None }
-      { Name = "acoustics"; Prices = [{ Resource = "science"; Val = 60000 }; { Resource = "compedium"; Val = 60 }]; Unlocks = Some({ Buildings = ["chapel"]; Tabs = []; Jobs = []; Tech = ["drama"]; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "drama"; Prices = [{ Resource = "science"; Val = 90000 }; { Resource = "parchment"; Val = 5000 }]; Unlocks = Some({ Buildings = ["brewery"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "archeology"; Prices = [{ Resource = "science"; Val = 65000 }; { Resource = "compedium"; Val = 65 }]; Unlocks = Some({ Buildings = ["quarry"]; Tabs = []; Jobs = ["geologist"]; Tech = ["biology"]; Policies = []; Upgrades = ["geodesy"]; ZebraUpgrades = ["minerologyDepartment"]; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "electricity"; Prices = [{ Resource = "science"; Val = 75000 }; { Resource = "compedium"; Val = 85 }]; Unlocks = Some({ Buildings = ["magneto"]; Tabs = []; Jobs = []; Tech = ["industrialization"]; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "biology"; Prices = [{ Resource = "science"; Val = 85000 }; { Resource = "compedium"; Val = 100 }]; Unlocks = Some({ Buildings = ["biolab"]; Tabs = []; Jobs = []; Tech = ["biochemistry"]; Policies = []; Upgrades = ["petri"]; ZebraUpgrades = []; Religion = []; Crafts = ["plastic"]; Stages = [] }); Upgrades = None }
-      { Name = "biochemistry"; Prices = [{ Resource = "science"; Val = 145000 }; { Resource = "compedium"; Val = 500 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["genetics"]; Policies = []; Upgrades = ["biofuel"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "genetics"; Prices = [{ Resource = "science"; Val = 190000 }; { Resource = "compedium"; Val = 1500 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["unicornSelection"; "gmo"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "industrialization"; Prices = [{ Resource = "science"; Val = 100000 }; { Resource = "blueprint"; Val = 25 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["mechanization"; "metalurgy"; "combustion"]; Policies = ["sustainability"; "fullIndustrialization"]; Upgrades = ["barges"; "advancedAutomation"; "logistics"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "mechanization"; Prices = [{ Resource = "science"; Val = 115000 }; { Resource = "blueprint"; Val = 45 }]; Unlocks = Some({ Buildings = ["factory"]; Tabs = []; Jobs = ["engineer"]; Tech = ["electronics"]; Policies = []; Upgrades = ["pumpjack"; "strenghtenBuild"]; ZebraUpgrades = []; Religion = []; Crafts = ["concrate"]; Stages = [] }); Upgrades = None }
-      { Name = "metalurgy"; Prices = [{ Resource = "science"; Val = 125000 }; { Resource = "blueprint"; Val = 60 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["electrolyticSmelting"; "oxidation"; "miningDrill"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "combustion"; Prices = [{ Resource = "science"; Val = 115000 }; { Resource = "blueprint"; Val = 45 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["ecology"]; Policies = []; Upgrades = ["offsetPress"; "fuelInjectors"; "oilRefinery"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "ecology"; Prices = [{ Resource = "science"; Val = 125000 }; { Resource = "blueprint"; Val = 55 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["conservation"; "openWoodlands"]; Upgrades = ["carbonSequestration"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = ["pasture:1"] }); Upgrades = Some({ Buildings = ["mine"; "quarry"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "electronics"; Prices = [{ Resource = "science"; Val = 135000 }; { Resource = "blueprint"; Val = 70 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["nuclearFission"; "rocketry"; "robotics"]; Policies = []; Upgrades = ["cadSystems"; "refrigeration"; "seti"; "factoryLogistics"; "factoryOptimization"; "internet"]; ZebraUpgrades = []; Religion = []; Crafts = ["microchip"]; Stages = ["library:1"; "amphitheatre:1"] }); Upgrades = None }
-      { Name = "robotics"; Prices = [{ Resource = "science"; Val = 140000 }; { Resource = "blueprint"; Val = 80 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["ai"]; Policies = []; Upgrades = ["steelPlants"; "rotaryKiln"; "assistance"; "factoryRobotics"]; ZebraUpgrades = []; Religion = []; Crafts = ["tanker"]; Stages = ["aqueduct:1"] }); Upgrades = None }
-      { Name = "ai"; Prices = [{ Resource = "science"; Val = 250000 }; { Resource = "blueprint"; Val = 150 }]; Unlocks = Some({ Buildings = ["aiCore"]; Tabs = []; Jobs = []; Tech = ["quantumCryptography"]; Policies = []; Upgrades = ["neuralNetworks"; "aiEngineers"; "machineLearning"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "quantumCryptography"; Prices = [{ Resource = "science"; Val = 1250000 }; { Resource = "relic"; Val = 1024 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["blackchain"]; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "blackchain"; Prices = [{ Resource = "science"; Val = 5000000 }; { Resource = "relic"; Val = 4096 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["invisibleBlackHand"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "nuclearFission"; Prices = [{ Resource = "science"; Val = 150000 }; { Resource = "blueprint"; Val = 100 }]; Unlocks = Some({ Buildings = ["reactor"]; Tabs = []; Jobs = []; Tech = ["nanotechnology"; "particlePhysics"]; Policies = []; Upgrades = ["reactorVessel"; "nuclearSmelters"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "rocketry"; Prices = [{ Resource = "science"; Val = 175000 }; { Resource = "blueprint"; Val = 125 }]; Unlocks = Some({ Buildings = []; Tabs = ["space"]; Jobs = []; Tech = ["sattelites"; "oilProcessing"]; Policies = []; Upgrades = ["oilDistillation"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "oilProcessing"; Prices = [{ Resource = "science"; Val = 215000 }; { Resource = "blueprint"; Val = 150 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["factoryProcessing"]; ZebraUpgrades = []; Religion = []; Crafts = ["kerosene"]; Stages = [] }); Upgrades = None }
-      { Name = "sattelites"; Prices = [{ Resource = "science"; Val = 190000 }; { Resource = "blueprint"; Val = 125 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["orbitalEngineering"]; Policies = ["outerSpaceTreaty"; "militarizeSpace"]; Upgrades = ["photolithography"; "orbitalGeodesy"; "uplink"; "thinFilm"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "orbitalEngineering"; Prices = [{ Resource = "science"; Val = 250000 }; { Resource = "blueprint"; Val = 250 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["exogeology"; "thorium"]; Policies = []; Upgrades = ["hubbleTelescope"; "satelliteRadio"; "astrophysicists"; "solarSatellites"; "spaceEngineers"; "starlink"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "thorium"; Prices = [{ Resource = "science"; Val = 375000 }; { Resource = "blueprint"; Val = 375 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["thoriumReactors"; "thoriumEngine"; "qdot"]; ZebraUpgrades = []; Religion = []; Crafts = ["thorium"]; Stages = [] }); Upgrades = None }
-      { Name = "exogeology"; Prices = [{ Resource = "science"; Val = 275000 }; { Resource = "blueprint"; Val = 250 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["advExogeology"]; Policies = []; Upgrades = ["unobtainiumReflectors"; "unobtainiumHuts"; "unobtainiumDrill"; "hydroPlantTurbines"; "storageBunkers"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "advExogeology"; Prices = [{ Resource = "science"; Val = 325000 }; { Resource = "blueprint"; Val = 350 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["eludiumCracker"; "eludiumReflectors"; "eludiumHuts"; "mWReactor"; "freightfulExchange"]; ZebraUpgrades = []; Religion = []; Crafts = ["eludium"]; Stages = ["warehouse:1"] }); Upgrades = None }
-      { Name = "nanotechnology"; Prices = [{ Resource = "science"; Val = 200000 }; { Resource = "blueprint"; Val = 150 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["superconductors"]; Policies = []; Upgrades = ["augumentation"; "nanosuits"; "photovoltaic"; "fluidizedReactors"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "superconductors"; Prices = [{ Resource = "science"; Val = 225000 }; { Resource = "blueprint"; Val = 175 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["antimatter"]; Policies = []; Upgrades = ["coldFusion"; "spaceManufacturing"; "cryocomputing"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "antimatter"; Prices = [{ Resource = "science"; Val = 500000 }; { Resource = "antimatter"; Val = 1 }; { Resource = "relic"; Val = 1 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["terraformation"]; Policies = []; Upgrades = ["amReactors"; "amBases"; "amDrive"; "amFission"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "terraformation"; Prices = [{ Resource = "science"; Val = 750000 }; { Resource = "relic"; Val = 5 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["hydroponics"]; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "hydroponics"; Prices = [{ Resource = "science"; Val = 1000000 }; { Resource = "relic"; Val = 25 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["exogeophysics"]; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
+      { Name = "chemistry"; Prices = [{ Resource = "science"; Val = 60000 }; { Resource = "compedium"; Val = 50 }]; Unlocks = Some({ Buildings = ["calciner"; "oilWell"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["alloyAxe"; "alloyArmor"; "alloyWarehouses"; "alloyBarns"]; ZebraUpgrades = []; Religion = []; Crafts = ["alloy"]; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "acoustics"; Prices = [{ Resource = "science"; Val = 60000 }; { Resource = "compedium"; Val = 60 }]; Unlocks = Some({ Buildings = ["chapel"]; Tabs = []; Jobs = []; Tech = ["drama"]; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "drama"; Prices = [{ Resource = "science"; Val = 90000 }; { Resource = "parchment"; Val = 5000 }]; Unlocks = Some({ Buildings = ["brewery"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "archeology"; Prices = [{ Resource = "science"; Val = 65000 }; { Resource = "compedium"; Val = 65 }]; Unlocks = Some({ Buildings = ["quarry"]; Tabs = []; Jobs = ["geologist"]; Tech = ["biology"]; Policies = []; Upgrades = ["geodesy"]; ZebraUpgrades = ["minerologyDepartment"]; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "electricity"; Prices = [{ Resource = "science"; Val = 75000 }; { Resource = "compedium"; Val = 85 }]; Unlocks = Some({ Buildings = ["magneto"]; Tabs = []; Jobs = []; Tech = ["industrialization"]; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "biology"; Prices = [{ Resource = "science"; Val = 85000 }; { Resource = "compedium"; Val = 100 }]; Unlocks = Some({ Buildings = ["biolab"]; Tabs = []; Jobs = []; Tech = ["biochemistry"]; Policies = []; Upgrades = ["petri"]; ZebraUpgrades = []; Religion = []; Crafts = ["plastic"]; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "biochemistry"; Prices = [{ Resource = "science"; Val = 145000 }; { Resource = "compedium"; Val = 500 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["genetics"]; Policies = []; Upgrades = ["biofuel"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "genetics"; Prices = [{ Resource = "science"; Val = 190000 }; { Resource = "compedium"; Val = 1500 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["unicornSelection"; "gmo"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "industrialization"; Prices = [{ Resource = "science"; Val = 100000 }; { Resource = "blueprint"; Val = 25 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["mechanization"; "metalurgy"; "combustion"]; Policies = ["sustainability"; "fullIndustrialization"]; Upgrades = ["barges"; "advancedAutomation"; "logistics"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "mechanization"; Prices = [{ Resource = "science"; Val = 115000 }; { Resource = "blueprint"; Val = 45 }]; Unlocks = Some({ Buildings = ["factory"]; Tabs = []; Jobs = ["engineer"]; Tech = ["electronics"]; Policies = []; Upgrades = ["pumpjack"; "strenghtenBuild"]; ZebraUpgrades = []; Religion = []; Crafts = ["concrate"]; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "metalurgy"; Prices = [{ Resource = "science"; Val = 125000 }; { Resource = "blueprint"; Val = 60 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["electrolyticSmelting"; "oxidation"; "miningDrill"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "combustion"; Prices = [{ Resource = "science"; Val = 115000 }; { Resource = "blueprint"; Val = 45 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["ecology"]; Policies = []; Upgrades = ["offsetPress"; "fuelInjectors"; "oilRefinery"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "ecology"; Prices = [{ Resource = "science"; Val = 125000 }; { Resource = "blueprint"; Val = 55 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["conservation"; "openWoodlands"]; Upgrades = ["carbonSequestration"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = ["pasture:1"] }); Upgrades = Some({ Buildings = ["mine"; "quarry"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "electronics"; Prices = [{ Resource = "science"; Val = 135000 }; { Resource = "blueprint"; Val = 70 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["nuclearFission"; "rocketry"; "robotics"]; Policies = []; Upgrades = ["cadSystems"; "refrigeration"; "seti"; "factoryLogistics"; "factoryOptimization"; "internet"]; ZebraUpgrades = []; Religion = []; Crafts = ["microchip"]; Perks = []; Stages = ["library:1"; "amphitheatre:1"] }); Upgrades = None }
+      { Name = "robotics"; Prices = [{ Resource = "science"; Val = 140000 }; { Resource = "blueprint"; Val = 80 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["ai"]; Policies = []; Upgrades = ["steelPlants"; "rotaryKiln"; "assistance"; "factoryRobotics"]; ZebraUpgrades = []; Religion = []; Crafts = ["tanker"]; Perks = []; Stages = ["aqueduct:1"] }); Upgrades = None }
+      { Name = "ai"; Prices = [{ Resource = "science"; Val = 250000 }; { Resource = "blueprint"; Val = 150 }]; Unlocks = Some({ Buildings = ["aiCore"]; Tabs = []; Jobs = []; Tech = ["quantumCryptography"]; Policies = []; Upgrades = ["neuralNetworks"; "aiEngineers"; "machineLearning"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "quantumCryptography"; Prices = [{ Resource = "science"; Val = 1250000 }; { Resource = "relic"; Val = 1024 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["blackchain"]; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "blackchain"; Prices = [{ Resource = "science"; Val = 5000000 }; { Resource = "relic"; Val = 4096 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["invisibleBlackHand"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "nuclearFission"; Prices = [{ Resource = "science"; Val = 150000 }; { Resource = "blueprint"; Val = 100 }]; Unlocks = Some({ Buildings = ["reactor"]; Tabs = []; Jobs = []; Tech = ["nanotechnology"; "particlePhysics"]; Policies = []; Upgrades = ["reactorVessel"; "nuclearSmelters"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "rocketry"; Prices = [{ Resource = "science"; Val = 175000 }; { Resource = "blueprint"; Val = 125 }]; Unlocks = Some({ Buildings = []; Tabs = ["space"]; Jobs = []; Tech = ["sattelites"; "oilProcessing"]; Policies = []; Upgrades = ["oilDistillation"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "oilProcessing"; Prices = [{ Resource = "science"; Val = 215000 }; { Resource = "blueprint"; Val = 150 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["factoryProcessing"]; ZebraUpgrades = []; Religion = []; Crafts = ["kerosene"]; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "sattelites"; Prices = [{ Resource = "science"; Val = 190000 }; { Resource = "blueprint"; Val = 125 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["orbitalEngineering"]; Policies = ["outerSpaceTreaty"; "militarizeSpace"]; Upgrades = ["photolithography"; "orbitalGeodesy"; "uplink"; "thinFilm"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "orbitalEngineering"; Prices = [{ Resource = "science"; Val = 250000 }; { Resource = "blueprint"; Val = 250 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["exogeology"; "thorium"]; Policies = []; Upgrades = ["hubbleTelescope"; "satelliteRadio"; "astrophysicists"; "solarSatellites"; "spaceEngineers"; "starlink"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "thorium"; Prices = [{ Resource = "science"; Val = 375000 }; { Resource = "blueprint"; Val = 375 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["thoriumReactors"; "thoriumEngine"; "qdot"]; ZebraUpgrades = []; Religion = []; Crafts = ["thorium"]; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "exogeology"; Prices = [{ Resource = "science"; Val = 275000 }; { Resource = "blueprint"; Val = 250 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["advExogeology"]; Policies = []; Upgrades = ["unobtainiumReflectors"; "unobtainiumHuts"; "unobtainiumDrill"; "hydroPlantTurbines"; "storageBunkers"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "advExogeology"; Prices = [{ Resource = "science"; Val = 325000 }; { Resource = "blueprint"; Val = 350 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["eludiumCracker"; "eludiumReflectors"; "eludiumHuts"; "mWReactor"; "freightfulExchange"]; ZebraUpgrades = []; Religion = []; Crafts = ["eludium"]; Perks = []; Stages = ["warehouse:1"] }); Upgrades = None }
+      { Name = "nanotechnology"; Prices = [{ Resource = "science"; Val = 200000 }; { Resource = "blueprint"; Val = 150 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["superconductors"]; Policies = []; Upgrades = ["augumentation"; "nanosuits"; "photovoltaic"; "fluidizedReactors"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "superconductors"; Prices = [{ Resource = "science"; Val = 225000 }; { Resource = "blueprint"; Val = 175 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["antimatter"]; Policies = []; Upgrades = ["coldFusion"; "spaceManufacturing"; "cryocomputing"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "antimatter"; Prices = [{ Resource = "science"; Val = 500000 }; { Resource = "antimatter"; Val = 1 }; { Resource = "relic"; Val = 1 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["terraformation"]; Policies = []; Upgrades = ["amReactors"; "amBases"; "amDrive"; "amFission"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "terraformation"; Prices = [{ Resource = "science"; Val = 750000 }; { Resource = "relic"; Val = 5 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["hydroponics"]; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "hydroponics"; Prices = [{ Resource = "science"; Val = 1000000 }; { Resource = "relic"; Val = 25 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["exogeophysics"]; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
       { Name = "exogeophysics"; Prices = [{ Resource = "science"; Val = 25000000 }; { Resource = "relic"; Val = 500 }]; Unlocks = None; Upgrades = None }
-      { Name = "particlePhysics"; Prices = [{ Resource = "science"; Val = 185000 }; { Resource = "blueprint"; Val = 135 }]; Unlocks = Some({ Buildings = ["accelerator"]; Tabs = []; Jobs = []; Tech = ["chronophysics"; "dimensionalPhysics"]; Policies = []; Upgrades = ["enrichedUranium"; "railgun"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "dimensionalPhysics"; Prices = [{ Resource = "science"; Val = 235000 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["energyRifts"; "lhc"; "transportSuperposition"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "artificialGravity"; Prices = [{ Resource = "science"; Val = 320000 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["spiceNavigation"; "longRangeSpaceships"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "chronophysics"; Prices = [{ Resource = "science"; Val = 250000 }; { Resource = "timeCrystal"; Val = 5 }]; Unlocks = Some({ Buildings = ["chronosphere"; "stasisPod"]; Tabs = []; Jobs = []; Tech = ["tachyonTheory"]; Policies = []; Upgrades = ["stasisChambers"; "fluxCondensator"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "tachyonTheory"; Prices = [{ Resource = "science"; Val = 750000 }; { Resource = "timeCrystal"; Val = 25 }; { Resource = "relic"; Val = 1 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["voidSpace"]; Policies = []; Upgrades = ["tachyonAccelerators"; "chronoforge"; "chronoEngineers"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "cryptotheology"; Prices = [{ Resource = "science"; Val = 650000 }; { Resource = "relic"; Val = 5 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["relicStation"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "voidSpace"; Prices = [{ Resource = "science"; Val = 800000 }; { Resource = "timeCrystal"; Val = 30 }; { Resource = "void"; Val = 100 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["paradoxalKnowledge"]; Policies = []; Upgrades = ["voidAspiration"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "paradoxalKnowledge"; Prices = [{ Resource = "science"; Val = 1000000 }; { Resource = "timeCrystal"; Val = 40 }; { Resource = "void"; Val = 250 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["distorsion"]; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
+      { Name = "particlePhysics"; Prices = [{ Resource = "science"; Val = 185000 }; { Resource = "blueprint"; Val = 135 }]; Unlocks = Some({ Buildings = ["accelerator"]; Tabs = []; Jobs = []; Tech = ["chronophysics"; "dimensionalPhysics"]; Policies = []; Upgrades = ["enrichedUranium"; "railgun"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "dimensionalPhysics"; Prices = [{ Resource = "science"; Val = 235000 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["energyRifts"; "lhc"; "transportSuperposition"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "artificialGravity"; Prices = [{ Resource = "science"; Val = 320000 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["spiceNavigation"; "longRangeSpaceships"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "chronophysics"; Prices = [{ Resource = "science"; Val = 250000 }; { Resource = "timeCrystal"; Val = 5 }]; Unlocks = Some({ Buildings = ["chronosphere"; "stasisPod"]; Tabs = []; Jobs = []; Tech = ["tachyonTheory"]; Policies = []; Upgrades = ["stasisChambers"; "fluxCondensator"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "tachyonTheory"; Prices = [{ Resource = "science"; Val = 750000 }; { Resource = "timeCrystal"; Val = 25 }; { Resource = "relic"; Val = 1 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["voidSpace"]; Policies = []; Upgrades = ["tachyonAccelerators"; "chronoforge"; "chronoEngineers"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "cryptotheology"; Prices = [{ Resource = "science"; Val = 650000 }; { Resource = "relic"; Val = 5 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["relicStation"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "voidSpace"; Prices = [{ Resource = "science"; Val = 800000 }; { Resource = "timeCrystal"; Val = 30 }; { Resource = "void"; Val = 100 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = ["paradoxalKnowledge"]; Policies = []; Upgrades = ["voidAspiration"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "paradoxalKnowledge"; Prices = [{ Resource = "science"; Val = 1000000 }; { Resource = "timeCrystal"; Val = 40 }; { Resource = "void"; Val = 250 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["distorsion"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
     ]
 
 let policyDefs : PolicyDef list =
     [
-      { Name = "liberty"; Prices = [{ Resource = "culture"; Val = 150 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["authocracy"; "republic"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "tradition"; Prices = [{ Resource = "culture"; Val = 150 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["authocracy"; "monarchy"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "monarchy"; Prices = [{ Resource = "culture"; Val = 1500 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["liberalism"; "fascism"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "authocracy"; Prices = [{ Resource = "culture"; Val = 1500 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["communism"; "fascism"; "socialism"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "republic"; Prices = [{ Resource = "culture"; Val = 1500 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["liberalism"; "communism"; "socialism"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "socialism"; Prices = [{ Resource = "culture"; Val = 7500 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["scientificCommunism"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "scientificCommunism"; Prices = [{ Resource = "culture"; Val = 8500 }]; Unlocks = None }
-      { Name = "liberalism"; Prices = [{ Resource = "culture"; Val = 15000 }]; Unlocks = None }
-      { Name = "communism"; Prices = [{ Resource = "culture"; Val = 15000 }]; Unlocks = None }
-      { Name = "fascism"; Prices = [{ Resource = "culture"; Val = 15000 }]; Unlocks = None }
-      { Name = "technocracy"; Prices = [{ Resource = "culture"; Val = 150000 }]; Unlocks = None }
-      { Name = "theocracy"; Prices = [{ Resource = "culture"; Val = 150000 }]; Unlocks = None }
-      { Name = "expansionism"; Prices = [{ Resource = "culture"; Val = 150000 }]; Unlocks = None }
-      { Name = "transkittenism"; Prices = [{ Resource = "culture"; Val = 1500000 }]; Unlocks = None }
-      { Name = "necrocracy"; Prices = [{ Resource = "culture"; Val = 1500000 }]; Unlocks = None }
-      { Name = "radicalXenophobia"; Prices = [{ Resource = "culture"; Val = 1500000 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "diplomacy"; Prices = [{ Resource = "culture"; Val = 1600 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["knowledgeSharing"; "culturalExchange"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "isolationism"; Prices = [{ Resource = "culture"; Val = 1600 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["bigStickPolicy"; "cityOnAHill"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "zebraRelationsAppeasement"; Prices = [{ Resource = "culture"; Val = 5000 }]; Unlocks = None }
-      { Name = "zebraRelationsBellicosity"; Prices = [{ Resource = "culture"; Val = 5000 }]; Unlocks = None }
-      { Name = "knowledgeSharing"; Prices = [{ Resource = "culture"; Val = 4000 }]; Unlocks = None }
-      { Name = "culturalExchange"; Prices = [{ Resource = "culture"; Val = 4000 }]; Unlocks = None }
-      { Name = "bigStickPolicy"; Prices = [{ Resource = "culture"; Val = 4000 }]; Unlocks = None }
-      { Name = "cityOnAHill"; Prices = [{ Resource = "culture"; Val = 4000 }]; Unlocks = None }
-      { Name = "outerSpaceTreaty"; Prices = [{ Resource = "culture"; Val = 10000 }]; Unlocks = None }
-      { Name = "militarizeSpace"; Prices = [{ Resource = "culture"; Val = 10000 }]; Unlocks = None }
-      { Name = "lizardRelationsEcologists"; Prices = [{ Resource = "culture"; Val = 2100 }]; Unlocks = None }
-      { Name = "lizardRelationsPriests"; Prices = [{ Resource = "culture"; Val = 2100 }]; Unlocks = None }
-      { Name = "lizardRelationsDiplomats"; Prices = [{ Resource = "culture"; Val = 2100 }]; Unlocks = None }
-      { Name = "sharkRelationsScribes"; Prices = [{ Resource = "culture"; Val = 2200 }]; Unlocks = None }
-      { Name = "sharkRelationsMerchants"; Prices = [{ Resource = "culture"; Val = 2200 }]; Unlocks = None }
-      { Name = "sharkRelationsBotanists"; Prices = [{ Resource = "culture"; Val = 2200 }]; Unlocks = None }
-      { Name = "griffinRelationsMetallurgists"; Prices = [{ Resource = "culture"; Val = 16000 }]; Unlocks = None }
-      { Name = "griffinRelationsScouts"; Prices = [{ Resource = "culture"; Val = 16000 }]; Unlocks = None }
-      { Name = "griffinRelationsMachinists"; Prices = [{ Resource = "culture"; Val = 16000 }]; Unlocks = None }
-      { Name = "nagaRelationsMasons"; Prices = [{ Resource = "culture"; Val = 8000 }]; Unlocks = None }
-      { Name = "nagaRelationsCultists"; Prices = [{ Resource = "culture"; Val = 8000 }]; Unlocks = None }
-      { Name = "nagaRelationsArchitects"; Prices = [{ Resource = "culture"; Val = 8000 }]; Unlocks = None }
-      { Name = "spiderRelationsGeologists"; Prices = [{ Resource = "culture"; Val = 20000 }]; Unlocks = None }
-      { Name = "spiderRelationsChemists"; Prices = [{ Resource = "culture"; Val = 20000 }]; Unlocks = None }
-      { Name = "spiderRelationsPaleontologists"; Prices = [{ Resource = "culture"; Val = 20000 }]; Unlocks = None }
-      { Name = "dragonRelationsPhysicists"; Prices = [{ Resource = "culture"; Val = 30000 }]; Unlocks = None }
-      { Name = "dragonRelationsAstrologers"; Prices = [{ Resource = "culture"; Val = 30000 }]; Unlocks = None }
-      { Name = "dragonRelationsDynamicists"; Prices = [{ Resource = "culture"; Val = 30000 }]; Unlocks = None }
-      { Name = "stoicism"; Prices = [{ Resource = "culture"; Val = 2500 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["rationality"; "mysticism"; "rationing"; "frugality"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "epicurianism"; Prices = [{ Resource = "culture"; Val = 2500 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["rationality"; "mysticism"; "carnivale"; "extravagance"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "carnivale"; Prices = [{ Resource = "culture"; Val = 3500 }]; Unlocks = None }
-      { Name = "extravagance"; Prices = [{ Resource = "culture"; Val = 3500 }]; Unlocks = None }
-      { Name = "rationing"; Prices = [{ Resource = "culture"; Val = 3500 }]; Unlocks = None }
-      { Name = "frugality"; Prices = [{ Resource = "culture"; Val = 3500 }]; Unlocks = None }
-      { Name = "rationality"; Prices = [{ Resource = "culture"; Val = 3000 }]; Unlocks = None }
-      { Name = "mysticism"; Prices = [{ Resource = "culture"; Val = 3000 }]; Unlocks = None }
-      { Name = "stripMining"; Prices = [{ Resource = "science"; Val = 2000 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["sustainability"; "fullIndustrialization"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "clearCutting"; Prices = [{ Resource = "science"; Val = 2000 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["sustainability"; "fullIndustrialization"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "environmentalism"; Prices = [{ Resource = "culture"; Val = 2000 }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["conservation"; "openWoodlands"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "sustainability"; Prices = [{ Resource = "culture"; Val = 10000 }]; Unlocks = None }
-      { Name = "fullIndustrialization"; Prices = [{ Resource = "culture"; Val = 10000 }]; Unlocks = None }
-      { Name = "conservation"; Prices = [{ Resource = "culture"; Val = 10000 }]; Unlocks = None }
-      { Name = "openWoodlands"; Prices = [{ Resource = "culture"; Val = 10000 }]; Unlocks = None }
-      { Name = "cryochamberExtraction"; Prices = [{ Resource = "manpower"; Val = 10000 }]; Unlocks = None }
-      { Name = "terraformingInsight"; Prices = [{ Resource = "manpower"; Val = 10000 }]; Unlocks = None }
-      { Name = "siphoning"; Prices = [{ Resource = "necrocorn"; Val = 1 }]; Unlocks = None }
-      { Name = "feedingFrenzy"; Prices = [{ Resource = "necrocorn"; Val = 1 }]; Unlocks = None }
-      { Name = "upfrontPayment"; Prices = [{ Resource = "necrocorn"; Val = 1 }]; Unlocks = None }
+      { Name = "liberty"; Prices = [{ Resource = "culture"; Val = 150 }]; IsRelation = false; RelationGate = None; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["authocracy"; "republic"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "tradition"; Prices = [{ Resource = "culture"; Val = 150 }]; IsRelation = false; RelationGate = None; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["authocracy"; "monarchy"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "monarchy"; Prices = [{ Resource = "culture"; Val = 1500 }]; IsRelation = false; RelationGate = None; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["liberalism"; "fascism"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "authocracy"; Prices = [{ Resource = "culture"; Val = 1500 }]; IsRelation = false; RelationGate = None; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["communism"; "fascism"; "socialism"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "republic"; Prices = [{ Resource = "culture"; Val = 1500 }]; IsRelation = false; RelationGate = None; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["liberalism"; "communism"; "socialism"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "socialism"; Prices = [{ Resource = "culture"; Val = 7500 }]; IsRelation = false; RelationGate = None; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["scientificCommunism"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "scientificCommunism"; Prices = [{ Resource = "culture"; Val = 8500 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "liberalism"; Prices = [{ Resource = "culture"; Val = 15000 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "communism"; Prices = [{ Resource = "culture"; Val = 15000 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "fascism"; Prices = [{ Resource = "culture"; Val = 15000 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "technocracy"; Prices = [{ Resource = "culture"; Val = 150000 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "theocracy"; Prices = [{ Resource = "culture"; Val = 150000 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "expansionism"; Prices = [{ Resource = "culture"; Val = 150000 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "transkittenism"; Prices = [{ Resource = "culture"; Val = 1500000 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "necrocracy"; Prices = [{ Resource = "culture"; Val = 1500000 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "radicalXenophobia"; Prices = [{ Resource = "culture"; Val = 1500000 }]; IsRelation = false; RelationGate = None; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "diplomacy"; Prices = [{ Resource = "culture"; Val = 1600 }]; IsRelation = false; RelationGate = None; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["knowledgeSharing"; "culturalExchange"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "isolationism"; Prices = [{ Resource = "culture"; Val = 1600 }]; IsRelation = false; RelationGate = None; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["bigStickPolicy"; "cityOnAHill"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "zebraRelationsAppeasement"; Prices = [{ Resource = "culture"; Val = 5000 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "zebraRelationsBellicosity"; Prices = [{ Resource = "culture"; Val = 5000 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "knowledgeSharing"; Prices = [{ Resource = "culture"; Val = 4000 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "culturalExchange"; Prices = [{ Resource = "culture"; Val = 4000 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "bigStickPolicy"; Prices = [{ Resource = "culture"; Val = 4000 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "cityOnAHill"; Prices = [{ Resource = "culture"; Val = 4000 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "outerSpaceTreaty"; Prices = [{ Resource = "culture"; Val = 10000 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "militarizeSpace"; Prices = [{ Resource = "culture"; Val = 10000 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "lizardRelationsEcologists"; Prices = [{ Resource = "culture"; Val = 2100 }]; IsRelation = true; RelationGate = Some("lizards", 20); Unlocks = None }
+      { Name = "lizardRelationsPriests"; Prices = [{ Resource = "culture"; Val = 2100 }]; IsRelation = true; RelationGate = Some("lizards", 20); Unlocks = None }
+      { Name = "lizardRelationsDiplomats"; Prices = [{ Resource = "culture"; Val = 2100 }]; IsRelation = true; RelationGate = Some("lizards", 20); Unlocks = None }
+      { Name = "sharkRelationsScribes"; Prices = [{ Resource = "culture"; Val = 2200 }]; IsRelation = true; RelationGate = Some("sharks", 20); Unlocks = None }
+      { Name = "sharkRelationsMerchants"; Prices = [{ Resource = "culture"; Val = 2200 }]; IsRelation = true; RelationGate = Some("sharks", 20); Unlocks = None }
+      { Name = "sharkRelationsBotanists"; Prices = [{ Resource = "culture"; Val = 2200 }]; IsRelation = true; RelationGate = Some("sharks", 20); Unlocks = None }
+      { Name = "griffinRelationsMetallurgists"; Prices = [{ Resource = "culture"; Val = 16000 }]; IsRelation = true; RelationGate = Some("griffins", 20); Unlocks = None }
+      { Name = "griffinRelationsScouts"; Prices = [{ Resource = "culture"; Val = 16000 }]; IsRelation = true; RelationGate = Some("griffins", 20); Unlocks = None }
+      { Name = "griffinRelationsMachinists"; Prices = [{ Resource = "culture"; Val = 16000 }]; IsRelation = true; RelationGate = Some("griffins", 20); Unlocks = None }
+      { Name = "nagaRelationsMasons"; Prices = [{ Resource = "culture"; Val = 8000 }]; IsRelation = true; RelationGate = Some("nagas", 20); Unlocks = None }
+      { Name = "nagaRelationsCultists"; Prices = [{ Resource = "culture"; Val = 8000 }]; IsRelation = true; RelationGate = Some("nagas", 20); Unlocks = None }
+      { Name = "nagaRelationsArchitects"; Prices = [{ Resource = "culture"; Val = 8000 }]; IsRelation = true; RelationGate = Some("nagas", 20); Unlocks = None }
+      { Name = "spiderRelationsGeologists"; Prices = [{ Resource = "culture"; Val = 20000 }]; IsRelation = true; RelationGate = Some("spiders", 10); Unlocks = None }
+      { Name = "spiderRelationsChemists"; Prices = [{ Resource = "culture"; Val = 20000 }]; IsRelation = true; RelationGate = Some("spiders", 10); Unlocks = None }
+      { Name = "spiderRelationsPaleontologists"; Prices = [{ Resource = "culture"; Val = 20000 }]; IsRelation = true; RelationGate = Some("spiders", 10); Unlocks = None }
+      { Name = "dragonRelationsPhysicists"; Prices = [{ Resource = "culture"; Val = 30000 }]; IsRelation = true; RelationGate = Some("dragons", 10); Unlocks = None }
+      { Name = "dragonRelationsAstrologers"; Prices = [{ Resource = "culture"; Val = 30000 }]; IsRelation = true; RelationGate = Some("dragons", 10); Unlocks = None }
+      { Name = "dragonRelationsDynamicists"; Prices = [{ Resource = "culture"; Val = 30000 }]; IsRelation = true; RelationGate = Some("dragons", 10); Unlocks = None }
+      { Name = "stoicism"; Prices = [{ Resource = "culture"; Val = 2500 }]; IsRelation = false; RelationGate = None; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["rationality"; "mysticism"; "rationing"; "frugality"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "epicurianism"; Prices = [{ Resource = "culture"; Val = 2500 }]; IsRelation = false; RelationGate = None; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["rationality"; "mysticism"; "carnivale"; "extravagance"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "carnivale"; Prices = [{ Resource = "culture"; Val = 3500 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "extravagance"; Prices = [{ Resource = "culture"; Val = 3500 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "rationing"; Prices = [{ Resource = "culture"; Val = 3500 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "frugality"; Prices = [{ Resource = "culture"; Val = 3500 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "rationality"; Prices = [{ Resource = "culture"; Val = 3000 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "mysticism"; Prices = [{ Resource = "culture"; Val = 3000 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "stripMining"; Prices = [{ Resource = "science"; Val = 2000 }]; IsRelation = false; RelationGate = None; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["sustainability"; "fullIndustrialization"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "clearCutting"; Prices = [{ Resource = "science"; Val = 2000 }]; IsRelation = false; RelationGate = None; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["sustainability"; "fullIndustrialization"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "environmentalism"; Prices = [{ Resource = "culture"; Val = 2000 }]; IsRelation = false; RelationGate = None; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["conservation"; "openWoodlands"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "sustainability"; Prices = [{ Resource = "culture"; Val = 10000 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "fullIndustrialization"; Prices = [{ Resource = "culture"; Val = 10000 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "conservation"; Prices = [{ Resource = "culture"; Val = 10000 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "openWoodlands"; Prices = [{ Resource = "culture"; Val = 10000 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "cryochamberExtraction"; Prices = [{ Resource = "manpower"; Val = 10000 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "terraformingInsight"; Prices = [{ Resource = "manpower"; Val = 10000 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "siphoning"; Prices = [{ Resource = "necrocorn"; Val = 1 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "feedingFrenzy"; Prices = [{ Resource = "necrocorn"; Val = 1 }]; IsRelation = false; RelationGate = None; Unlocks = None }
+      { Name = "upfrontPayment"; Prices = [{ Resource = "necrocorn"; Val = 1 }]; IsRelation = false; RelationGate = None; Unlocks = None }
     ]
 
 let upgradeDefs : UpgradeDef list =
@@ -701,12 +701,12 @@ let craftDefs : CraftDef list =
 
 let zebraUpgradeDefs : ZebraUpgradeDef list =
     [
-      { Name = "darkRevolution"; Prices = [{ Resource = "bloodstone"; Val = 15 }; { Resource = "science"; Val = 100 }]; Effects = Map.empty; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = ["zebraTrappers"]; Religion = []; Crafts = []; Stages = [] }); Upgrades = Some({ Buildings = ["zebraOutpost"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
+      { Name = "darkRevolution"; Prices = [{ Resource = "bloodstone"; Val = 15 }; { Resource = "science"; Val = 100 }]; Effects = Map.empty; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = ["zebraTrappers"]; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = ["zebraOutpost"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
       { Name = "darkBrew"; Prices = [{ Resource = "bloodstone"; Val = 1 }; { Resource = "parchment"; Val = 3000 }; { Resource = "science"; Val = 100 }]; Effects = Map.empty; Unlocks = None; Upgrades = None }
-      { Name = "zebraTrappers"; Prices = [{ Resource = "science"; Val = 1000 }; { Resource = "alloy"; Val = 100 }; { Resource = "tMythril"; Val = 10 }]; Effects = Map.ofList ["preparationRatio", 1]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = ["reforgedOutposts"]; Religion = []; Crafts = []; Stages = [] }); Upgrades = Some({ Buildings = ["zebraOutpost"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "reforgedOutposts"; Prices = [{ Resource = "science"; Val = 1500 }; { Resource = "coal"; Val = 10000 }; { Resource = "bloodstone"; Val = 50 }; { Resource = "tMythril"; Val = 10 }]; Effects = Map.empty; Unlocks = None; Upgrades = Some({ Buildings = ["zebraForge"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "whispers"; Prices = [{ Resource = "tMythril"; Val = 5 }]; Effects = Map.empty; Unlocks = None; Upgrades = Some({ Buildings = ["ivoryTemple"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "minerologyDepartment"; Prices = [{ Resource = "science"; Val = 75000 }; { Resource = "compedium"; Val = 75 }]; Effects = Map.empty; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = ["bloodstoneInstitute"]; Religion = []; Crafts = []; Stages = [] }); Upgrades = Some({ Buildings = ["academy"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "bloodstoneInstitute"; Prices = [{ Resource = "science"; Val = 85000 }; { Resource = "blueprint"; Val = 50 }; { Resource = "bloodstone"; Val = 25 }; { Resource = "tMythril"; Val = 10 }]; Effects = Map.empty; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = ["rangefinders"]; Religion = []; Crafts = []; Stages = [] }); Upgrades = Some({ Buildings = ["zebraWorkshop"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "rangefinders"; Prices = [{ Resource = "science"; Val = 100000 }; { Resource = "tMythril"; Val = 50 }; { Resource = "microchip"; Val = 25 }]; Effects = Map.empty; Unlocks = None; Upgrades = Some({ Buildings = ["zebraForge"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
+      { Name = "zebraTrappers"; Prices = [{ Resource = "science"; Val = 1000 }; { Resource = "alloy"; Val = 100 }; { Resource = "tMythril"; Val = 10 }]; Effects = Map.ofList ["preparationRatio", 1]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = ["reforgedOutposts"]; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = ["zebraOutpost"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "reforgedOutposts"; Prices = [{ Resource = "science"; Val = 1500 }; { Resource = "coal"; Val = 10000 }; { Resource = "bloodstone"; Val = 50 }; { Resource = "tMythril"; Val = 10 }]; Effects = Map.empty; Unlocks = None; Upgrades = Some({ Buildings = ["zebraForge"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "whispers"; Prices = [{ Resource = "tMythril"; Val = 5 }]; Effects = Map.empty; Unlocks = None; Upgrades = Some({ Buildings = ["ivoryTemple"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "minerologyDepartment"; Prices = [{ Resource = "science"; Val = 75000 }; { Resource = "compedium"; Val = 75 }]; Effects = Map.empty; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = ["bloodstoneInstitute"]; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = ["academy"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "bloodstoneInstitute"; Prices = [{ Resource = "science"; Val = 85000 }; { Resource = "blueprint"; Val = 50 }; { Resource = "bloodstone"; Val = 25 }; { Resource = "tMythril"; Val = 10 }]; Effects = Map.empty; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = ["rangefinders"]; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = ["zebraWorkshop"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "rangefinders"; Prices = [{ Resource = "science"; Val = 100000 }; { Resource = "tMythril"; Val = 50 }; { Resource = "microchip"; Val = 25 }]; Effects = Map.empty; Unlocks = None; Upgrades = Some({ Buildings = ["zebraForge"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
     ]

@@ -340,6 +340,27 @@ function doAction(move) {
         game.diplomacy.tradeAll(race);
         return;
       }
+      case "perk": {
+        const c = new classes.ui.PrestigeBtnController(game);
+        const model = c.fetchModel({ id: args[0] });
+        const r = c.buyItem(model, null, null);
+        if (r && r.itemBought === false) actionLog.push({ tick: tickIndex, action, args, reason: r.reason });
+        return;
+      }
+      case "festival": {
+        const amt = args.length >= 1 ? Number(args[0]) : 1;
+        game.village.holdFestival(amt);
+        return;
+      }
+      case "feedelder": {
+        game.diplomacy.feedElders(Number(args[0]));
+        game.updateCaches();
+        return;
+      }
+      case "undo": {
+        game.undo();
+        return;
+      }
       case "speciality": {
         // CraftButtonController.assignCraftJob path
         const craft = game.workshop.getCraft(args[0]);
@@ -527,6 +548,39 @@ function doAction(move) {
           actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
           return;
         }
+        if (fn === "forceperk") {
+          const perk = game.prestige.getPerk(arg1);
+          perk.researched = true; perk.unlocked = true;
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "forcerace") {
+          const race = game.diplomacy.get(arg1);
+          race.unlocked = true;
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "forcetech") {
+          const t = game.science.get(arg1);
+          t.researched = true; t.unlocked = true;
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "forcepolicy") {
+          const pol = game.science.getPolicy(arg1);
+          pol.researched = true; pol.unlocked = true;
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "necroff") {
+          game.religion.fastforward(Number(arg1));
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "corruption") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.religion.corruption });
+          return;
+        }
         if (fn === "year") {
           game.calendar.year = Number(arg1);
           actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
@@ -637,7 +691,17 @@ function takeSnapshot() {
   for (const c of g.workshop.crafts) crafts[c.name] = { unlocked: !!c.unlocked, value: c.value || 0, progress: c.progress || 0 };
   const techs = g.science.techs.filter((t) => t.researched).map((t) => t.name).sort();
   const upgrades = g.workshop.upgrades.filter((u) => u.researched).map((u) => u.name).sort();
-  const policies = (g.science.policies || []).filter((p) => p.researched).map((p) => p.name).sort();
+  const policies = Object.assign({}, ...g.science.policies.map((p) => ({ [p.name]: { unlocked: !!p.unlocked, researched: !!p.researched } })));
+  const statsTotal = {};
+  for (const st of g.stats.stats) statsTotal[st.name] = st.val || 0;
+  const statsCurrent = {};
+  for (const st of g.stats.statsCurrent) statsCurrent[st.name] = st.val || 0;
+  const achievements = {};
+  for (const a of g.achievements.achievements) {
+    achievements[a.name] = { unlocked: !!a.unlocked, starUnlocked: !!a.starUnlocked };
+  }
+  const badges = {};
+  for (const b of g.achievements.badges) badges[b.name] = !!b.unlocked;
   const cal = g.calendar;
   const seasonName = (cal.seasons && cal.seasons[cal.season] && cal.seasons[cal.season].name) || null;
   // kitten-level ground truth: jobRef.value and sim kitten jobs can diverge (OBS-1)
@@ -648,6 +712,7 @@ function takeSnapshot() {
     calendar: {
       year: cal.year, day: cal.day, season: seasonName, weather: cal.weather,
       cycle: cal.cycle, cycleYear: cal.cycleYear,
+      cryptoPrice: cal.cryptoPrice, festivalDays: cal.festivalDays || 0,
     },
     kittens: { count: g.village.sim.kittens.length, free: g.village.getFreeKittens(), jobs: kittenJobs },
     resources, buildings, jobs, crafts, techs, upgrades, policies,
@@ -655,6 +720,7 @@ function takeSnapshot() {
       faith: g.religion.faith,
       faithRatio: g.religion.faithRatio,
       tier: g.religion.transcendenceTier,
+      corruption: g.religion.corruption || 0,
       metas: Object.assign(
         {},
         ...g.religion.religionUpgrades.map((m) => ({ [m.name]: { val: m.val || 0, on: m.on || 0, unlocked: !!m.unlocked, researched: !!m.researched } })),
@@ -663,8 +729,11 @@ function takeSnapshot() {
       ),
     },
     diplomacy: {
-      races: Object.assign({}, ...g.diplomacy.races.map((r) => ({ [r.name]: { unlocked: !!r.unlocked, embassyLevel: r.embassyLevel || 0 } }))),
+      races: Object.assign({}, ...g.diplomacy.races.map((r) => ({ [r.name]: { unlocked: !!r.unlocked, embassyLevel: r.embassyLevel || 0, energy: r.energy || 0, duration: r.duration || 0 } }))),
     },
+    stats: { total: statsTotal, current: statsCurrent },
+    achievements,
+    badges,
     effects: snapEffects(g),
   };
 }
@@ -675,7 +744,7 @@ function takeSnapshot() {
 if (process.argv[2] === "--dump-defs") {
   const g = game;
   const clone = (o) => JSON.parse(JSON.stringify(o === undefined ? null : o));
-  const unlockShape = (u) => (u ? { buildings: u.buildings || [], tabs: u.tabs || [], jobs: u.jobs || [], tech: u.tech || [], policies: u.policies || [], upgrades: u.upgrades || [], zebraUpgrades: u.zebraUpgrades || [], religion: u.religion || [], crafts: u.crafts || [], stages: (u.stages || []).map(s => typeof s === "string" ? s : (s.bld || s.name || "?") + ":" + (s.stage !== undefined ? s.stage : "?")) } : null);
+  const unlockShape = (u) => (u ? { buildings: u.buildings || [], tabs: u.tabs || [], jobs: u.jobs || [], tech: u.tech || [], policies: u.policies || [], upgrades: u.upgrades || [], zebraUpgrades: u.zebraUpgrades || [], religion: u.religion || [], crafts: u.crafts || [], perks: u.perks || [], stages: (u.stages || []).map(s => typeof s === "string" ? s : (s.bld || s.name || "?") + ":" + (s.stage !== undefined ? s.stage : "?")) } : null);
   const buildings = g.bld.buildingsData.map((b) => {
     const base = clone(b.effects);
     let calc = null;
@@ -713,10 +782,40 @@ if (process.argv[2] === "--dump-defs") {
     name: t2.name, prices: clone(t2.prices) || [], unlocked: !!t2.unlocked, researched: !!t2.researched,
     unlocks: unlockShape(t2.unlocks), upgrades: unlockShape(t2.upgrades),
   }));
-  const policies = g.science.policies.map((p) => ({
-    name: p.name, prices: clone(p.prices) || [], unlocked: !!p.unlocked, researched: !!p.researched,
-    unlocks: unlockShape(p.unlocks),
-  }));
+  const policies = g.science.policies.map((p) => {
+    // capture evaluateLocks checkRelation gates symbolically (D014-style
+    // harness probing of orig closures — orig source untouched)
+    let gate = null;
+    if (typeof p.evaluateLocks === "function") {
+      const inert = () => ({ val: 0, on: 0, value: 0, researched: true, unlocked: true, effects: {} });
+      const proxyGame = {
+        science: {
+          checkRelation: (race, needed) => { gate = { race, needed }; return false; },
+          getPolicy: inert,
+          get: inert,
+        },
+        prestige: { getPerk: inert },
+        bld: { get: inert, getBuildingExt: () => ({ meta: { effects: {} } }) },
+        resPool: { get: inert },
+        village: { getEffectLeader: (t, d) => d },
+        workshop: { get: inert, getZebraUpgrade: inert },
+        religion: { getZU: inert, getRU: inert, getTU: inert },
+        space: { getProgram: inert, getBuilding: inert, getPlanet: inert },
+        challenges: { getChallenge: inert, isActive: () => false },
+        time: { getVSU: inert },
+        calendar: { getCryptoPrice: () => 1000 },
+        getEffect: () => 0,
+        getFeatureFlag: () => true,
+        ironWill: false,
+      };
+      p.evaluateLocks(proxyGame); // orig: item.evaluateLocks(this.game) — single arg
+    }
+    return {
+      name: p.name, prices: clone(p.prices) || [], unlocked: !!p.unlocked, researched: !!p.researched,
+      unlocks: unlockShape(p.unlocks), isRelation: !!p.isRelation,
+      gate: gate,
+    };
+  });
   const upgrades = g.workshop.upgrades.map((u) => ({
     name: u.name, prices: clone(u.prices) || [], unlocked: !!u.unlocked, researched: !!u.researched,
     effects: clone(u.effects) || {},

@@ -26,6 +26,7 @@ type ReligionPool =
       Tcratio: float          // transcendence progress spent
       TranscendenceTier: int
       Corruption: float
+      NecrocornDeficit: float // pactsManager.necrocornDeficit (religion-14 seam; 0 without pacts)
       ActiveHolyGenocide: int
       ZUs: Map<string, ReligionMeta>
       RUs: Map<string, ReligionMeta>
@@ -53,6 +54,7 @@ let init () : ReligionPool =
       Tcratio = 0.0
       TranscendenceTier = 0
       Corruption = 0.0
+      NecrocornDeficit = 0.0
       ActiveHolyGenocide = 0
       ZUs = zus
       RUs = rus
@@ -132,7 +134,7 @@ let resetState (_rp: ReligionPool) : ReligionPool =
         let ruOrder, rus = idx Game.Catalog.World.ruDefs (fun d -> d.Name)
         let tuOrder, tus = idx Game.Catalog.World.tuDefs (fun d -> d.Name)
         { Faith = 0.0; FaithRatio = 0.0; Tcratio = 0.0; TranscendenceTier = 0
-          Corruption = 0.0; ActiveHolyGenocide = 0
+          Corruption = 0.0; NecrocornDeficit = 0.0; ActiveHolyGenocide = 0
           ZUs = zus; RUs = rus; TUs = tus
           ZuOrder = zuOrder; RuOrder = ruOrder; TuOrder = tuOrder }
     fresh
@@ -173,6 +175,281 @@ let religionGroup (rp: ReligionPool) : Game.Effects.ManagerGroup =
         metaItems (rp.ZuOrder |> List.choose (fun n -> rp.ZUs |> Map.tryFind n |> Option.map (fun m -> (n, m)))) zuEffects
         @ metaItems (rp.RuOrder |> List.choose (fun n -> rp.RUs |> Map.tryFind n |> Option.map (fun m -> (n, m)))) ruEffects
         @ metaItems (rp.TuOrder |> List.choose (fun n -> rp.TUs |> Map.tryFind n |> Option.map (fun m -> (n, m)))) tuEffects }
+
+// --- religion-03: corruption engine (js/religion.js L182-408) ------------------
+
+/// Seam context for corruption math (live reads supplied by the runner).
+type CorruptionContext =
+    { GetEffect: string -> float
+      Alicorns: float
+      Sorrow: float
+      FeedingFrenzyResearched: bool }
+
+/// orig getExistNecrocornThreshold (L183): feedingFrenzy -> 1, else 0.
+let getExistNecrocornThreshold (ctx: CorruptionContext) : float =
+    if ctx.FeedingFrenzyResearched then 1.0 else 0.0
+
+/// orig getCorruptionEffects (L204-291): markers additive, exist-penalty
+/// multiplicative, black radiance sqrt, feeding-frenzy interference. Pact
+/// siphoning branches are seams (no pacts at this slice).
+let getCorruptionEffects (ctx: CorruptionContext) (pretendExistNecrocorn: bool option) : float =
+    let existNecrocorn =
+        match pretendExistNecrocorn with
+        | Some b -> b
+        | None -> ctx.Alicorns > getExistNecrocornThreshold ctx
+    let mutable finalCorruptionPerTick = 0.0
+    if ctx.Alicorns > 0.0 then
+        finalCorruptionPerTick <- finalCorruptionPerTick + ctx.GetEffect "corruptionRatio"
+    if existNecrocorn then
+        let multiplier = 0.25 * (1.0 + ctx.GetEffect "corruptionBoostRatio")
+        finalCorruptionPerTick <- finalCorruptionPerTick * multiplier
+    finalCorruptionPerTick <- finalCorruptionPerTick * (1.0 + sqrt (ctx.Sorrow * ctx.GetEffect "blsCorruptionRatio"))
+    finalCorruptionPerTick <- finalCorruptionPerTick * (1.0 + ctx.GetEffect "necrocornCorruptionInterference")
+    finalCorruptionPerTick
+
+/// orig getCorruptionPerTick (L296-302)
+let getCorruptionPerTick (ctx: CorruptionContext) (pretendExistNecrocorn: bool option) : float =
+    getCorruptionEffects ctx pretendExistNecrocorn
+
+/// orig getNecrocornDeficitConsumptionModifier (L2894-2912)
+let getNecrocornDeficitConsumptionModifier (ctx: CorruptionContext) (pool: ResPool) (rp: ReligionPool) : float =
+    if rp.NecrocornDeficit <= 0.0 then 1.0
+    else
+        let necrocornPerDay = ctx.GetEffect "necrocornPerDay"
+        if ctx.GetEffect "repayDebtOnNecrocornGeneration" <> 0.0 then 1.0
+        else
+            let mutable modifier = 1.0 + 0.15 * (1.0 + ctx.GetEffect "deficitRecoveryRatio" / 2.0)
+            let necrocorns = Game.Resources.get pool "necrocorn" |> Option.map (fun r -> r.Value) |> Option.defaultValue 0.0
+            if necrocorns + necrocornPerDay * modifier < 0.0 then
+                max ((necrocornPerDay * modifier + necrocorns) / necrocornPerDay) 0.0
+            else modifier
+
+/// Direct value writes (orig assigns .value; NOT addResEvent — no cap/rounding).
+let private setResValue (name: string) (value: float) (pool: ResPool) : ResPool =
+    let res = pool.ByName[name]
+    { pool with ByName = pool.ByName |> Map.add name { res with Value = value } }
+
+/// orig corruptNecrocorns (L376-408): convert alicorns 1:1 at progress >= 1,
+/// keep at least 1 alicorn, clamp progress to 1 when starved of alicorns.
+/// Pacts debt is a seam (repayDebtOnNecrocornGeneration 0, deficit 0).
+/// Returns necrocorns kept (debt-paid ones don't count).
+let corruptNecrocorns
+    (ctx: CorruptionContext)
+    (pool: ResPool)
+    (rp: ReligionPool)
+    : ReligionPool * ResPool * float =
+    let alicorns = Game.Resources.get pool "alicorn" |> Option.map (fun r -> r.Value) |> Option.defaultValue 0.0
+    let maxAlicornsToCorrupt = ceil alicorns - 1.0
+    let alicornsToCorrupt = floor (min rp.Corruption maxAlicornsToCorrupt)
+    // debtToPay = repayDebtOnNecrocornGeneration ? floor(deficit) : 0 — seam 0
+    if alicornsToCorrupt > 0.0 then
+        let rp' = { rp with Corruption = rp.Corruption - alicornsToCorrupt }
+        let pool1 = setResValue "alicorn" (alicorns - alicornsToCorrupt) pool
+        let necrocorns = Game.Resources.get pool1 "necrocorn" |> Option.map (fun r -> r.Value) |> Option.defaultValue 0.0
+        let pool2 = setResValue "necrocorn" (necrocorns + alicornsToCorrupt) pool1
+        // game.upgrade({zigguratUpgrades: [skyPalace, unicornUtopia, sunspire]})
+        // -> updateCaches recalc handled by the caller
+        rp', pool2, alicornsToCorrupt
+    else
+        let corruption = if rp.Corruption >= 1.0 then 1.0 else rp.Corruption
+        { rp with Corruption = corruption }, pool, 0.0
+
+// --- religion-04: necrocorn fast-forward math (js/religion.js L343-636) --------
+
+/// orig pactsManager.necrocornConsumptionDays (L3004-3026). necrocornPerDay
+/// effect is 0 without active pacts at this slice; deficit bookkeeping kept.
+let necrocornConsumptionDays
+    (calendarDay: int)
+    (ctx: CorruptionContext)
+    (days: float)
+    (pool: ResPool)
+    (rp: ReligionPool)
+    : ReligionPool * ResPool =
+    let necrocornPerDay = ctx.GetEffect "necrocornPerDay"
+    if ctx.GetEffect "repayDebtOnNecrocornGeneration" <> 0.0 then
+        { rp with NecrocornDeficit = rp.NecrocornDeficit - necrocornPerDay * days }, pool
+    else
+        let mutable modifier = 1.0
+        let mutable deficit = rp.NecrocornDeficit
+        let necrocorns = Game.Resources.get pool "necrocorn" |> Option.map (fun r -> r.Value) |> Option.defaultValue 0.0
+        if deficit > 0.0 then
+            modifier <- 1.0 + 0.15 * (1.0 + ctx.GetEffect "deficitRecoveryRatio" / 2.0)
+        if necrocorns + necrocornPerDay * days * modifier < 0.0 then
+            deficit <- deficit + max (-necrocornPerDay * days - necrocorns) 0.0
+            modifier <- 1.0
+        elif deficit > 0.0 then
+            deficit <- max (deficit + necrocornPerDay * (0.15 * (1.0 + ctx.GetEffect "deficitRecoveryRatio") * days)) 0.0
+        let pool', _ = Game.Resources.addResPerTick calendarDay "necrocorn" (necrocornPerDay * modifier * days) pool
+        { rp with NecrocornDeficit = deficit }, pool'
+
+/// orig _necrocornsNaiveFastForward_withoutSiphoning (L560-620 area)
+let private necrocornsNaiveFFWithoutSiphoning
+    (calendarDay: int)
+    (ctx: CorruptionContext)
+    (daysOffset: float)
+    (times: float)
+    (pool: ResPool)
+    (rp: ReligionPool)
+    : ReligionPool * ResPool =
+    let threshold = getExistNecrocornThreshold ctx
+    let necrocornsBefore = Game.Resources.get pool "necrocorn" |> Option.map (fun r -> r.Value) |> Option.defaultValue 0.0
+    let corruptionPerTickUnpenalized = getCorruptionPerTick ctx (Some false)
+    let mutable corruption = rp.Corruption
+    if corruptionPerTickUnpenalized > 0.0 then
+        let corruptionPerTickPenalized = getCorruptionPerTick ctx (Some true)
+        let necrocornsToPassThreshold = 1.0 + floor (threshold - necrocornsBefore)
+        let mutable ticksUnpenalized = ceil ((necrocornsToPassThreshold - rp.Corruption) / corruptionPerTickUnpenalized)
+        if ticksUnpenalized < 0.0 then ticksUnpenalized <- 0.0
+        if ticksUnpenalized > times then ticksUnpenalized <- times
+        let ticksPenalized = times - ticksUnpenalized
+        corruption <- corruption + corruptionPerTickUnpenalized * ticksUnpenalized + corruptionPerTickPenalized * ticksPenalized
+    let rp1 = { rp with Corruption = corruption }
+    let rp2, pool1 = necrocornConsumptionDays calendarDay ctx daysOffset pool rp1
+    let rp3, pool2, _ = corruptNecrocorns ctx pool1 rp2
+    rp3, pool2
+
+/// orig _necrocornsNaiveFastForward_withSiphoning (L425-558): the debt-aware
+/// variant. No active pacts (debt 0, necrocornPerDay 0) degenerates to the
+/// plain split; the iteration shape is kept for the contract.
+let private necrocornsNaiveFFWithSiphoning
+    (calendarDay: int)
+    (ctx: CorruptionContext)
+    (daysOffset: float)
+    (times: float)
+    (pool: ResPool)
+    (rp: ReligionPool)
+    : ReligionPool * ResPool =
+    let corruptionBefore = rp.Corruption
+    let threshold = getExistNecrocornThreshold ctx
+    let necrocornRes = Game.Resources.get pool "necrocorn" |> Option.map (fun r -> r.Value) |> Option.defaultValue 0.0
+    let debtBefore = rp.NecrocornDeficit
+    let corruptionPerTickUnpenalized = getCorruptionPerTick ctx (Some false)
+    let corruptionPerTickPenalized = getCorruptionPerTick ctx (Some true)
+    let avgDebtPerTick = -ctx.GetEffect "necrocornPerDay"
+    let mutable ticksUnpenalized = 0.0
+    if necrocornRes <= threshold && times > 0.0 then
+        let baseNecrocornsToPassThreshold = 1.0 + floor (threshold - necrocornRes)
+        let mutable tryNumber = baseNecrocornsToPassThreshold
+        let mutable ticksElapsed = 0.0
+        let mutable giveUp = false
+        while ticksElapsed < times && not giveUp do
+            ticksElapsed <-
+                if corruptionPerTickUnpenalized <> 0.0 then
+                    ceil ((tryNumber - corruptionBefore) / corruptionPerTickUnpenalized)
+                else System.Double.MaxValue
+            let projectedDebt = debtBefore + ticksElapsed * avgDebtPerTick
+            let targetNecrocorns = baseNecrocornsToPassThreshold + floor projectedDebt
+            if tryNumber >= targetNecrocorns then
+                ()
+            else
+                tryNumber <- targetNecrocorns
+                if avgDebtPerTick >= corruptionPerTickUnpenalized && tryNumber > (baseNecrocornsToPassThreshold + debtBefore) * 2.0 then
+                    giveUp <- true
+                    tryNumber <- System.Double.MaxValue
+        ticksElapsed <-
+            if corruptionPerTickUnpenalized <> 0.0 then
+                ceil ((tryNumber - corruptionBefore) / corruptionPerTickUnpenalized)
+            else System.Double.MaxValue
+        ticksUnpenalized <- ticksElapsed
+        if ticksUnpenalized < 0.0 then ticksUnpenalized <- 0.0
+        if ticksUnpenalized > times then ticksUnpenalized <- times
+    let ticksPenalized = times - ticksUnpenalized
+    let mutable daysUnpenalized = floor (ticksUnpenalized / 10.0) // TICKS_PER_DAY seam (10 at this slice)
+    if System.Double.IsNaN daysUnpenalized then daysUnpenalized <- 0.0
+    let daysPenalized = daysOffset - daysUnpenalized
+    let mutable rp = rp
+    let mutable pool = pool
+    if daysUnpenalized > 0.0 then
+        let rp', pool' = necrocornConsumptionDays calendarDay ctx daysUnpenalized pool rp
+        rp <- rp'; pool <- pool'
+    if ticksUnpenalized > 0.0 then
+        rp <- { rp with Corruption = rp.Corruption + corruptionPerTickUnpenalized * ticksUnpenalized }
+        let rp', pool', _ = corruptNecrocorns ctx pool rp
+        rp <- rp'; pool <- pool'
+    if daysPenalized > 0.0 then
+        let rp', pool' = necrocornConsumptionDays calendarDay ctx daysPenalized pool rp
+        rp <- rp'; pool <- pool'
+    if ticksPenalized > 0.0 then
+        rp <- { rp with Corruption = rp.Corruption + corruptionPerTickPenalized * ticksPenalized }
+    let rp', pool', _ = corruptNecrocorns ctx pool rp
+    rp', pool'
+
+/// orig necrocornsNaiveFastForward (L622-636)
+let necrocornsNaiveFastForward
+    (calendarDay: int)
+    (ctx: CorruptionContext)
+    (daysOffset: float)
+    (times: float)
+    (pool: ResPool)
+    (rp: ReligionPool)
+    : ReligionPool * ResPool =
+    if ctx.Alicorns > 0.0 then
+        if ctx.GetEffect "repayDebtOnNecrocornGeneration" <> 0.0 then
+            necrocornsNaiveFFWithSiphoning calendarDay ctx daysOffset times pool rp
+        else
+            necrocornsNaiveFFWithoutSiphoning calendarDay ctx daysOffset times pool rp
+    else
+        necrocornConsumptionDays calendarDay ctx daysOffset pool rp
+
+/// orig necrocornFastForward (L639+): split simulation at the
+/// above-to-below-threshold edge case.
+let necrocornFastForward
+    (calendarDay: int)
+    (ctx: CorruptionContext)
+    (days: float)
+    (times: float)
+    (pool: ResPool)
+    (rp: ReligionPool)
+    : ReligionPool * ResPool =
+    let threshold = getExistNecrocornThreshold ctx
+    let necrocornPerDay = ctx.GetEffect "necrocornPerDay"
+    let continuouslyConsumeNecrocorns = ctx.GetEffect "repayDebtOnNecrocornGeneration" = 0.0
+    let ticksPerDay = times / days
+    let mutable daysRemaining = days
+    let mutable timesRemaining = times
+    let mutable rp = rp
+    let mutable pool = pool
+    let mutable guard = 0
+    while (daysRemaining > 0.0 || timesRemaining > 0.0) && guard < 100000 do
+        guard <- guard + 1
+        let mutable daysUntilEdgeCase1 = System.Double.PositiveInfinity
+        if continuouslyConsumeNecrocorns && necrocornPerDay < 0.0 then
+            let necrocornRes = Game.Resources.get pool "necrocorn" |> Option.map (fun r -> r.Value) |> Option.defaultValue 0.0
+            if necrocornRes > threshold then
+                let consumptionRate = -necrocornPerDay * (getNecrocornDeficitConsumptionModifier ctx pool rp)
+                daysUntilEdgeCase1 <- ceil ((necrocornRes - threshold) / consumptionRate)
+            else
+                let ticksUntilThreshold =
+                    ceil ((1.0 + floor (threshold - necrocornRes) - rp.Corruption) / (getCorruptionPerTick ctx (Some false)))
+                daysUntilEdgeCase1 <- ceil (ticksUntilThreshold / ticksPerDay)
+        if System.Double.IsNaN daysUntilEdgeCase1 then daysUntilEdgeCase1 <- System.Double.PositiveInfinity
+        let daysToSimulate = min daysRemaining daysUntilEdgeCase1
+        let mutable timesToSimulate = min (ceil (daysToSimulate * ticksPerDay)) timesRemaining
+        if daysToSimulate < 1.0 then timesToSimulate <- timesRemaining
+        let rp', pool' = necrocornsNaiveFastForward calendarDay ctx daysToSimulate timesToSimulate pool rp
+        rp <- rp'
+        pool <- pool'
+        daysRemaining <- daysRemaining - daysToSimulate
+        timesRemaining <- timesRemaining - timesToSimulate
+    rp, pool
+
+// --- game-19: religion.undo — praise/adore (js/religion.js L1748-1770) --------
+
+/// orig praise undo: restore worship & faith stock.
+let undoPraise (faithSpent: float) (worshipGained: float) (pool: ResPool) (rp: ReligionPool) : ReligionPool * ResPool * bool =
+    if rp.Faith >= worshipGained then
+        let rp' = { rp with Faith = rp.Faith - worshipGained }
+        let pool', _ = Game.Resources.addResEvent 0 "faith" faithSpent pool
+        rp', pool', true
+    else
+        rp, pool, false
+
+/// orig adore undo: restore epiphany & the pre-adore worship pool.
+let undoAdore (worshipBefore: float) (epiphanyGained: float) (rp: ReligionPool) : ReligionPool * bool =
+    if rp.FaithRatio >= epiphanyGained then
+        { rp with FaithRatio = rp.FaithRatio - epiphanyGained; Faith = worshipBefore }, true
+    else
+        rp, false
 
 // --- purchases (core.js BuildingStackableBtnController build loop) -------------
 

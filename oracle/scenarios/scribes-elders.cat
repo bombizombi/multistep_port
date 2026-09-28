@@ -1,0 +1,14 @@
+# name: scribes-elders
+# seed: 20260927
+# checkpoints: 0, 5, 10, 20, 30
+# diplomacy-04/05: shark scribes per-day scaling (policy injection, sells
+# mutation visible through trade params), leviathan visit expiry via onNewDay,
+# feedelder → energy clamped at the marker cap (marker val 0 → cap 5).
+0 resop forcepolicy sharkRelationsScribes
+0 resop addResEvent necrocorn 5000
+0 resop forcerace leviathans
+4 resop seed 42
+5 resop year 100
+10 feedelder 700
+20 feedelder 700
+30 resop gtick 1

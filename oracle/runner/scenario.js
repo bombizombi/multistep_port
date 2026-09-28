@@ -33,8 +33,8 @@
 const ACTIONS = new Set([
   "gather", "buy", "craft", "craftall", "assign", "speciality", "research",
   "upgrade", "policy", "hunt", "praise", "adore", "transcend", "worship",
-  "ziggurat", "embassy", "trade", "tradeall", "observe", "save", "load",
-  "resop", "refine",
+  "ziggurat", "embassy", "trade", "tradeall", "perk", "festival",
+  "feedelder", "undo", "observe", "save", "load", "resop", "refine",
 ]);
 
 function parseScenario(text) {

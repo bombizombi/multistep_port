@@ -38,12 +38,27 @@ type PlanetDef = { Name: string; Buildings: string list }
 type SpaceBuildingDef =
     { Name: string; Planet: string; Prices: Price list; Effects: Map<string, float> }
 
-type PerkDef = { Name: string; Prices: Price list; Effects: Map<string, float> }
-type AchievementDef = { Name: string; Starred: bool }
-type StatDef = { Name: string; InitialVal: float }
+type PerkDef =
+    { Name: string; Prices: Price list; Effects: Map<string, float>
+      StartsUnlocked: bool; Unlocks: UnlockList option; Upgrades: UnlockList option
+      HasHandler: bool }
+
+type AchievementDef =
+    { Name: string; Hidden: bool; HasCondition: bool; HasStarCondition: bool }
+
+type BadgeDef = { Name: string; Difficulty: string option; HasCondition: bool }
+
+type StatDef =
+    { Name: string; InitialVal: float; StartsUnlocked: bool; HasCalculate: bool }
+
+type StatCurrentDef = { Name: string; HasCalculate: bool }
 type CFUDef = { Name: string; Prices: Price list; Effects: Map<string, float> }
 type VSUDef = { Name: string; Prices: Price list; Effects: Map<string, float> }
 type CycleDef = { Name: string; Effects: Map<string, float> }
+
+/// village map biomes — RNG skeleton data only (village-14/15 slice): the
+/// fauna roll consumes 1-3 draws per biome per tick and MUST mirror orig.
+type BiomeDef = { Name: string; FaunaNames: string list; FaunaPenalty: float }
 
 let raceDefs : RaceDef list =
     [
@@ -51,53 +66,53 @@ let raceDefs : RaceDef list =
       { Name = "sharks"; StartsUnlocked = false; Standing = 0; Hidden = false; EmbassyPrices = [{ Resource = "culture"; Val = 100 }]; EmbassyLevel = 0; RaceEffects = Map.empty; Buys = [{ Resource = "iron"; Val = 100 }]; Sells = [{ Name = "catnip"; Value = 35000; Chance = 1; Width = 0.15; MinLevel = None; Seasons = Map.ofList ["spring", 0.2; "summer", -0.05; "autumn", 0.15; "winter", 0.45] }; { Name = "parchment"; Value = 5; Chance = 0.25; Width = 0.25; MinLevel = Some 5; Seasons = Map.ofList ["spring", 0.15; "summer", -0.35; "autumn", -0.05; "winter", 0.4] }; { Name = "manuscript"; Value = 3; Chance = 0.15; Width = 0.25; MinLevel = Some 10; Seasons = Map.ofList ["spring", -0.15; "summer", -0.35; "autumn", 0.35; "winter", 0.1] }; { Name = "compedium"; Value = 1; Chance = 0.1; Width = 0.25; MinLevel = Some 15; Seasons = Map.ofList ["spring", 0.4; "summer", 0.2; "autumn", -0.15; "winter", -0.3] }; { Name = "oil"; Value = 160; Chance = -0.01; Width = 0.7; MinLevel = Some 25; Seasons = Map.ofList ["spring", 0.2; "summer", -0.1; "autumn", -0.1; "winter", 0.3] }; { Name = "plastic"; Value = 0.5; Chance = -0.2; Width = 0.7; MinLevel = Some 40; Seasons = Map.ofList ["spring", 0.25; "summer", 0.1; "autumn", -0.2; "winter", -0.1] }]; Unlocks = None }
       { Name = "griffins"; StartsUnlocked = false; Standing = -0.15; Hidden = false; EmbassyPrices = [{ Resource = "culture"; Val = 1000 }]; EmbassyLevel = 0; RaceEffects = Map.empty; Buys = [{ Resource = "wood"; Val = 500 }]; Sells = [{ Name = "iron"; Value = 250; Chance = 1; Width = 0.12; MinLevel = None; Seasons = Map.ofList ["spring", -0.25; "summer", -0.05; "autumn", 0.35; "winter", -0.2] }; { Name = "steel"; Value = 25; Chance = 0.25; Width = 0.1; MinLevel = Some 5; Seasons = Map.ofList ["spring", -0.15; "summer", 0.1; "autumn", 0.15; "winter", -0.4] }; { Name = "gear"; Value = 5; Chance = 0.1; Width = 0.25; MinLevel = Some 10; Seasons = Map.ofList ["spring", 0; "summer", 0.1; "autumn", 0.25; "winter", -0.35] }; { Name = "alloy"; Value = 2; Chance = -0.05; Width = 0.18; MinLevel = Some 20; Seasons = Map.ofList ["spring", -0.05; "summer", 0.05; "autumn", 0.2; "winter", -0.2] }; { Name = "microchip"; Value = 6; Chance = -0.125; Width = 0.5; MinLevel = Some 30; Seasons = Map.ofList ["spring", -0.25; "summer", 0.05; "autumn", 0.3; "winter", -0.7] }]; Unlocks = None }
       { Name = "nagas"; StartsUnlocked = false; Standing = 0; Hidden = true; EmbassyPrices = [{ Resource = "culture"; Val = 500 }]; EmbassyLevel = 0; RaceEffects = Map.empty; Buys = [{ Resource = "ivory"; Val = 500 }]; Sells = [{ Name = "minerals"; Value = 1000; Chance = 1; Width = 0.18; MinLevel = None; Seasons = Map.ofList ["spring", 0.25; "summer", 0.05; "autumn", -0.35; "winter", -0.05] }; { Name = "slab"; Value = 5; Chance = 0.75; Width = 0.15; MinLevel = Some 5; Seasons = Map.ofList ["spring", 0.3; "summer", 0.075; "autumn", -0.4; "winter", -0.075] }; { Name = "concrate"; Value = 5; Chance = 0.25; Width = 0.05; MinLevel = Some 10; Seasons = Map.ofList ["spring", 0.4; "summer", 0.1; "autumn", -0.45; "winter", -0.1] }; { Name = "megalith"; Value = 1; Chance = 0.1; Width = 0.1; MinLevel = Some 15; Seasons = Map.ofList ["spring", 0.48; "summer", 0.12; "autumn", -0.48; "winter", -0.12] }; { Name = "uranium"; Value = 0.2; Chance = -0.08; Width = 0.1; MinLevel = Some 40; Seasons = Map.ofList ["spring", 0.6; "summer", 0.1; "autumn", -0.4; "winter", -0.3] }; { Name = "thorium"; Value = 0.05; Chance = -0.16; Width = 0.04; MinLevel = Some 55; Seasons = Map.ofList ["spring", 0.5; "summer", 0.2; "autumn", -0.7; "winter", -0.3] }]; Unlocks = None }
-      { Name = "zebras"; StartsUnlocked = false; Standing = -0.3; Hidden = true; EmbassyPrices = [{ Resource = "culture"; Val = 25000 }]; EmbassyLevel = 0; RaceEffects = Map.empty; Buys = [{ Resource = "slab"; Val = 50 }]; Sells = [{ Name = "iron"; Value = 300; Chance = 1; Width = 0.08; MinLevel = None; Seasons = Map.ofList ["spring", 0; "summer", 0.15; "autumn", -0.1; "winter", -0.2] }; { Name = "plate"; Value = 2; Chance = 0.65; Width = 0.25; MinLevel = None; Seasons = Map.ofList ["spring", 0.05; "summer", -0.15; "autumn", 0.05; "winter", 0.25] }; { Name = "alloy"; Value = 0.25; Chance = 0.05; Width = 0.05; MinLevel = Some 5; Seasons = Map.ofList ["spring", -0.02; "summer", 0; "autumn", 0.03; "winter", 0.08] }; { Name = "steel"; Value = 0.01; Chance = -0.05; Width = 0.1; MinLevel = Some 15; Seasons = Map.ofList ["spring", -0.15; "summer", -0.15; "autumn", 0; "winter", 0.3] }; { Name = "starchart"; Value = 0.05; Chance = -0.15; Width = 0.6; MinLevel = Some 30; Seasons = Map.ofList ["spring", 0.2; "summer", -0.5; "autumn", 0.15; "winter", -0.8] }; { Name = "coal"; Value = 0.004; Chance = -0.2; Width = 0.25; MinLevel = Some 50; Seasons = Map.ofList ["spring", 0.05; "summer", 0.2; "autumn", 0.05; "winter", -0.15] }; { Name = "unobtainium"; Value = 0.000001; Chance = -0.245; Width = 0.3; MinLevel = Some 80; Seasons = Map.ofList ["spring", -0.1; "summer", 0.6; "autumn", 0.2; "winter", -0.4] }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["zebraRelationsAppeasement"; "zebraRelationsBellicosity"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
+      { Name = "zebras"; StartsUnlocked = false; Standing = -0.3; Hidden = true; EmbassyPrices = [{ Resource = "culture"; Val = 25000 }]; EmbassyLevel = 0; RaceEffects = Map.empty; Buys = [{ Resource = "slab"; Val = 50 }]; Sells = [{ Name = "iron"; Value = 300; Chance = 1; Width = 0.08; MinLevel = None; Seasons = Map.ofList ["spring", 0; "summer", 0.15; "autumn", -0.1; "winter", -0.2] }; { Name = "plate"; Value = 2; Chance = 0.65; Width = 0.25; MinLevel = None; Seasons = Map.ofList ["spring", 0.05; "summer", -0.15; "autumn", 0.05; "winter", 0.25] }; { Name = "alloy"; Value = 0.25; Chance = 0.05; Width = 0.05; MinLevel = Some 5; Seasons = Map.ofList ["spring", -0.02; "summer", 0; "autumn", 0.03; "winter", 0.08] }; { Name = "steel"; Value = 0.01; Chance = -0.05; Width = 0.1; MinLevel = Some 15; Seasons = Map.ofList ["spring", -0.15; "summer", -0.15; "autumn", 0; "winter", 0.3] }; { Name = "starchart"; Value = 0.05; Chance = -0.15; Width = 0.6; MinLevel = Some 30; Seasons = Map.ofList ["spring", 0.2; "summer", -0.5; "autumn", 0.15; "winter", -0.8] }; { Name = "coal"; Value = 0.004; Chance = -0.2; Width = 0.25; MinLevel = Some 50; Seasons = Map.ofList ["spring", 0.05; "summer", 0.2; "autumn", 0.05; "winter", -0.15] }; { Name = "unobtainium"; Value = 0.000001; Chance = -0.245; Width = 0.3; MinLevel = Some 80; Seasons = Map.ofList ["spring", -0.1; "summer", 0.6; "autumn", 0.2; "winter", -0.4] }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["zebraRelationsAppeasement"; "zebraRelationsBellicosity"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
       { Name = "spiders"; StartsUnlocked = false; Standing = 0.15; Hidden = true; EmbassyPrices = [{ Resource = "culture"; Val = 5000 }]; EmbassyLevel = 0; RaceEffects = Map.empty; Buys = [{ Resource = "scaffold"; Val = 50 }]; Sells = [{ Name = "coal"; Value = 350; Chance = 1; Width = 0.15; MinLevel = None; Seasons = Map.ofList ["spring", 0; "summer", 0.05; "autumn", 0.15; "winter", -0.05] }; { Name = "oil"; Value = 100; Chance = 0.25; Width = 0.15; MinLevel = Some 5; Seasons = Map.ofList ["spring", 0.11; "summer", -0.01; "autumn", 0.04; "winter", -0.06] }; { Name = "plastic"; Value = 1; Chance = -0.2; Width = 0.8; MinLevel = Some 15; Seasons = Map.ofList ["spring", 1; "summer", -0.3; "autumn", -0.6; "winter", 2] }]; Unlocks = None }
       { Name = "dragons"; StartsUnlocked = false; Standing = 0; Hidden = true; EmbassyPrices = [{ Resource = "culture"; Val = 7500 }]; EmbassyLevel = 0; RaceEffects = Map.empty; Buys = [{ Resource = "titanium"; Val = 250 }]; Sells = [{ Name = "uranium"; Value = 1; Chance = 0.95; Width = 0.25; MinLevel = None; Seasons = Map.empty }; { Name = "thorium"; Value = 1; Chance = 0.5; Width = 0.25; MinLevel = Some 5; Seasons = Map.empty }; { Name = "temporalFlux"; Value = 0.2; Chance = -0.075; Width = 0.18; MinLevel = Some 30; Seasons = Map.empty }; { Name = "antimatter"; Value = 0.1; Chance = -0.175; Width = 0.18; MinLevel = Some 50; Seasons = Map.empty }]; Unlocks = None }
-      { Name = "leviathans"; StartsUnlocked = false; Standing = 0; Hidden = true; EmbassyPrices = []; EmbassyLevel = 0; RaceEffects = Map.empty; Buys = [{ Resource = "unobtainium"; Val = 5000 }]; Sells = [{ Name = "starchart"; Value = 250; Chance = 0.5; Width = 0.8; MinLevel = None; Seasons = Map.empty }; { Name = "timeCrystal"; Value = 0.25; Chance = 0.98; Width = 0.15; MinLevel = None; Seasons = Map.empty }; { Name = "sorrow"; Value = 1; Chance = 0.15; Width = 0.1; MinLevel = None; Seasons = Map.empty }; { Name = "relic"; Value = 1; Chance = 0.05; Width = 0; MinLevel = None; Seasons = Map.empty }; { Name = "temporalFlux"; Value = 3; Chance = -0.1; Width = 0.2; MinLevel = None; Seasons = Map.empty }; { Name = "tears"; Value = 1500; Chance = -0.1; Width = 0.8; MinLevel = None; Seasons = Map.empty }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["transkittenism"; "necrocracy"; "radicalXenophobia"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
+      { Name = "leviathans"; StartsUnlocked = false; Standing = 0; Hidden = true; EmbassyPrices = []; EmbassyLevel = 0; RaceEffects = Map.empty; Buys = [{ Resource = "unobtainium"; Val = 5000 }]; Sells = [{ Name = "starchart"; Value = 250; Chance = 0.5; Width = 0.8; MinLevel = None; Seasons = Map.empty }; { Name = "timeCrystal"; Value = 0.25; Chance = 0.98; Width = 0.15; MinLevel = None; Seasons = Map.empty }; { Name = "sorrow"; Value = 1; Chance = 0.15; Width = 0.1; MinLevel = None; Seasons = Map.empty }; { Name = "relic"; Value = 1; Chance = 0.05; Width = 0; MinLevel = None; Seasons = Map.empty }; { Name = "temporalFlux"; Value = 3; Chance = -0.1; Width = 0.2; MinLevel = None; Seasons = Map.empty }; { Name = "tears"; Value = 1500; Chance = -0.1; Width = 0.8; MinLevel = None; Seasons = Map.empty }]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["transkittenism"; "necrocracy"; "radicalXenophobia"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
     ]
 
 let zuDefs : ZUDef list =
     [
-      { Name = "unicornTomb"; Prices = [{ Resource = "ivory"; Val = 500 }; { Resource = "tears"; Val = 5 }]; Effects = Map.ofList ["unicornsRatioReligion", 0.05; "faithMax", 0; "tearsMax", 0]; PriceRatio = Some 1.15; StartsUnlocked = true; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "ivoryTower"; Prices = [{ Resource = "ivory"; Val = 25000 }; { Resource = "tears"; Val = 25 }]; Effects = Map.ofList ["unicornsRatioReligion", 0.1; "riftChance", 0.0005; "tearsMax", 0]; PriceRatio = Some 1.15; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "ivoryCitadel"; Prices = [{ Resource = "ivory"; Val = 50000 }; { Resource = "tears"; Val = 50 }]; Effects = Map.ofList ["unicornsRatioReligion", 0.25; "ivoryMeteorChance", 0.0005; "unicornsMax", 0; "tearsMax", 0]; PriceRatio = Some 1.15; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "skyPalace"; Prices = [{ Resource = "ivory"; Val = 125000 }; { Resource = "tears"; Val = 500 }; { Resource = "megalith"; Val = 5 }]; Effects = Map.ofList ["goldMaxRatio", 0; "unicornsRatioReligion", 0; "alicornChance", 0; "alicornPerTick", 0; "ivoryMeteorRatio", 0; "unicornsMax", 0; "tearsMax", 0; "alicornMax", 0]; PriceRatio = Some 1.15; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "unicornUtopia"; Prices = [{ Resource = "gold"; Val = 500 }; { Resource = "ivory"; Val = 1000000 }; { Resource = "tears"; Val = 5000 }]; Effects = Map.ofList ["unicornsRatioReligion", 0; "alicornChance", 0; "alicornPerTick", 0; "tcRefineRatio", 0; "ivoryMeteorRatio", 0; "unicornsMax", 0; "tearsMax", 0; "alicornMax", 0]; PriceRatio = Some 1.15; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
+      { Name = "unicornTomb"; Prices = [{ Resource = "ivory"; Val = 500 }; { Resource = "tears"; Val = 5 }]; Effects = Map.ofList ["unicornsRatioReligion", 0.05; "faithMax", 0; "tearsMax", 0]; PriceRatio = Some 1.15; StartsUnlocked = true; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "ivoryTower"; Prices = [{ Resource = "ivory"; Val = 25000 }; { Resource = "tears"; Val = 25 }]; Effects = Map.ofList ["unicornsRatioReligion", 0.1; "riftChance", 0.0005; "tearsMax", 0]; PriceRatio = Some 1.15; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "ivoryCitadel"; Prices = [{ Resource = "ivory"; Val = 50000 }; { Resource = "tears"; Val = 50 }]; Effects = Map.ofList ["unicornsRatioReligion", 0.25; "ivoryMeteorChance", 0.0005; "unicornsMax", 0; "tearsMax", 0]; PriceRatio = Some 1.15; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "skyPalace"; Prices = [{ Resource = "ivory"; Val = 125000 }; { Resource = "tears"; Val = 500 }; { Resource = "megalith"; Val = 5 }]; Effects = Map.ofList ["goldMaxRatio", 0; "unicornsRatioReligion", 0; "alicornChance", 0; "alicornPerTick", 0; "ivoryMeteorRatio", 0; "unicornsMax", 0; "tearsMax", 0; "alicornMax", 0]; PriceRatio = Some 1.15; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "unicornUtopia"; Prices = [{ Resource = "gold"; Val = 500 }; { Resource = "ivory"; Val = 1000000 }; { Resource = "tears"; Val = 5000 }]; Effects = Map.ofList ["unicornsRatioReligion", 0; "alicornChance", 0; "alicornPerTick", 0; "tcRefineRatio", 0; "ivoryMeteorRatio", 0; "unicornsMax", 0; "tearsMax", 0; "alicornMax", 0]; PriceRatio = Some 1.15; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
       { Name = "sunspire"; Prices = [{ Resource = "gold"; Val = 1250 }; { Resource = "ivory"; Val = 750000 }; { Resource = "tears"; Val = 25000 }]; Effects = Map.ofList ["unicornsRatioReligion", 0; "alicornChance", 0; "alicornPerTick", 0; "tcRefineRatio", 0; "ivoryMeteorRatio", 0; "unicornsMaxRatio", 0; "tearsMax", 0; "alicornMax", 0]; PriceRatio = Some 1.15; StartsUnlocked = false; Unlocks = None; Upgrades = None }
-      { Name = "marker"; Prices = [{ Resource = "unobtainium"; Val = 2500 }; { Resource = "spice"; Val = 50000 }; { Resource = "tears"; Val = 5000 }; { Resource = "megalith"; Val = 750 }]; Effects = Map.ofList ["corruptionRatio", 0.000001]; PriceRatio = Some 1.15; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["siphoning"; "feedingFrenzy"; "upfrontPayment"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = None }
-      { Name = "unicornGraveyard"; Prices = [{ Resource = "necrocorn"; Val = 5 }; { Resource = "megalith"; Val = 1000 }]; Effects = Map.ofList ["cultureMaxRatioBonus", 0.01; "blackLibraryBonus", 0.02]; PriceRatio = Some 1.15; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = Some({ Buildings = ["ziggurat"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
+      { Name = "marker"; Prices = [{ Resource = "unobtainium"; Val = 2500 }; { Resource = "spice"; Val = 50000 }; { Resource = "tears"; Val = 5000 }; { Resource = "megalith"; Val = 750 }]; Effects = Map.ofList ["corruptionRatio", 0.000001]; PriceRatio = Some 1.15; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["siphoning"; "feedingFrenzy"; "upfrontPayment"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None }
+      { Name = "unicornGraveyard"; Prices = [{ Resource = "necrocorn"; Val = 5 }; { Resource = "megalith"; Val = 1000 }]; Effects = Map.ofList ["cultureMaxRatioBonus", 0.01; "blackLibraryBonus", 0.02]; PriceRatio = Some 1.15; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = ["ziggurat"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
       { Name = "unicornNecropolis"; Prices = [{ Resource = "alicorn"; Val = 100 }; { Resource = "necrocorn"; Val = 15 }; { Resource = "void"; Val = 5 }; { Resource = "megalith"; Val = 2500 }]; Effects = Map.ofList ["corruptionBoostRatio", 0.1]; PriceRatio = Some 1.15; StartsUnlocked = false; Unlocks = None; Upgrades = None }
-      { Name = "blackPyramid"; Prices = [{ Resource = "unobtainium"; Val = 5000 }; { Resource = "spice"; Val = 150000 }; { Resource = "sorrow"; Val = 5 }; { Resource = "megalith"; Val = 2500 }]; Effects = Map.ofList ["pyramidGlobalResourceRatio", 0; "pyramidGlobalProductionRatio", 0; "pyramidFaithRatio", 0; "deficitRecoveryRatio", 0; "blackLibraryBonus", 0; "pyramidSpaceCompendiumRatio", 0; "craftRatio", 0; "UniversalKnowHow", 0; "pyramidPerYearRatio", 0; "timeRatio", 0]; PriceRatio = Some 1.15; StartsUnlocked = false; Unlocks = None; Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
+      { Name = "blackPyramid"; Prices = [{ Resource = "unobtainium"; Val = 5000 }; { Resource = "spice"; Val = 150000 }; { Resource = "sorrow"; Val = 5 }; { Resource = "megalith"; Val = 2500 }]; Effects = Map.ofList ["pyramidGlobalResourceRatio", 0; "pyramidGlobalProductionRatio", 0; "pyramidFaithRatio", 0; "deficitRecoveryRatio", 0; "blackLibraryBonus", 0; "pyramidSpaceCompendiumRatio", 0; "craftRatio", 0; "UniversalKnowHow", 0; "pyramidPerYearRatio", 0; "timeRatio", 0]; PriceRatio = Some 1.15; StartsUnlocked = false; Unlocks = None; Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
     ]
 
 let ruDefs : RUDef list =
     [
       { Name = "solarchant"; Prices = [{ Resource = "faith"; Val = 100 }]; Effects = Map.ofList ["faithRatioReligion", 0.1]; PriceRatio = Some 2.5; FaithGate = Some 150; NoStackable = true; Unlocks = None; Upgrades = None }
-      { Name = "scholasticism"; Prices = [{ Resource = "faith"; Val = 250 }]; Effects = Map.empty; PriceRatio = Some 2.5; FaithGate = Some 300; NoStackable = true; Unlocks = None; Upgrades = Some({ Buildings = ["temple"; "ziggurat"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "goldenSpire"; Prices = [{ Resource = "gold"; Val = 150 }; { Resource = "faith"; Val = 350 }]; Effects = Map.empty; PriceRatio = Some 2.5; FaithGate = Some 500; NoStackable = true; Unlocks = None; Upgrades = Some({ Buildings = ["temple"; "ziggurat"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "sunAltar"; Prices = [{ Resource = "gold"; Val = 250 }; { Resource = "faith"; Val = 500 }]; Effects = Map.empty; PriceRatio = Some 2.5; FaithGate = Some 750; NoStackable = true; Unlocks = None; Upgrades = Some({ Buildings = ["temple"; "ziggurat"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "stainedGlass"; Prices = [{ Resource = "gold"; Val = 250 }; { Resource = "faith"; Val = 500 }]; Effects = Map.empty; PriceRatio = Some 2.5; FaithGate = Some 750; NoStackable = true; Unlocks = None; Upgrades = Some({ Buildings = ["temple"; "ziggurat"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
+      { Name = "scholasticism"; Prices = [{ Resource = "faith"; Val = 250 }]; Effects = Map.empty; PriceRatio = Some 2.5; FaithGate = Some 300; NoStackable = true; Unlocks = None; Upgrades = Some({ Buildings = ["temple"; "ziggurat"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "goldenSpire"; Prices = [{ Resource = "gold"; Val = 150 }; { Resource = "faith"; Val = 350 }]; Effects = Map.empty; PriceRatio = Some 2.5; FaithGate = Some 500; NoStackable = true; Unlocks = None; Upgrades = Some({ Buildings = ["temple"; "ziggurat"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "sunAltar"; Prices = [{ Resource = "gold"; Val = 250 }; { Resource = "faith"; Val = 500 }]; Effects = Map.empty; PriceRatio = Some 2.5; FaithGate = Some 750; NoStackable = true; Unlocks = None; Upgrades = Some({ Buildings = ["temple"; "ziggurat"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "stainedGlass"; Prices = [{ Resource = "gold"; Val = 250 }; { Resource = "faith"; Val = 500 }]; Effects = Map.empty; PriceRatio = Some 2.5; FaithGate = Some 750; NoStackable = true; Unlocks = None; Upgrades = Some({ Buildings = ["temple"; "ziggurat"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
       { Name = "solarRevolution"; Prices = [{ Resource = "gold"; Val = 500 }; { Resource = "faith"; Val = 750 }]; Effects = Map.ofList ["solarRevolutionRatio", 0]; PriceRatio = None; FaithGate = Some 1000; NoStackable = true; Unlocks = None; Upgrades = None }
-      { Name = "basilica"; Prices = [{ Resource = "gold"; Val = 750 }; { Resource = "faith"; Val = 1250 }]; Effects = Map.empty; PriceRatio = Some 2.5; FaithGate = Some 10000; NoStackable = true; Unlocks = None; Upgrades = Some({ Buildings = ["temple"; "ziggurat"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "templars"; Prices = [{ Resource = "gold"; Val = 3000 }; { Resource = "faith"; Val = 3500 }]; Effects = Map.empty; PriceRatio = Some 2.5; FaithGate = Some 75000; NoStackable = true; Unlocks = None; Upgrades = Some({ Buildings = ["temple"; "ziggurat"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
+      { Name = "basilica"; Prices = [{ Resource = "gold"; Val = 750 }; { Resource = "faith"; Val = 1250 }]; Effects = Map.empty; PriceRatio = Some 2.5; FaithGate = Some 10000; NoStackable = true; Unlocks = None; Upgrades = Some({ Buildings = ["temple"; "ziggurat"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "templars"; Prices = [{ Resource = "gold"; Val = 3000 }; { Resource = "faith"; Val = 3500 }]; Effects = Map.empty; PriceRatio = Some 2.5; FaithGate = Some 75000; NoStackable = true; Unlocks = None; Upgrades = Some({ Buildings = ["temple"; "ziggurat"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
       { Name = "apocripha"; Prices = [{ Resource = "gold"; Val = 5000 }; { Resource = "faith"; Val = 5000 }]; Effects = Map.empty; PriceRatio = None; FaithGate = Some 100000; NoStackable = true; Unlocks = None; Upgrades = None }
-      { Name = "transcendence"; Prices = [{ Resource = "gold"; Val = 7500 }; { Resource = "faith"; Val = 7500 }]; Effects = Map.empty; PriceRatio = None; FaithGate = Some 125000; NoStackable = true; Unlocks = None; Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = ["solarchant"; "scholasticism"; "goldenSpire"; "sunAltar"; "stainedGlass"; "basilica"; "templars"; "frescoes"]; Crafts = []; Stages = [] }) }
-      { Name = "frescoes"; Prices = [{ Resource = "gold"; Val = 5000 }; { Resource = "faith"; Val = 4000 }; { Resource = "spice"; Val = 8000 }]; Effects = Map.empty; PriceRatio = Some 2.5; FaithGate = Some 200000; NoStackable = true; Unlocks = None; Upgrades = Some({ Buildings = ["chapel"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
+      { Name = "transcendence"; Prices = [{ Resource = "gold"; Val = 7500 }; { Resource = "faith"; Val = 7500 }]; Effects = Map.empty; PriceRatio = None; FaithGate = Some 125000; NoStackable = true; Unlocks = None; Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = ["solarchant"; "scholasticism"; "goldenSpire"; "sunAltar"; "stainedGlass"; "basilica"; "templars"; "frescoes"]; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "frescoes"; Prices = [{ Resource = "gold"; Val = 5000 }; { Resource = "faith"; Val = 4000 }; { Resource = "spice"; Val = 8000 }]; Effects = Map.empty; PriceRatio = Some 2.5; FaithGate = Some 200000; NoStackable = true; Unlocks = None; Upgrades = Some({ Buildings = ["chapel"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
     ]
 
 let tuDefs : TUDef list =
     [
       { Name = "blackObelisk"; Prices = [{ Resource = "relic"; Val = 100 }]; Effects = Map.ofList ["solarRevolutionLimit", 0.05]; PriceRatio = Some 1.15; Unlocks = None; Upgrades = None }
-      { Name = "blackNexus"; Prices = [{ Resource = "relic"; Val = 5000 }]; Effects = Map.ofList ["relicRefineRatio", 1]; PriceRatio = Some 1.15; Unlocks = None; Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
+      { Name = "blackNexus"; Prices = [{ Resource = "relic"; Val = 5000 }]; Effects = Map.ofList ["relicRefineRatio", 1]; PriceRatio = Some 1.15; Unlocks = None; Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
       { Name = "blackCore"; Prices = [{ Resource = "relic"; Val = 10000 }]; Effects = Map.ofList ["blsLimit", 1]; PriceRatio = Some 1.15; Unlocks = None; Upgrades = None }
       { Name = "singularity"; Prices = [{ Resource = "relic"; Val = 25000 }]; Effects = Map.ofList ["globalResourceRatio", 0.1]; PriceRatio = Some 1.15; Unlocks = None; Upgrades = None }
       { Name = "blackLibrary"; Prices = [{ Resource = "relic"; Val = 30000 }]; Effects = Map.ofList ["compendiaTTBoostRatio", 0.02]; PriceRatio = Some 1.15; Unlocks = None; Upgrades = None }
       { Name = "blackRadiance"; Prices = [{ Resource = "relic"; Val = 37500 }]; Effects = Map.ofList ["blsCorruptionRatio", 0.0012]; PriceRatio = Some 1.15; Unlocks = None; Upgrades = None }
-      { Name = "blazar"; Prices = [{ Resource = "relic"; Val = 50000 }]; Effects = Map.ofList ["timeRatio", 0.1; "rrRatio", 0.02]; PriceRatio = Some 1.15; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
+      { Name = "blazar"; Prices = [{ Resource = "relic"; Val = 50000 }]; Effects = Map.ofList ["timeRatio", 0.1; "rrRatio", 0.02]; PriceRatio = Some 1.15; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
       { Name = "darkNova"; Prices = [{ Resource = "relic"; Val = 75000 }; { Resource = "void"; Val = 7500 }]; Effects = Map.ofList ["energyProductionRatio", 0.02]; PriceRatio = Some 1.15; Unlocks = None; Upgrades = None }
-      { Name = "mausoleum"; Prices = [{ Resource = "relic"; Val = 50000 }; { Resource = "void"; Val = 12500 }; { Resource = "necrocorn"; Val = 10 }]; Effects = Map.ofList ["pactsAvailable", 1]; PriceRatio = Some 1.15; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["siphoning"; "feedingFrenzy"; "upfrontPayment"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["feedingFrenzy"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
-      { Name = "holyGenocide"; Prices = [{ Resource = "relic"; Val = 100000 }; { Resource = "void"; Val = 25000 }]; Effects = Map.ofList ["maxKittensRatio", -0.01; "simScalingRatio", 0.02; "activeHG", 0]; PriceRatio = Some 1.15; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }); Upgrades = Some({ Buildings = []; Tabs = []; Jobs = ["ambassador"]; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Stages = [] }) }
+      { Name = "mausoleum"; Prices = [{ Resource = "relic"; Val = 50000 }; { Resource = "void"; Val = 12500 }; { Resource = "necrocorn"; Val = 10 }]; Effects = Map.ofList ["pactsAvailable", 1]; PriceRatio = Some 1.15; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["siphoning"; "feedingFrenzy"; "upfrontPayment"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["feedingFrenzy"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "holyGenocide"; Prices = [{ Resource = "relic"; Val = 100000 }; { Resource = "void"; Val = 25000 }]; Effects = Map.ofList ["maxKittensRatio", -0.01; "simScalingRatio", 0.02; "activeHG", 0]; PriceRatio = Some 1.15; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = []; Tabs = []; Jobs = ["ambassador"]; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
       { Name = "darkParacosm"; Prices = [{ Resource = "relic"; Val = 230000 }; { Resource = "void"; Val = 29000 }; { Resource = "paragon"; Val = 8 }]; Effects = Map.ofList ["milleninumParagon", 1]; PriceRatio = Some 1.75; Unlocks = None; Upgrades = None }
     ]
 
@@ -176,99 +191,132 @@ let spaceBuildingDefs : SpaceBuildingDef list =
 
 let perkDefs : PerkDef list =
     [
-      { Name = "engeneering"; Prices = [{ Resource = "paragon"; Val = 5 }]; Effects = Map.ofList ["priceRatio", -0.01] }
-      { Name = "codexVox"; Prices = [{ Resource = "paragon"; Val = 25 }]; Effects = Map.ofList ["manuscriptCraftRatio", 0.25; "manuscriptGlobalCraftRatio", 0.05] }
-      { Name = "codexLogos"; Prices = [{ Resource = "paragon"; Val = 50 }]; Effects = Map.ofList ["manuscriptGlobalCraftRatio", 0.05; "compediumCraftRatio", 0.25; "compediumGlobalCraftRatio", 0.05] }
-      { Name = "codexAgrum"; Prices = [{ Resource = "paragon"; Val = 75 }]; Effects = Map.ofList ["manuscriptGlobalCraftRatio", 0.05; "compediumGlobalCraftRatio", 0.05; "blueprintCraftRatio", 0.25; "blueprintGlobalCraftRatio", 0.05] }
-      { Name = "megalomania"; Prices = [{ Resource = "paragon"; Val = 10 }]; Effects = Map.empty }
-      { Name = "blackCodex"; Prices = [{ Resource = "paragon"; Val = 25 }]; Effects = Map.empty }
-      { Name = "codexLeviathanianus"; Prices = [{ Resource = "paragon"; Val = 75 }]; Effects = Map.empty }
-      { Name = "goldenRatio"; Prices = [{ Resource = "paragon"; Val = 50 }]; Effects = Map.ofList ["priceRatio", -0.016180339887498948; "queueCap", 1] }
-      { Name = "divineProportion"; Prices = [{ Resource = "paragon"; Val = 100 }]; Effects = Map.ofList ["priceRatio", -0.017777777777777778; "queueCap", 2] }
-      { Name = "vitruvianFeline"; Prices = [{ Resource = "paragon"; Val = 250 }]; Effects = Map.ofList ["priceRatio", -0.02] }
-      { Name = "renaissance"; Prices = [{ Resource = "paragon"; Val = 750 }]; Effects = Map.ofList ["priceRatio", -0.0225; "queueCap", 2] }
-      { Name = "diplomacy"; Prices = [{ Resource = "paragon"; Val = 5 }]; Effects = Map.ofList ["standingRatio", 0.1] }
-      { Name = "zebraDiplomacy"; Prices = [{ Resource = "paragon"; Val = 35 }]; Effects = Map.empty }
-      { Name = "zebraCovenant"; Prices = [{ Resource = "paragon"; Val = 75 }]; Effects = Map.empty }
-      { Name = "navigationDiplomacy"; Prices = [{ Resource = "paragon"; Val = 300 }]; Effects = Map.empty }
-      { Name = "ambassadors"; Prices = [{ Resource = "paragon"; Val = 100 }]; Effects = Map.empty }
-      { Name = "treaties"; Prices = [{ Resource = "paragon"; Val = 500 }]; Effects = Map.ofList ["embassiesPerAmbassadorSlot", 30; "ambassadorBoostPerRank", 0.1] }
-      { Name = "chronomancy"; Prices = [{ Resource = "paragon"; Val = 25 }]; Effects = Map.empty }
-      { Name = "astromancy"; Prices = [{ Resource = "paragon"; Val = 50 }]; Effects = Map.empty }
-      { Name = "unicornmancy"; Prices = [{ Resource = "paragon"; Val = 125 }]; Effects = Map.empty }
-      { Name = "alicornmancy"; Prices = [{ Resource = "paragon"; Val = 200 }]; Effects = Map.empty }
-      { Name = "anachronomancy"; Prices = [{ Resource = "paragon"; Val = 125 }]; Effects = Map.empty }
-      { Name = "carnivals"; Prices = [{ Resource = "paragon"; Val = 25 }]; Effects = Map.empty }
-      { Name = "willenfluff"; Prices = [{ Resource = "paragon"; Val = 150 }]; Effects = Map.ofList ["kittenGrowthRatio", 0.75] }
-      { Name = "pawgan"; Prices = [{ Resource = "paragon"; Val = 400 }]; Effects = Map.ofList ["kittenGrowthRatio", 1.5] }
-      { Name = "numerology"; Prices = [{ Resource = "paragon"; Val = 50 }]; Effects = Map.empty }
-      { Name = "numeromancy"; Prices = [{ Resource = "paragon"; Val = 250 }]; Effects = Map.empty }
-      { Name = "malkuth"; Prices = [{ Resource = "paragon"; Val = 500 }]; Effects = Map.ofList ["paragonRatio", 0.05] }
-      { Name = "yesod"; Prices = [{ Resource = "paragon"; Val = 750 }]; Effects = Map.ofList ["paragonRatio", 0.05] }
-      { Name = "hod"; Prices = [{ Resource = "paragon"; Val = 1250 }]; Effects = Map.ofList ["paragonRatio", 0.05] }
-      { Name = "netzach"; Prices = [{ Resource = "paragon"; Val = 1750 }]; Effects = Map.ofList ["paragonRatio", 0.05] }
-      { Name = "tiferet"; Prices = [{ Resource = "paragon"; Val = 2500 }]; Effects = Map.ofList ["paragonRatio", 0.05] }
-      { Name = "gevurah"; Prices = [{ Resource = "paragon"; Val = 5000 }]; Effects = Map.ofList ["paragonRatio", 0.05] }
-      { Name = "chesed"; Prices = [{ Resource = "paragon"; Val = 7500 }]; Effects = Map.ofList ["paragonRatio", 0.05] }
-      { Name = "binah"; Prices = [{ Resource = "paragon"; Val = 15000 }]; Effects = Map.ofList ["paragonRatio", 0.05] }
-      { Name = "chokhmah"; Prices = [{ Resource = "paragon"; Val = 30000 }]; Effects = Map.ofList ["paragonRatio", 0.05] }
-      { Name = "keter"; Prices = [{ Resource = "paragon"; Val = 60000 }]; Effects = Map.ofList ["paragonRatio", 0.05] }
-      { Name = "voidOrder"; Prices = [{ Resource = "paragon"; Val = 75 }]; Effects = Map.empty }
-      { Name = "adjustmentBureau"; Prices = [{ Resource = "paragon"; Val = 5 }]; Effects = Map.empty }
-      { Name = "ascoh"; Prices = [{ Resource = "paragon"; Val = 5 }]; Effects = Map.empty }
+      { Name = "engeneering"; Prices = [{ Resource = "paragon"; Val = 5 }]; Effects = Map.ofList ["priceRatio", -0.01]; StartsUnlocked = true; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["megalomania"; "goldenRatio"; "codexVox"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "codexVox"; Prices = [{ Resource = "paragon"; Val = 25 }]; Effects = Map.ofList ["manuscriptCraftRatio", 0.25; "manuscriptGlobalCraftRatio", 0.05]; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["codexLogos"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "codexLogos"; Prices = [{ Resource = "paragon"; Val = 50 }]; Effects = Map.ofList ["manuscriptGlobalCraftRatio", 0.05; "compediumCraftRatio", 0.25; "compediumGlobalCraftRatio", 0.05]; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["codexAgrum"; "codexLeviathanianus"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "codexAgrum"; Prices = [{ Resource = "paragon"; Val = 75 }]; Effects = Map.ofList ["manuscriptGlobalCraftRatio", 0.05; "compediumGlobalCraftRatio", 0.05; "blueprintCraftRatio", 0.25; "blueprintGlobalCraftRatio", 0.05]; StartsUnlocked = false; Unlocks = None; Upgrades = None; HasHandler = false }
+      { Name = "megalomania"; Prices = [{ Resource = "paragon"; Val = 10 }]; Effects = Map.empty; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["blackCodex"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "blackCodex"; Prices = [{ Resource = "paragon"; Val = 25 }]; Effects = Map.empty; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "codexLeviathanianus"; Prices = [{ Resource = "paragon"; Val = 75 }]; Effects = Map.empty; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "goldenRatio"; Prices = [{ Resource = "paragon"; Val = 50 }]; Effects = Map.ofList ["priceRatio", -0.016180339887498948; "queueCap", 1]; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["divineProportion"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "divineProportion"; Prices = [{ Resource = "paragon"; Val = 100 }]; Effects = Map.ofList ["priceRatio", -0.017777777777777778; "queueCap", 2]; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["vitruvianFeline"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "vitruvianFeline"; Prices = [{ Resource = "paragon"; Val = 250 }]; Effects = Map.ofList ["priceRatio", -0.02]; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["renaissance"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "renaissance"; Prices = [{ Resource = "paragon"; Val = 750 }]; Effects = Map.ofList ["priceRatio", -0.0225; "queueCap", 2]; StartsUnlocked = false; Unlocks = None; Upgrades = None; HasHandler = false }
+      { Name = "diplomacy"; Prices = [{ Resource = "paragon"; Val = 5 }]; Effects = Map.ofList ["standingRatio", 0.1]; StartsUnlocked = true; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["zebraDiplomacy"; "ambassadors"]; Stages = [] }); Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["lizardRelationsEcologists"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); HasHandler = true }
+      { Name = "zebraDiplomacy"; Prices = [{ Resource = "paragon"; Val = 35 }]; Effects = Map.empty; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["zebraCovenant"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "zebraCovenant"; Prices = [{ Resource = "paragon"; Val = 75 }]; Effects = Map.empty; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["navigationDiplomacy"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "navigationDiplomacy"; Prices = [{ Resource = "paragon"; Val = 300 }]; Effects = Map.empty; StartsUnlocked = false; Unlocks = None; Upgrades = None; HasHandler = false }
+      { Name = "ambassadors"; Prices = [{ Resource = "paragon"; Val = 100 }]; Effects = Map.empty; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = ["ambassador"]; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["treaties"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "treaties"; Prices = [{ Resource = "paragon"; Val = 500 }]; Effects = Map.ofList ["embassiesPerAmbassadorSlot", 30; "ambassadorBoostPerRank", 0.1]; StartsUnlocked = false; Unlocks = None; Upgrades = Some({ Buildings = []; Tabs = []; Jobs = ["ambassador"]; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); HasHandler = false }
+      { Name = "chronomancy"; Prices = [{ Resource = "paragon"; Val = 25 }]; Effects = Map.empty; StartsUnlocked = true; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["astromancy"; "anachronomancy"; "unicornmancy"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "astromancy"; Prices = [{ Resource = "paragon"; Val = 50 }]; Effects = Map.empty; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "unicornmancy"; Prices = [{ Resource = "paragon"; Val = 125 }]; Effects = Map.empty; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["alicornmancy"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "alicornmancy"; Prices = [{ Resource = "paragon"; Val = 200 }]; Effects = Map.empty; StartsUnlocked = false; Unlocks = None; Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); HasHandler = false }
+      { Name = "anachronomancy"; Prices = [{ Resource = "paragon"; Val = 125 }]; Effects = Map.empty; StartsUnlocked = false; Unlocks = None; Upgrades = None; HasHandler = false }
+      { Name = "carnivals"; Prices = [{ Resource = "paragon"; Val = 25 }]; Effects = Map.empty; StartsUnlocked = true; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["numerology"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "willenfluff"; Prices = [{ Resource = "paragon"; Val = 150 }]; Effects = Map.ofList ["kittenGrowthRatio", 0.75]; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["pawgan"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "pawgan"; Prices = [{ Resource = "paragon"; Val = 400 }]; Effects = Map.ofList ["kittenGrowthRatio", 1.5]; StartsUnlocked = false; Unlocks = None; Upgrades = None; HasHandler = false }
+      { Name = "numerology"; Prices = [{ Resource = "paragon"; Val = 50 }]; Effects = Map.empty; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["numeromancy"; "willenfluff"; "voidOrder"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "numeromancy"; Prices = [{ Resource = "paragon"; Val = 250 }]; Effects = Map.empty; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["malkuth"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "malkuth"; Prices = [{ Resource = "paragon"; Val = 500 }]; Effects = Map.ofList ["paragonRatio", 0.05]; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["yesod"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "yesod"; Prices = [{ Resource = "paragon"; Val = 750 }]; Effects = Map.ofList ["paragonRatio", 0.05]; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["hod"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "hod"; Prices = [{ Resource = "paragon"; Val = 1250 }]; Effects = Map.ofList ["paragonRatio", 0.05]; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["netzach"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "netzach"; Prices = [{ Resource = "paragon"; Val = 1750 }]; Effects = Map.ofList ["paragonRatio", 0.05]; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["tiferet"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "tiferet"; Prices = [{ Resource = "paragon"; Val = 2500 }]; Effects = Map.ofList ["paragonRatio", 0.05]; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["gevurah"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "gevurah"; Prices = [{ Resource = "paragon"; Val = 5000 }]; Effects = Map.ofList ["paragonRatio", 0.05]; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["chesed"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "chesed"; Prices = [{ Resource = "paragon"; Val = 7500 }]; Effects = Map.ofList ["paragonRatio", 0.05]; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["binah"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "binah"; Prices = [{ Resource = "paragon"; Val = 15000 }]; Effects = Map.ofList ["paragonRatio", 0.05]; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["chokhmah"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "chokhmah"; Prices = [{ Resource = "paragon"; Val = 30000 }]; Effects = Map.ofList ["paragonRatio", 0.05]; StartsUnlocked = false; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["keter"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "keter"; Prices = [{ Resource = "paragon"; Val = 60000 }]; Effects = Map.ofList ["paragonRatio", 0.05]; StartsUnlocked = false; Unlocks = None; Upgrades = None; HasHandler = false }
+      { Name = "voidOrder"; Prices = [{ Resource = "paragon"; Val = 75 }]; Effects = Map.empty; StartsUnlocked = false; Unlocks = None; Upgrades = None; HasHandler = false }
+      { Name = "adjustmentBureau"; Prices = [{ Resource = "paragon"; Val = 5 }]; Effects = Map.empty; StartsUnlocked = true; Unlocks = Some({ Buildings = []; Tabs = ["challenges"]; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = ["ascoh"]; Stages = [] }); Upgrades = None; HasHandler = false }
+      { Name = "ascoh"; Prices = [{ Resource = "paragon"; Val = 5 }]; Effects = Map.empty; StartsUnlocked = false; Unlocks = None; Upgrades = None; HasHandler = false }
     ]
 
 let achievementDefs : AchievementDef list =
     [
-      { Name = "theElderLegacy"; Starred = false }
-      { Name = "unicornConspiracy"; Starred = false }
-      { Name = "uniception"; Starred = false }
-      { Name = "sinsOfEmpire"; Starred = false }
-      { Name = "anachronox"; Starred = false }
-      { Name = "deadSpace"; Starred = false }
-      { Name = "sadnessAbyss"; Starred = false }
-      { Name = "ironWill"; Starred = false }
-      { Name = "uberkatzhen"; Starred = false }
-      { Name = "hundredYearsSolitude"; Starred = false }
-      { Name = "soilUptuned"; Starred = false }
-      { Name = "atlasUnmeowed"; Starred = false }
-      { Name = "meowMeowRevolution"; Starred = false }
-      { Name = "spaceOddity"; Starred = false }
-      { Name = "jupiterAscending"; Starred = false }
-      { Name = "veryLargeArray"; Starred = false }
-      { Name = "shadowOfTheColossus"; Starred = false }
-      { Name = "sunGod"; Starred = false }
-      { Name = "heartOfDarkness"; Starred = false }
-      { Name = "winterIsComing"; Starred = false }
-      { Name = "youMonster"; Starred = false }
-      { Name = "superUnethicalClimax"; Starred = false }
-      { Name = "systemShock"; Starred = false }
-      { Name = "lotusMachine"; Starred = false }
-      { Name = "serenity"; Starred = false }
-      { Name = "utopiaProject"; Starred = false }
-      { Name = "deathStranding"; Starred = false }
-      { Name = "cathammer"; Starred = false }
-      { Name = "eternalBacchanalia"; Starred = false }
-      { Name = "challenger"; Starred = false }
-      { Name = "betterSafeThanSorry"; Starred = false }
+      { Name = "theElderLegacy"; Hidden = true; HasCondition = true; HasStarCondition = false }
+      { Name = "unicornConspiracy"; Hidden = false; HasCondition = true; HasStarCondition = false }
+      { Name = "uniception"; Hidden = false; HasCondition = true; HasStarCondition = false }
+      { Name = "sinsOfEmpire"; Hidden = false; HasCondition = true; HasStarCondition = false }
+      { Name = "anachronox"; Hidden = false; HasCondition = true; HasStarCondition = false }
+      { Name = "deadSpace"; Hidden = false; HasCondition = true; HasStarCondition = false }
+      { Name = "sadnessAbyss"; Hidden = false; HasCondition = true; HasStarCondition = false }
+      { Name = "ironWill"; Hidden = false; HasCondition = true; HasStarCondition = false }
+      { Name = "uberkatzhen"; Hidden = false; HasCondition = true; HasStarCondition = false }
+      { Name = "hundredYearsSolitude"; Hidden = false; HasCondition = true; HasStarCondition = false }
+      { Name = "soilUptuned"; Hidden = false; HasCondition = true; HasStarCondition = false }
+      { Name = "atlasUnmeowed"; Hidden = false; HasCondition = true; HasStarCondition = false }
+      { Name = "meowMeowRevolution"; Hidden = false; HasCondition = true; HasStarCondition = false }
+      { Name = "spaceOddity"; Hidden = false; HasCondition = true; HasStarCondition = true }
+      { Name = "jupiterAscending"; Hidden = false; HasCondition = true; HasStarCondition = true }
+      { Name = "veryLargeArray"; Hidden = false; HasCondition = true; HasStarCondition = false }
+      { Name = "shadowOfTheColossus"; Hidden = false; HasCondition = true; HasStarCondition = false }
+      { Name = "sunGod"; Hidden = false; HasCondition = true; HasStarCondition = false }
+      { Name = "heartOfDarkness"; Hidden = false; HasCondition = true; HasStarCondition = false }
+      { Name = "winterIsComing"; Hidden = false; HasCondition = true; HasStarCondition = false }
+      { Name = "youMonster"; Hidden = false; HasCondition = true; HasStarCondition = true }
+      { Name = "superUnethicalClimax"; Hidden = false; HasCondition = true; HasStarCondition = false }
+      { Name = "systemShock"; Hidden = false; HasCondition = true; HasStarCondition = false }
+      { Name = "lotusMachine"; Hidden = false; HasCondition = true; HasStarCondition = false }
+      { Name = "serenity"; Hidden = false; HasCondition = true; HasStarCondition = true }
+      { Name = "utopiaProject"; Hidden = false; HasCondition = true; HasStarCondition = true }
+      { Name = "deathStranding"; Hidden = false; HasCondition = true; HasStarCondition = false }
+      { Name = "cathammer"; Hidden = false; HasCondition = true; HasStarCondition = true }
+      { Name = "eternalBacchanalia"; Hidden = false; HasCondition = true; HasStarCondition = false }
+      { Name = "challenger"; Hidden = false; HasCondition = true; HasStarCondition = true }
+      { Name = "betterSafeThanSorry"; Hidden = false; HasCondition = true; HasStarCondition = true }
+    ]
+
+let badgeDefs : BadgeDef list =
+    [
+      { Name = "lotus"; Difficulty = Some "A"; HasCondition = true }
+      { Name = "ivoryTower"; Difficulty = Some "S+"; HasCondition = false }
+      { Name = "useless"; Difficulty = Some "F"; HasCondition = true }
+      { Name = "beta"; Difficulty = Some "B"; HasCondition = true }
+      { Name = "silentHill"; Difficulty = Some "S"; HasCondition = true }
+      { Name = "evergreen"; Difficulty = Some "F"; HasCondition = false }
+      { Name = "deadSpace"; Difficulty = Some "S"; HasCondition = true }
+      { Name = "reginaNoctis"; Difficulty = Some "S"; HasCondition = true }
+      { Name = "ghostInTheMachine"; Difficulty = Some "S"; HasCondition = false }
+      { Name = "abOwo"; Difficulty = Some "A"; HasCondition = false }
+      { Name = "cleanPaws"; Difficulty = Some "C"; HasCondition = false }
+      { Name = "sequenceBreak"; Difficulty = Some "D"; HasCondition = true }
+      { Name = "fantasticFurColor"; Difficulty = Some "F"; HasCondition = true }
+      { Name = "whatYearIsIt"; Difficulty = Some "C"; HasCondition = false }
+      { Name = "tardis"; Difficulty = Some "C"; HasCondition = false }
+      { Name = "wheredThisComeFrom"; Difficulty = Some "S"; HasCondition = false }
+      { Name = "lostDates"; Difficulty = Some "B"; HasCondition = true }
+      { Name = "buffet"; Difficulty = Some "A"; HasCondition = true }
+      { Name = "newHome"; Difficulty = Some "D"; HasCondition = true }
+      { Name = "betterSafeThanSorry"; Difficulty = Some "E"; HasCondition = false }
+      { Name = "soLongAndThanksForAllTheHay"; Difficulty = Some "S"; HasCondition = true }
     ]
 
 let statDefs : StatDef list =
     [
-      { Name = "totalKittens"; InitialVal = 0 }
-      { Name = "kittensDead"; InitialVal = 0 }
-      { Name = "totalYears"; InitialVal = 0 }
-      { Name = "totalResets"; InitialVal = 0 }
-      { Name = "totalParagon"; InitialVal = 0 }
-      { Name = "eventsObserved"; InitialVal = 0 }
-      { Name = "unicornsSacrificed"; InitialVal = 0 }
-      { Name = "buildingsConstructed"; InitialVal = 0 }
-      { Name = "totalClicks"; InitialVal = 0 }
-      { Name = "totalTrades"; InitialVal = 0 }
-      { Name = "totalCrafts"; InitialVal = 0 }
-      { Name = "averageKittens"; InitialVal = 0 }
-      { Name = "transcendenceTier"; InitialVal = 0 }
-      { Name = "totalChallengesCompleted"; InitialVal = 0 }
+      { Name = "totalKittens"; InitialVal = 0; StartsUnlocked = true; HasCalculate = false }
+      { Name = "kittensDead"; InitialVal = 0; StartsUnlocked = true; HasCalculate = false }
+      { Name = "totalYears"; InitialVal = 0; StartsUnlocked = true; HasCalculate = false }
+      { Name = "totalResets"; InitialVal = 0; StartsUnlocked = true; HasCalculate = false }
+      { Name = "totalParagon"; InitialVal = 0; StartsUnlocked = false; HasCalculate = false }
+      { Name = "eventsObserved"; InitialVal = 0; StartsUnlocked = false; HasCalculate = false }
+      { Name = "unicornsSacrificed"; InitialVal = 0; StartsUnlocked = false; HasCalculate = false }
+      { Name = "buildingsConstructed"; InitialVal = 0; StartsUnlocked = false; HasCalculate = false }
+      { Name = "totalClicks"; InitialVal = 0; StartsUnlocked = false; HasCalculate = false }
+      { Name = "totalTrades"; InitialVal = 0; StartsUnlocked = false; HasCalculate = false }
+      { Name = "totalCrafts"; InitialVal = 0; StartsUnlocked = false; HasCalculate = false }
+      { Name = "averageKittens"; InitialVal = 0; StartsUnlocked = false; HasCalculate = true }
+      { Name = "transcendenceTier"; InitialVal = 0; StartsUnlocked = false; HasCalculate = true }
+      { Name = "totalChallengesCompleted"; InitialVal = 0; StartsUnlocked = false; HasCalculate = true }
+    ]
+
+let statCurrentDefs : StatCurrentDef list =
+    [
+      { Name = "totalTrades"; HasCalculate = false }
+      { Name = "totalCrafts"; HasCalculate = false }
+      { Name = "averageKittens"; HasCalculate = true }
+      { Name = "timePlayed"; HasCalculate = true }
     ]
 
 let cfuDefs : CFUDef list =
@@ -305,4 +353,21 @@ let cycleDefs : CycleDef list =
       { Name = "piscine"; Effects = Map.ofList ["hydroponics-catnipRatio", 0.5; "researchVessel-starchartPerTickBaseSpace", 1.5] }
       { Name = "terminus"; Effects = Map.ofList ["cryostation-woodMax", 1.2; "cryostation-mineralsMax", 1.2; "cryostation-coalMax", 1.2; "cryostation-ironMax", 1.2; "cryostation-titaniumMax", 1.2; "cryostation-oilMax", 1.2; "cryostation-uraniumMax", 1.2; "cryostation-unobtainiumMax", 1.2; "sunlifter-energyProduction", 0.5] }
       { Name = "kairo"; Effects = Map.ofList ["spaceStation-scienceRatio", 0.75; "sattelite-observatoryRatio", 0.75; "sattelite-starchartPerTickBaseSpace", 0.75; "spaceBeacon-starchartPerTickBaseSpace", 5; "spaceElevator-prodTransferBonus", 0.5] }
+    ]
+
+let biomeDefs : BiomeDef list =
+    [
+      { Name = "village"; FaunaNames = []; FaunaPenalty = 0 }
+      { Name = "plains"; FaunaNames = ["grass snake"; "raptor"; "vole"]; FaunaPenalty = 1 }
+      { Name = "hills"; FaunaNames = ["rock lizard"; "centipede"; "stone toad"; "cave bat"]; FaunaPenalty = 1 }
+      { Name = "forest"; FaunaNames = []; FaunaPenalty = 1.5 }
+      { Name = "boneForest"; FaunaNames = ["bone spider"]; FaunaPenalty = 1 }
+      { Name = "rainForest"; FaunaNames = ["poison frog"; "razor leech"; "jaguar"; "giant centipede"]; FaunaPenalty = 1 }
+      { Name = "mountain"; FaunaNames = ["mountain goat"; "rock worm"; "yeti cub"]; FaunaPenalty = 1 }
+      { Name = "volcano"; FaunaNames = ["magma slug"; "lava beetle"]; FaunaPenalty = 1 }
+      { Name = "desert"; FaunaNames = ["sand viper"; "scorpion"; "dune beetle"; "sand raptor"]; FaunaPenalty = 1 }
+      { Name = "bloodDesert"; FaunaNames = ["blood scarab"; "crimson basilisk"]; FaunaPenalty = 1 }
+      { Name = "swamp"; FaunaNames = ["bog toad"; "swamp serpent"; "poison spore"]; FaunaPenalty = 1 }
+      { Name = "cath"; FaunaNames = []; FaunaPenalty = 1 }
+      { Name = "redmoon"; FaunaNames = []; FaunaPenalty = 1 }
     ]

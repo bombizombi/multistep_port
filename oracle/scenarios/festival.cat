@@ -1,0 +1,19 @@
+# name: festival
+# seed: 20260927
+# checkpoints: 0, 105, 110, 200, 215, 400
+# village-08: holdFestival → 100 festival days; happiness +30%, kitten birth
+# rate doubled (birth timing), festival countdown in onNewDay.
+0 gather 30
+15 buy field
+50 gather 60
+90 buy field 3
+130 gather 60
+170 buy field 3
+210 gather 80
+250 buy field 2
+290 gather 100
+420 craft wood 5
+460 buy hut
+600 gather 60
+700 gather 60
+800 festival

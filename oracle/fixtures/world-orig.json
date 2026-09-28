@@ -2768,7 +2768,27 @@
    "researched": false,
    "effects": {
     "priceRatio": -0.01
-   }
+   },
+   "defaultUnlocked": true,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "megalomania",
+     "goldenRatio",
+     "codexVox"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "codexVox",
@@ -2783,7 +2803,25 @@
    "effects": {
     "manuscriptCraftRatio": 0.25,
     "manuscriptGlobalCraftRatio": 0.05
-   }
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "codexLogos"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "codexLogos",
@@ -2799,7 +2837,26 @@
     "manuscriptGlobalCraftRatio": 0.05,
     "compediumCraftRatio": 0.25,
     "compediumGlobalCraftRatio": 0.05
-   }
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "codexAgrum",
+     "codexLeviathanianus"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "codexAgrum",
@@ -2816,7 +2873,11 @@
     "compediumGlobalCraftRatio": 0.05,
     "blueprintCraftRatio": 0.25,
     "blueprintGlobalCraftRatio": 0.05
-   }
+   },
+   "defaultUnlocked": false,
+   "unlocks": null,
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "megalomania",
@@ -2828,7 +2889,25 @@
    ],
    "unlocked": false,
    "researched": false,
-   "effects": null
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "blackCodex"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "blackCodex",
@@ -2840,7 +2919,23 @@
    ],
    "unlocked": false,
    "researched": false,
-   "effects": null
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "codexLeviathanianus",
@@ -2852,7 +2947,23 @@
    ],
    "unlocked": false,
    "researched": false,
-   "effects": null
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "goldenRatio",
@@ -2867,7 +2978,25 @@
    "effects": {
     "priceRatio": -0.016180339887498948,
     "queueCap": 1
-   }
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "divineProportion"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "divineProportion",
@@ -2882,7 +3011,25 @@
    "effects": {
     "priceRatio": -0.017777777777777778,
     "queueCap": 2
-   }
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "vitruvianFeline"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "vitruvianFeline",
@@ -2896,7 +3043,25 @@
    "researched": false,
    "effects": {
     "priceRatio": -0.02
-   }
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "renaissance"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "renaissance",
@@ -2911,7 +3076,11 @@
    "effects": {
     "priceRatio": -0.0225,
     "queueCap": 2
-   }
+   },
+   "defaultUnlocked": false,
+   "unlocks": null,
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "diplomacy",
@@ -2925,7 +3094,40 @@
    "researched": false,
    "effects": {
     "standingRatio": 0.1
-   }
+   },
+   "defaultUnlocked": true,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "zebraDiplomacy",
+     "ambassadors"
+    ],
+    "stages": []
+   },
+   "upgrades": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [
+     "lizardRelationsEcologists"
+    ],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [],
+    "stages": []
+   },
+   "hasHandler": true
   },
   {
    "name": "zebraDiplomacy",
@@ -2937,7 +3139,25 @@
    ],
    "unlocked": false,
    "researched": false,
-   "effects": null
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "zebraCovenant"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "zebraCovenant",
@@ -2949,7 +3169,25 @@
    ],
    "unlocked": false,
    "researched": false,
-   "effects": null
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "navigationDiplomacy"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "navigationDiplomacy",
@@ -2961,7 +3199,11 @@
    ],
    "unlocked": false,
    "researched": false,
-   "effects": null
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": null,
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "ambassadors",
@@ -2973,7 +3215,27 @@
    ],
    "unlocked": false,
    "researched": false,
-   "effects": null
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [
+     "ambassador"
+    ],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "treaties"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "treaties",
@@ -2988,7 +3250,25 @@
    "effects": {
     "embassiesPerAmbassadorSlot": 30,
     "ambassadorBoostPerRank": 0.1
-   }
+   },
+   "defaultUnlocked": false,
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [
+     "ambassador"
+    ],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [],
+    "stages": []
+   },
+   "hasHandler": false
   },
   {
    "name": "chronomancy",
@@ -3000,7 +3280,27 @@
    ],
    "unlocked": true,
    "researched": false,
-   "effects": null
+   "effects": null,
+   "defaultUnlocked": true,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "astromancy",
+     "anachronomancy",
+     "unicornmancy"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "astromancy",
@@ -3012,7 +3312,23 @@
    ],
    "unlocked": false,
    "researched": false,
-   "effects": null
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "unicornmancy",
@@ -3024,7 +3340,25 @@
    ],
    "unlocked": false,
    "researched": false,
-   "effects": null
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "alicornmancy"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "alicornmancy",
@@ -3036,7 +3370,23 @@
    ],
    "unlocked": false,
    "researched": false,
-   "effects": null
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [],
+    "stages": []
+   },
+   "hasHandler": false
   },
   {
    "name": "anachronomancy",
@@ -3048,7 +3398,11 @@
    ],
    "unlocked": false,
    "researched": false,
-   "effects": null
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": null,
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "carnivals",
@@ -3060,7 +3414,25 @@
    ],
    "unlocked": true,
    "researched": false,
-   "effects": null
+   "effects": null,
+   "defaultUnlocked": true,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "numerology"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "willenfluff",
@@ -3074,7 +3446,25 @@
    "researched": false,
    "effects": {
     "kittenGrowthRatio": 0.75
-   }
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "pawgan"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "pawgan",
@@ -3088,7 +3478,11 @@
    "researched": false,
    "effects": {
     "kittenGrowthRatio": 1.5
-   }
+   },
+   "defaultUnlocked": false,
+   "unlocks": null,
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "numerology",
@@ -3100,7 +3494,27 @@
    ],
    "unlocked": false,
    "researched": false,
-   "effects": null
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "numeromancy",
+     "willenfluff",
+     "voidOrder"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "numeromancy",
@@ -3112,7 +3526,25 @@
    ],
    "unlocked": false,
    "researched": false,
-   "effects": null
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "malkuth"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "malkuth",
@@ -3126,7 +3558,25 @@
    "researched": false,
    "effects": {
     "paragonRatio": 0.05
-   }
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "yesod"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "yesod",
@@ -3140,7 +3590,25 @@
    "researched": false,
    "effects": {
     "paragonRatio": 0.05
-   }
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "hod"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "hod",
@@ -3154,7 +3622,25 @@
    "researched": false,
    "effects": {
     "paragonRatio": 0.05
-   }
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "netzach"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "netzach",
@@ -3168,7 +3654,25 @@
    "researched": false,
    "effects": {
     "paragonRatio": 0.05
-   }
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "tiferet"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "tiferet",
@@ -3182,7 +3686,25 @@
    "researched": false,
    "effects": {
     "paragonRatio": 0.05
-   }
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "gevurah"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "gevurah",
@@ -3196,7 +3718,25 @@
    "researched": false,
    "effects": {
     "paragonRatio": 0.05
-   }
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "chesed"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "chesed",
@@ -3210,7 +3750,25 @@
    "researched": false,
    "effects": {
     "paragonRatio": 0.05
-   }
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "binah"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "binah",
@@ -3224,7 +3782,25 @@
    "researched": false,
    "effects": {
     "paragonRatio": 0.05
-   }
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "chokhmah"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "chokhmah",
@@ -3238,7 +3814,25 @@
    "researched": false,
    "effects": {
     "paragonRatio": 0.05
-   }
+   },
+   "defaultUnlocked": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "keter"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "keter",
@@ -3252,7 +3846,11 @@
    "researched": false,
    "effects": {
     "paragonRatio": 0.05
-   }
+   },
+   "defaultUnlocked": false,
+   "unlocks": null,
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "voidOrder",
@@ -3264,7 +3862,11 @@
    ],
    "unlocked": false,
    "researched": false,
-   "effects": null
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": null,
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "adjustmentBureau",
@@ -3276,7 +3878,27 @@
    ],
    "unlocked": true,
    "researched": false,
-   "effects": null
+   "effects": null,
+   "defaultUnlocked": true,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [
+     "challenges"
+    ],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [
+     "ascoh"
+    ],
+    "stages": []
+   },
+   "upgrades": null,
+   "hasHandler": false
   },
   {
    "name": "ascoh",
@@ -3288,222 +3910,493 @@
    ],
    "unlocked": false,
    "researched": false,
-   "effects": null
+   "effects": null,
+   "defaultUnlocked": false,
+   "unlocks": null,
+   "upgrades": null,
+   "hasHandler": false
   }
  ],
  "achievements": [
   {
    "name": "theElderLegacy",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": true,
+   "hasCondition": true,
+   "hasStarCondition": false
   },
   {
    "name": "unicornConspiracy",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
   },
   {
    "name": "uniception",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
   },
   {
    "name": "sinsOfEmpire",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
   },
   {
    "name": "anachronox",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
   },
   {
    "name": "deadSpace",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
   },
   {
    "name": "sadnessAbyss",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
   },
   {
    "name": "ironWill",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
   },
   {
    "name": "uberkatzhen",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
   },
   {
    "name": "hundredYearsSolitude",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
   },
   {
    "name": "soilUptuned",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
   },
   {
    "name": "atlasUnmeowed",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
   },
   {
    "name": "meowMeowRevolution",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
   },
   {
    "name": "spaceOddity",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": true
   },
   {
    "name": "jupiterAscending",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": true
   },
   {
    "name": "veryLargeArray",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
   },
   {
    "name": "shadowOfTheColossus",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
   },
   {
    "name": "sunGod",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
   },
   {
    "name": "heartOfDarkness",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
   },
   {
    "name": "winterIsComing",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
   },
   {
    "name": "youMonster",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": true
   },
   {
    "name": "superUnethicalClimax",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
   },
   {
    "name": "systemShock",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
   },
   {
    "name": "lotusMachine",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
   },
   {
    "name": "serenity",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": true
   },
   {
    "name": "utopiaProject",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": true
   },
   {
    "name": "deathStranding",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
   },
   {
    "name": "cathammer",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": true
   },
   {
    "name": "eternalBacchanalia",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": false
   },
   {
    "name": "challenger",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": true
   },
   {
    "name": "betterSafeThanSorry",
    "unlocked": false,
-   "starred": false
+   "starred": false,
+   "hidden": false,
+   "hasCondition": true,
+   "hasStarCondition": true
+  }
+ ],
+ "badges": [
+  {
+   "name": "lotus",
+   "difficulty": "A",
+   "unlocked": false,
+   "hasCondition": true
+  },
+  {
+   "name": "ivoryTower",
+   "difficulty": "S+",
+   "unlocked": false,
+   "hasCondition": false
+  },
+  {
+   "name": "useless",
+   "difficulty": "F",
+   "unlocked": false,
+   "hasCondition": true
+  },
+  {
+   "name": "beta",
+   "difficulty": "B",
+   "unlocked": false,
+   "hasCondition": true
+  },
+  {
+   "name": "silentHill",
+   "difficulty": "S",
+   "unlocked": false,
+   "hasCondition": true
+  },
+  {
+   "name": "evergreen",
+   "difficulty": "F",
+   "unlocked": false,
+   "hasCondition": false
+  },
+  {
+   "name": "deadSpace",
+   "difficulty": "S",
+   "unlocked": false,
+   "hasCondition": true
+  },
+  {
+   "name": "reginaNoctis",
+   "difficulty": "S",
+   "unlocked": false,
+   "hasCondition": true
+  },
+  {
+   "name": "ghostInTheMachine",
+   "difficulty": "S",
+   "unlocked": false,
+   "hasCondition": false
+  },
+  {
+   "name": "abOwo",
+   "difficulty": "A",
+   "unlocked": false,
+   "hasCondition": false
+  },
+  {
+   "name": "cleanPaws",
+   "difficulty": "C",
+   "unlocked": false,
+   "hasCondition": false
+  },
+  {
+   "name": "sequenceBreak",
+   "difficulty": "D",
+   "unlocked": false,
+   "hasCondition": true
+  },
+  {
+   "name": "fantasticFurColor",
+   "difficulty": "F",
+   "unlocked": false,
+   "hasCondition": true
+  },
+  {
+   "name": "whatYearIsIt",
+   "difficulty": "C",
+   "unlocked": false,
+   "hasCondition": false
+  },
+  {
+   "name": "tardis",
+   "difficulty": "C",
+   "unlocked": false,
+   "hasCondition": false
+  },
+  {
+   "name": "wheredThisComeFrom",
+   "difficulty": "S",
+   "unlocked": false,
+   "hasCondition": false
+  },
+  {
+   "name": "lostDates",
+   "difficulty": "B",
+   "unlocked": false,
+   "hasCondition": true
+  },
+  {
+   "name": "buffet",
+   "difficulty": "A",
+   "unlocked": false,
+   "hasCondition": true
+  },
+  {
+   "name": "newHome",
+   "difficulty": "D",
+   "unlocked": false,
+   "hasCondition": true
+  },
+  {
+   "name": "betterSafeThanSorry",
+   "difficulty": "E",
+   "unlocked": false,
+   "hasCondition": false
+  },
+  {
+   "name": "soLongAndThanksForAllTheHay",
+   "difficulty": "S",
+   "unlocked": false,
+   "hasCondition": true
   }
  ],
  "stats": [
   {
    "name": "totalKittens",
-   "val": 0
+   "val": 0,
+   "defaultUnlocked": true,
+   "hasCalculate": false
   },
   {
    "name": "kittensDead",
-   "val": 0
+   "val": 0,
+   "defaultUnlocked": true,
+   "hasCalculate": false
   },
   {
    "name": "totalYears",
-   "val": 0
+   "val": 0,
+   "defaultUnlocked": true,
+   "hasCalculate": false
   },
   {
    "name": "totalResets",
-   "val": 0
+   "val": 0,
+   "defaultUnlocked": true,
+   "hasCalculate": false
   },
   {
    "name": "totalParagon",
-   "val": 0
+   "val": 0,
+   "defaultUnlocked": false,
+   "hasCalculate": false
   },
   {
    "name": "eventsObserved",
-   "val": 0
+   "val": 0,
+   "defaultUnlocked": false,
+   "hasCalculate": false
   },
   {
    "name": "unicornsSacrificed",
-   "val": 0
+   "val": 0,
+   "defaultUnlocked": false,
+   "hasCalculate": false
   },
   {
    "name": "buildingsConstructed",
-   "val": 0
+   "val": 0,
+   "defaultUnlocked": false,
+   "hasCalculate": false
   },
   {
    "name": "totalClicks",
-   "val": 0
+   "val": 0,
+   "defaultUnlocked": false,
+   "hasCalculate": false
   },
   {
    "name": "totalTrades",
-   "val": 0
+   "val": 0,
+   "defaultUnlocked": false,
+   "hasCalculate": false
   },
   {
    "name": "totalCrafts",
-   "val": 0
+   "val": 0,
+   "defaultUnlocked": false,
+   "hasCalculate": false
   },
   {
    "name": "averageKittens",
-   "val": 0
+   "val": 0,
+   "defaultUnlocked": false,
+   "hasCalculate": true
   },
   {
    "name": "transcendenceTier",
-   "val": 0
+   "val": 0,
+   "defaultUnlocked": false,
+   "hasCalculate": true
   },
   {
    "name": "totalChallengesCompleted",
-   "val": 0
+   "val": 0,
+   "defaultUnlocked": false,
+   "hasCalculate": true
+  }
+ ],
+ "statsCurrent": [
+  {
+   "name": "totalTrades",
+   "hasCalculate": false
+  },
+  {
+   "name": "totalCrafts",
+   "hasCalculate": false
+  },
+  {
+   "name": "averageKittens",
+   "hasCalculate": true
+  },
+  {
+   "name": "timePlayed",
+   "hasCalculate": true
   }
  ],
  "cfu": [
@@ -3848,6 +4741,108 @@
     "spaceBeacon-starchartPerTickBaseSpace": 5,
     "spaceElevator-prodTransferBonus": 0.5
    }
+  }
+ ],
+ "biomes": [
+  {
+   "name": "village",
+   "faunaNames": null,
+   "faunaPenalty": 0
+  },
+  {
+   "name": "plains",
+   "faunaNames": [
+    "grass snake",
+    "raptor",
+    "vole"
+   ],
+   "faunaPenalty": 1
+  },
+  {
+   "name": "hills",
+   "faunaNames": [
+    "rock lizard",
+    "centipede",
+    "stone toad",
+    "cave bat"
+   ],
+   "faunaPenalty": 1
+  },
+  {
+   "name": "forest",
+   "faunaNames": null,
+   "faunaPenalty": 1.5
+  },
+  {
+   "name": "boneForest",
+   "faunaNames": [
+    "bone spider"
+   ],
+   "faunaPenalty": 1
+  },
+  {
+   "name": "rainForest",
+   "faunaNames": [
+    "poison frog",
+    "razor leech",
+    "jaguar",
+    "giant centipede"
+   ],
+   "faunaPenalty": 1
+  },
+  {
+   "name": "mountain",
+   "faunaNames": [
+    "mountain goat",
+    "rock worm",
+    "yeti cub"
+   ],
+   "faunaPenalty": 1
+  },
+  {
+   "name": "volcano",
+   "faunaNames": [
+    "magma slug",
+    "lava beetle"
+   ],
+   "faunaPenalty": 1
+  },
+  {
+   "name": "desert",
+   "faunaNames": [
+    "sand viper",
+    "scorpion",
+    "dune beetle",
+    "sand raptor"
+   ],
+   "faunaPenalty": 1
+  },
+  {
+   "name": "bloodDesert",
+   "faunaNames": [
+    "blood scarab",
+    "crimson basilisk"
+   ],
+   "faunaPenalty": 1
+  },
+  {
+   "name": "swamp",
+   "faunaNames": [
+    "bog toad",
+    "swamp serpent",
+    "poison spore"
+   ],
+   "faunaPenalty": 1
+  },
+  {
+   "name": "cath",
+   "faunaNames": null,
+   "faunaPenalty": 1
+  },
+  {
+   "name": "redmoon",
+   "faunaNames": null,
+   "faunaPenalty": 1
   }
  ]
 }

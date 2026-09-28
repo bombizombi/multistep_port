@@ -1,0 +1,14 @@
+# name: corruption
+# seed: 20260927
+# checkpoints: 0, 10, 30, 60, 100
+# religion-03/04: corruption accumulator (markers ×1.25%/tick via corruptionRatio
+# seam? — corruptionRatio is a religion effectBase=0; inject via necroff which
+# exercises the FF math directly with marker ratios from injections).
+0 resop addResEvent alicorn 10
+1 resop necroff 1
+10 resop necroff 5
+30 resop corruption
+30 resop necroff 20
+60 resop corruption
+60 resop necroff 50
+100 resop corruption

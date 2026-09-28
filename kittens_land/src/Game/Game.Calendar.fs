@@ -43,7 +43,8 @@ type CalendarState =
       Cycle: int
       CycleYear: int
       EventChance: float
-      FestivalDays: int }
+      FestivalDays: int
+      CryptoPrice: float }   // bcoin random walk (calendar-10)
 
 let init : CalendarState =
     { Year = 0.0
@@ -52,6 +53,7 @@ let init : CalendarState =
       Weather = None
       Cycle = 0
       CycleYear = 0
+      CryptoPrice = 1000.0
       EventChance = 0.0
       FestivalDays = 0 }
 
@@ -73,7 +75,8 @@ type CalendarContext =
       WinterIsComingOn: bool // challenge toggled ON (false fresh) — getWeatherMod
       Rand: unit -> float // the harness PRNG stream
       OnParadox: CalendarState -> CalendarState // paradox hook (resources void accrual)
-      OnNewDayRefresh: CalendarState -> CalendarState } // orig onNewDay tail: game.upgrade({policies:["authocracy"]}) — the "policy hack" whose updateCaches refreshes ALL effects daily (calendar.js L730)
+      OnNewDayRefresh: CalendarState -> CalendarState
+      OnNewDayTail: CalendarState -> CalendarState } // orig onNewDay tail: game.upgrade({policies:["authocracy"]}) — the "policy hack" whose updateCaches refreshes ALL effects daily (calendar.js L730)
 
 /// Season/weather production modifier (orig getWeatherMod) — catnip only.
 /// `weather` comes from calendar-02 rolls; policy/challenge seams are fresh-false.
@@ -145,6 +148,17 @@ let tick (ctx: CalendarContext) (st: CalendarState) : CalendarState =
             () // relic addResPerDay: getEffect("relicPerDay") = 0 at fresh → no-op
         // (necrocorn pacts / blackPyramid / payDebt: religion-NN seams — no
         //  snapshotted state at fresh)
+        // onNewDay: festival countdown (orig L487-497). The luxury-deficit
+        // early end reads festivalLuxuryConsumptionRatio (0 at fresh → no-op).
+        if st.FestivalDays > 0 then
+            st <- { st with FestivalDays = st.FestivalDays - 1 }
+            let _ = ctx.GetEffect "festivalLuxuryConsumptionRatio"
+            ()
+
+        // calendar-10 tail: crypto price walk (orig L728) — gated on the
+        // antimatter tech via the context hook below (no-op when not researched)
+        st <- ctx.OnNewDayTail st
+
         // orig onNewDay TAIL: game.upgrade({policies:["authocracy"]}) — the
         // "policy hack"; game.upgrade unconditionally runs updateCaches, so
         // EVERY new day refreshes the effects cache + perTickCached

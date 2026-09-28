@@ -63,6 +63,7 @@ type UnlockList =
       ZebraUpgrades: string list
       Religion: string list
       Crafts: string list
+      Perks: string list
       Stages: string list }
 
 type StageDef =
@@ -100,6 +101,8 @@ type TechDef =
 type PolicyDef =
     { Name: string
       Prices: Price list
+      IsRelation: bool
+      RelationGate: (string * int) option   // evaluateLocks checkRelation veto
       Unlocks: UnlockList option }
 
 type UpgradeDef =
@@ -155,6 +158,24 @@ type ZebraUpgradeDef =
       Effects: Map<string, float>
       Unlocks: UnlockList option
       Upgrades: UnlockList option }
+
+// --- game-04: undo event record (game.js L637-694) -----------------------------
+
+/// Manager-specific undo payloads (orig: opaque `data` objects per manager).
+type UndoData =
+    | BuildUndo of building: string * count: int          // bld.undo (sellInternal, 50% refund)
+    | CraftUndo of craft: string * gained: float * spent: (string * float) list
+    | TradeUndo of trades: float * spent: (string * float) list * gained: (string * float) list
+    | PraiseUndo of faithSpent: float * worshipGained: float
+    | AdoreUndo of worshipBefore: float * epiphanyGained: float
+
+type UndoEvent =
+    { ManagerId: string
+      Data: UndoData }
+
+type UndoChange =
+    { Ttl: int                    // DEFAULT_TTL 20 × ticksPerSecond 5 = 100
+      Events: UndoEvent list }    // addEvent order preserved
 
 // Typed constructors: ResearchState/PolicyState/UpgradeState share all field
 // names, and F# record inference resolves to the LAST declared — these pin the

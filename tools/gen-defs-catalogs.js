@@ -28,7 +28,7 @@ const fprices = (ps) =>
 const funlocks = (u) =>
   u === null
     ? "None"
-    : `Some({ Buildings = [${(u.buildings || []).map(fstr).join("; ")}]; Tabs = [${(u.tabs || []).map(fstr).join("; ")}]; Jobs = [${(u.jobs || []).map(fstr).join("; ")}]; Tech = [${(u.tech || []).map(fstr).join("; ")}]; Policies = [${(u.policies || []).map(fstr).join("; ")}]; Upgrades = [${(u.upgrades || []).map(fstr).join("; ")}]; ZebraUpgrades = [${(u.zebraUpgrades || []).map(fstr).join("; ")}]; Religion = [${(u.religion || []).map(fstr).join("; ")}]; Crafts = [${(u.crafts || []).map(fstr).join("; ")}]; Stages = [${(u.stages || []).map(fstr).join("; ")}] })`;
+    : `Some({ Buildings = [${(u.buildings || []).map(fstr).join("; ")}]; Tabs = [${(u.tabs || []).map(fstr).join("; ")}]; Jobs = [${(u.jobs || []).map(fstr).join("; ")}]; Tech = [${(u.tech || []).map(fstr).join("; ")}]; Policies = [${(u.policies || []).map(fstr).join("; ")}]; Upgrades = [${(u.upgrades || []).map(fstr).join("; ")}]; ZebraUpgrades = [${(u.zebraUpgrades || []).map(fstr).join("; ")}]; Religion = [${(u.religion || []).map(fstr).join("; ")}]; Crafts = [${(u.crafts || []).map(fstr).join("; ")}]; Perks = [${(u.perks || []).map(fstr).join("; ")}]; Stages = [${(u.stages || []).map(fstr).join("; ")}] })`;
 const fmap = (m) =>
   !m || Object.keys(m).length === 0
     ? "Map.empty"
@@ -59,7 +59,7 @@ const buildingLines = src.buildings.map((b) => {
 const techLines = src.techs.map((t) =>
   `      { Name = ${fstr(t.name)}; Prices = ${fprices(t.prices)}; Unlocks = ${funlocks(t.unlocks)}; Upgrades = ${funlocks(t.upgrades)} }`);
 const policyLines = src.policies.map((p) =>
-  `      { Name = ${fstr(p.name)}; Prices = ${fprices(p.prices)}; Unlocks = ${funlocks(p.unlocks)} }`);
+  `      { Name = ${fstr(p.name)}; Prices = ${fprices(p.prices)}; IsRelation = ${fbool(p.isRelation)}; RelationGate = ${p.gate ? `Some(${fstr(p.gate.race)}, ${p.gate.needed})` : "None"}; Unlocks = ${funlocks(p.unlocks)} }`);
 const upgradeLines = src.upgrades.map((u) =>
   `      { Name = ${fstr(u.name)}; Prices = ${fprices(u.prices)}; Effects = ${fmap(u.effects)} }`);
 const craftLines = src.crafts.map((c) =>

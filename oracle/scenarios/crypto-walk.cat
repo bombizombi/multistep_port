@@ -1,0 +1,15 @@
+# name: crypto-walk
+# seed: 20260927
+# checkpoints: 0, 5, 12, 30
+# calendar-10: adjustCryptoPrice daily walk (antimatter-gated), correct above
+# 1100. Year injections roll many days fast. D014 re-seeds align the unlock
+# roll that diplomacy.update makes once races unlock.
+0 resop seed 20260927
+0 resop forcetech antimatter
+0 resop gtick 3
+4 resop seed 11
+5 resop year 40
+11 resop seed 12
+12 resop year 120
+29 resop seed 13
+30 resop year 400

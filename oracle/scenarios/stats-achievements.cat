@@ -1,0 +1,21 @@
+# name: stats-achievements
+# seed: 20260927
+# checkpoints: 0, 600, 2350, 2500, 2550, 3000
+# stats-01..03 + achievements-01..03: stat counters (totalKittens/kittensDead/
+# totalCrafts/totalTrades/buildingsConstructed) through craft+trade+hunt+
+# starvation; achievements poll (freq 50) unlocking unicornConspiracy (hunt
+# loot) with the lostDates draw consuming RNG every poll.
+0 gather 30
+15 buy field
+50 gather 60
+90 buy field 3
+130 gather 60
+170 buy field 2
+210 gather 80
+250 craft wood 1
+600 assign hunter 1
+2299 resop seed 20260927
+2300 hunt
+2350 craft wood 1
+2500 craft wood 2
+2550 craft wood 3

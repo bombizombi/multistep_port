@@ -163,6 +163,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "unlockScheme": null
@@ -204,6 +205,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": {
@@ -218,6 +220,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "unlockScheme": null
@@ -263,6 +266,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": {
@@ -277,6 +281,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "unlockScheme": null
@@ -326,6 +331,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": {
@@ -340,6 +346,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "unlockScheme": null
@@ -417,6 +424,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": {
@@ -432,6 +440,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "unlockScheme": null
@@ -557,6 +566,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "unlockScheme": null
@@ -638,6 +648,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "unlockScheme": null
@@ -785,6 +796,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": {
@@ -797,6 +809,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "unlockScheme": {
@@ -914,6 +927,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null,
@@ -1353,6 +1367,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null,
@@ -1420,6 +1435,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null,
@@ -1496,6 +1512,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "unlockScheme": null
@@ -1635,6 +1652,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "unlockScheme": null
@@ -1764,6 +1782,7 @@
     ],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null,
@@ -1966,6 +1985,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "unlockScheme": null
@@ -2069,6 +2089,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "unlockScheme": null
@@ -2138,6 +2159,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "unlockScheme": null
@@ -2188,6 +2210,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "unlockScheme": {
@@ -2245,6 +2268,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "unlockScheme": null
@@ -2297,6 +2321,7 @@
     ],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": {
@@ -2311,6 +2336,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "unlockScheme": null
@@ -2370,6 +2396,7 @@
      "bloodstone",
      "tMythril"
     ],
+    "perks": [],
     "stages": []
    },
    "upgrades": {
@@ -2384,6 +2411,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "unlockScheme": null
@@ -2433,6 +2461,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "unlockScheme": null
@@ -2517,6 +2546,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -2550,6 +2580,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -2582,6 +2613,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -2613,6 +2645,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -2642,6 +2675,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -2673,6 +2707,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -2712,6 +2747,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -2742,6 +2778,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -2777,6 +2814,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -2809,6 +2847,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -2840,6 +2879,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -2877,6 +2917,7 @@
     "crafts": [
      "parchment"
     ],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -2910,6 +2951,7 @@
     "crafts": [
      "compedium"
     ],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -2940,6 +2982,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -2973,6 +3016,7 @@
     "crafts": [
      "steel"
     ],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -3006,6 +3050,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": {
@@ -3020,6 +3065,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    }
   },
@@ -3056,6 +3102,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -3098,6 +3145,7 @@
     "crafts": [
      "ship"
     ],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -3131,6 +3179,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -3169,6 +3218,7 @@
     "crafts": [
      "blueprint"
     ],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -3224,6 +3274,7 @@
     "crafts": [
      "alloy"
     ],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -3256,6 +3307,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -3286,6 +3338,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -3324,6 +3377,7 @@
     ],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -3356,6 +3410,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -3392,6 +3447,7 @@
     "crafts": [
      "plastic"
     ],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -3424,6 +3480,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -3455,6 +3512,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -3494,6 +3552,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -3533,6 +3592,7 @@
     "crafts": [
      "concrate"
     ],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -3565,6 +3625,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -3599,6 +3660,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -3632,6 +3694,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": [
      "pasture:1"
     ]
@@ -3649,6 +3712,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    }
   },
@@ -3689,6 +3753,7 @@
     "crafts": [
      "microchip"
     ],
+    "perks": [],
     "stages": [
      "library:1",
      "amphitheatre:1"
@@ -3729,6 +3794,7 @@
     "crafts": [
      "tanker"
     ],
+    "perks": [],
     "stages": [
      "aqueduct:1"
     ]
@@ -3767,6 +3833,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -3797,6 +3864,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -3827,6 +3895,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -3863,6 +3932,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -3898,6 +3968,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": {
@@ -3910,6 +3981,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    }
   },
@@ -3941,6 +4013,7 @@
     "crafts": [
      "kerosene"
     ],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -3979,6 +4052,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -4017,6 +4091,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -4051,6 +4126,7 @@
     "crafts": [
      "thorium"
     ],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -4087,6 +4163,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -4123,6 +4200,7 @@
     "crafts": [
      "eludium"
     ],
+    "perks": [],
     "stages": [
      "warehouse:1"
     ]
@@ -4160,6 +4238,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -4194,6 +4273,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -4233,6 +4313,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -4263,6 +4344,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -4293,6 +4375,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -4346,6 +4429,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -4374,6 +4458,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -4401,6 +4486,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -4437,6 +4523,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -4475,6 +4562,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -4505,6 +4593,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -4541,6 +4630,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -4575,6 +4665,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": null
@@ -4604,8 +4695,11 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
-   }
+   },
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "tradition",
@@ -4630,8 +4724,11 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
-   }
+   },
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "monarchy",
@@ -4656,8 +4753,11 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
-   }
+   },
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "authocracy",
@@ -4683,8 +4783,11 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
-   }
+   },
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "republic",
@@ -4710,8 +4813,11 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
-   }
+   },
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "socialism",
@@ -4735,8 +4841,11 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
-   }
+   },
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "scientificCommunism",
@@ -4748,7 +4857,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "liberalism",
@@ -4760,7 +4871,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "communism",
@@ -4772,7 +4885,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "fascism",
@@ -4784,7 +4899,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "technocracy",
@@ -4796,7 +4913,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "theocracy",
@@ -4808,7 +4927,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "expansionism",
@@ -4820,7 +4941,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "transkittenism",
@@ -4832,7 +4955,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "necrocracy",
@@ -4844,7 +4969,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "radicalXenophobia",
@@ -4866,8 +4993,11 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
-   }
+   },
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "diplomacy",
@@ -4892,8 +5022,11 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
-   }
+   },
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "isolationism",
@@ -4918,8 +5051,11 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
-   }
+   },
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "zebraRelationsAppeasement",
@@ -4931,7 +5067,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "zebraRelationsBellicosity",
@@ -4943,7 +5081,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "knowledgeSharing",
@@ -4955,7 +5095,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "culturalExchange",
@@ -4967,7 +5109,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "bigStickPolicy",
@@ -4979,7 +5123,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "cityOnAHill",
@@ -4991,7 +5137,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "outerSpaceTreaty",
@@ -5003,7 +5151,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "militarizeSpace",
@@ -5015,7 +5165,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "lizardRelationsEcologists",
@@ -5027,7 +5179,12 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": true,
+   "gate": {
+    "race": "lizards",
+    "needed": 20
+   }
   },
   {
    "name": "lizardRelationsPriests",
@@ -5039,7 +5196,12 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": true,
+   "gate": {
+    "race": "lizards",
+    "needed": 20
+   }
   },
   {
    "name": "lizardRelationsDiplomats",
@@ -5051,7 +5213,12 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": true,
+   "gate": {
+    "race": "lizards",
+    "needed": 20
+   }
   },
   {
    "name": "sharkRelationsScribes",
@@ -5063,7 +5230,12 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": true,
+   "gate": {
+    "race": "sharks",
+    "needed": 20
+   }
   },
   {
    "name": "sharkRelationsMerchants",
@@ -5075,7 +5247,12 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": true,
+   "gate": {
+    "race": "sharks",
+    "needed": 20
+   }
   },
   {
    "name": "sharkRelationsBotanists",
@@ -5087,7 +5264,12 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": true,
+   "gate": {
+    "race": "sharks",
+    "needed": 20
+   }
   },
   {
    "name": "griffinRelationsMetallurgists",
@@ -5099,7 +5281,12 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": true,
+   "gate": {
+    "race": "griffins",
+    "needed": 20
+   }
   },
   {
    "name": "griffinRelationsScouts",
@@ -5111,7 +5298,12 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": true,
+   "gate": {
+    "race": "griffins",
+    "needed": 20
+   }
   },
   {
    "name": "griffinRelationsMachinists",
@@ -5123,7 +5315,12 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": true,
+   "gate": {
+    "race": "griffins",
+    "needed": 20
+   }
   },
   {
    "name": "nagaRelationsMasons",
@@ -5135,7 +5332,12 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": true,
+   "gate": {
+    "race": "nagas",
+    "needed": 20
+   }
   },
   {
    "name": "nagaRelationsCultists",
@@ -5147,7 +5349,12 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": true,
+   "gate": {
+    "race": "nagas",
+    "needed": 20
+   }
   },
   {
    "name": "nagaRelationsArchitects",
@@ -5159,7 +5366,12 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": true,
+   "gate": {
+    "race": "nagas",
+    "needed": 20
+   }
   },
   {
    "name": "spiderRelationsGeologists",
@@ -5171,7 +5383,12 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": true,
+   "gate": {
+    "race": "spiders",
+    "needed": 10
+   }
   },
   {
    "name": "spiderRelationsChemists",
@@ -5183,7 +5400,12 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": true,
+   "gate": {
+    "race": "spiders",
+    "needed": 10
+   }
   },
   {
    "name": "spiderRelationsPaleontologists",
@@ -5195,7 +5417,12 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": true,
+   "gate": {
+    "race": "spiders",
+    "needed": 10
+   }
   },
   {
    "name": "dragonRelationsPhysicists",
@@ -5207,7 +5434,12 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": true,
+   "gate": {
+    "race": "dragons",
+    "needed": 10
+   }
   },
   {
    "name": "dragonRelationsAstrologers",
@@ -5219,7 +5451,12 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": true,
+   "gate": {
+    "race": "dragons",
+    "needed": 10
+   }
   },
   {
    "name": "dragonRelationsDynamicists",
@@ -5231,7 +5468,12 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": true,
+   "gate": {
+    "race": "dragons",
+    "needed": 10
+   }
   },
   {
    "name": "stoicism",
@@ -5258,8 +5500,11 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
-   }
+   },
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "epicurianism",
@@ -5286,8 +5531,11 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
-   }
+   },
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "carnivale",
@@ -5299,7 +5547,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "extravagance",
@@ -5311,7 +5561,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "rationing",
@@ -5323,7 +5575,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "frugality",
@@ -5335,7 +5589,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "rationality",
@@ -5347,7 +5603,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "mysticism",
@@ -5359,7 +5617,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "stripMining",
@@ -5384,8 +5644,11 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
-   }
+   },
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "clearCutting",
@@ -5410,8 +5673,11 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
-   }
+   },
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "environmentalism",
@@ -5436,8 +5702,11 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
-   }
+   },
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "sustainability",
@@ -5449,7 +5718,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "fullIndustrialization",
@@ -5461,7 +5732,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "conservation",
@@ -5473,7 +5746,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "openWoodlands",
@@ -5485,7 +5760,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "cryochamberExtraction",
@@ -5497,7 +5774,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "terraformingInsight",
@@ -5509,7 +5788,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "siphoning",
@@ -5521,7 +5802,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "feedingFrenzy",
@@ -5533,7 +5816,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   },
   {
    "name": "upfrontPayment",
@@ -5545,7 +5830,9 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "isRelation": false,
+   "gate": null
   }
  ],
  "upgrades": [
@@ -8670,6 +8957,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    }
   },
@@ -8708,6 +8996,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    }
   },
@@ -8967,6 +9256,7 @@
     ],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": {
@@ -8981,6 +9271,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    }
   },
@@ -9039,6 +9330,7 @@
     ],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": {
@@ -9053,6 +9345,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    }
   },
@@ -9092,6 +9385,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    }
   },
@@ -9119,6 +9413,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    }
   },
@@ -9149,6 +9444,7 @@
     ],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": {
@@ -9163,6 +9459,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    }
   },
@@ -9201,6 +9498,7 @@
     ],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    },
    "upgrades": {
@@ -9215,6 +9513,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    }
   },
@@ -9250,6 +9549,7 @@
     "zebraUpgrades": [],
     "religion": [],
     "crafts": [],
+    "perks": [],
     "stages": []
    }
   }

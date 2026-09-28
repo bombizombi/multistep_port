@@ -1,0 +1,25 @@
+# name: undo
+# seed: 20260927
+# checkpoints: 0, 115, 305, 420, 430
+# game-04/19: undo runtime, one pending slot at a time (register replaces):
+# craft refund (workshop.undo), praise restore (religion.undo), trade un-gain
+# (diplomacy.undo). TTL 100 ticks; registerUndoChange REPLACES the slot.
+0 resop addResEvent faith 3000
+0 resop addResEvent gold 50000
+0 resop addResEvent manpower 50000
+0 resop addResEvent culture 100000
+0 resop addResEvent minerals 500000
+0 resop addResEvent ivory 50000
+0 resop year 25
+0 research writing
+1 resop seed 42
+100 gather 60
+110 craftall wood
+115 undo
+300 praise
+305 undo
+400 adore
+410 resop seed 7
+410 trade nagas 1
+420 undo
+430 undo

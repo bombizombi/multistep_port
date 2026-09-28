@@ -210,9 +210,10 @@ let workshopEffectsBase (cache: Game.Effects.EffectsCache) (getResValue: string 
 /// `times` = ticks elapsed (1 per tick from update). The isStorageLimited
 /// craftable branch reads the PRE-tick craft states (orig reads the live meta
 /// objects, which the loop mutates one craft at a time).
-let craftByEngineers (calendarDay: int) (cache: Game.Effects.EffectsCache) (traditionResearched: bool) (getResValue: string -> float) (prodCache: Map<string, float>) (neuralNetworksResearched: bool) (times: float) (pool: ResPool) (wp: WorkshopPool) : ResPool * WorkshopPool =
+let craftByEngineers (calendarDay: int) (cache: Game.Effects.EffectsCache) (traditionResearched: bool) (getResValue: string -> float) (prodCache: Map<string, float>) (neuralNetworksResearched: bool) (times: float) (pool: ResPool) (wp: WorkshopPool) : ResPool * WorkshopPool * float =
     let mutable pool = pool
     let mutable crafts = wp.Crafts
+    let mutable craftsDone = 0.0
     let craftCtx : Game.Resources.CraftContext =
         { CraftUnlocked = fun n -> (wp.Crafts |> Map.tryFind n |> Option.map (fun c -> c.Unlocked)) |> Option.defaultValue false
           CraftIsLimited = fun n -> (wp.Crafts |> Map.tryFind n |> Option.map (fun c -> c.IsLimited)) |> Option.defaultValue false }
@@ -236,12 +237,13 @@ let craftByEngineers (calendarDay: int) (cache: Game.Effects.EffectsCache) (trad
                     let pool', _wpIgnored, ok = craft calendarDay cache traditionResearched name units pool { wp with Crafts = crafts }
                     if ok then
                         pool <- pool'
+                        craftsDone <- craftsDone + units
                         crafts <- crafts |> Map.add name { crafts.[name] with Progress = currentProgress - units }
             elif Game.Resources.hasRes pool prices currentProgress then
                 crafts <- crafts |> Map.add name { crafts.[name] with IsLimitedAmt = false; Progress = currentProgress }
             else
                 crafts <- crafts |> Map.add name { crafts.[name] with IsLimitedAmt = true }
-    pool, { wp with Crafts = crafts }
+    pool, { wp with Crafts = crafts }, craftsDone
 
 /// orig UpgradeButtonController buyItem → onPurchase: pay, set researched.
 let buyUpgrade (calendarDay: int) (name: string) (pool: ResPool) (wp: WorkshopPool) : ResPool * WorkshopPool * bool =
@@ -265,6 +267,67 @@ let unlockZebraUpgrade (name: string) (wp: WorkshopPool) : WorkshopPool * Unlock
         let wp' = { wp with ZebraUpgrades = wp.ZebraUpgrades |> Map.add name { z with Researched = true } }
         wp', def.Unlocks, def.Upgrades
     | _ -> wp, None, None
+
+/// orig village defaultFaunaNames (js/village.js L1851)
+let defaultFaunaNames : string list = [ "giant moth"; "mantis"; "slime mold" ]
+
+// --- science-09: lookup, relation unlock, price computation (L2206-2280) ------
+
+/// orig checkRelation (L2232-2234): race embassy level >= needed. The caller
+/// reads the live embassy level (Managers compiles before Diplomacy).
+let checkRelation (embassyLevel: int) (embassyNeeded: int) : bool =
+    embassyLevel >= embassyNeeded
+
+/// orig unlockRelations (L2236-2245): with the diplomacy perk, all relation
+/// policies unlock. Called on load + after every embassy purchase.
+let unlockRelations
+    (diplomacyPerkResearched: bool)
+    (getEmbassyLevel: string -> int)
+    (sp: SciencePool)
+    : SciencePool * string list =
+    if diplomacyPerkResearched then
+        let mutable sp = sp
+        let mutable unlockedList = []
+        for (name, pol) in sp.Policies |> Map.toList do
+            let gateOpen =
+                match pol.Def.RelationGate with
+                | Some (race, needed) -> getEmbassyLevel race >= needed
+                | None -> pol.Def.IsRelation // non-gated relation policies open freely
+            if pol.Def.IsRelation && gateOpen && not pol.Unlocked then
+                sp <- { sp with Policies = sp.Policies |> Map.add name { pol with Unlocked = true } }
+                unlockedList <- name :: unlockedList
+        sp, List.rev unlockedList
+    else
+        sp, []
+
+/// orig science.getPrices: leader seam (wise scientist → identity at this
+/// slice) + unicornTears challenge branch (seam). Prices are the static table.
+let getTechPrices (sp: SciencePool) (name: string) : Price list =
+    match sp.Techs |> Map.tryFind name with
+    | Some t -> t.Def.Prices
+    | None -> []
+
+// --- game-04/19: workshop.undo — craft refund (js/workshop.js L2752-2776) -----
+
+/// orig workshop.undo: fail unless the crafted stock is still there; then
+/// un-gain the product and refund exactly what was spent.
+let undoCraft
+    (calendarDay: int)
+    (craft: string)
+    (gained: float)
+    (spent: (string * float) list)
+    (pool: ResPool)
+    : ResPool * bool =
+    let stock = Game.Resources.get pool craft |> Option.map (fun r -> r.Value) |> Option.defaultValue 0.0
+    if stock < gained then
+        pool, false
+    else
+        let pool1, _ = Game.Resources.addResEvent calendarDay craft (-gained) pool
+        let mutable pool' = pool1
+        for (name, value) in spent do
+            let p, _ = Game.Resources.addResEvent calendarDay name value pool'
+            pool' <- p
+        pool', true
 
 // --- game-04: unlock/upgrade dispatch (orig game.unlock / game.upgrade) -------
 // Metas unlock by id across registries; targets may veto via evaluateLocks
