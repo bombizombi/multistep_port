@@ -15,7 +15,7 @@ Orig snapshot: `781e379f79f1e7512d168849cba21ed111502644` — 82 files,
 | `emulator.html` | 68 | html | — | pending |
 | `game.js` | 6433 | game | `analysis/recon/game.md` | **described** |
 | `i18n.js` | 191 | game | — | pending |
-| `index.html` | 639 | html | — | pending |
+| `index.html` | 639 | html | `analysis/recon/index.md` | **described** |
 | `js/achievements.js` | 884 | game | `analysis/recon/achievements.md` | **described** |
 | `js/buildings.js` | 3799 | game | `analysis/recon/buildings.md` | **described** |
 | `js/calendar.js` | 1269 | game | `analysis/recon/calendar.md` | **described** |
@@ -25,7 +25,7 @@ Orig snapshot: `781e379f79f1e7512d168849cba21ed111502644` — 82 files,
 | `js/jsx/left.jsx.js` | 1027 | ui-jsx | — | pending |
 | `js/jsx/mid.jsx.js` | 20 | ui-jsx | — | pending |
 | `js/jsx/queue.jsx.js` | 267 | ui-jsx | — | pending |
-| `js/jsx/toolbar.jsx.js` | 831 | ui-jsx | — | pending |
+| `js/jsx/toolbar.jsx.js` | 831 | ui-jsx | `analysis/recon/toolbar.md` | **described** |
 | `js/math.js` | 105 | game | — | pending |
 | `js/prestige.js` | 716 | game | `analysis/recon/prestige.md` | **described** |
 | `js/preview.js` | 230 | game | — | pending |
@@ -36,7 +36,7 @@ Orig snapshot: `781e379f79f1e7512d168849cba21ed111502644` — 82 files,
 | `js/space.js` | 1604 | game | `analysis/recon/space.md` | **described** |
 | `js/stats.js` | 247 | game | `analysis/recon/stats.md` | **described** |
 | `js/time.js` | 2792 | game | `analysis/recon/time.md` | **described** |
-| `js/toolbar.js` | 242 | game | — | pending |
+| `js/toolbar.js` | 242 | game | `analysis/recon/toolbar.md` | **described** |
 | `js/ui.js` | 1198 | game | `analysis/recon/ui.md` | **described** |
 | `js/village.js` | 6075 | game | `analysis/recon/village.md` | **described** |
 | `js/void.js` | 77 | game | — | pending |

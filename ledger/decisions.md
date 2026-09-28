@@ -119,3 +119,21 @@ stay `{}` and all job production is 0 (see discrepancies OBS-1). The harness the
 calls `game.upgrade({jobs: …})` after a successful building purchase whose def has
 `unlocks.jobs` — orig source untouched; the F# port must instead call job
 `calculateEffects` at unlock time directly (recorded in village-04's contract).
+
+## D013 — Numeric traps census (2026-09-28, from recon)
+
+Beyond D003's general float-order rule, recon found these concrete traps every
+arithmetic port must respect:
+
+1. **`Math.round` is half-up** (x.5 → away from zero); F# `round` is banker's rounding.
+   Port must use a custom `jsRound` (floor(x + 0.5) is NOT equivalent for negatives).
+2. **`Math.floor` vs truncation**: JS `x|0` truncates toward zero, `Math.floor` floors.
+   Port each with the exact F# counterpart (`floor`, `int`).
+3. **Box-Muller in `js/math.js` draws only the cos variate but still consumes both RNG
+   draws** (2 draws/call) — draw-order fidelity in hunt loot depends on this.
+4. `game.math` distributions (binomial/geometric/irwin-hall) are hand-rolled loops over
+   `game.rand` — port loop-for-loop, count draws identically.
+5. Dormant bug: core.js `adjustPrice` has an argument-shift bug — deprecated, do not
+   port (core-NN notes).
+6. `i18n.js` has a `_deffered`/`_deferred` typo silently disabling a re-init guard —
+   reproduce the OBSERVED behavior, not the intended one (or record divergence).

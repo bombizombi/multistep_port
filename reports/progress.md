@@ -8,7 +8,7 @@ that first, then this. Last synced: 2026-09-28 (sessions 2026-09-28-02, -03).
 | Phase | Status | Notes |
 |---|---|---|
 | 0 Bootstrap | **done** | structure + scan + scaffold (both builds green) |
-| 1 Reconnaissance | **in progress** | 7/33 port-relevant files described (80% of lines); 107 port units defined; religion/time recon running |
+| 1 Reconnaissance | **done** | 33/33 files described (100%); 244 port units defined with layers+deps |
 | 2 Deterministic oracle | **core done** | orig runs headless + deterministic; 3 golden fixtures bit-exact self-checked; F# port-side runner pending (phase 3) |
 | 3 Incremental migration | **ready to start** | first targets: resources-01..03 against captured fixtures |
 | 4 Closure | not started | |
@@ -17,10 +17,10 @@ that first, then this. Last synced: 2026-09-28 (sessions 2026-09-28-02, -03).
 
 | Status | count |
 |---|---|
-| verified | 13 (bootstrap×3, oracle×3, recon×7) |
+| verified | 26 (bootstrap×3, oracle×3, recon×20) |
 | in-progress | 1 (oracle-04 — F# runner half) |
 | translated | 0 |
-| not-started | 107 ported units + 13 recon + verify-01 |
+| not-started | 244 ported units + verify-01 |
 | blocked | 0 |
 
 ## Next available units (dependencies satisfied)
