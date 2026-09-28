@@ -25,17 +25,18 @@ that first, then this. Last synced: 2026-09-28 (sessions 2026-09-28-02, -03).
 
 ## Next available units (dependencies satisfied)
 
-- **First port units (phase 3 start):** `resources-01` (resource defs data) →
-  `resources-02` (per-tick calc core) — verified against `fresh-100-ticks` +
-  `gather-hut-field` fixtures via the F# runner (oracle-04 completion).
-- Recon batch 2: `recon-04` (workshop), `recon-05` (science) running; then
-  `recon-08` religion, `recon-09` time, `recon-10` diplomacy.
-- `verify-01` (mechanical spec verification) — no deps, high value before data porting.
+- **Next port units:** `resources-04` (stock-ratio helper) → `resources-06` (cap
+  computation — enables real cap clamping in the oracle) → `resources-05` (per-tick
+  update loop) — then `fresh-100-ticks` verifies bit-exact on the full resources
+  subtree including caps.
+- Recon is complete (20/20); remaining recon slots only matter for late-phase files.
+- `verify-01` (mechanical spec verification) — no deps; workshop recon already found
+  the first spec discrepancy (143 upgrades / 23 crafts vs spec's 142/20).
 
 ## Open observations
 
-- OBS-1: science production gate not yet identified (see `reports/discrepancies.md`) —
-  resolve during village-04/resources-05 porting.
+- none open — OBS-1 (science gate) resolved 2026-09-28 via D012; OBS-2 (assignJob
+  over-count) is expected orig behavior, captured in the port's contract.
 
 ## Milestones
 
