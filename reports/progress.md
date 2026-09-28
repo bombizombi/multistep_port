@@ -33,8 +33,16 @@ that first, then this. Last synced: 2026-09-28 (sessions 2026-09-28-02, -03).
 
 ## Open observations
 
-- none open — OBS-1 (science gate) resolved 2026-09-28 via D012; OBS-2 (assignJob
+- OBS-1 (science gate) resolved 2026-09-28 via D012; OBS-2 (assignJob
   over-count) is expected orig behavior, captured in the port's contract.
+- OBS-3 (RESOLVED 2026-09-28): the daily effects refresh is driven by the calendar
+  onNewDay tail — game.upgrade({policies:["authocracy"]}) (the "policy hack")
+  unconditionally runs updateCaches + updateResources (js/calendar.js:730). Ported:
+  the calendar context carries OnNewDayRefresh.
+- OBS-4 (RESOLVED 2026-09-28): upgrades != unlocks — building def upgrades keys
+  trigger game.upgrade (effect recalc + double updateCaches), never unlock marks.
+- OBS-5 (RESOLVED 2026-09-28): assignJob caps at free kittens/limit; the counter
+  can still diverge from actual kitten assignments (kept faithful, logged).
 
 ## Milestones
 
