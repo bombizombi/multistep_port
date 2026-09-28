@@ -12,6 +12,7 @@
              the browser, .NET runs them here). Keep lists in sync. -->
         <Compile Include="../../../kittens_land/src/Game/Game.Types.fs"/>
         <Compile Include="../../../kittens_land/src/Game/Game.Math.fs"/>
+        <Compile Include="../../../kittens_land/src/Game/Game.Catalog.BaseEffects.fs"/>
         <Compile Include="../../../kittens_land/src/Game/Game.Catalog.Resources.fs"/>
         <Compile Include="../../../kittens_land/src/Game/Game.Resources.fs"/>
         <Compile Include="Program.fs"/>

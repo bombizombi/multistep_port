@@ -10,25 +10,24 @@ that first, then this. Last synced: 2026-09-28 (sessions 2026-09-28-02, -03).
 | 0 Bootstrap | **done** | structure + scan + scaffold (both builds green) |
 | 1 Reconnaissance | **done** | 33/33 files described (100%); 244 port units defined with layers+deps |
 | 2 Deterministic oracle | **core done** | orig runs headless + deterministic; 3 golden fixtures bit-exact self-checked; F# port-side runner pending (phase 3) |
-| 3 Incremental migration | **in progress** | 4/244 units verified (resources-01..03 + oracle-04); first bit-exact port-vs-orig agreement |
+| 3 Incremental migration | **in progress** | 6/244 units verified (resources-01..04, 06 + oracle-04); all verified bit-exact vs orig |
 | 4 Closure | not started | |
 
 ## Unit counts (from ledger)
 
 | Status | count |
 |---|---|
-| verified | 30 (bootstrap×3, oracle×4, recon×20, resources×3) |
+| verified | 32 (bootstrap×3, oracle×4, recon×20, resources×5) |
 | in-progress | 0 |
 | translated | 0 |
-| not-started | 240 ported units + verify-01 |
+| not-started | 238 ported units + verify-01 |
 | blocked | 0 |
 
 ## Next available units (dependencies satisfied)
 
-- **Next port units:** `resources-04` (stock-ratio helper) → `resources-06` (cap
-  computation — enables real cap clamping in the oracle) → `resources-05` (per-tick
-  update loop) — then `fresh-100-ticks` verifies bit-exact on the full resources
-  subtree including caps.
+- **Next port units:** `resources-05` (per-tick update loop) with the first slice of
+  `game-10` (production calc) — then `fresh-100-ticks` verifies bit-exact on the full
+  resources subtree including caps and perTick.
 - Recon is complete (20/20); remaining recon slots only matter for late-phase files.
 - `verify-01` (mechanical spec verification) — no deps; workshop recon already found
   the first spec discrepancy (143 upgrades / 23 crafts vs spec's 142/20).

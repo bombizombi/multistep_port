@@ -21,3 +21,21 @@ let getInverseUnlimitedDR (value: float) (stripe: float) : float =
 /// JS Math.round — half-up (JS spec: floor(x + 0.5)). F# `round` is banker's
 /// rounding and would diverge (D013-1). Always use this where orig says Math.round.
 let jsRound (x: float) : float = floor (x + 0.5)
+
+/// JS `x || 0` for numbers: NaN/0 collapse to 0, everything else passes through.
+let jsOr0 (x: float) : float =
+    if System.Double.IsNaN x || x = 0.0 then 0.0 else x
+
+/// game.getLimitedDR — hyperbolic diminishing return: first 75% of the limit is
+/// undiminished, the last 25% approaches 0.25×limit asymptotically. Sign-preserving.
+let getLimitedDR (effect: float) (limit: float) : float =
+    let absEffect = abs effect
+    let maxUndiminished = 0.75 * limit
+    if absEffect <= maxUndiminished then
+        if effect < 0.0 then -absEffect else absEffect
+    else
+        let diminishedPortion = absEffect - maxUndiminished
+        let delta = 0.25 * limit
+        let diminishedEffect = (1.0 - (delta / (diminishedPortion + delta))) * delta
+        let totalEffect = maxUndiminished + diminishedEffect
+        if effect < 0.0 then -totalEffect else totalEffect

@@ -273,13 +273,30 @@ function doAction(move) {
       // resop — test-hook action (D014): direct resPool calls for unit-level
       // verification of the resource pipeline (mirrors orig's own jest practice).
       case "resop": {
-        const [fn, resName, valueArg] = args;
-        const v = Number(valueArg);
-        if (!Number.isFinite(v)) throw new Error(`resop ${fn}: bad value "${valueArg}"`);
+        const [fn, arg1, arg2] = args;
+        if (fn === "caps") {
+          game.resPool.updateMaxValueAll();
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "stock") {
+          // resop stock <amt> <spec> — spec "wood:5,catnip:10" (order-significant)
+          const amt = Number(arg1);
+          if (!Number.isFinite(amt)) throw new Error(`resop stock: bad amt "${arg1}"`);
+          const spec = String(arg2).split(",").map((p) => {
+            const [r, a] = p.split(":");
+            return { res: r, amt: Number(a) };
+          });
+          const result = game.resPool.getAmtDependsOnStock(spec, amt);
+          actionLog.push({ tick: tickIndex, action: "resop", args, result });
+          return;
+        }
+        const v = Number(arg2);
+        if (!Number.isFinite(v)) throw new Error(`resop ${fn}: bad value "${arg2}"`);
         let result;
-        if (fn === "addRes") result = game.resPool.addRes(game.resPool.get(resName), v, false);
-        else if (fn === "addResEvent") result = game.resPool.addResEvent(resName, v);
-        else if (fn === "addResPerTick") result = game.resPool.addResPerTick(resName, v);
+        if (fn === "addRes") result = game.resPool.addRes(game.resPool.get(arg1), v, false);
+        else if (fn === "addResEvent") result = game.resPool.addResEvent(arg1, v);
+        else if (fn === "addResPerTick") result = game.resPool.addResPerTick(arg1, v);
         else throw new Error(`resop: unknown fn "${fn}"`);
         actionLog.push({ tick: tickIndex, action: "resop", args, result });
         return;

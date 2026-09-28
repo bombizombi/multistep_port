@@ -37,4 +37,4 @@ reports in `analysis/recon/` (index: `analysis/inventory.md`), 244 ported work u
 | i18n.js + config.js | ~200 | recon/settings.md | i18n-01..04, config-01 (5) | 0% |
 
 Totals: **244 work units** defined; **43,800 / 43,800** core+shell lines described (**100%**).
-Ported: resources-01..03 + oracle-04 verified (session 2026-09-28-04); resources subtree of `unit-resources.cat` agrees bit-exact with orig.
+Ported: resources-01..04 + 06 + oracle-04 verified (sessions 2026-09-28-04/-05); `unit-resources` and `unit-res-caps` agree bit-exact with orig.

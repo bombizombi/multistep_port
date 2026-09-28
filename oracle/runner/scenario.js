@@ -79,8 +79,8 @@ function parseScenario(text) {
     if ((action === "research" || action === "upgrade" || action === "policy") && args.length !== 1) {
       problems.push(`line ${lineNo}: "${action}" needs exactly one name`); continue;
     }
-    if (action === "resop" && args.length !== 3) {
-      problems.push(`line ${lineNo}: "resop" needs <fn> <res> <value>`); continue;
+    if (action === "resop" && args.length < 1) {
+      problems.push(`line ${lineNo}: "resop" needs <fn> plus fn-specific args`); continue;
     }
     scenario.moves.push({ tick, action, args });
     maxTick = Math.max(maxTick, tick);

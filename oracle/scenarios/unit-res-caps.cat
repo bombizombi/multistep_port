@@ -1,0 +1,18 @@
+# name: unit-res-caps
+# seed: 20260927
+# checkpoints: 0
+# Unit verification for resources-06 (cap computation) and resources-04 (stock
+# helper) via resop hooks (D014). `resop caps` runs updateMaxValueAll with the
+# fresh-state CapContext (BaseEffects table, zero prestige/challenge/workshop
+# effects) — caps must equal the fresh-100-ticks fixture values. Then clamping
+# and the stock helper are exercised. All at tick 0.
+0 resop caps
+0 resop addResEvent catnip 1000000
+0 resop addResEvent wood 300
+0 resop addResEvent titanium 5
+0 resop addResEvent science 400
+0 resop addResEvent zebras 5
+0 resop addResEvent sorrow 20
+0 resop addResEvent temporalFlux 100
+0 resop stock 10 wood:5,catnip:10
+0 resop stock 3 wood:5,catnip:10

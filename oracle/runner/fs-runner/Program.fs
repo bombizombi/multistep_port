@@ -112,6 +112,21 @@ let execute (scenario: Scenario) : ExecResult =
         match m.Action with
         | "resop" ->
             match m.Args with
+            | [ "caps" ] ->
+                pool <- updateMaxValueAll zeroCapContext pool // t0: effects cache still empty (see Game.Resources.zeroCapContext)
+                actionLog <- (m.Tick, "resop", m.Args, Some 0.0, None) :: actionLog
+            | [ "stock"; amtArg; specArg ] ->
+                // spec "wood:5,catnip:10" (order-significant), mirrors orig driver
+                let amt = float amtArg
+                let spec =
+                    specArg.Split(',')
+                    |> Array.map (fun p ->
+                        let parts = p.Split(':')
+                        (parts.[0], float parts.[1]))
+                    |> Array.toList
+                let pool', fraction = getAmtDependsOnStock calendarDay spec amt pool
+                pool <- pool'
+                actionLog <- (m.Tick, "resop", m.Args, Some fraction, None) :: actionLog
             | [ fn; resName; valueArg ] ->
                 let v = float valueArg
                 // orig get(name) returns false for unknown names; addRes then
