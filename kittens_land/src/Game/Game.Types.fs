@@ -60,6 +60,9 @@ type UnlockList =
       Tech: string list
       Policies: string list
       Upgrades: string list
+      ZebraUpgrades: string list
+      Religion: string list
+      Crafts: string list
       Stages: string list }
 
 type StageDef =
@@ -91,7 +94,8 @@ type BuildingDef =
 type TechDef =
     { Name: string
       Prices: Price list
-      Unlocks: UnlockList option }
+      Unlocks: UnlockList option
+      Upgrades: UnlockList option }
 
 type PolicyDef =
     { Name: string
@@ -108,6 +112,7 @@ type CraftDef =
       Prices: Price list
       Tier: float option
       IgnoreBonuses: bool
+      ProgressHandicap: float
       StartsUnlocked: bool }
 
 /// Live building state (orig mutates the def; conversion pattern #2).
@@ -138,7 +143,18 @@ type UpgradeState =
 type CraftState =
     { Def: CraftDef
       Unlocked: bool
-      Value: float }
+      Value: float
+      Progress: float
+      IsLimited: bool
+      IsLimitedAmt: bool }
+
+/// Zebra upgrade (workshop-10): research meta bought with bloodstone/science.
+type ZebraUpgradeDef =
+    { Name: string
+      Prices: Price list
+      Effects: Map<string, float>
+      Unlocks: UnlockList option
+      Upgrades: UnlockList option }
 
 // Typed constructors: ResearchState/PolicyState/UpgradeState share all field
 // names, and F# record inference resolves to the LAST declared — these pin the

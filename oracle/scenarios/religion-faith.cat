@@ -1,0 +1,26 @@
+# name: religion-faith
+# seed: 20260927
+# checkpoints: 0, 300, 700, 1100, 1600, 1700, 1750, 1751, 1752, 1753, 1800
+# religion-01/08: worship pool, praise (apocrypha bonus), RU purchases
+# (solarchant, solarRevolution with FROZEN ratio, transcendence), adore
+# (epiphany), transcend ladder. Faith/gold stock injected per D014 (no temple
+# in reach of this slice; the faith resource income needs buildings).
+0 resop addResEvent gold 50000
+299 resop addResEvent faith 3000
+300 praise
+699 resop addResEvent faith 3000
+700 praise
+1099 resop addResEvent faith 5000
+1100 worship solarchant
+1599 resop addResEvent faith 9000
+1600 worship solarRevolution
+1699 worship transcendence
+1699 resop forceru transcendence
+1700 resop worship 100000
+1700 adore
+1750 transcend
+1751 transcend
+1752 transcend
+1753 resop faithratio
+1754 resop tier
+1755 resop faith

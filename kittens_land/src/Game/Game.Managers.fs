@@ -47,46 +47,201 @@ let researchPolicy (calendarDay: int) (name: string) (pool: ResPool) (sp: Scienc
             pool, sp, false
     | _ -> pool, sp, false
 
-// --- workshop-03: upgrades + crafts (orig game.workshop) ----------------------
+// --- workshop-03/11/12/13/14: upgrades + crafts (orig game.workshop) ----------
 
 type WorkshopPool =
     { UpgradeOrder: string list
       Upgrades: Map<string, UpgradeState>
       CraftOrder: string list
-      Crafts: Map<string, CraftState> }
+      Crafts: Map<string, CraftState>
+      ZebraOrder: string list
+      ZebraUpgrades: Map<string, UpgradeState> }
 
 let initWorkshop (upgrades: UpgradeDef list) (crafts: CraftDef list) : WorkshopPool =
     { UpgradeOrder = upgrades |> List.map (fun u -> u.Name)
       Upgrades = upgrades |> List.map (fun u -> (u.Name, mkUpgrade u)) |> Map.ofList
       CraftOrder = crafts |> List.map (fun c -> c.Name)
-      Crafts = crafts |> List.map (fun c -> (c.Name, { Def = c; Unlocked = c.StartsUnlocked; Value = 0.0 })) |> Map.ofList }
+      Crafts =
+        crafts
+        |> List.map (fun c ->
+            (c.Name,
+             { Def = c
+               Unlocked = c.StartsUnlocked
+               Value = 0.0
+               Progress = 0.0
+               IsLimited = false
+               IsLimitedAmt = false }))
+        |> Map.ofList
+      ZebraOrder = Game.Catalog.Defs.zebraUpgradeDefs |> List.map (fun u -> u.Name)
+      ZebraUpgrades =
+        Game.Catalog.Defs.zebraUpgradeDefs
+        |> List.map (fun u -> (u.Name, { Def = { Name = u.Name; Prices = u.Prices; Effects = u.Effects }; Unlocked = false; Researched = false }))
+        |> Map.ofList }
 
 let getCraft (wp: WorkshopPool) (name: string) : CraftState option = wp.Crafts |> Map.tryFind name
+let getZebraUpgrade (wp: WorkshopPool) (name: string) : UpgradeState option = wp.ZebraUpgrades |> Map.tryFind name
 
 /// orig getResCraftRatio(res): workshop craftRatio effects × (1 + skill bonus).
 /// Skill/leader seams are fresh (0); effect read is live.
 let getResCraftRatio (cache: Game.Effects.EffectsCache) (resName: string) : float =
     Game.Effects.getEffect cache (resName + "CraftRatio")
 
-/// orig workshop.craft (js/workshop.js L2656): ceil amt, craftRatio bonus,
-/// resource check, pay, addResEvent(craftAmt). suppressUndo/forceAll unused by
-/// the runner path. Returns pool, workshop, actual amount gained, success.
-let craft (calendarDay: int) (cache: Game.Effects.EffectsCache) (resName: string) (amt: float) (pool: ResPool) (wp: WorkshopPool) : ResPool * WorkshopPool * float * bool =
+/// orig getCraftPrice (js/workshop.js L2634-2654): manuscript takes the tradition
+/// policy override; ship scales starchart by the satnav LDR (sattelite.on seam 0);
+/// everything else returns the recipe prices verbatim.
+let getCraftPrice (cache: Game.Effects.EffectsCache) (traditionResearched: bool) (craft: CraftDef) : Price list =
+    if craft.Name = "manuscript" && traditionResearched then
+        [ { Resource = "parchment"; Val = 20.0 }; { Resource = "culture"; Val = 300.0 } ]
+    elif craft.Name = "ship" then
+        let satnavRatioOn = Game.Effects.getEffect cache "satnavRatio" * 0.0 // sattelite.on seam
+        craft.Prices
+        |> List.map (fun p ->
+            if p.Resource = "starchart" then
+                { p with Val = p.Val * (1.0 - Game.Math.getLimitedDR satnavRatioOn 0.75) }
+            else p)
+    else
+        craft.Prices
+
+/// orig workshop.craft (js/workshop.js L2656-2701): ceil amt, craftRatio bonus,
+/// negative-amt guard, resource check on the SCALED prices, pay, addResEvent.
+/// Returns pool, workshop, success. (stats totalCrafts + undo are UI seams.)
+let craft (calendarDay: int) (cache: Game.Effects.EffectsCache) (traditionResearched: bool) (resName: string) (amt: float) (pool: ResPool) (wp: WorkshopPool) : ResPool * WorkshopPool * bool =
     match wp.Crafts |> Map.tryFind resName with
-    | None -> pool, wp, 0.0, false
+    | None -> pool, wp, false
     | Some craftDef ->
         let craftRatio = getResCraftRatio cache resName
         let amt = ceil amt
         let craftAmt = amt * (1.0 + craftRatio)
-        let prices = craftDef.Def.Prices |> List.map (fun p -> (p.Resource, p.Val * amt))
-
-        if Game.Resources.hasRes pool prices 0.0 then
-            let poolPaid = Game.Resources.payPrices calendarDay pool prices
-            let poolGained, gained = Game.Resources.addResEvent calendarDay resName craftAmt poolPaid
-            // craft.upgrades fan-out: none of the base crafts have them at fresh
-            poolGained, wp, gained, true
+        // prevent undo giving free res
+        let stockValue =
+            match Game.Resources.get pool resName with
+            | Some r -> r.Value
+            | None -> 0.0
+        if amt < 0.0 && stockValue < (abs craftAmt) then
+            pool, wp, false
         else
-            pool, wp, 0.0, false
+            let prices =
+                getCraftPrice cache traditionResearched craftDef.Def
+                |> List.map (fun p -> (p.Resource, p.Val * amt))
+            if Game.Resources.hasRes pool prices 0.0 then
+                let poolPaid = Game.Resources.payPrices calendarDay pool prices
+                let poolGained, _gained = Game.Resources.addResEvent calendarDay resName craftAmt poolPaid
+                // craft.upgrades fan-out + stats: UI seams (no base craft defines them)
+                poolGained, wp, true
+            else
+                pool, wp, false
+
+/// orig _getCraftAllCountInternal (L2793): min over prices of stock/price.
+let private getCraftAllCountInternal (getResValue: string -> float) (prices: Price list) : float =
+    let mutable minAmt = System.Double.MaxValue
+    for p in prices do
+        let allAmt = getResValue p.Resource / p.Val
+        if allAmt < minAmt then minAmt <- allAmt
+    minAmt
+
+/// orig getCraftAllCount (L2787): floor of the internal minimum.
+let getCraftAllCount (cache: Game.Effects.EffectsCache) (traditionResearched: bool) (getResValue: string -> float) (wp: WorkshopPool) (craftName: string) : float =
+    match wp.Crafts |> Map.tryFind craftName with
+    | None -> 0.0
+    | Some craft ->
+        let prices = getCraftPrice cache traditionResearched craft.Def
+        floor (getCraftAllCountInternal getResValue prices)
+
+/// orig craftAll (L2807): craft the floor maximum with bypassResourceCheck.
+let craftAll (calendarDay: int) (cache: Game.Effects.EffectsCache) (traditionResearched: bool) (getResValue: string -> float) (craftName: string) (pool: ResPool) (wp: WorkshopPool) : ResPool * WorkshopPool * bool =
+    let minAmt = getCraftAllCount cache traditionResearched getResValue wp craftName
+    if 0.0 < minAmt && minAmt < System.Double.MaxValue then
+        let pool', wp', ok = craft calendarDay cache traditionResearched craftName minAmt pool wp
+        pool', wp', ok
+    else
+        pool, wp, false
+
+/// orig getEffectEngineer (L2734-2752): per-engineer craft progress per tick.
+let getEffectEngineer (cache: Game.Effects.EffectsCache) (prodCache: Map<string, float>) (neuralNetworksResearched: bool) (wp: WorkshopPool) (resName: string) : float =
+    match wp.Crafts |> Map.tryFind resName with
+    | None -> 0.0
+    | Some craft ->
+        let kittenResProduction =
+            (prodCache |> Map.tryFind ("ES" + resName) |> Option.defaultValue 0.0)
+            * (if neuralNetworksResearched then 2.0 else 1.0)
+        // HG scaling bonus seam: simScalingRatio 0 → 1
+        let tierCraftRatioRaw =
+            match craft.Def.Tier with
+            | Some t -> Game.Effects.getEffect cache ("t" + string t + "CraftRatio") + Game.Effects.getEffect cache "UniversalKnowHow"
+            | None -> 0.0
+        let tierCraftRatio = if tierCraftRatioRaw = 0.0 then 1.0 else tierCraftRatioRaw
+        let ticksPerSecond = 5.0
+        let handicap = craft.Def.ProgressHandicap
+        kittenResProduction * tierCraftRatio / (600.0 * ticksPerSecond * handicap)
+
+/// orig workshop.fastforward(update) effectsBase slice (L2885-2884): oilMax /
+/// scienceMax / cultureMax / faithMax — manuscript/compendia caps. Called every
+/// tick from workshop.update BEFORE craftByEngineers.
+let workshopEffectsBase (cache: Game.Effects.EffectsCache) (getResValue: string -> float) (codexResearched: bool) : Map<string, float> =
+    let oilMax = floor (getResValue "tanker" * 500.0)
+    // scienceMaxCap: bld scienceMax + pyramid seam + ironWill ×10 + codex branch
+    let scienceMaxCap = Game.Effects.getEffect cache "scienceMax"
+    let compendiaScienceMax = floor (getResValue "compedium" * 10.0)
+    let scienceMax = min compendiaScienceMax scienceMaxCap
+    let cultureBonusRaw = floor (getResValue "manuscript")
+    let cultureMax = Game.Math.getUnlimitedDR cultureBonusRaw 0.01 * (1.0 + Game.Effects.getEffect cache "cultureFromManuscripts")
+    let faithFromManuscripts = Game.Effects.getEffect cache "faithFromManuscripts"
+    let faithMax =
+        if faithFromManuscripts > 0.0 then
+            let faithMaxBld = Game.Effects.getEffect cache "faithMax"
+            let unimpededCap = 10000.0 + faithMaxBld * 0.15
+            let stripe = 0.02
+            let threshold = Game.Math.getInverseUnlimitedDR unimpededCap stripe
+            if cultureBonusRaw > threshold then
+                let scaling = Game.Math.getLimitedDR (1.0 + 0.021715 * log (cultureBonusRaw / threshold)) 10.0
+                unimpededCap * scaling
+            else
+                Game.Math.getUnlimitedDR cultureBonusRaw stripe
+            |> fun v -> v * faithFromManuscripts
+        else 0.0
+    let _ = codexResearched
+    Map.ofList
+        [ "oilMax", oilMax
+          "scienceMax", scienceMax
+          "cultureMax", cultureMax
+          "faithMax", faithMax ]
+
+/// orig craftByEngineers (L2890-2915): progress accumulation + auto-craft.
+/// `times` = ticks elapsed (1 per tick from update). The isStorageLimited
+/// craftable branch reads the PRE-tick craft states (orig reads the live meta
+/// objects, which the loop mutates one craft at a time).
+let craftByEngineers (calendarDay: int) (cache: Game.Effects.EffectsCache) (traditionResearched: bool) (getResValue: string -> float) (prodCache: Map<string, float>) (neuralNetworksResearched: bool) (times: float) (pool: ResPool) (wp: WorkshopPool) : ResPool * WorkshopPool =
+    let mutable pool = pool
+    let mutable crafts = wp.Crafts
+    let craftCtx : Game.Resources.CraftContext =
+        { CraftUnlocked = fun n -> (wp.Crafts |> Map.tryFind n |> Option.map (fun c -> c.Unlocked)) |> Option.defaultValue false
+          CraftIsLimited = fun n -> (wp.Crafts |> Map.tryFind n |> Option.map (fun c -> c.IsLimited)) |> Option.defaultValue false }
+    for name in wp.CraftOrder do
+        let craftState = crafts.[name]
+        let priceList = getCraftPrice cache traditionResearched craftState.Def
+        let prices = priceList |> List.map (fun p -> (p.Resource, p.Val))
+        // cache storage-limited state for every craft (even value 0)
+        let isLimited = Game.Resources.isStorageLimited craftCtx pool prices
+        crafts <- crafts |> Map.add name { craftState with IsLimited = isLimited }
+        if craftState.Value = 0.0 then
+            ()
+        else
+            let currentProgress =
+                max craftState.Progress 0.0
+                + times * getEffectEngineer cache prodCache neuralNetworksResearched wp name
+            if currentProgress >= 1.0 then
+                let currentProgress = min currentProgress (getCraftAllCountInternal getResValue priceList)
+                let units = floor currentProgress
+                if not isLimited then
+                    let pool', _wpIgnored, ok = craft calendarDay cache traditionResearched name units pool { wp with Crafts = crafts }
+                    if ok then
+                        pool <- pool'
+                        crafts <- crafts |> Map.add name { crafts.[name] with Progress = currentProgress - units }
+            elif Game.Resources.hasRes pool prices currentProgress then
+                crafts <- crafts |> Map.add name { crafts.[name] with IsLimitedAmt = false; Progress = currentProgress }
+            else
+                crafts <- crafts |> Map.add name { crafts.[name] with IsLimitedAmt = true }
+    pool, { wp with Crafts = crafts }
 
 /// orig UpgradeButtonController buyItem → onPurchase: pay, set researched.
 let buyUpgrade (calendarDay: int) (name: string) (pool: ResPool) (wp: WorkshopPool) : ResPool * WorkshopPool * bool =
@@ -101,6 +256,16 @@ let buyUpgrade (calendarDay: int) (name: string) (pool: ResPool) (wp: WorkshopPo
             pool, wp, false
     | _ -> pool, wp, false
 
+/// orig workshop.unlock (L2919-2932): mark researched, run handler (seam),
+/// fan out unlocks/upgrades. Returns updated pool + fan-outs for the dispatcher.
+let unlockZebraUpgrade (name: string) (wp: WorkshopPool) : WorkshopPool * UnlockList option * UnlockList option =
+    match wp.ZebraUpgrades |> Map.tryFind name with
+    | Some z when not z.Researched ->
+        let def = Game.Catalog.Defs.zebraUpgradeDefs |> List.find (fun u -> u.Name = name)
+        let wp' = { wp with ZebraUpgrades = wp.ZebraUpgrades |> Map.add name { z with Researched = true } }
+        wp', def.Unlocks, def.Upgrades
+    | _ -> wp, None, None
+
 // --- game-04: unlock/upgrade dispatch (orig game.unlock / game.upgrade) -------
 // Metas unlock by id across registries; targets may veto via evaluateLocks
 // (none of the fresh-reachable metas have them — recorded for later units).
@@ -112,6 +277,8 @@ let unlock
     (techs: string list)
     (policies: string list)
     (upgrades: string list)
+    (zebraUpgrades: string list)
+    (crafts: string list)
     (bpool: BldPool)
     (sp: SciencePool)
     (wp: WorkshopPool)
@@ -136,6 +303,14 @@ let unlock
         match wp.Upgrades |> Map.tryFind name with
         | Some u -> wp <- { wp with Upgrades = wp.Upgrades |> Map.add name { u with Unlocked = true } }
         | None -> ()
+    for name in zebraUpgrades do
+        match wp.ZebraUpgrades |> Map.tryFind name with
+        | Some z -> wp <- { wp with ZebraUpgrades = wp.ZebraUpgrades |> Map.add name { z with Unlocked = true } }
+        | None -> ()
+    for name in crafts do
+        match wp.Crafts |> Map.tryFind name with
+        | Some c -> wp <- { wp with Crafts = wp.Crafts |> Map.add name { c with Unlocked = true } }
+        | None -> ()
     // jobs unlock: applied to the village pool by the caller (JobUnlocked set);
     // jobs/tabs touch no state owned here (no snapshotted effect)
     let _ = jobs
@@ -158,7 +333,8 @@ type Kitten =
       Seed: int
       Trait: string
       Age: float
-      Skills: Map<string, float> }
+      Skills: Map<string, float>
+      EngineerSpeciality: string option }
 
 type VillagePool =
     { Kittens: Kitten list
@@ -211,7 +387,7 @@ let private makeKitten (seed: int) : Kitten =
     let age' =
         if rand 100 < 30 then age + float (rand 30) else age
     age <- age'
-    { Name = name; Surname = surname; Job = None; Rank = 0; Exp = 0.0; Seed = seed; Trait = trait; Age = age; Skills = Map.empty }
+    { Name = name; Surname = surname; Job = None; Rank = 0; Exp = 0.0; Seed = seed; Trait = trait; Age = age; Skills = Map.empty; EngineerSpeciality = None }
 
 let addKitten (rand: unit -> float) (pool: VillagePool) : VillagePool =
     let seed = generateKittenSeed rand
@@ -256,18 +432,26 @@ let getFreeKittens (vpool: VillagePool) : int =
     vpool.Kittens |> List.filter (fun k -> k.Job = None) |> List.length
 
 /// orig sim.killKittens(amount): removes the LAST n kittens (their job counters
-/// decremented — orig routes through village.unassignJob). Stats seam (stats-01).
-let killKittens (amount: int) (vpool: VillagePool) : VillagePool =
+/// decremented — orig routes through village.unassignJob, which also decrements
+/// the craft.value of dead engineers via unassignCraftJobIfEngineer). Returns
+/// the dead engineers' specialities for the caller's craft bookkeeping. Stats
+/// seam (stats-01). Orig tail: updateResourceProduction + updateResources —
+/// the CALLER (runner) mirrors those cache refreshes.
+let killKittens (amount: int) (vpool: VillagePool) : VillagePool * string list =
     let amount = min amount vpool.Kittens.Length
     let survivors = vpool.Kittens |> List.take (vpool.Kittens.Length - amount)
     let mutable jobValues = vpool.JobValues
+    let mutable deadSpecialities = []
     for k in vpool.Kittens |> List.skip (vpool.Kittens.Length - amount) do
         match k.Job with
         | Some j ->
             let cur = jobValues |> Map.tryFind j |> Option.defaultValue 0
             jobValues <- jobValues |> Map.add j (max 0 (cur - 1))
         | None -> ()
-    { vpool with Kittens = survivors; JobValues = jobValues }
+        match k.EngineerSpeciality with
+        | Some sp -> deadSpecialities <- sp :: deadSpecialities
+        | None -> ()
+    { vpool with Kittens = survivors; JobValues = jobValues }, deadSpecialities
 
 /// orig village.update starvation branch (L430-462): kittens > 0 and catnip
 /// value + perTick < 0 -> kill min(1, |resDiff| rounded), deathTimeout = tps*5;
@@ -288,21 +472,22 @@ let starvationStep
             let mutable starved = int (abs (jsRound resDiff))
             if starved > 1 then starved <- 1
             if starved > 0 && vpool.DeathTimeout <= 0 then
-                let vpool' = killKittens starved vpool
+                let vpool', _deadSpecialities = killKittens starved vpool
                 { vpool' with DeathTimeout = int (ticksPerSecond * 5.0) }
-            elif vpool.DeathTimeout > 0 then
-                { vpool with DeathTimeout = vpool.DeathTimeout - 1 }
             else
-                vpool
+                // orig decrements in EVERY starving non-kill tick (the timeout
+                // may go negative); NOT starving leaves it untouched (L455-461)
+                { vpool with DeathTimeout = vpool.DeathTimeout - 1 }
         else
-            { vpool with DeathTimeout = 0 }
+            vpool
     else
         vpool
 
-let assignJob (name: string) (amt: int) (vpool: VillagePool) : VillagePool =
+let assignJob (name: string) (amt: int) (jobLimit: int) (vpool: VillagePool) : VillagePool =
     let current = vpool.JobValues |> Map.tryFind name |> Option.defaultValue 0
     let free = getFreeKittens vpool
-    let jobLimit = 100000 // manager default; engineer/ambassador branches are village-03
+    // jobLimit computed by the caller (orig getJobLimit: engineer = factory.val,
+    // ambassador = perk-gated race count, manager default 100000)
     let capped = min amt (min free (jobLimit - current))
     if capped > 0 then
         { vpool with JobValues = vpool.JobValues |> Map.add name (current + capped) }
@@ -330,12 +515,21 @@ let simAssignJob (job: string) (amt: int) (vpool: VillagePool) : VillagePool =
         n <- n - 1
     vpool
 
-/// orig village.getResProduction (updateResourceProduction): per-kitten job
-/// modifier sum, scaled by skill (0 at fresh), rank, leader, happiness.
-/// Job modifiers come from village-01 data (base + calculated resolutions).
-let getResProduction (vpool: VillagePool) (jobDefs: Map<string, Game.Catalog.Village.JobDef>) : Map<string, float> =
+/// orig village.updateResourceProduction (js/village.js L626-728): the CACHED
+/// per-kitten production map. Orig refreshes this on a 10-tick timer, on job
+/// assignment/promotion, and lazily on first read (village.js L603-605) — the
+/// runner owns that timing; this function is the pure recompute. Includes the
+/// engineer "ES<craft>" keys (L691-721).
+let getResProduction
+    (cache: Game.Effects.EffectsCache)
+    (vpool: VillagePool)
+    (jobDefs: Map<string, Game.Catalog.Village.JobDef>)
+    (wp: WorkshopPool)
+    : Map<string, float> =
     let mutable res = Map.empty<string, float>
-    let happiness = vpool.Happiness // + effect seam: happinessKittenProductionRatio (0 at fresh)
+    // happiness + happinessKittenProductionRatio seam (0 at fresh)
+    let happiness = vpool.Happiness
+    let eff = Game.Effects.getEffect cache
 
     for k in vpool.Kittens do
         match k.Job with
@@ -344,14 +538,11 @@ let getResProduction (vpool: VillagePool) (jobDefs: Map<string, Game.Catalog.Vil
             match jobDefs |> Map.tryFind jobName with
             | None -> ()
             | Some jobDef ->
-                // modifiers = calculated if the job has calculateEffects (D012 gate),
-                // else the static table
                 let modifiers =
                     match jobDef.CalculatedModifiers with
                     | Some m -> m
                     | None -> jobDef.Modifiers
-                // skill mod (orig getValueModifierPerSkill L1292): tiered bonus on
-                // accumulated skill XP; master/skill multiplier effects 0 at fresh
+                // orig getValueModifierPerSkill (L1292) × (1 + skillMultiplier seam 0)
                 let skill = k.Skills |> Map.tryFind jobName |> Option.defaultValue 0.0
                 let skillBonus =
                     if skill < 100.0 then 0.0
@@ -361,11 +552,76 @@ let getResProduction (vpool: VillagePool) (jobDefs: Map<string, Game.Catalog.Vil
                     elif skill < 5000.0 then 0.075
                     elif skill < 9000.0 then 0.125
                     else 0.1875
-                let skillMod = skillBonus * (1.0 + 0.0) // × (1 + skillMultiplier seam)
+                let skillMod = skillBonus * (1.0 + 0.0)
+                // rank multiplier: 1 + <job>BoostPerRank × rank (effect 0 at fresh)
+                let rankMultiplier = 1.0 + eff (jobName + "BoostPerRank") * float k.Rank
                 for KeyValue(resName, baseMod) in modifiers do
                     let mutable diff = baseMod + baseMod * skillMod
-                    diff <- diff * 1.0 // rank multiplier: boostPerRank 0 at fresh
+                    diff <- diff * rankMultiplier
                     if diff > 0.0 then
+                        // leader seams: no leaders in this slice (isLeader false,
+                        // village.leader null → no boostFromLeader fold)
                         diff <- diff * happiness
                     res <- res |> Map.change resName (function Some prev -> Some(prev + diff) | None -> Some diff)
+
+                // engineer speciality → "ES<craft>" production key (L691-721)
+                if jobName = "engineer" then
+                    match k.EngineerSpeciality with
+                    | None -> ()
+                    | Some speciality ->
+                        match wp.Crafts |> Map.tryFind speciality with
+                        | None -> ()
+                        | Some craftState ->
+                            let automationBonus = eff (speciality + "AutomationBonus")
+                            let mutable diff = 1.0 + automationBonus
+                            let rankDiff =
+                                match craftState.Def.Tier with
+                                | Some t -> t - float k.Rank
+                                | None -> 0.0
+                            if rankDiff > 0.0 then
+                                diff <- diff - diff * rankDiff * 0.15
+                            diff <- diff + diff * skillMod
+                            if diff > 0.0 then
+                                diff <- diff * happiness
+                            let key = "ES" + speciality
+                            res <- res |> Map.change key (function Some prev -> Some(prev + diff) | None -> Some diff)
     res
+
+/// orig village.getFreeEngineers (L573-578): engineers minus sum of craft values.
+let getFreeEngineers (vpool: VillagePool) (wp: WorkshopPool) : float =
+    let engineerCount = vpool.JobValues |> Map.tryFind "engineer" |> Option.defaultValue 0 |> float
+    let assigned = wp.CraftOrder |> List.sumBy (fun n -> (wp.Crafts.[n]).Value)
+    engineerCount - assigned
+
+/// orig sim.assignCraftJob (L3577-3615): give the speciality to one free
+/// engineer kitten (reverse iteration, optimize seam skipped — no register).
+let simAssignCraftJob (craftName: string) (vpool: VillagePool) : VillagePool * bool =
+    let mutable assignedId = -1
+    let mutable i = vpool.Kittens.Length - 1
+    while assignedId < 0 && i >= 0 do
+        let k = vpool.Kittens.[i]
+        if k.Job = Some "engineer" && k.EngineerSpeciality = None then
+            assignedId <- i
+        i <- i - 1
+    if assignedId >= 0 then
+        let k = vpool.Kittens.[assignedId]
+        { vpool with Kittens = vpool.Kittens |> List.updateAt assignedId { k with EngineerSpeciality = Some craftName } }, true
+    else
+        vpool, false
+
+/// orig sim.unassignCraftJobIfEngineer (L3652-3659)
+let unassignCraftJobIfEngineer (vpool: VillagePool) (kittenId: int) : VillagePool * string option =
+    let k = vpool.Kittens.[kittenId]
+    match k.Job, k.EngineerSpeciality with
+    | Some "engineer", Some speciality ->
+        { vpool with Kittens = vpool.Kittens |> List.updateAt kittenId { k with EngineerSpeciality = None } }, Some speciality
+    | _ ->
+        let k' = if k.EngineerSpeciality <> None then { k with EngineerSpeciality = None } else k
+        { vpool with Kittens = vpool.Kittens |> List.updateAt kittenId k' }, None
+
+/// orig sim.clearCraftJobs (L3663-3673)
+let clearCraftJobs (vpool: VillagePool) : VillagePool =
+    { vpool with
+        Kittens =
+            vpool.Kittens
+            |> List.map (fun k -> if k.EngineerSpeciality <> None then { k with EngineerSpeciality = None } else k) }

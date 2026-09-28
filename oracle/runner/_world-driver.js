@@ -507,22 +507,35 @@ function takeSnapshot() {
   const clone = (o) => JSON.parse(JSON.stringify(o === undefined ? null : o));
   const races = game.diplomacy.races.map((r) => ({
     name: r.name, unlocked: !!r.unlocked,
+    standing: r.standing === undefined ? null : r.standing,
+    hidden: !!r.hidden,
     embassyPrices: clone(r.embassyPrices) || null,
     embassyLevel: r.embassyLevel || 0,
     attitude: r.attitude === undefined ? null : r.attitude,
     raceEffects: clone(r.raceEffects) || null,
+    buys: clone(r.buys) || [],
+    sells: clone(r.sells) || [],
+    unlocks: clone(r.unlocks) || null,
   }));
   const zu = game.religion.zigguratUpgrades.map((z) => ({
     name: z.name, prices: clone(z.prices) || [], val: z.val || 0,
     unlocked: !!z.unlocked, effects: clone(z.effects) || {},
+    priceRatio: z.priceRatio === undefined ? null : z.priceRatio,
+    unlocks: clone(z.unlocks) || null, upgrades: clone(z.upgrades) || null,
   }));
   const ru = game.religion.religionUpgrades.map((z) => ({
     name: z.name, prices: clone(z.prices) || [], val: z.val || 0,
     unlocked: !!z.unlocked, researched: !!z.researched, effects: clone(z.effects) || {},
+    priceRatio: z.priceRatio === undefined ? null : z.priceRatio,
+    faith: z.faith === undefined ? null : z.faith,
+    noStackable: !!z.noStackable,
+    unlocks: clone(z.unlocks) || null, upgrades: clone(z.upgrades) || null,
   }));
   const tu = game.religion.transcendenceUpgrades.map((z) => ({
     name: z.name, prices: clone(z.prices) || [], val: z.val || 0,
     unlocked: !!z.unlocked, researched: !!z.researched, effects: clone(z.effects) || {},
+    priceRatio: z.priceRatio === undefined ? null : z.priceRatio,
+    unlocks: clone(z.unlocks) || null, upgrades: clone(z.upgrades) || null,
   }));
   const pacts = game.religion.pactsManager.pacts.map((p) => ({
     name: p.name, prices: clone(p.prices) || [], val: p.val || 0,

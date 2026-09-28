@@ -132,14 +132,17 @@ type CalJson =
 
 type BldSnap = string * (int * int * bool * bool * int)
 type JobSnap = string * int * bool
-type CraftSnap = string * bool * float
+type CraftSnap = string * bool * float * float
+type RelSnap = string * (int * int * bool * bool)
+type RaceSnap = string * (bool * int)
 
 type ExecResult =
     { Snapshots:
         (int * (string * (float * float * bool * float)) list * int * CalJson
              * BldSnap list * JobSnap list * CraftSnap list
              * string list * string list * string list
-             * string option list * int * (string * float) list)
+             * string option list * int * (string * float) list
+             * RelSnap list * RaceSnap list * float * float * int)
           list
       ActionLog: (int * string * string list * ResKind) list
       ResSave: (string * float * bool) list option }
@@ -177,6 +180,61 @@ let execute (scenario: Scenario) : ExecResult =
     let mutable spool = Game.Managers.initScience Game.Catalog.Defs.techDefs Game.Catalog.Defs.policyDefs
     let mutable wpool = Game.Managers.initWorkshop Game.Catalog.Defs.upgradeDefs Game.Catalog.Defs.craftDefs
     let mutable vpool = Game.Managers.initVillage Game.Catalog.Village.jobDefs
+    // religion-01/08 + diplomacy-02 pools
+    let mutable rpool = Game.Religion.init ()
+    let mutable dp = Game.Diplomacy.init ()
+    // village resourceProduction cache (orig: 10-tick timer + lazy first read +
+    // instant refresh on job assignment); None = stale (forces lazy recompute)
+    let mutable prodCache: Map<string, float> option = None
+    let mutable prodPhase = 0
+    // diplomacy.cachedAmbassadorEffects (rebuilt every tick by actionAmbassadors)
+    let mutable ambassadorEffects = Map.empty<string, float>
+
+    // orig village.updateResourceProduction (js/village.js L626): pure recompute
+    let updateResourceProduction () =
+        let jobDefMap =
+            Game.Catalog.Village.jobDefs |> List.map (fun j -> (j.Name, j)) |> Map.ofList
+        Game.Managers.getResProduction cache vpool jobDefMap wpool
+
+    // orig village.getResProduction (L603-605): lazy sync + zebra manpower seams
+    let getResProductionCached () : Map<string, float> =
+        match prodCache with
+        | Some m -> m
+        | None ->
+            let m = updateResourceProduction ()
+            prodCache <- Some m
+            m
+
+    // orig village.actionAmbassadors (L497-527): consume culture/spice, rebuild
+    // diplomacy.cachedAmbassadorEffects. times=1 per tick from village.update.
+    let actionAmbassadors (times: float) : unit =
+        let prod = getResProductionCached ()
+        let cultureCons = prod |> Map.tryFind "cultureConsumptionAmbassadors" |> Option.defaultValue 0.0
+        let spiceCons = prod |> Map.tryFind "spiceConsumptionAmbassadors" |> Option.defaultValue 0.0
+        let mutable effectScaling = 1.0
+        if cultureCons > 0.0 || (spiceCons > 0.0 && times > 0.0) then
+            let pool', scaling =
+                Game.Resources.getAmtDependsOnStock
+                    calendarDay
+                    [ ("culture", cultureCons); ("spice", spiceCons) ]
+                    times
+                    pool
+            pool <- pool'
+            effectScaling <- scaling
+        // ambassador job modifiers (village-01 catalog, calculated culture/spice
+        // consumption included via the production map); LDR on *Chance keys
+        ambassadorEffects <-
+          (Game.Catalog.Village.jobDefs
+           |> List.find (fun j -> j.Name = "ambassador")).Modifiers
+          |> Map.map (fun effectName _ ->
+              let mutable effectAmt = effectScaling * (prod |> Map.tryFind effectName |> Option.defaultValue 0.0)
+              if effectName.Length > 6 && effectName.EndsWith("Chance") then
+                  effectAmt <- Game.Math.getLimitedDR effectAmt 0.25
+              if effectName = "embassyEffectCap" && effectAmt > 1.0 then
+                  effectAmt <- sqrt effectAmt
+              effectAmt)
+        let _ = times
+        ()
 
     let capCtx () : CapContext =
         { GetEffect = Game.Effects.getEffect cache
@@ -187,7 +245,7 @@ let execute (scenario: Scenario) : ExecResult =
           KarmaZebras = 0 }
 
     let emptyGroup () : Game.Effects.ManagerGroup = { Base = Map.empty; Items = [] }
-    let religionGroup () = emptyGroup ()
+    let religionGroup () = Game.Religion.religionGroup rpool
     let challengesGroup () = emptyGroup ()
     let prestigeGroup () = emptyGroup ()
     let spaceGroup () = emptyGroup ()
@@ -206,8 +264,14 @@ let execute (scenario: Scenario) : ExecResult =
                 match Game.Buildings.get bpool n with
                 | Some b -> Some(Game.Buildings.activeEffects b, (fun name _ -> Game.Buildings.providerEffect b name))
                 | None -> None) }
+    let traditionResearched () =
+        match spool.Policies |> Map.tryFind "tradition" with
+        | Some p -> p.Researched
+        | None -> false
+    let getResValue (name: string) : float =
+        (get pool name |> Option.map (fun r -> r.Value) |> Option.defaultValue 0.0)
     let workshopGroup () : Game.Effects.ManagerGroup =
-        { Base = Map.empty
+        { Base = Game.Managers.workshopEffectsBase cache getResValue false
           Items =
             wpool.UpgradeOrder
             |> List.choose (fun n ->
@@ -241,12 +305,13 @@ let execute (scenario: Scenario) : ExecResult =
 
     and prodCtx () : Game.Production.ProductionContext =
         let fresh = Game.Production.freshProductionContext cache calendar (calCtx ())
-        let jobDefMap =
-            Game.Catalog.Village.jobDefs |> List.map (fun j -> (j.Name, j)) |> Map.ofList
         { fresh with
+            Happiness = vpool.Happiness
+            Kittens = vpool.Kittens.Length
+            FreeKittens = Game.Managers.getFreeKittens vpool
             VillageResProduction =
               fun resName ->
-                (Game.Managers.getResProduction vpool jobDefMap)
+                (getResProductionCached ())
                 |> Map.tryFind resName
                 |> Option.defaultValue 0.0
             VillageResConsumption =
@@ -309,8 +374,23 @@ let execute (scenario: Scenario) : ExecResult =
             wpool.CraftOrder
             |> List.choose (fun n ->
                 match Game.Managers.getCraft wpool n with
-                | Some c -> Some(n, c.Unlocked, c.Value)
+                | Some c -> Some(n, c.Unlocked, c.Value, c.Progress)
                 | None -> None)
+        // religion-01/08 + diplomacy-02/03 state (extended-snapshot contract)
+        let religion =
+            [ for n in rpool.RuOrder do
+                let m = rpool.RUs.[n]
+                yield (n, (m.Val, m.On, m.Unlocked, m.Researched))
+              for n in rpool.ZuOrder do
+                let m = rpool.ZUs.[n]
+                yield (n, (m.Val, m.On, m.Unlocked, m.Researched))
+              for n in rpool.TuOrder do
+                let m = rpool.TUs.[n]
+                yield (n, (m.Val, m.On, m.Unlocked, m.Researched)) ]
+        let diplomacy =
+            [ for n in dp.RaceOrder do
+                let r = dp.Races.[n]
+                yield (n, (r.Unlocked, r.EmbassyLevel)) ]
         let techs = spool.TechOrder |> List.filter (fun n -> spool.Techs.[n].Researched) |> List.sort
         let upgrades = wpool.UpgradeOrder |> List.filter (fun n -> wpool.Upgrades.[n].Researched) |> List.sort
         let policies = spool.PolicyOrder |> List.filter (fun n -> spool.Policies.[n].Researched) |> List.sort
@@ -324,7 +404,8 @@ let execute (scenario: Scenario) : ExecResult =
         let effectsSample =
             [ "catnipPerTickBase"; "catnipDemandRatio"; "maxKittensRatio"; "woodPerTick" ]
             |> List.map (fun k -> (k, Game.Effects.getEffect cache k))
-        (ticks, resources, rngDraws, calJson, buildings, jobs, crafts, techs, upgrades, policies, kittenJobs, free, effectsSample)
+        (ticks, resources, rngDraws, calJson, buildings, jobs, crafts, techs, upgrades, policies, kittenJobs, free, effectsSample,
+         religion, diplomacy, rpool.Faith, rpool.FaithRatio, rpool.TranscendenceTier)
 
     // gtick: the port's game.tick() — updateModel order:
     // resPool.update → bld.update → village sim (+ kittens sync) → timer
@@ -363,7 +444,12 @@ let execute (scenario: Scenario) : ExecResult =
         let starving =
           vpool.Kittens.Length > 0
           && (catnipVal + catnipPerTickTrue < 0.0)
+        let preStarveKittens = vpool.Kittens.Length
         vpool <- Game.Managers.starvationStep catnipVal catnipPerTickTrue 5.0 false maxKittens vpool
+        if vpool.Kittens.Length <> preStarveKittens then
+            // orig sim.killKittens tail (village.js L3390-3392): updateResourceProduction + updateResources fire on the kill tick
+            prodCache <- Some(updateResourceProduction ())
+            refreshCache ()
         // orig calls sim.update in every branch — with rate 0 when starving
         let growthRate = if starving then 0.0 else kittensPerTick
         vpool <- Game.Managers.simUpdate maxKittens growthRate 1 (fun () -> rngDraws <- rngDraws + 1; rand ()) vpool
@@ -381,8 +467,49 @@ let execute (scenario: Scenario) : ExecResult =
         let hctx : Game.Happiness.HappinessContext =
             { Game.Happiness.freshHappinessContext with LuxuryCount = luxCount }
         vpool <- { vpool with Happiness = Game.Happiness.updateHappiness hctx vpool.Kittens.Length vpool.MaxKittens }
-        // (diplomacy/religion/space/challenges update seams)
+        // orig village.update tail: actionAmbassadors(1) after updateHappines
+        actionAmbassadors 1.0
 
+        // orig updateModel L4517-4519 order: workshop.update → diplomacy.update
+        // → religion.update (space/challenges seams unchanged at this slice)
+        // workshop.update → fastforward(1/ticksPerDay): effectsBase is read by
+        // workshopGroup() at aggregation; engineers craft; sanity clearEngineers
+        if Game.Managers.getFreeEngineers vpool wpool < 0.0 then
+            vpool <- Game.Managers.clearCraftJobs vpool
+            wpool <- { wpool with Crafts = wpool.Crafts |> Map.map (fun _ c -> { c with Value = 0.0 }) }
+        let pool', wpool' =
+            Game.Managers.craftByEngineers calendarDay cache (traditionResearched ()) getResValue
+                (getResProductionCached ()) false 1.0 pool wpool
+        pool <- pool'
+        wpool <- wpool'
+        // diplomacy.update: race unlock roll at the year gate (20 at fresh)
+        let dctx : Game.Diplomacy.DiplomacyContext =
+            { GetEffect = Game.Effects.getEffect cache
+              GetResValue = getResValue
+              GetResMax = fun n -> (get pool n |> Option.map (fun r -> r.MaxValue) |> Option.defaultValue 0.0)
+              IsResUnlocked = fun n -> (get pool n |> Option.map (fun r -> r.Unlocked) |> Option.defaultValue false)
+              Season = Game.Calendar.seasons.[calendar.Season].Name
+              NuclearFissionResearched = false
+              IronWill = false }
+        let dp', ev = Game.Diplomacy.update dp dctx calendar.Year 0 (fun () -> rngDraws <- rngDraws + 1; rand ())
+        dp <- dp'
+        if ev.UnlockCaravanserai then
+            match wpool.Upgrades |> Map.tryFind "caravanserai" with
+            | Some u -> wpool <- { wpool with Upgrades = wpool.Upgrades |> Map.add "caravanserai" { u with Unlocked = true } }
+            | None -> ()
+        if ev.UnlockZebraPolicies then
+            for pname in ["zebraRelationsAppeasement"; "zebraRelationsBellicosity"] do
+                match spool.Policies |> Map.tryFind pname with
+                | Some pol -> spool <- { spool with Policies = spool.Policies |> Map.add pname { pol with Unlocked = true } }
+                | None -> ()
+        // religion.update: NaN faith guard + corruption/alicorn seam (0 here)
+
+        // timer.update — handlers fire in registration order:
+        //   village.updateResourceProduction (10) → updateCaches (5)
+        prodPhase <- prodPhase - 1
+        if prodPhase <= 0 then
+            prodPhase <- 10
+            prodCache <- Some(updateResourceProduction ())
         updateCachesPhase <- updateCachesPhase - 1
         if updateCachesPhase <= 0 then
             updateCachesPhase <- 5
@@ -402,7 +529,7 @@ let execute (scenario: Scenario) : ExecResult =
                 pool <- updateMaxValueAll (capCtx ()) pool
                 actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
             | [ "cache" ] ->
-                cache <- Game.Effects.updateCaches cache (allGroups ())
+                refreshCache () // orig updateCaches includes updateResources
                 actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
             | [ "gtick"; n ] ->
                 for _ in 1..int n do
@@ -467,6 +594,60 @@ let execute (scenario: Scenario) : ExecResult =
                 actionLog <- (curLogTick, "resop", m.Args, RNum result) :: actionLog
             | [ "voidstat" ] ->
                 actionLog <- (curLogTick, "resop", m.Args, RNum(getVoidQuantityStatistically (capCtx ()))) :: actionLog
+            | [ "faith" ] ->
+                actionLog <- (curLogTick, "resop", m.Args, RNum rpool.Faith) :: actionLog
+            | [ "faithratio" ] ->
+                actionLog <- (curLogTick, "resop", m.Args, RNum rpool.FaithRatio) :: actionLog
+            | [ "tier" ] ->
+                actionLog <- (curLogTick, "resop", m.Args, RNum(float rpool.TranscendenceTier)) :: actionLog
+            | [ "worshipval"; name ] ->
+                let meta = rpool.RUs.[name]
+                actionLog <- (curLogTick, "resop", m.Args, RNum(float meta.Val)) :: actionLog
+            | [ "embassy"; name ] ->
+                let r = dp.Races.[name]
+                actionLog <- (curLogTick, "resop", m.Args, RNum(float r.EmbassyLevel)) :: actionLog
+            | [ "nonrandom" ] ->
+                actionLog <- (curLogTick, "resop", m.Args, RNum dp.NonRandomTrades) :: actionLog
+            | [ "forceru"; ruName ] ->
+                // D014 injection: force-own an RU (see orig-driver comment)
+                let meta = rpool.RUs.[ruName]
+                rpool <- { rpool with RUs = rpool.RUs |> Map.add ruName { meta with Val = 1; On = 1; Researched = true; Unlocked = true } }
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "maxtrade"; raceName ] ->
+                let dctxM : Game.Diplomacy.DiplomacyContext =
+                    { GetEffect = Game.Effects.getEffect cache
+                      GetResValue = getResValue
+                      GetResMax = fun nn -> (get pool nn |> Option.map (fun r -> r.MaxValue) |> Option.defaultValue 0.0)
+                      IsResUnlocked = fun nn -> (get pool nn |> Option.map (fun r -> r.Unlocked) |> Option.defaultValue false)
+                      Season = Game.Calendar.seasons.[calendar.Season].Name
+                      NuclearFissionResearched = false
+                      IronWill = false }
+                let maxAmt = Game.Diplomacy.getMaxTradeAmt dp dctxM ambassadorEffects raceName
+                actionLog <- (curLogTick, "resop", m.Args, RNum(maxAmt |> Option.defaultValue 0.0)) :: actionLog
+            | [ "standing"; name ] ->
+                let dctx : Game.Diplomacy.DiplomacyContext =
+                    { GetEffect = Game.Effects.getEffect cache
+                      GetResValue = getResValue
+                      GetResMax = fun nn -> (get pool nn |> Option.map (fun r -> r.MaxValue) |> Option.defaultValue 0.0)
+                      IsResUnlocked = fun nn -> (get pool nn |> Option.map (fun r -> r.Unlocked) |> Option.defaultValue false)
+                      Season = Game.Calendar.seasons.[calendar.Season].Name
+                      NuclearFissionResearched = false
+                      IronWill = false }
+                actionLog <- (curLogTick, "resop", m.Args, RNum(Game.Diplomacy.getFinalStanding dp dctx name)) :: actionLog
+            | [ "setbld"; bldName; valueArg ] ->
+                let b = bpool.ByName[bldName]
+                let v = int valueArg
+                bpool <- { bpool with ByName = bpool.ByName |> Map.add bldName { b with Val = v; On = v } }
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "year"; valueArg ] ->
+                calendar <- { calendar with Year = float valueArg }
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "worship"; valueArg ] ->
+                rpool <- { rpool with Faith = float valueArg }
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "epiphany"; valueArg ] ->
+                rpool <- { rpool with FaithRatio = float valueArg }
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
             | [ "maxall" ] ->
                 pool <- maxAll pool
                 actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
@@ -533,11 +714,12 @@ let execute (scenario: Scenario) : ExecResult =
             bpool <- bpool'
             pool <- pool'
             if built <> n then
-                // orig driver logs partial/failed buys with state context
-                let b = bpool.ByName[bldName]
+                // orig driver logs partial/failed buys; model.enabled IS the
+                // hasResources check (updateEnabled), same value as affordBefore
+                let _ = bpool
                 actionLog <-
                     (m.Tick, "buy", m.Args,
-                     RText(sprintf "built %d/%d (enabled=%s, affordBefore=%s)" built n (if b.Unlocked then "true" else "false") (if affordBefore then "true" else "false")))
+                     RText(sprintf "built %d/%d (enabled=%s, affordBefore=%s)" built n (if affordBefore then "true" else "false") (if affordBefore then "true" else "false")))
                     :: actionLog
             if built > 0 then
                 // orig build tail: if (meta.unlocks) game.unlock(...);
@@ -549,7 +731,7 @@ let execute (scenario: Scenario) : ExecResult =
                 match b.Def.Unlocks with
                 | Some u ->
                     vpool <- { vpool with JobUnlocked = vpool.JobUnlocked |> Set.union (Set.ofList u.Jobs) }
-                    let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs [] u.Tech u.Policies u.Upgrades bpool spool wpool
+                    let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs [] u.Tech u.Policies u.Upgrades [] u.Crafts bpool spool wpool
                     bpool <- bp2
                     spool <- sp2
                     wpool <- wp2
@@ -563,23 +745,36 @@ let execute (scenario: Scenario) : ExecResult =
                     refreshCache () // game.upgrade exit
                 | None -> ()
         | "craft" ->
-            let pool', wpool', _, _ = Game.Managers.craft calendarDay cache m.Args.[0] (float m.Args.[1]) pool wpool
+            let pool', wpool', ok = Game.Managers.craft calendarDay cache (traditionResearched ()) m.Args.[0] (float m.Args.[1]) pool wpool
             pool <- pool'
             wpool <- wpool'
-            refreshCache () // orig game.craft calls updateResources (game.js L4631)
+            if ok then
+                refreshCache () // orig game.craft calls updateResources (game.js L4631)
         | "assign" ->
             let jobName = m.Args.[0]
             let n = if m.Args.Length >= 2 then int m.Args.[1] else 1
             let freeBefore = Game.Managers.getFreeKittens vpool
-            vpool <- Game.Managers.assignJob jobName n vpool
-            vpool <- Game.Managers.simAssignJob jobName n vpool
+            // orig getJobLimit (js/village.js L308-358): engineer = factory.val,
+            // ambassador = perk-gated race count (0 at fresh), default 100000
+            let jobLimit =
+                match jobName with
+                | "engineer" ->
+                    (match Game.Buildings.get bpool "factory" with
+                     | Some f -> f.Val
+                     | None -> 0)
+                | "ambassador" -> 0
+                | _ -> 100000
+            let before = vpool.JobValues |> Map.tryFind jobName |> Option.defaultValue 0
+            vpool <- Game.Managers.assignJob jobName n jobLimit vpool
             let assigned = vpool.JobValues |> Map.tryFind jobName |> Option.defaultValue 0
-            // orig driver logs when the assignment could not fully complete
-            // (jobLimit: manager default 100000 at this stage)
+            // orig: sim.assignJob runs only when the capped amt > 0
+            if assigned > before then
+                vpool <- Game.Managers.simAssignJob jobName (assigned - before) vpool
+                prodCache <- Some(updateResourceProduction ()) // orig refreshes instantly (village.js L3513)
             if freeBefore < n || assigned < n then
                 actionLog <-
                     (m.Tick, "assign", m.Args,
-                     RText(sprintf "assigned %d/%d (freeBefore=%d, jobLimit=100000)" assigned n freeBefore))
+                     RText(sprintf "assigned %d/%d (freeBefore=%d, jobLimit=%d)" assigned n freeBefore jobLimit))
                     :: actionLog
 
         | "research" ->
@@ -587,13 +782,19 @@ let execute (scenario: Scenario) : ExecResult =
             pool <- pool'
             spool <- spool'
             if ok then
-              refreshCache () // research onPurchase reaches game.upgrade -> updateCaches
+              // orig onPurchase: handler -> unlock (NO cache refresh) -> if the
+              // tech itself has an upgrades key, game.upgrade refreshes twice
+              match Game.Managers.getTech spool' m.Args.[0] with
+              | Some t when t.Def.Upgrades.IsSome ->
+                  refreshCache () // game.upgrade entry
+                  refreshCache () // game.upgrade exit
+              | _ -> ()
               match Game.Managers.getTech spool' m.Args.[0] with
               | Some t ->
                   match t.Def.Unlocks with
                   | Some u ->
                       vpool <- { vpool with JobUnlocked = vpool.JobUnlocked |> Set.union (Set.ofList u.Jobs) }
-                      let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs [] u.Tech u.Policies u.Upgrades bpool spool wpool
+                      let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs [] u.Tech u.Policies u.Upgrades [] u.Crafts bpool spool wpool
                       bpool <- bp2
                       spool <- sp2
                       wpool <- wp2
@@ -643,7 +844,180 @@ let execute (scenario: Scenario) : ExecResult =
                 AlicornmancyResearched = false // prestige seam
                 UnicornPastureVal = 0 }
             pool <- Game.Village.huntAll hctx pool
-        | "praise"
+        | "praise" ->
+            // orig religion.praise (js/religion.js L1536): worship += faith.value
+            // * (1 + apocrypha); faith.value = 0.0001. Outside any timer — the
+            // production cache keeps pre-praise values until its next refresh.
+            let faithRes = pool.ByName["faith"]
+            rpool <- Game.Religion.praise rpool faithRes.Value
+            pool <- { pool with ByName = pool.ByName |> Map.add "faith" { faithRes with Value = 0.0001 } }
+        | "adore" ->
+            // orig resetFaith(1.01, true) -> _resetFaithInternal(1.01) (L3157)
+            rpool <- Game.Religion.adoreInternal rpool 1.01
+        | "transcend" ->
+            let rp', ok = Game.Religion.transcend rpool
+            rpool <- rp'
+            if ok then refreshCache () // game.calculateAllEffects on success
+        | "worship" ->
+            // RU purchase via ReligionBtnController -> stackable build loop
+            let n = if m.Args.Length >= 2 then int m.Args.[1] else 1
+            let rp', pool', res = Game.Religion.buyRU calendarDay cache pool n m.Args.[0] rpool
+            rpool <- rp'
+            pool <- pool'
+            if res.Bought > 0 then
+                rpool <- Game.Religion.freezeSolarRevolution cache rpool
+                refreshCache () // build tail: calculateEffects + fan-outs
+                match res.UnlockFanOut with
+                | Some u ->
+                    let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs u.Jobs u.Tech u.Policies u.Upgrades u.ZebraUpgrades u.Crafts bpool spool wpool
+                    bpool <- bp2; spool <- sp2; wpool <- wp2
+                    vpool <- { vpool with JobUnlocked = vpool.JobUnlocked |> Set.union (Set.ofList u.Jobs) }
+                | None -> ()
+        | "ziggurat" ->
+            // ZU purchase via ZigguratBtnController -> stackable build loop
+            let n = if m.Args.Length >= 2 then int m.Args.[1] else 1
+            let rp', pool', res = Game.Religion.buyZU calendarDay cache pool n m.Args.[0] rpool
+            rpool <- rp'
+            pool <- pool'
+            if res.Bought > 0 then
+                refreshCache ()
+                match res.UnlockFanOut with
+                | Some u ->
+                    let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs u.Jobs u.Tech u.Policies u.Upgrades u.ZebraUpgrades u.Crafts bpool spool wpool
+                    bpool <- bp2; spool <- sp2; wpool <- wp2
+                | None -> ()
+        | "embassy" ->
+            // EmbassyButtonController.buyItem gates: writing + race unlocked
+            let raceName = m.Args.[0]
+            let n = if m.Args.Length >= 2 then int m.Args.[1] else 1
+            let writingResearched =
+                match spool.Techs |> Map.tryFind "writing" with
+                | Some t -> t.Researched
+                | None -> false
+            let dctx : Game.Diplomacy.DiplomacyContext =
+                { GetEffect = Game.Effects.getEffect cache
+                  GetResValue = getResValue
+                  GetResMax = fun nn -> (get pool nn |> Option.map (fun r -> r.MaxValue) |> Option.defaultValue 0.0)
+                  IsResUnlocked = fun nn -> (get pool nn |> Option.map (fun r -> r.Unlocked) |> Option.defaultValue false)
+                  Season = Game.Calendar.seasons.[calendar.Season].Name
+                  NuclearFissionResearched = false
+                  IronWill = false }
+            if writingResearched && dp.Races.[raceName].Unlocked then
+                let dp', pool', built = Game.Diplomacy.buyEmbassies calendarDay dp dctx pool n raceName
+                dp <- dp'
+                pool <- pool'
+                if built <> n then
+                    actionLog <- (m.Tick, "embassy", m.Args, RText(sprintf "built %d/%d" built n)) :: actionLog
+                () // triggerOnEmbassyCountChanged: ambassador recalc (val-constant seam)
+        | "trade" ->
+            let raceName = m.Args.[0]
+            let n = if m.Args.Length >= 2 then int m.Args.[1] else 1
+            let dctx : Game.Diplomacy.DiplomacyContext =
+                { GetEffect = Game.Effects.getEffect cache
+                  GetResValue = getResValue
+                  GetResMax = fun nn -> (get pool nn |> Option.map (fun r -> r.MaxValue) |> Option.defaultValue 0.0)
+                  IsResUnlocked = fun nn -> (get pool nn |> Option.map (fun r -> r.Unlocked) |> Option.defaultValue false)
+                  Season = Game.Calendar.seasons.[calendar.Season].Name
+                  NuclearFissionResearched = false
+                  IronWill = false }
+            let rand' = fun () -> rngDraws <- rngDraws + 1; rand ()
+            if n = 1 then
+                // orig trade(race) relies on the button controller paying the
+                // costs (manpower/gold/buy item at trade volume) before
+                // tradeImpl(race, 1); mirror that controller path.
+                let manp = Game.Diplomacy.getManpowerCost dctx
+                let gold = Game.Diplomacy.getGoldCost dctx
+                let volume = Game.Diplomacy.getTradeVolume dctx ambassadorEffects
+                let def = Game.Catalog.World.raceDefs |> List.find (fun r -> r.Name = raceName)
+                let buyPrice = def.Buys.[0].Val * 1.0 * volume
+                let cost = [ ("manpower", manp); ("gold", gold); (def.Buys.[0].Resource, buyPrice) ]
+                if Game.Resources.hasRes pool cost 0.0 then
+                    pool <- Game.Resources.payPrices calendarDay pool cost
+                    let dp', gained = Game.Diplomacy.tradeImpl dp dctx rand' raceName 1.0 ambassadorEffects
+                    dp <- dp'
+                    for KeyValue(resName, amt) in gained do
+                        let pool2, _ = Game.Resources.addResEvent calendarDay resName amt pool
+                        pool <- pool2
+                else
+                    actionLog <- (m.Tick, "trade", m.Args, RText "cannot afford") :: actionLog
+            else
+                // tradeMultiple: hasMultipleResources gate, negative addResEvent
+                // costs, then tradeImpl(amt)
+                let manp = Game.Diplomacy.getManpowerCost dctx
+                let gold = Game.Diplomacy.getGoldCost dctx
+                let volume = Game.Diplomacy.getTradeVolume dctx ambassadorEffects
+                let def = Game.Catalog.World.raceDefs |> List.find (fun r -> r.Name = raceName)
+                let afford =
+                    (getResValue "gold") >= gold * float n
+                    && (getResValue "manpower") >= manp * float n
+                    && (getResValue def.Buys.[0].Resource) >= def.Buys.[0].Val * float n * volume
+                if afford then
+                    let pool1, _ = Game.Resources.addResEvent calendarDay "manpower" (-manp * float n) pool
+                    let pool2, _ = Game.Resources.addResEvent calendarDay "gold" (-gold * float n) pool1
+                    let pool3, _ = Game.Resources.addResEvent calendarDay def.Buys.[0].Resource (-def.Buys.[0].Val * float n * volume) pool2
+                    pool <- pool3
+                    let dp', gained = Game.Diplomacy.tradeImpl dp dctx rand' raceName (float n) ambassadorEffects
+                    dp <- dp'
+                    for KeyValue(resName, amt) in gained do
+                        let pool2, _ = Game.Resources.addResEvent calendarDay resName amt pool
+                        pool <- pool2
+                else
+                    actionLog <- (m.Tick, "trade", m.Args, RText "cannot afford multiple") :: actionLog
+        | "tradeall" ->
+            // tradeAll: tradeMultiple(race, getMaxTradeAmt(race)); undefined max -> no-op
+            let raceName = m.Args.[0]
+            let dctxT : Game.Diplomacy.DiplomacyContext =
+                { GetEffect = Game.Effects.getEffect cache
+                  GetResValue = getResValue
+                  GetResMax = fun nn -> (get pool nn |> Option.map (fun r -> r.MaxValue) |> Option.defaultValue 0.0)
+                  IsResUnlocked = fun nn -> (get pool nn |> Option.map (fun r -> r.Unlocked) |> Option.defaultValue false)
+                  Season = Game.Calendar.seasons.[calendar.Season].Name
+                  NuclearFissionResearched = false
+                  IronWill = false }
+            let rand' = fun () -> rngDraws <- rngDraws + 1; rand ()
+            match Game.Diplomacy.getMaxTradeAmt dp dctxT ambassadorEffects raceName with
+            | Some amt ->
+                let manp = Game.Diplomacy.getManpowerCost dctxT
+                let gold = Game.Diplomacy.getGoldCost dctxT
+                let volume = Game.Diplomacy.getTradeVolume dctxT ambassadorEffects
+                let def = Game.Catalog.World.raceDefs |> List.find (fun r -> r.Name = raceName)
+                let pool1, _ = Game.Resources.addResEvent calendarDay "manpower" (-manp * amt) pool
+                let pool2, _ = Game.Resources.addResEvent calendarDay "gold" (-gold * amt) pool1
+                let pool3, _ = Game.Resources.addResEvent calendarDay def.Buys.[0].Resource (-def.Buys.[0].Val * amt * volume) pool2
+                pool <- pool3
+                let dp', gained = Game.Diplomacy.tradeImpl dp dctxT rand' raceName amt ambassadorEffects
+                dp <- dp'
+                for KeyValue(resName, a) in gained do
+                    let pool2', _ = Game.Resources.addResEvent calendarDay resName a pool
+                    pool <- pool2'
+            | None -> ()
+        | "speciality" ->
+            // CraftButtonController.assignCraftJob: min(value, freeEngineers) loop
+            let craftName = m.Args.[0]
+            let n = if m.Args.Length >= 2 then int m.Args.[1] else 1
+            let mutable added = 0
+            let mutable vp = vpool
+            let mutable stop = false
+            while not stop && added < n && (Game.Managers.getFreeEngineers vp wpool) > float added do
+                let vp', ok = Game.Managers.simAssignCraftJob craftName vp
+                if ok then
+                    vp <- vp'
+                    added <- added + 1
+                else
+                    stop <- true // assignCraftJob failure breaks the loop
+            vpool <- vp
+            let c = wpool.Crafts.[craftName]
+            wpool <- { wpool with Crafts = wpool.Crafts |> Map.add craftName { c with Value = c.Value + float added } }
+            if added < n then
+                let freeStr = string (Game.Math.jsRound (Game.Managers.getFreeEngineers vpool wpool))
+                actionLog <- (m.Tick, "speciality", m.Args, RText(sprintf "assigned %d/%d (free=%s)" added n freeStr)) :: actionLog
+        | "craftall" ->
+            // orig game.craftAll minus the wood winter-confirm branch (headless:
+            // workshop.craftAll + updateResources — same end state)
+            let pool', wpool', _ = Game.Managers.craftAll calendarDay cache (traditionResearched ()) getResValue m.Args.[0] pool wpool
+            pool <- pool'
+            wpool <- wpool'
+            refreshCache ()
         | "save"
         | "load" -> actionLog <- (m.Tick, m.Action, m.Args, RNone) :: actionLog
         | "observe" -> ()
@@ -659,6 +1033,7 @@ let execute (scenario: Scenario) : ExecResult =
     snapshots <- takeSnapshot () :: snapshots
 
     for tick in 1..scenario.MaxTick do
+        curLogTick <- tick // orig sets tickIndex = t before the move phase
         for m in movesAt tick do
             doMove m
         gtick ()
@@ -720,11 +1095,12 @@ let dumpCatalog () =
 // Snapshot JSON
 
 let snapshotJson
-    ((tick, resources, rngDraws, cal, buildings, jobs, crafts, techs, upgrades, policies, kittenJobs, free, effectsSample):
+    ((tick, resources, rngDraws, cal, buildings, jobs, crafts, techs, upgrades, policies, kittenJobs, free, effectsSample, religion, diplomacy, faith, faithRatio, tier):
         int * (string * (float * float * bool * float)) list * int * CalJson
             * BldSnap list * JobSnap list * CraftSnap list
             * string list * string list * string list
-            * string option list * int * (string * float) list)
+            * string option list * int * (string * float) list
+            * RelSnap list * RaceSnap list * float * float * int)
     : string =
     let resItems =
         resources
@@ -752,8 +1128,19 @@ let snapshotJson
         |> String.concat ","
     let craftsJson =
         crafts
-        |> List.map (fun (n, unl, value) ->
-            sprintf "\"%s\":{\"unlocked\":%s,\"value\":%s}" (esc n) (if unl then "true" else "false") (num value))
+        |> List.map (fun (n, unl, value, progress) ->
+            sprintf "\"%s\":{\"unlocked\":%s,\"value\":%s,\"progress\":%s}" (esc n) (if unl then "true" else "false") (num value) (num progress))
+        |> String.concat ","
+    let religionJson =
+        religion
+        |> List.map (fun (n, (v, on, unl, res)) ->
+            sprintf "\"%s\":{\"val\":%d,\"on\":%d,\"unlocked\":%s,\"researched\":%s}"
+                (esc n) v on (if unl then "true" else "false") (if res then "true" else "false"))
+        |> String.concat ","
+    let diplomacyJson =
+        diplomacy
+        |> List.map (fun (n, (unl, lvl)) ->
+            sprintf "\"%s\":{\"unlocked\":%s,\"embassyLevel\":%d}" (esc n) (if unl then "true" else "false") lvl)
         |> String.concat ","
     let nameArr xs = xs |> List.map (fun x -> sprintf "\"%s\"" (esc x)) |> String.concat ","
     let kittenJobsJson =
@@ -771,7 +1158,7 @@ let snapshotJson
         |> List.map (fun (k, v) -> sprintf "\"%s\":%s" (esc k) (num v))
         |> String.concat ","
     sprintf
-        "{\"tick\":%d,\"rngDraws\":%d,\"calendar\":{\"year\":%s,\"day\":%s,\"season\":\"%s\",\"weather\":%s,\"cycle\":%d,\"cycleYear\":%d},\"kittens\":%s,\"resources\":{%s},\"buildings\":{%s},\"jobs\":{%s},\"crafts\":{%s},\"techs\":[%s],\"upgrades\":[%s],\"policies\":[%s],\"effects\":{%s}}"
+        "{\"tick\":%d,\"rngDraws\":%d,\"calendar\":{\"year\":%s,\"day\":%s,\"season\":\"%s\",\"weather\":%s,\"cycle\":%d,\"cycleYear\":%d},\"kittens\":%s,\"resources\":{%s},\"buildings\":{%s},\"jobs\":{%s},\"crafts\":{%s},\"techs\":[%s],\"upgrades\":[%s],\"policies\":[%s],\"religion\":{\"faith\":%s,\"faithRatio\":%s,\"tier\":%d,\"metas\":{%s}},\"diplomacy\":{\"races\":{%s}},\"effects\":{%s}}"
         tick
         rngDraws
         (num cal.year)
@@ -788,6 +1175,11 @@ let snapshotJson
         (nameArr techs)
         (nameArr upgrades)
         (nameArr policies)
+        (num faith)
+        (num faithRatio)
+        tier
+        religionJson
+        diplomacyJson
         effectsJson
 
 let resKindJson (rk: ResKind) : string =
@@ -801,6 +1193,62 @@ let logJson ((tick, action, args, rk): int * string * string list * ResKind) : s
     let argStr = args |> List.map (fun a -> sprintf "\"%s\"" (esc a)) |> String.concat ","
     sprintf "{\"tick\":%d,\"action\":\"%s\",\"args\":[%s],%s}" tick (esc action) argStr (resKindJson rk)
 
+// ---------------------------------------------------------------------------
+// World dump (--dump-world): F# catalog round-trip for data-unit diffs.
+// Shape mirrors oracle/runner/_world-driver.js's world dump.
+
+let dumpWorld () : string =
+    let prices ps = ps |> List.map (fun (p: Price) -> sprintf "{\"name\":\"%s\",\"val\":%s}" (esc p.Resource) (num p.Val)) |> String.concat ","
+    let fmap (m: Map<string, float>) =
+        m |> Map.toList
+        |> List.map (fun (k, v) -> sprintf "\"%s\":%s" (esc k) (num v))
+        |> String.concat ","
+    let sells ss =
+        ss
+        |> List.map (fun (s: Game.Catalog.World.SellDef) ->
+            sprintf "{\"name\":\"%s\",\"value\":%s,\"chance\":%s,\"width\":%s,\"minLevel\":%s,\"seasons\":{%s}}"
+                (esc s.Name) (num s.Value) (num s.Chance) (num s.Width)
+                (match s.MinLevel with Some l -> string l | None -> "null")
+                (fmap s.Seasons))
+        |> String.concat ","
+    let races =
+        Game.Catalog.World.raceDefs
+        |> List.map (fun r ->
+            sprintf "{\"name\":\"%s\",\"unlocked\":%s,\"standing\":%s,\"hidden\":%s,\"embassyPrices\":[%s],\"embassyLevel\":%d,\"attitude\":null,\"raceEffects\":null,\"buys\":[%s],\"sells\":[%s]}"
+                (esc r.Name) (if r.StartsUnlocked then "true" else "false") (num r.Standing) (if r.Hidden then "true" else "false")
+                (prices r.EmbassyPrices) r.EmbassyLevel (prices r.Buys) (sells r.Sells))
+        |> String.concat ","
+    let zu =
+        Game.Catalog.World.zuDefs
+        |> List.map (fun z ->
+            sprintf "{\"name\":\"%s\",\"prices\":[%s],\"val\":0,\"unlocked\":%s,\"effects\":{%s},\"priceRatio\":%s}"
+                (esc z.Name) (prices z.Prices) (if z.StartsUnlocked then "true" else "false") (fmap z.Effects)
+                (match z.PriceRatio with Some r -> num r | None -> "null"))
+        |> String.concat ","
+    let ru =
+        Game.Catalog.World.ruDefs
+        |> List.map (fun z ->
+            sprintf "{\"name\":\"%s\",\"prices\":[%s],\"val\":0,\"unlocked\":false,\"researched\":false,\"effects\":{%s},\"priceRatio\":%s,\"faith\":%s,\"noStackable\":%s}"
+                (esc z.Name) (prices z.Prices) (fmap z.Effects)
+                (match z.PriceRatio with Some r -> num r | None -> "null")
+                (match z.FaithGate with Some f -> num f | None -> "null")
+                (if z.NoStackable then "true" else "false"))
+        |> String.concat ","
+    let tu =
+        Game.Catalog.World.tuDefs
+        |> List.map (fun z ->
+            sprintf "{\"name\":\"%s\",\"prices\":[%s],\"val\":0,\"unlocked\":false,\"researched\":false,\"effects\":{%s},\"priceRatio\":%s}"
+                (esc z.Name) (prices z.Prices) (fmap z.Effects)
+                (match z.PriceRatio with Some r -> num r | None -> "null"))
+        |> String.concat ","
+    let zebra =
+        Game.Catalog.Defs.zebraUpgradeDefs
+        |> List.map (fun u ->
+            sprintf "{\"name\":\"%s\",\"prices\":[%s],\"unlocked\":false,\"researched\":false,\"effects\":{%s}}"
+                (esc u.Name) (prices u.Prices) (fmap u.Effects))
+        |> String.concat ","
+    "{\n  \"driver\": \"fs-runner\",\n  \"origCommit\": \"n/a (F# core)\",\n  \"races\": [" + races + "],\n  \"zu\": [" + zu + "],\n  \"ru\": [" + ru + "],\n  \"tu\": [" + tu + "],\n  \"zebraUpgrades\": [" + zebra + "]\n}"
+
 [<EntryPoint>]
 let main argv =
     let args = List.ofArray argv
@@ -812,6 +1260,10 @@ let main argv =
     | [ "--dump-catalog"; outPath ] ->
         File.WriteAllText(outPath, dumpCatalog ())
         printfn "catalog: %d resources -> %s" Game.Catalog.Resources.resourceDefs.Length outPath
+        0
+    | [ "--dump-world"; outPath ] ->
+        File.WriteAllText(outPath, dumpWorld ())
+        printfn "world -> %s" outPath
         0
     | [ scenarioPath; outPath ] ->
         let scenario = File.ReadAllText(scenarioPath) |> parseScenario

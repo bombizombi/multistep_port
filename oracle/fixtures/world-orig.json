@@ -5,6 +5,8 @@
   {
    "name": "lizards",
    "unlocked": false,
+   "standing": 0.25,
+   "hidden": false,
    "embassyPrices": [
     {
      "name": "culture",
@@ -13,11 +15,86 @@
    ],
    "embassyLevel": 0,
    "attitude": null,
-   "raceEffects": null
+   "raceEffects": null,
+   "buys": [
+    {
+     "name": "minerals",
+     "val": 1000
+    }
+   ],
+   "sells": [
+    {
+     "name": "wood",
+     "value": 500,
+     "chance": 1,
+     "width": 0.08,
+     "seasons": {
+      "spring": -0.05,
+      "summer": 0.35,
+      "autumn": 0.15,
+      "winter": 0.05
+     }
+    },
+    {
+     "name": "beam",
+     "value": 10,
+     "chance": 0.25,
+     "width": 0.15,
+     "minLevel": 5,
+     "seasons": {
+      "spring": -0.15,
+      "summer": 0.2,
+      "autumn": 0.2,
+      "winter": 0.1
+     }
+    },
+    {
+     "name": "scaffold",
+     "value": 1,
+     "chance": 0.1,
+     "width": 0.1,
+     "minLevel": 10,
+     "seasons": {
+      "spring": -0.1,
+      "summer": 0.05,
+      "autumn": 0.3,
+      "winter": 0.1
+     }
+    },
+    {
+     "name": "manuscript",
+     "value": 4,
+     "chance": -0.03,
+     "width": 0.42,
+     "minLevel": 25,
+     "seasons": {
+      "spring": 0.08,
+      "summer": 0.5,
+      "autumn": -0.04,
+      "winter": -0.12
+     }
+    },
+    {
+     "name": "furs",
+     "value": 12,
+     "chance": -0.06,
+     "width": 0.25,
+     "minLevel": 40,
+     "seasons": {
+      "spring": -0.05,
+      "summer": 0.2,
+      "autumn": 0.1,
+      "winter": -0.5
+     }
+    }
+   ],
+   "unlocks": null
   },
   {
    "name": "sharks",
    "unlocked": false,
+   "standing": 0,
+   "hidden": false,
    "embassyPrices": [
     {
      "name": "culture",
@@ -26,11 +103,99 @@
    ],
    "embassyLevel": 0,
    "attitude": null,
-   "raceEffects": null
+   "raceEffects": null,
+   "buys": [
+    {
+     "name": "iron",
+     "val": 100
+    }
+   ],
+   "sells": [
+    {
+     "name": "catnip",
+     "value": 35000,
+     "chance": 1,
+     "width": 0.15,
+     "seasons": {
+      "spring": 0.2,
+      "summer": -0.05,
+      "autumn": 0.15,
+      "winter": 0.45
+     }
+    },
+    {
+     "name": "parchment",
+     "value": 5,
+     "chance": 0.25,
+     "width": 0.25,
+     "minLevel": 5,
+     "seasons": {
+      "spring": 0.15,
+      "summer": -0.35,
+      "autumn": -0.05,
+      "winter": 0.4
+     }
+    },
+    {
+     "name": "manuscript",
+     "value": 3,
+     "chance": 0.15,
+     "width": 0.25,
+     "minLevel": 10,
+     "seasons": {
+      "spring": -0.15,
+      "summer": -0.35,
+      "autumn": 0.35,
+      "winter": 0.1
+     }
+    },
+    {
+     "name": "compedium",
+     "value": 1,
+     "chance": 0.1,
+     "width": 0.25,
+     "minLevel": 15,
+     "seasons": {
+      "spring": 0.4,
+      "summer": 0.2,
+      "autumn": -0.15,
+      "winter": -0.3
+     }
+    },
+    {
+     "name": "oil",
+     "value": 160,
+     "chance": -0.01,
+     "width": 0.7,
+     "minLevel": 25,
+     "seasons": {
+      "spring": 0.2,
+      "summer": -0.1,
+      "autumn": -0.1,
+      "winter": 0.3
+     }
+    },
+    {
+     "name": "plastic",
+     "value": 0.5,
+     "chance": -0.2,
+     "width": 0.7,
+     "minLevel": 40,
+     "seasons": {
+      "spring": 0.25,
+      "summer": 0.1,
+      "autumn": -0.2,
+      "winter": -0.1
+     }
+    }
+   ],
+   "unlocks": null
   },
   {
    "name": "griffins",
    "unlocked": false,
+   "standing": -0.15,
+   "hidden": false,
    "embassyPrices": [
     {
      "name": "culture",
@@ -39,11 +204,86 @@
    ],
    "embassyLevel": 0,
    "attitude": null,
-   "raceEffects": null
+   "raceEffects": null,
+   "buys": [
+    {
+     "name": "wood",
+     "val": 500
+    }
+   ],
+   "sells": [
+    {
+     "name": "iron",
+     "value": 250,
+     "chance": 1,
+     "width": 0.12,
+     "seasons": {
+      "spring": -0.25,
+      "summer": -0.05,
+      "autumn": 0.35,
+      "winter": -0.2
+     }
+    },
+    {
+     "name": "steel",
+     "value": 25,
+     "chance": 0.25,
+     "width": 0.1,
+     "minLevel": 5,
+     "seasons": {
+      "spring": -0.15,
+      "summer": 0.1,
+      "autumn": 0.15,
+      "winter": -0.4
+     }
+    },
+    {
+     "name": "gear",
+     "value": 5,
+     "chance": 0.1,
+     "width": 0.25,
+     "minLevel": 10,
+     "seasons": {
+      "spring": 0,
+      "summer": 0.1,
+      "autumn": 0.25,
+      "winter": -0.35
+     }
+    },
+    {
+     "name": "alloy",
+     "value": 2,
+     "chance": -0.05,
+     "width": 0.18,
+     "minLevel": 20,
+     "seasons": {
+      "spring": -0.05,
+      "summer": 0.05,
+      "autumn": 0.2,
+      "winter": -0.2
+     }
+    },
+    {
+     "name": "microchip",
+     "value": 6,
+     "chance": -0.125,
+     "width": 0.5,
+     "minLevel": 30,
+     "seasons": {
+      "spring": -0.25,
+      "summer": 0.05,
+      "autumn": 0.3,
+      "winter": -0.7
+     }
+    }
+   ],
+   "unlocks": null
   },
   {
    "name": "nagas",
    "unlocked": false,
+   "standing": 0,
+   "hidden": true,
    "embassyPrices": [
     {
      "name": "culture",
@@ -52,11 +292,99 @@
    ],
    "embassyLevel": 0,
    "attitude": null,
-   "raceEffects": null
+   "raceEffects": null,
+   "buys": [
+    {
+     "name": "ivory",
+     "val": 500
+    }
+   ],
+   "sells": [
+    {
+     "name": "minerals",
+     "value": 1000,
+     "chance": 1,
+     "width": 0.18,
+     "seasons": {
+      "spring": 0.25,
+      "summer": 0.05,
+      "autumn": -0.35,
+      "winter": -0.05
+     }
+    },
+    {
+     "name": "slab",
+     "value": 5,
+     "chance": 0.75,
+     "width": 0.15,
+     "minLevel": 5,
+     "seasons": {
+      "spring": 0.3,
+      "summer": 0.075,
+      "autumn": -0.4,
+      "winter": -0.075
+     }
+    },
+    {
+     "name": "concrate",
+     "value": 5,
+     "chance": 0.25,
+     "width": 0.05,
+     "minLevel": 10,
+     "seasons": {
+      "spring": 0.4,
+      "summer": 0.1,
+      "autumn": -0.45,
+      "winter": -0.1
+     }
+    },
+    {
+     "name": "megalith",
+     "value": 1,
+     "chance": 0.1,
+     "width": 0.1,
+     "minLevel": 15,
+     "seasons": {
+      "spring": 0.48,
+      "summer": 0.12,
+      "autumn": -0.48,
+      "winter": -0.12
+     }
+    },
+    {
+     "name": "uranium",
+     "value": 0.2,
+     "chance": -0.08,
+     "width": 0.1,
+     "minLevel": 40,
+     "seasons": {
+      "spring": 0.6,
+      "summer": 0.1,
+      "autumn": -0.4,
+      "winter": -0.3
+     }
+    },
+    {
+     "name": "thorium",
+     "value": 0.05,
+     "chance": -0.16,
+     "width": 0.04,
+     "minLevel": 55,
+     "seasons": {
+      "spring": 0.5,
+      "summer": 0.2,
+      "autumn": -0.7,
+      "winter": -0.3
+     }
+    }
+   ],
+   "unlocks": null
   },
   {
    "name": "zebras",
    "unlocked": false,
+   "standing": -0.3,
+   "hidden": true,
    "embassyPrices": [
     {
      "name": "culture",
@@ -65,11 +393,116 @@
    ],
    "embassyLevel": 0,
    "attitude": null,
-   "raceEffects": null
+   "raceEffects": null,
+   "buys": [
+    {
+     "name": "slab",
+     "val": 50
+    }
+   ],
+   "sells": [
+    {
+     "name": "iron",
+     "value": 300,
+     "chance": 1,
+     "width": 0.08,
+     "seasons": {
+      "spring": 0,
+      "summer": 0.15,
+      "autumn": -0.1,
+      "winter": -0.2
+     }
+    },
+    {
+     "name": "plate",
+     "value": 2,
+     "chance": 0.65,
+     "width": 0.25,
+     "seasons": {
+      "spring": 0.05,
+      "summer": -0.15,
+      "autumn": 0.05,
+      "winter": 0.25
+     }
+    },
+    {
+     "name": "alloy",
+     "value": 0.25,
+     "chance": 0.05,
+     "width": 0.05,
+     "minLevel": 5,
+     "seasons": {
+      "spring": -0.02,
+      "summer": 0,
+      "autumn": 0.03,
+      "winter": 0.08
+     }
+    },
+    {
+     "name": "steel",
+     "value": 0.01,
+     "chance": -0.05,
+     "width": 0.1,
+     "minLevel": 15,
+     "seasons": {
+      "spring": -0.15,
+      "summer": -0.15,
+      "autumn": 0,
+      "winter": 0.3
+     }
+    },
+    {
+     "name": "starchart",
+     "value": 0.05,
+     "chance": -0.15,
+     "width": 0.6,
+     "minLevel": 30,
+     "seasons": {
+      "spring": 0.2,
+      "summer": -0.5,
+      "autumn": 0.15,
+      "winter": -0.8
+     }
+    },
+    {
+     "name": "coal",
+     "value": 0.004,
+     "chance": -0.2,
+     "width": 0.25,
+     "minLevel": 50,
+     "seasons": {
+      "spring": 0.05,
+      "summer": 0.2,
+      "autumn": 0.05,
+      "winter": -0.15
+     }
+    },
+    {
+     "name": "unobtainium",
+     "value": 0.000001,
+     "chance": -0.245,
+     "width": 0.3,
+     "minLevel": 80,
+     "seasons": {
+      "spring": -0.1,
+      "summer": 0.6,
+      "autumn": 0.2,
+      "winter": -0.4
+     }
+    }
+   ],
+   "unlocks": {
+    "policies": [
+     "zebraRelationsAppeasement",
+     "zebraRelationsBellicosity"
+    ]
+   }
   },
   {
    "name": "spiders",
    "unlocked": false,
+   "standing": 0.15,
+   "hidden": true,
    "embassyPrices": [
     {
      "name": "culture",
@@ -78,11 +511,60 @@
    ],
    "embassyLevel": 0,
    "attitude": null,
-   "raceEffects": null
+   "raceEffects": null,
+   "buys": [
+    {
+     "name": "scaffold",
+     "val": 50
+    }
+   ],
+   "sells": [
+    {
+     "name": "coal",
+     "value": 350,
+     "chance": 1,
+     "width": 0.15,
+     "seasons": {
+      "spring": 0,
+      "summer": 0.05,
+      "autumn": 0.15,
+      "winter": -0.05
+     }
+    },
+    {
+     "name": "oil",
+     "value": 100,
+     "chance": 0.25,
+     "width": 0.15,
+     "minLevel": 5,
+     "seasons": {
+      "spring": 0.11,
+      "summer": -0.01,
+      "autumn": 0.04,
+      "winter": -0.06
+     }
+    },
+    {
+     "name": "plastic",
+     "value": 1,
+     "chance": -0.2,
+     "width": 0.8,
+     "minLevel": 15,
+     "seasons": {
+      "spring": 1,
+      "summer": -0.3,
+      "autumn": -0.6,
+      "winter": 2
+     }
+    }
+   ],
+   "unlocks": null
   },
   {
    "name": "dragons",
    "unlocked": false,
+   "standing": 0,
+   "hidden": true,
    "embassyPrices": [
     {
      "name": "culture",
@@ -91,15 +573,104 @@
    ],
    "embassyLevel": 0,
    "attitude": null,
-   "raceEffects": null
+   "raceEffects": null,
+   "buys": [
+    {
+     "name": "titanium",
+     "val": 250
+    }
+   ],
+   "sells": [
+    {
+     "name": "uranium",
+     "value": 1,
+     "chance": 0.95,
+     "width": 0.25
+    },
+    {
+     "name": "thorium",
+     "value": 1,
+     "chance": 0.5,
+     "width": 0.25,
+     "minLevel": 5
+    },
+    {
+     "name": "temporalFlux",
+     "value": 0.2,
+     "chance": -0.075,
+     "width": 0.18,
+     "minLevel": 30
+    },
+    {
+     "name": "antimatter",
+     "value": 0.1,
+     "chance": -0.175,
+     "width": 0.18,
+     "minLevel": 50
+    }
+   ],
+   "unlocks": null
   },
   {
    "name": "leviathans",
    "unlocked": false,
+   "standing": 0,
+   "hidden": true,
    "embassyPrices": null,
    "embassyLevel": 0,
    "attitude": null,
-   "raceEffects": null
+   "raceEffects": null,
+   "buys": [
+    {
+     "name": "unobtainium",
+     "val": 5000
+    }
+   ],
+   "sells": [
+    {
+     "name": "starchart",
+     "value": 250,
+     "chance": 0.5,
+     "width": 0.8
+    },
+    {
+     "name": "timeCrystal",
+     "value": 0.25,
+     "chance": 0.98,
+     "width": 0.15
+    },
+    {
+     "name": "sorrow",
+     "value": 1,
+     "chance": 0.15,
+     "width": 0.1
+    },
+    {
+     "name": "relic",
+     "value": 1,
+     "chance": 0.05,
+     "width": 0
+    },
+    {
+     "name": "temporalFlux",
+     "value": 3,
+     "chance": -0.1,
+     "width": 0.2
+    },
+    {
+     "name": "tears",
+     "value": 1500,
+     "chance": -0.1,
+     "width": 0.8
+    }
+   ],
+   "unlocks": {
+    "policies": [
+     "transkittenism",
+     "necrocracy",
+     "radicalXenophobia"
+    ]
+   }
   }
  ],
  "zu": [
@@ -121,7 +692,14 @@
     "unicornsRatioReligion": 0.05,
     "faithMax": 0,
     "tearsMax": 0
-   }
+   },
+   "priceRatio": 1.15,
+   "unlocks": {
+    "zigguratUpgrades": [
+     "ivoryTower"
+    ]
+   },
+   "upgrades": null
   },
   {
    "name": "ivoryTower",
@@ -141,7 +719,14 @@
     "unicornsRatioReligion": 0.1,
     "riftChance": 0.0005,
     "tearsMax": 0
-   }
+   },
+   "priceRatio": 1.15,
+   "unlocks": {
+    "zigguratUpgrades": [
+     "ivoryCitadel"
+    ]
+   },
+   "upgrades": null
   },
   {
    "name": "ivoryCitadel",
@@ -162,7 +747,14 @@
     "ivoryMeteorChance": 0.0005,
     "unicornsMax": 0,
     "tearsMax": 0
-   }
+   },
+   "priceRatio": 1.15,
+   "unlocks": {
+    "zigguratUpgrades": [
+     "skyPalace"
+    ]
+   },
+   "upgrades": null
   },
   {
    "name": "skyPalace",
@@ -191,7 +783,14 @@
     "unicornsMax": 0,
     "tearsMax": 0,
     "alicornMax": 0
-   }
+   },
+   "priceRatio": 1.15,
+   "unlocks": {
+    "zigguratUpgrades": [
+     "unicornUtopia"
+    ]
+   },
+   "upgrades": null
   },
   {
    "name": "unicornUtopia",
@@ -220,7 +819,14 @@
     "unicornsMax": 0,
     "tearsMax": 0,
     "alicornMax": 0
-   }
+   },
+   "priceRatio": 1.15,
+   "unlocks": {
+    "zigguratUpgrades": [
+     "sunspire"
+    ]
+   },
+   "upgrades": null
   },
   {
    "name": "sunspire",
@@ -249,7 +855,10 @@
     "unicornsMaxRatio": 0,
     "tearsMax": 0,
     "alicornMax": 0
-   }
+   },
+   "priceRatio": 1.15,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "marker",
@@ -275,7 +884,16 @@
    "unlocked": false,
    "effects": {
     "corruptionRatio": 0.000001
-   }
+   },
+   "priceRatio": 1.15,
+   "unlocks": {
+    "policies": [
+     "siphoning",
+     "feedingFrenzy",
+     "upfrontPayment"
+    ]
+   },
+   "upgrades": null
   },
   {
    "name": "unicornGraveyard",
@@ -294,6 +912,17 @@
    "effects": {
     "cultureMaxRatioBonus": 0.01,
     "blackLibraryBonus": 0.02
+   },
+   "priceRatio": 1.15,
+   "unlocks": {
+    "zigguratUpgrades": [
+     "unicornNecropolis"
+    ]
+   },
+   "upgrades": {
+    "buildings": [
+     "ziggurat"
+    ]
    }
   },
   {
@@ -320,7 +949,10 @@
    "unlocked": false,
    "effects": {
     "corruptionBoostRatio": 0.1
-   }
+   },
+   "priceRatio": 1.15,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "blackPyramid",
@@ -355,6 +987,16 @@
     "UniversalKnowHow": 0,
     "pyramidPerYearRatio": 0,
     "timeRatio": 0
+   },
+   "priceRatio": 1.15,
+   "unlocks": null,
+   "upgrades": {
+    "spaceBuilding": [
+     "spaceBeacon"
+    ],
+    "chronoforge": [
+     "temporalImpedance"
+    ]
    }
   }
  ],
@@ -372,7 +1014,12 @@
    "researched": false,
    "effects": {
     "faithRatioReligion": 0.1
-   }
+   },
+   "priceRatio": 2.5,
+   "faith": 150,
+   "noStackable": true,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "scholasticism",
@@ -385,7 +1032,17 @@
    "val": 0,
    "unlocked": false,
    "researched": false,
-   "effects": {}
+   "effects": {},
+   "priceRatio": 2.5,
+   "faith": 300,
+   "noStackable": true,
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "temple",
+     "ziggurat"
+    ]
+   }
   },
   {
    "name": "goldenSpire",
@@ -402,7 +1059,17 @@
    "val": 0,
    "unlocked": false,
    "researched": false,
-   "effects": {}
+   "effects": {},
+   "priceRatio": 2.5,
+   "faith": 500,
+   "noStackable": true,
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "temple",
+     "ziggurat"
+    ]
+   }
   },
   {
    "name": "sunAltar",
@@ -419,7 +1086,17 @@
    "val": 0,
    "unlocked": false,
    "researched": false,
-   "effects": {}
+   "effects": {},
+   "priceRatio": 2.5,
+   "faith": 750,
+   "noStackable": true,
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "temple",
+     "ziggurat"
+    ]
+   }
   },
   {
    "name": "stainedGlass",
@@ -436,7 +1113,17 @@
    "val": 0,
    "unlocked": false,
    "researched": false,
-   "effects": {}
+   "effects": {},
+   "priceRatio": 2.5,
+   "faith": 750,
+   "noStackable": true,
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "temple",
+     "ziggurat"
+    ]
+   }
   },
   {
    "name": "solarRevolution",
@@ -455,7 +1142,12 @@
    "researched": false,
    "effects": {
     "solarRevolutionRatio": 0
-   }
+   },
+   "priceRatio": null,
+   "faith": 1000,
+   "noStackable": true,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "basilica",
@@ -472,7 +1164,17 @@
    "val": 0,
    "unlocked": false,
    "researched": false,
-   "effects": {}
+   "effects": {},
+   "priceRatio": 2.5,
+   "faith": 10000,
+   "noStackable": true,
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "temple",
+     "ziggurat"
+    ]
+   }
   },
   {
    "name": "templars",
@@ -489,7 +1191,17 @@
    "val": 0,
    "unlocked": false,
    "researched": false,
-   "effects": {}
+   "effects": {},
+   "priceRatio": 2.5,
+   "faith": 75000,
+   "noStackable": true,
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "temple",
+     "ziggurat"
+    ]
+   }
   },
   {
    "name": "apocripha",
@@ -506,7 +1218,12 @@
    "val": 0,
    "unlocked": false,
    "researched": false,
-   "effects": {}
+   "effects": {},
+   "priceRatio": null,
+   "faith": 100000,
+   "noStackable": true,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "transcendence",
@@ -523,7 +1240,23 @@
    "val": 0,
    "unlocked": false,
    "researched": false,
-   "effects": {}
+   "effects": {},
+   "priceRatio": null,
+   "faith": 125000,
+   "noStackable": true,
+   "unlocks": null,
+   "upgrades": {
+    "religion": [
+     "solarchant",
+     "scholasticism",
+     "goldenSpire",
+     "sunAltar",
+     "stainedGlass",
+     "basilica",
+     "templars",
+     "frescoes"
+    ]
+   }
   },
   {
    "name": "frescoes",
@@ -544,7 +1277,16 @@
    "val": 0,
    "unlocked": false,
    "researched": false,
-   "effects": {}
+   "effects": {},
+   "priceRatio": 2.5,
+   "faith": 200000,
+   "noStackable": true,
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "chapel"
+    ]
+   }
   }
  ],
  "tu": [
@@ -561,7 +1303,10 @@
    "researched": false,
    "effects": {
     "solarRevolutionLimit": 0.05
-   }
+   },
+   "priceRatio": 1.15,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "blackNexus",
@@ -576,6 +1321,13 @@
    "researched": false,
    "effects": {
     "relicRefineRatio": 1
+   },
+   "priceRatio": 1.15,
+   "unlocks": null,
+   "upgrades": {
+    "spaceBuilding": [
+     "spaceBeacon"
+    ]
    }
   },
   {
@@ -591,7 +1343,10 @@
    "researched": false,
    "effects": {
     "blsLimit": 1
-   }
+   },
+   "priceRatio": 1.15,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "singularity",
@@ -606,7 +1361,10 @@
    "researched": false,
    "effects": {
     "globalResourceRatio": 0.1
-   }
+   },
+   "priceRatio": 1.15,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "blackLibrary",
@@ -621,7 +1379,10 @@
    "researched": false,
    "effects": {
     "compendiaTTBoostRatio": 0.02
-   }
+   },
+   "priceRatio": 1.15,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "blackRadiance",
@@ -636,7 +1397,10 @@
    "researched": false,
    "effects": {
     "blsCorruptionRatio": 0.0012
-   }
+   },
+   "priceRatio": 1.15,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "blazar",
@@ -652,6 +1416,18 @@
    "effects": {
     "timeRatio": 0.1,
     "rrRatio": 0.02
+   },
+   "priceRatio": 1.15,
+   "unlocks": {
+    "chronoforge": [
+     "temporalPress"
+    ]
+   },
+   "upgrades": {
+    "chronoforge": [
+     "temporalImpedance",
+     "temporalPress"
+    ]
    }
   },
   {
@@ -671,7 +1447,10 @@
    "researched": false,
    "effects": {
     "energyProductionRatio": 0.02
-   }
+   },
+   "priceRatio": 1.15,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "mausoleum",
@@ -694,6 +1473,30 @@
    "researched": false,
    "effects": {
     "pactsAvailable": 1
+   },
+   "priceRatio": 1.15,
+   "unlocks": {
+    "pacts": [
+     "pactOfCleansing",
+     "pactOfDestruction",
+     "pactOfExtermination",
+     "pactOfPurity",
+     "pactOfArcane",
+     "pactOfChronicler"
+    ],
+    "policies": [
+     "siphoning",
+     "feedingFrenzy",
+     "upfrontPayment"
+    ]
+   },
+   "upgrades": {
+    "pacts": [
+     "fractured"
+    ],
+    "policies": [
+     "feedingFrenzy"
+    ]
    }
   },
   {
@@ -715,6 +1518,17 @@
     "maxKittensRatio": -0.01,
     "simScalingRatio": 0.02,
     "activeHG": 0
+   },
+   "priceRatio": 1.15,
+   "unlocks": {
+    "challenges": [
+     "postApocalypse"
+    ]
+   },
+   "upgrades": {
+    "jobs": [
+     "ambassador"
+    ]
    }
   },
   {
@@ -739,7 +1553,10 @@
    "researched": false,
    "effects": {
     "milleninumParagon": 1
-   }
+   },
+   "priceRatio": 1.75,
+   "unlocks": null,
+   "upgrades": null
   }
  ],
  "pacts": [

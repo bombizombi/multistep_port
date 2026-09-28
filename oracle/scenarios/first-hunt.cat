@@ -15,4 +15,8 @@
 420 craft wood 5
 460 buy hut
 600 assign hunter 1
+# D014: the two drivers' streams sit at different positions by tick 2300 (orig's
+# bootstrap + per-tick seam draws are mirrored nowhere). Re-seed in the same move
+# phase as the hunt (no gtick in between) so the loot rolls compare.
+2300 resop seed 20260927
 2300 hunt

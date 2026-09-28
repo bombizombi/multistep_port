@@ -160,6 +160,9 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "unlockScheme": null
@@ -198,6 +201,9 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "upgrades": {
@@ -209,6 +215,9 @@
      "authocracy"
     ],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "unlockScheme": null
@@ -251,6 +260,9 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "upgrades": {
@@ -262,6 +274,9 @@
      "authocracy"
     ],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "unlockScheme": null
@@ -308,6 +323,9 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "upgrades": {
@@ -319,6 +337,9 @@
      "authocracy"
     ],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "unlockScheme": null
@@ -393,6 +414,9 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "upgrades": {
@@ -405,6 +429,9 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "unlockScheme": null
@@ -527,6 +554,9 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "unlockScheme": null
@@ -605,6 +635,9 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "unlockScheme": null
@@ -749,6 +782,9 @@
     "upgrades": [
      "transportSuperposition"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "upgrades": {
@@ -758,6 +794,9 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "unlockScheme": {
@@ -872,6 +911,9 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "upgrades": null,
@@ -1308,6 +1350,9 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "upgrades": null,
@@ -1372,6 +1417,9 @@
      "fascism"
     ],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "upgrades": null,
@@ -1445,6 +1493,9 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "unlockScheme": null
@@ -1581,6 +1632,9 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "unlockScheme": null
@@ -1705,6 +1759,11 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [
+     "darkBrew"
+    ],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "upgrades": null,
@@ -1904,6 +1963,9 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "unlockScheme": null
@@ -2004,6 +2066,9 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "unlockScheme": null
@@ -2070,6 +2135,9 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "unlockScheme": null
@@ -2117,6 +2185,9 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "unlockScheme": {
@@ -2171,6 +2242,9 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "unlockScheme": null
@@ -2218,6 +2292,11 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [
+     "darkRevolution"
+    ],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "upgrades": {
@@ -2229,6 +2308,9 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "unlockScheme": null
@@ -2280,6 +2362,14 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [
+     "whispers"
+    ],
+    "religion": [],
+    "crafts": [
+     "bloodstone",
+     "tMythril"
+    ],
     "stages": []
    },
    "upgrades": {
@@ -2291,6 +2381,9 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "unlockScheme": null
@@ -2337,6 +2430,9 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    },
    "unlockScheme": null
@@ -2418,8 +2514,12 @@
     ],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "agriculture",
@@ -2447,8 +2547,12 @@
     ],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "archery",
@@ -2475,8 +2579,12 @@
     ],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "mining",
@@ -2502,8 +2610,12 @@
     "upgrades": [
      "bolas"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "metal",
@@ -2527,8 +2639,12 @@
      "huntingArmor",
      "prospecting"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "animal",
@@ -2554,8 +2670,12 @@
     ],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "brewery",
@@ -2567,7 +2687,8 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "civil",
@@ -2588,8 +2709,12 @@
     ],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "math",
@@ -2614,8 +2739,12 @@
     "upgrades": [
      "celestialMechanics"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "construction",
@@ -2645,8 +2774,12 @@
      "advancedRefinement",
      "reinforcedSaw"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "engineering",
@@ -2673,8 +2806,12 @@
      "environmentalism"
     ],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "currency",
@@ -2700,8 +2837,12 @@
     "upgrades": [
      "goldOre"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "writing",
@@ -2731,8 +2872,14 @@
     "upgrades": [
      "register"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [
+     "parchment"
+    ],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "philosophy",
@@ -2758,8 +2905,14 @@
      "epicurianism"
     ],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [
+     "compedium"
+    ],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "machinery",
@@ -2784,8 +2937,12 @@
      "factoryAutomation",
      "crossbow"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "steel",
@@ -2811,8 +2968,14 @@
      "steelAxe",
      "steelArmor"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [
+     "steel"
+    ],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "theology",
@@ -2840,6 +3003,23 @@
     ],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "stages": []
+   },
+   "upgrades": {
+    "buildings": [
+     "temple"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    }
   },
@@ -2873,8 +3053,12 @@
      "cityOnAHill"
     ],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "navigation",
@@ -2909,8 +3093,14 @@
      "titaniumMirrors",
      "titaniumAxe"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [
+     "ship"
+    ],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "architecture",
@@ -2938,8 +3128,12 @@
     ],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "physics",
@@ -2970,8 +3164,14 @@
      "pyrolysis",
      "steelSaw"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [
+     "blueprint"
+    ],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "metaphysics",
@@ -2987,7 +3187,8 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "chemistry",
@@ -3018,8 +3219,14 @@
      "alloyWarehouses",
      "alloyBarns"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [
+     "alloy"
+    ],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "acoustics",
@@ -3046,8 +3253,12 @@
     ],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "drama",
@@ -3072,8 +3283,12 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "archeology",
@@ -3104,8 +3319,14 @@
     "upgrades": [
      "geodesy"
     ],
+    "zebraUpgrades": [
+     "minerologyDepartment"
+    ],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "electricity",
@@ -3132,8 +3353,12 @@
     ],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "biology",
@@ -3162,8 +3387,14 @@
     "upgrades": [
      "petri"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [
+     "plastic"
+    ],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "biochemistry",
@@ -3190,8 +3421,12 @@
     "upgrades": [
      "biofuel"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "genetics",
@@ -3217,8 +3452,12 @@
      "unicornSelection",
      "gmo"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "industrialization",
@@ -3252,8 +3491,12 @@
      "advancedAutomation",
      "logistics"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "mechanization",
@@ -3285,8 +3528,14 @@
      "pumpjack",
      "strenghtenBuild"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [
+     "concrate"
+    ],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "metalurgy",
@@ -3313,8 +3562,12 @@
      "oxidation",
      "miningDrill"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "combustion",
@@ -3343,8 +3596,12 @@
      "fuelInjectors",
      "oilRefinery"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "ecology",
@@ -3372,9 +3629,27 @@
     "upgrades": [
      "carbonSequestration"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": [
      "pasture:1"
     ]
+   },
+   "upgrades": {
+    "buildings": [
+     "mine",
+     "quarry"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "stages": []
    }
   },
   {
@@ -3409,11 +3684,17 @@
      "factoryOptimization",
      "internet"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [
+     "microchip"
+    ],
     "stages": [
      "library:1",
      "amphitheatre:1"
     ]
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "robotics",
@@ -3443,10 +3724,16 @@
      "assistance",
      "factoryRobotics"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [
+     "tanker"
+    ],
     "stages": [
      "aqueduct:1"
     ]
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "ai",
@@ -3477,8 +3764,12 @@
      "aiEngineers",
      "machineLearning"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "quantumCryptography",
@@ -3503,8 +3794,12 @@
     ],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "blackchain",
@@ -3529,8 +3824,12 @@
     "upgrades": [
      "invisibleBlackHand"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "nuclearFission",
@@ -3561,8 +3860,12 @@
      "reactorVessel",
      "nuclearSmelters"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "rocketry",
@@ -3592,6 +3895,21 @@
     "upgrades": [
      "oilDistillation"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "stages": []
+   },
+   "upgrades": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    }
   },
@@ -3618,8 +3936,14 @@
     "upgrades": [
      "factoryProcessing"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [
+     "kerosene"
+    ],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "sattelites",
@@ -3652,8 +3976,12 @@
      "uplink",
      "thinFilm"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "orbitalEngineering",
@@ -3686,8 +4014,12 @@
      "spaceEngineers",
      "starlink"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "thorium",
@@ -3714,8 +4046,14 @@
      "thoriumEngine",
      "qdot"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [
+     "thorium"
+    ],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "exogeology",
@@ -3746,8 +4084,12 @@
      "hydroPlantTurbines",
      "storageBunkers"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "advExogeology",
@@ -3776,10 +4118,16 @@
      "mWReactor",
      "freightfulExchange"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [
+     "eludium"
+    ],
     "stages": [
      "warehouse:1"
     ]
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "nanotechnology",
@@ -3809,8 +4157,12 @@
      "photovoltaic",
      "fluidizedReactors"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "superconductors",
@@ -3839,8 +4191,12 @@
      "spaceManufacturing",
      "cryocomputing"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "antimatter",
@@ -3874,8 +4230,12 @@
      "amDrive",
      "amFission"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "terraformation",
@@ -3900,8 +4260,12 @@
     ],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "hydroponics",
@@ -3926,8 +4290,12 @@
     ],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "exogeophysics",
@@ -3943,7 +4311,8 @@
    ],
    "unlocked": false,
    "researched": false,
-   "unlocks": null
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "particlePhysics",
@@ -3974,8 +4343,12 @@
      "enrichedUranium",
      "railgun"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "dimensionalPhysics",
@@ -3998,8 +4371,12 @@
      "lhc",
      "transportSuperposition"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "artificialGravity",
@@ -4021,8 +4398,12 @@
      "spiceNavigation",
      "longRangeSpaceships"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "chronophysics",
@@ -4053,8 +4434,12 @@
      "stasisChambers",
      "fluxCondensator"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "tachyonTheory",
@@ -4087,8 +4472,12 @@
      "chronoforge",
      "chronoEngineers"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "cryptotheology",
@@ -4113,8 +4502,12 @@
     "upgrades": [
      "relicStation"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "voidSpace",
@@ -4145,8 +4538,12 @@
     "upgrades": [
      "voidAspiration"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   },
   {
    "name": "paradoxalKnowledge",
@@ -4175,8 +4572,12 @@
     "upgrades": [
      "distorsion"
     ],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
-   }
+   },
+   "upgrades": null
   }
  ],
  "policies": [
@@ -4200,6 +4601,9 @@
      "republic"
     ],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    }
   },
@@ -4223,6 +4627,9 @@
      "monarchy"
     ],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    }
   },
@@ -4246,6 +4653,9 @@
      "fascism"
     ],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    }
   },
@@ -4270,6 +4680,9 @@
      "socialism"
     ],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    }
   },
@@ -4294,6 +4707,9 @@
      "socialism"
     ],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    }
   },
@@ -4316,6 +4732,9 @@
      "scientificCommunism"
     ],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    }
   },
@@ -4444,6 +4863,9 @@
     "tech": [],
     "policies": [],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    }
   },
@@ -4467,6 +4889,9 @@
      "culturalExchange"
     ],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    }
   },
@@ -4490,6 +4915,9 @@
      "cityOnAHill"
     ],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    }
   },
@@ -4827,6 +5255,9 @@
      "frugality"
     ],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    }
   },
@@ -4852,6 +5283,9 @@
      "extravagance"
     ],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    }
   },
@@ -4947,6 +5381,9 @@
      "fullIndustrialization"
     ],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    }
   },
@@ -4970,6 +5407,9 @@
      "fullIndustrialization"
     ],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    }
   },
@@ -4993,6 +5433,9 @@
      "openWoodlands"
     ],
     "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
     "stages": []
    }
   },
@@ -8018,7 +8461,10 @@
    "value": 0,
    "tier": 1,
    "isLimited": false,
-   "ignoreBonuses": true
+   "ignoreBonuses": true,
+   "progressHandicap": 1,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "beam",
@@ -8032,7 +8478,10 @@
    "value": 0,
    "tier": 1,
    "isLimited": false,
-   "ignoreBonuses": false
+   "ignoreBonuses": false,
+   "progressHandicap": 1,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "slab",
@@ -8046,7 +8495,10 @@
    "value": 0,
    "tier": 1,
    "isLimited": false,
-   "ignoreBonuses": false
+   "ignoreBonuses": false,
+   "progressHandicap": 1,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "plate",
@@ -8060,7 +8512,10 @@
    "value": 0,
    "tier": 1,
    "isLimited": false,
-   "ignoreBonuses": false
+   "ignoreBonuses": false,
+   "progressHandicap": 4,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "steel",
@@ -8078,7 +8533,10 @@
    "value": 0,
    "tier": 2,
    "isLimited": false,
-   "ignoreBonuses": false
+   "ignoreBonuses": false,
+   "progressHandicap": 4,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "concrate",
@@ -8096,7 +8554,10 @@
    "value": 0,
    "tier": 4,
    "isLimited": false,
-   "ignoreBonuses": false
+   "ignoreBonuses": false,
+   "progressHandicap": 9,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "gear",
@@ -8110,7 +8571,10 @@
    "value": 0,
    "tier": 3,
    "isLimited": false,
-   "ignoreBonuses": false
+   "ignoreBonuses": false,
+   "progressHandicap": 5,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "alloy",
@@ -8128,7 +8592,10 @@
    "value": 0,
    "tier": 4,
    "isLimited": false,
-   "ignoreBonuses": false
+   "ignoreBonuses": false,
+   "progressHandicap": 7,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "eludium",
@@ -8146,7 +8613,10 @@
    "value": 0,
    "tier": 5,
    "isLimited": false,
-   "ignoreBonuses": false
+   "ignoreBonuses": false,
+   "progressHandicap": 300,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "scaffold",
@@ -8160,7 +8630,10 @@
    "value": 0,
    "tier": 2,
    "isLimited": false,
-   "ignoreBonuses": false
+   "ignoreBonuses": false,
+   "progressHandicap": 2,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "ship",
@@ -8182,7 +8655,23 @@
    "value": 0,
    "tier": 3,
    "isLimited": false,
-   "ignoreBonuses": false
+   "ignoreBonuses": false,
+   "progressHandicap": 20,
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "harbor"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "stages": []
+   }
   },
   {
    "name": "tanker",
@@ -8204,7 +8693,23 @@
    "value": 0,
    "tier": 5,
    "isLimited": false,
-   "ignoreBonuses": false
+   "ignoreBonuses": false,
+   "progressHandicap": 20,
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "harbor"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "stages": []
+   }
   },
   {
    "name": "kerosene",
@@ -8218,7 +8723,10 @@
    "value": 0,
    "tier": 2,
    "isLimited": false,
-   "ignoreBonuses": false
+   "ignoreBonuses": false,
+   "progressHandicap": 5,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "plastic",
@@ -8232,7 +8740,10 @@
    "value": 0,
    "tier": 2,
    "isLimited": false,
-   "ignoreBonuses": false
+   "ignoreBonuses": false,
+   "progressHandicap": 5,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "microchip",
@@ -8254,7 +8765,10 @@
    "value": 0,
    "tier": 3,
    "isLimited": false,
-   "ignoreBonuses": false
+   "ignoreBonuses": false,
+   "progressHandicap": 20,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "parchment",
@@ -8268,7 +8782,10 @@
    "value": 0,
    "tier": 1,
    "isLimited": false,
-   "ignoreBonuses": false
+   "ignoreBonuses": false,
+   "progressHandicap": 1,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "manuscript",
@@ -8286,7 +8803,10 @@
    "value": 0,
    "tier": 2,
    "isLimited": false,
-   "ignoreBonuses": false
+   "ignoreBonuses": false,
+   "progressHandicap": 2,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "compedium",
@@ -8304,7 +8824,10 @@
    "value": 0,
    "tier": 3,
    "isLimited": false,
-   "ignoreBonuses": false
+   "ignoreBonuses": false,
+   "progressHandicap": 5,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "blueprint",
@@ -8322,7 +8845,10 @@
    "value": 0,
    "tier": 3,
    "isLimited": false,
-   "ignoreBonuses": false
+   "ignoreBonuses": false,
+   "progressHandicap": 10,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "thorium",
@@ -8336,7 +8862,10 @@
    "value": 0,
    "tier": 3,
    "isLimited": false,
-   "ignoreBonuses": false
+   "ignoreBonuses": false,
+   "progressHandicap": 5,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "megalith",
@@ -8358,7 +8887,10 @@
    "value": 0,
    "tier": 3,
    "isLimited": false,
-   "ignoreBonuses": false
+   "ignoreBonuses": false,
+   "progressHandicap": 5,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "bloodstone",
@@ -8376,7 +8908,10 @@
    "value": 0,
    "tier": 5,
    "isLimited": false,
-   "ignoreBonuses": false
+   "ignoreBonuses": false,
+   "progressHandicap": 7500,
+   "unlocks": null,
+   "upgrades": null
   },
   {
    "name": "tMythril",
@@ -8398,7 +8933,325 @@
    "value": 0,
    "tier": 7,
    "isLimited": false,
-   "ignoreBonuses": false
+   "ignoreBonuses": false,
+   "progressHandicap": 10000,
+   "unlocks": null,
+   "upgrades": null
+  }
+ ],
+ "zebraUpgrades": [
+  {
+   "name": "darkRevolution",
+   "prices": [
+    {
+     "name": "bloodstone",
+     "val": 15
+    },
+    {
+     "name": "science",
+     "val": 100
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {},
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [
+     "zebraTrappers"
+    ],
+    "religion": [],
+    "crafts": [],
+    "stages": []
+   },
+   "upgrades": {
+    "buildings": [
+     "zebraOutpost"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "darkBrew",
+   "prices": [
+    {
+     "name": "bloodstone",
+     "val": 1
+    },
+    {
+     "name": "parchment",
+     "val": 3000
+    },
+    {
+     "name": "science",
+     "val": 100
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {},
+   "unlocks": null,
+   "upgrades": null
+  },
+  {
+   "name": "zebraTrappers",
+   "prices": [
+    {
+     "name": "science",
+     "val": 1000
+    },
+    {
+     "name": "alloy",
+     "val": 100
+    },
+    {
+     "name": "tMythril",
+     "val": 10
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "preparationRatio": 1
+   },
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [
+     "reforgedOutposts"
+    ],
+    "religion": [],
+    "crafts": [],
+    "stages": []
+   },
+   "upgrades": {
+    "buildings": [
+     "zebraOutpost"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "reforgedOutposts",
+   "prices": [
+    {
+     "name": "science",
+     "val": 1500
+    },
+    {
+     "name": "coal",
+     "val": 10000
+    },
+    {
+     "name": "bloodstone",
+     "val": 50
+    },
+    {
+     "name": "tMythril",
+     "val": 10
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {},
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "zebraForge"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "whispers",
+   "prices": [
+    {
+     "name": "tMythril",
+     "val": 5
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {},
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "ivoryTemple"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "minerologyDepartment",
+   "prices": [
+    {
+     "name": "science",
+     "val": 75000
+    },
+    {
+     "name": "compedium",
+     "val": 75
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {},
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [
+     "bloodstoneInstitute"
+    ],
+    "religion": [],
+    "crafts": [],
+    "stages": []
+   },
+   "upgrades": {
+    "buildings": [
+     "academy"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "bloodstoneInstitute",
+   "prices": [
+    {
+     "name": "science",
+     "val": 85000
+    },
+    {
+     "name": "blueprint",
+     "val": 50
+    },
+    {
+     "name": "bloodstone",
+     "val": 25
+    },
+    {
+     "name": "tMythril",
+     "val": 10
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {},
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [
+     "rangefinders"
+    ],
+    "religion": [],
+    "crafts": [],
+    "stages": []
+   },
+   "upgrades": {
+    "buildings": [
+     "zebraWorkshop"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "rangefinders",
+   "prices": [
+    {
+     "name": "science",
+     "val": 100000
+    },
+    {
+     "name": "tMythril",
+     "val": 50
+    },
+    {
+     "name": "microchip",
+     "val": 25
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {},
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "zebraForge"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "stages": []
+   }
   }
  ],
  "seasons": [

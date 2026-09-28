@@ -1,0 +1,25 @@
+# name: trade-embassies
+# seed: 20260927
+# checkpoints: 0, 1, 100, 260, 300
+# diplomacy-02/03/07/08: race unlock roll (aligned via re-seed), embassy
+# purchases (1.15 ladder), trade resolution (standing bonus binomial, wood/
+# spice/blueprint rolls), standing query.
+0 resop year 25
+0 resop addResEvent culture 100000
+0 resop addResEvent gold 50000
+0 resop addResEvent manpower 50000
+0 resop addResEvent minerals 500000
+0 resop addResEvent ivory 50000
+0 resop addResEvent science 50000
+0 research writing
+1 resop seed 42
+100 embassy nagas 5
+260 resop seed 7
+260 trade nagas 3
+290 resop seed 9
+290 trade nagas 1
+295 resop standing nagas
+296 resop nonrandom
+297 resop maxtrade nagas
+298 resop seed 11
+298 tradeall nagas

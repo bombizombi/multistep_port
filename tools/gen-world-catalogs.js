@@ -24,15 +24,23 @@ const fmap = (m) =>
     ? "Map.empty"
     : "Map.ofList [" + Object.entries(m).map(([k, v]) => `${JSON.stringify(k)}, ${v}`).join("; ") + "]";
 
+// trade sell line: value/chance/width/minLevel/seasons (diplomacy-07/08 data)
+const fsell = (s) =>
+  `{ Name = ${fstr(s.name)}; Value = ${s.value}; Chance = ${s.chance}; Width = ${s.width}; MinLevel = ${s.minLevel === undefined || s.minLevel === null ? "None" : `Some ${s.minLevel}`}; Seasons = ${s.seasons ? fmap(s.seasons) : "Map.empty"} }`;
+const funlocks = (u) =>
+  !u
+    ? "None"
+    : `Some({ Buildings = [${(u.buildings || []).map(fstr).join("; ")}]; Tabs = [${(u.tabs || []).map(fstr).join("; ")}]; Jobs = [${(u.jobs || []).map(fstr).join("; ")}]; Tech = [${(u.tech || []).map(fstr).join("; ")}]; Policies = [${(u.policies || []).map(fstr).join("; ")}]; Upgrades = [${(u.upgrades || []).map(fstr).join("; ")}]; ZebraUpgrades = [${(u.zebraUpgrades || []).map(fstr).join("; ")}]; Religion = [${(u.religion || []).map(fstr).join("; ")}]; Crafts = [${(u.crafts || []).map(fstr).join("; ")}]; Stages = [] })`;
+
 const races = src.races.map((r) =>
-  `      { Name = ${fstr(r.name)}; StartsUnlocked = ${fbool(r.unlocked)}; EmbassyPrices = ${fprices(r.embassyPrices)}; EmbassyLevel = ${r.embassyLevel || 0}; RaceEffects = ${fmap(r.raceEffects)} }`);
+  `      { Name = ${fstr(r.name)}; StartsUnlocked = ${fbool(r.unlocked)}; Standing = ${r.standing}; Hidden = ${fbool(r.hidden)}; EmbassyPrices = ${fprices(r.embassyPrices)}; EmbassyLevel = ${r.embassyLevel || 0}; RaceEffects = ${fmap(r.raceEffects)}; Buys = ${fprices(r.buys)}; Sells = [${(r.sells || []).map(fsell).join("; ")}]; Unlocks = ${funlocks(r.unlocks)} }`);
 
 const zu = src.zu.map((z) =>
-  `      { Name = ${fstr(z.name)}; Prices = ${fprices(z.prices)}; Effects = ${fmap(z.effects)} }`);
+  `      { Name = ${fstr(z.name)}; Prices = ${fprices(z.prices)}; Effects = ${fmap(z.effects)}; PriceRatio = ${foptF(z.priceRatio)}; StartsUnlocked = ${fbool(z.unlocked)}; Unlocks = ${funlocks(z.unlocks)}; Upgrades = ${funlocks(z.upgrades)} }`);
 const ru = src.ru.map((z) =>
-  `      { Name = ${fstr(z.name)}; Prices = ${fprices(z.prices)}; Effects = ${fmap(z.effects)} }`);
+  `      { Name = ${fstr(z.name)}; Prices = ${fprices(z.prices)}; Effects = ${fmap(z.effects)}; PriceRatio = ${foptF(z.priceRatio)}; FaithGate = ${foptF(z.faith)}; NoStackable = ${fbool(z.noStackable)}; Unlocks = ${funlocks(z.unlocks)}; Upgrades = ${funlocks(z.upgrades)} }`);
 const tu = src.tu.map((z) =>
-  `      { Name = ${fstr(z.name)}; Prices = ${fprices(z.prices)}; Effects = ${fmap(z.effects)} }`);
+  `      { Name = ${fstr(z.name)}; Prices = ${fprices(z.prices)}; Effects = ${fmap(z.effects)}; PriceRatio = ${foptF(z.priceRatio)}; Unlocks = ${funlocks(z.unlocks)}; Upgrades = ${funlocks(z.upgrades)} }`);
 const pacts = src.pacts.map((z) =>
   `      { Name = ${fstr(z.name)}; Prices = ${fprices(z.prices)}; Effects = ${fmap(z.effects)} }`);
 
@@ -72,11 +80,27 @@ module Game.Catalog.World
 open Game.Types
 
 type RaceDef =
-    { Name: string; StartsUnlocked: bool; EmbassyPrices: Price list; EmbassyLevel: int; RaceEffects: Map<string, float> }
+    { Name: string; StartsUnlocked: bool; Standing: float; Hidden: bool
+      EmbassyPrices: Price list; EmbassyLevel: int; RaceEffects: Map<string, float>
+      Buys: Price list; Sells: SellDef list; Unlocks: UnlockList option }
 
-type ZUDef = { Name: string; Prices: Price list; Effects: Map<string, float> }
-type RUDef = { Name: string; Prices: Price list; Effects: Map<string, float> }
-type TUDef = { Name: string; Prices: Price list; Effects: Map<string, float> }
+and SellDef =
+    { Name: string; Value: float; Chance: float; Width: float; MinLevel: int option; Seasons: Map<string, float> }
+
+type ZUDef =
+    { Name: string; Prices: Price list; Effects: Map<string, float>
+      PriceRatio: float option; StartsUnlocked: bool
+      Unlocks: UnlockList option; Upgrades: UnlockList option }
+
+type RUDef =
+    { Name: string; Prices: Price list; Effects: Map<string, float>
+      PriceRatio: float option; FaithGate: float option; NoStackable: bool
+      Unlocks: UnlockList option; Upgrades: UnlockList option }
+
+type TUDef =
+    { Name: string; Prices: Price list; Effects: Map<string, float>
+      PriceRatio: float option; Unlocks: UnlockList option; Upgrades: UnlockList option }
+
 type PactDef = { Name: string; Prices: Price list; Effects: Map<string, float> }
 
 type ProgramDef = { Name: string; Prices: Price list }

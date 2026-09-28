@@ -706,100 +706,358 @@
    "crafts": {
     "wood": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "beam": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "slab": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plate": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "steel": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "concrate": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "gear": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "alloy": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "eludium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "scaffold": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "ship": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tanker": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "kerosene": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plastic": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "microchip": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "parchment": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "manuscript": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "compedium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "blueprint": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "thorium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "megalith": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "bloodstone": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tMythril": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     }
    },
    "techs": [],
    "upgrades": [],
    "policies": [],
+   "religion": {
+    "faith": 0,
+    "faithRatio": 0,
+    "tier": 0,
+    "metas": {
+     "solarchant": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "scholasticism": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "goldenSpire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunAltar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "stainedGlass": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "solarRevolution": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "basilica": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "templars": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "apocripha": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "transcendence": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "frescoes": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornTomb": {
+      "val": 0,
+      "on": 0,
+      "unlocked": true,
+      "researched": false
+     },
+     "ivoryTower": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "ivoryCitadel": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "skyPalace": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornUtopia": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunspire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "marker": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornGraveyard": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornNecropolis": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackPyramid": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackObelisk": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackNexus": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackCore": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "singularity": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackLibrary": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackRadiance": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blazar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkNova": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "mausoleum": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "holyGenocide": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkParacosm": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     }
+    }
+   },
+   "diplomacy": {
+    "races": {
+     "lizards": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "sharks": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "griffins": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "nagas": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "zebras": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "spiders": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "dragons": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "leviathans": {
+      "unlocked": false,
+      "embassyLevel": 0
+     }
+    }
+   },
    "effects": {
     "catnipPerTickBase": 0,
     "catnipDemandRatio": 0,
@@ -1511,100 +1769,358 @@
    "crafts": {
     "wood": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "beam": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "slab": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plate": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "steel": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "concrate": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "gear": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "alloy": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "eludium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "scaffold": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "ship": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tanker": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "kerosene": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plastic": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "microchip": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "parchment": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "manuscript": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "compedium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "blueprint": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "thorium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "megalith": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "bloodstone": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tMythril": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     }
    },
    "techs": [],
    "upgrades": [],
    "policies": [],
+   "religion": {
+    "faith": 0,
+    "faithRatio": 0,
+    "tier": 0,
+    "metas": {
+     "solarchant": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "scholasticism": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "goldenSpire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunAltar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "stainedGlass": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "solarRevolution": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "basilica": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "templars": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "apocripha": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "transcendence": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "frescoes": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornTomb": {
+      "val": 0,
+      "on": 0,
+      "unlocked": true,
+      "researched": false
+     },
+     "ivoryTower": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "ivoryCitadel": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "skyPalace": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornUtopia": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunspire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "marker": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornGraveyard": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornNecropolis": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackPyramid": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackObelisk": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackNexus": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackCore": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "singularity": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackLibrary": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackRadiance": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blazar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkNova": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "mausoleum": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "holyGenocide": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkParacosm": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     }
+    }
+   },
+   "diplomacy": {
+    "races": {
+     "lizards": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "sharks": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "griffins": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "nagas": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "zebras": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "spiders": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "dragons": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "leviathans": {
+      "unlocked": false,
+      "embassyLevel": 0
+     }
+    }
+   },
    "effects": {
     "catnipPerTickBase": 2.125,
     "catnipDemandRatio": 0,
@@ -2316,100 +2832,358 @@
    "crafts": {
     "wood": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "beam": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "slab": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plate": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "steel": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "concrate": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "gear": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "alloy": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "eludium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "scaffold": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "ship": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tanker": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "kerosene": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plastic": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "microchip": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "parchment": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "manuscript": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "compedium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "blueprint": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "thorium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "megalith": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "bloodstone": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tMythril": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     }
    },
    "techs": [],
    "upgrades": [],
    "policies": [],
+   "religion": {
+    "faith": 0,
+    "faithRatio": 0,
+    "tier": 0,
+    "metas": {
+     "solarchant": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "scholasticism": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "goldenSpire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunAltar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "stainedGlass": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "solarRevolution": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "basilica": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "templars": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "apocripha": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "transcendence": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "frescoes": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornTomb": {
+      "val": 0,
+      "on": 0,
+      "unlocked": true,
+      "researched": false
+     },
+     "ivoryTower": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "ivoryCitadel": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "skyPalace": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornUtopia": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunspire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "marker": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornGraveyard": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornNecropolis": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackPyramid": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackObelisk": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackNexus": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackCore": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "singularity": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackLibrary": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackRadiance": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blazar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkNova": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "mausoleum": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "holyGenocide": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkParacosm": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     }
+    }
+   },
+   "diplomacy": {
+    "races": {
+     "lizards": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "sharks": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "griffins": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "nagas": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "zebras": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "spiders": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "dragons": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "leviathans": {
+      "unlocked": false,
+      "embassyLevel": 0
+     }
+    }
+   },
    "effects": {
     "catnipPerTickBase": 2.125,
     "catnipDemandRatio": 0,
@@ -3121,95 +3895,118 @@
    "crafts": {
     "wood": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "beam": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "slab": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plate": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "steel": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "concrate": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "gear": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "alloy": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "eludium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "scaffold": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "ship": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tanker": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "kerosene": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plastic": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "microchip": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "parchment": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "manuscript": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "compedium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "blueprint": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "thorium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "megalith": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "bloodstone": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tMythril": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     }
    },
    "techs": [
@@ -3217,6 +4014,241 @@
    ],
    "upgrades": [],
    "policies": [],
+   "religion": {
+    "faith": 0,
+    "faithRatio": 0,
+    "tier": 0,
+    "metas": {
+     "solarchant": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "scholasticism": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "goldenSpire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunAltar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "stainedGlass": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "solarRevolution": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "basilica": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "templars": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "apocripha": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "transcendence": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "frescoes": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornTomb": {
+      "val": 0,
+      "on": 0,
+      "unlocked": true,
+      "researched": false
+     },
+     "ivoryTower": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "ivoryCitadel": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "skyPalace": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornUtopia": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunspire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "marker": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornGraveyard": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornNecropolis": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackPyramid": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackObelisk": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackNexus": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackCore": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "singularity": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackLibrary": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackRadiance": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blazar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkNova": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "mausoleum": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "holyGenocide": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkParacosm": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     }
+    }
+   },
+   "diplomacy": {
+    "races": {
+     "lizards": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "sharks": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "griffins": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "nagas": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "zebras": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "spiders": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "dragons": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "leviathans": {
+      "unlocked": false,
+      "embassyLevel": 0
+     }
+    }
+   },
    "effects": {
     "catnipPerTickBase": 2.125,
     "catnipDemandRatio": 0,
@@ -3928,95 +4960,118 @@
    "crafts": {
     "wood": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "beam": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "slab": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plate": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "steel": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "concrate": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "gear": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "alloy": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "eludium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "scaffold": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "ship": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tanker": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "kerosene": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plastic": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "microchip": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "parchment": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "manuscript": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "compedium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "blueprint": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "thorium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "megalith": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "bloodstone": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tMythril": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     }
    },
    "techs": [
@@ -4024,6 +5079,241 @@
    ],
    "upgrades": [],
    "policies": [],
+   "religion": {
+    "faith": 0,
+    "faithRatio": 0,
+    "tier": 0,
+    "metas": {
+     "solarchant": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "scholasticism": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "goldenSpire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunAltar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "stainedGlass": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "solarRevolution": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "basilica": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "templars": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "apocripha": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "transcendence": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "frescoes": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornTomb": {
+      "val": 0,
+      "on": 0,
+      "unlocked": true,
+      "researched": false
+     },
+     "ivoryTower": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "ivoryCitadel": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "skyPalace": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornUtopia": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunspire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "marker": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornGraveyard": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornNecropolis": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackPyramid": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackObelisk": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackNexus": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackCore": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "singularity": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackLibrary": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackRadiance": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blazar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkNova": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "mausoleum": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "holyGenocide": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkParacosm": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     }
+    }
+   },
+   "diplomacy": {
+    "races": {
+     "lizards": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "sharks": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "griffins": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "nagas": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "zebras": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "spiders": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "dragons": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "leviathans": {
+      "unlocked": false,
+      "embassyLevel": 0
+     }
+    }
+   },
    "effects": {
     "catnipPerTickBase": 2.125,
     "catnipDemandRatio": 0,
@@ -4735,95 +6025,118 @@
    "crafts": {
     "wood": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "beam": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "slab": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plate": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "steel": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "concrate": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "gear": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "alloy": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "eludium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "scaffold": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "ship": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tanker": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "kerosene": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plastic": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "microchip": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "parchment": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "manuscript": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "compedium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "blueprint": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "thorium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "megalith": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "bloodstone": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tMythril": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     }
    },
    "techs": [
@@ -4831,6 +6144,241 @@
    ],
    "upgrades": [],
    "policies": [],
+   "religion": {
+    "faith": 0,
+    "faithRatio": 0,
+    "tier": 0,
+    "metas": {
+     "solarchant": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "scholasticism": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "goldenSpire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunAltar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "stainedGlass": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "solarRevolution": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "basilica": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "templars": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "apocripha": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "transcendence": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "frescoes": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornTomb": {
+      "val": 0,
+      "on": 0,
+      "unlocked": true,
+      "researched": false
+     },
+     "ivoryTower": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "ivoryCitadel": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "skyPalace": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornUtopia": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunspire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "marker": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornGraveyard": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornNecropolis": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackPyramid": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackObelisk": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackNexus": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackCore": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "singularity": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackLibrary": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackRadiance": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blazar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkNova": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "mausoleum": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "holyGenocide": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkParacosm": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     }
+    }
+   },
+   "diplomacy": {
+    "races": {
+     "lizards": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "sharks": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "griffins": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "nagas": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "zebras": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "spiders": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "dragons": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "leviathans": {
+      "unlocked": false,
+      "embassyLevel": 0
+     }
+    }
+   },
    "effects": {
     "catnipPerTickBase": 2.125,
     "catnipDemandRatio": 0,
@@ -5542,95 +7090,118 @@
    "crafts": {
     "wood": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "beam": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "slab": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plate": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "steel": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "concrate": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "gear": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "alloy": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "eludium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "scaffold": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "ship": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tanker": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "kerosene": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plastic": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "microchip": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "parchment": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "manuscript": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "compedium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "blueprint": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "thorium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "megalith": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "bloodstone": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tMythril": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     }
    },
    "techs": [
@@ -5638,6 +7209,241 @@
    ],
    "upgrades": [],
    "policies": [],
+   "religion": {
+    "faith": 0,
+    "faithRatio": 0,
+    "tier": 0,
+    "metas": {
+     "solarchant": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "scholasticism": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "goldenSpire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunAltar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "stainedGlass": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "solarRevolution": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "basilica": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "templars": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "apocripha": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "transcendence": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "frescoes": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornTomb": {
+      "val": 0,
+      "on": 0,
+      "unlocked": true,
+      "researched": false
+     },
+     "ivoryTower": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "ivoryCitadel": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "skyPalace": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornUtopia": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunspire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "marker": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornGraveyard": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornNecropolis": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackPyramid": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackObelisk": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackNexus": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackCore": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "singularity": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackLibrary": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackRadiance": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blazar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkNova": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "mausoleum": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "holyGenocide": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkParacosm": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     }
+    }
+   },
+   "diplomacy": {
+    "races": {
+     "lizards": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "sharks": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "griffins": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "nagas": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "zebras": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "spiders": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "dragons": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "leviathans": {
+      "unlocked": false,
+      "embassyLevel": 0
+     }
+    }
+   },
    "effects": {
     "catnipPerTickBase": 2.125,
     "catnipDemandRatio": 0,
@@ -6349,95 +8155,118 @@
    "crafts": {
     "wood": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "beam": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "slab": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plate": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "steel": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "concrate": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "gear": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "alloy": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "eludium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "scaffold": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "ship": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tanker": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "kerosene": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plastic": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "microchip": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "parchment": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "manuscript": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "compedium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "blueprint": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "thorium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "megalith": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "bloodstone": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tMythril": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     }
    },
    "techs": [
@@ -6445,6 +8274,241 @@
    ],
    "upgrades": [],
    "policies": [],
+   "religion": {
+    "faith": 0,
+    "faithRatio": 0,
+    "tier": 0,
+    "metas": {
+     "solarchant": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "scholasticism": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "goldenSpire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunAltar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "stainedGlass": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "solarRevolution": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "basilica": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "templars": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "apocripha": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "transcendence": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "frescoes": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornTomb": {
+      "val": 0,
+      "on": 0,
+      "unlocked": true,
+      "researched": false
+     },
+     "ivoryTower": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "ivoryCitadel": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "skyPalace": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornUtopia": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunspire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "marker": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornGraveyard": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornNecropolis": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackPyramid": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackObelisk": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackNexus": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackCore": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "singularity": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackLibrary": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackRadiance": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blazar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkNova": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "mausoleum": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "holyGenocide": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkParacosm": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     }
+    }
+   },
+   "diplomacy": {
+    "races": {
+     "lizards": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "sharks": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "griffins": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "nagas": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "zebras": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "spiders": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "dragons": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "leviathans": {
+      "unlocked": false,
+      "embassyLevel": 0
+     }
+    }
+   },
    "effects": {
     "catnipPerTickBase": 2.125,
     "catnipDemandRatio": 0,
@@ -7156,95 +9220,118 @@
    "crafts": {
     "wood": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "beam": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "slab": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plate": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "steel": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "concrate": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "gear": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "alloy": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "eludium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "scaffold": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "ship": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tanker": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "kerosene": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plastic": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "microchip": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "parchment": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "manuscript": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "compedium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "blueprint": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "thorium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "megalith": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "bloodstone": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tMythril": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     }
    },
    "techs": [
@@ -7252,6 +9339,241 @@
    ],
    "upgrades": [],
    "policies": [],
+   "religion": {
+    "faith": 0,
+    "faithRatio": 0,
+    "tier": 0,
+    "metas": {
+     "solarchant": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "scholasticism": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "goldenSpire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunAltar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "stainedGlass": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "solarRevolution": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "basilica": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "templars": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "apocripha": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "transcendence": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "frescoes": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornTomb": {
+      "val": 0,
+      "on": 0,
+      "unlocked": true,
+      "researched": false
+     },
+     "ivoryTower": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "ivoryCitadel": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "skyPalace": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornUtopia": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunspire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "marker": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornGraveyard": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornNecropolis": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackPyramid": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackObelisk": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackNexus": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackCore": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "singularity": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackLibrary": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackRadiance": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blazar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkNova": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "mausoleum": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "holyGenocide": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkParacosm": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     }
+    }
+   },
+   "diplomacy": {
+    "races": {
+     "lizards": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "sharks": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "griffins": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "nagas": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "zebras": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "spiders": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "dragons": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "leviathans": {
+      "unlocked": false,
+      "embassyLevel": 0
+     }
+    }
+   },
    "effects": {
     "catnipPerTickBase": 2.125,
     "catnipDemandRatio": 0,
@@ -7963,95 +10285,118 @@
    "crafts": {
     "wood": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "beam": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "slab": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plate": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "steel": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "concrate": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "gear": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "alloy": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "eludium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "scaffold": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "ship": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tanker": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "kerosene": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plastic": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "microchip": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "parchment": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "manuscript": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "compedium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "blueprint": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "thorium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "megalith": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "bloodstone": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tMythril": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     }
    },
    "techs": [
@@ -8059,6 +10404,241 @@
    ],
    "upgrades": [],
    "policies": [],
+   "religion": {
+    "faith": 0,
+    "faithRatio": 0,
+    "tier": 0,
+    "metas": {
+     "solarchant": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "scholasticism": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "goldenSpire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunAltar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "stainedGlass": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "solarRevolution": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "basilica": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "templars": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "apocripha": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "transcendence": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "frescoes": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornTomb": {
+      "val": 0,
+      "on": 0,
+      "unlocked": true,
+      "researched": false
+     },
+     "ivoryTower": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "ivoryCitadel": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "skyPalace": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornUtopia": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunspire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "marker": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornGraveyard": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornNecropolis": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackPyramid": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackObelisk": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackNexus": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackCore": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "singularity": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackLibrary": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackRadiance": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blazar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkNova": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "mausoleum": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "holyGenocide": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkParacosm": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     }
+    }
+   },
+   "diplomacy": {
+    "races": {
+     "lizards": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "sharks": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "griffins": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "nagas": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "zebras": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "spiders": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "dragons": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "leviathans": {
+      "unlocked": false,
+      "embassyLevel": 0
+     }
+    }
+   },
    "effects": {
     "catnipPerTickBase": 2.125,
     "catnipDemandRatio": 0,
@@ -8770,95 +11350,118 @@
    "crafts": {
     "wood": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "beam": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "slab": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plate": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "steel": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "concrate": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "gear": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "alloy": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "eludium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "scaffold": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "ship": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tanker": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "kerosene": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plastic": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "microchip": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "parchment": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "manuscript": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "compedium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "blueprint": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "thorium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "megalith": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "bloodstone": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tMythril": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     }
    },
    "techs": [
@@ -8866,6 +11469,241 @@
    ],
    "upgrades": [],
    "policies": [],
+   "religion": {
+    "faith": 0,
+    "faithRatio": 0,
+    "tier": 0,
+    "metas": {
+     "solarchant": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "scholasticism": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "goldenSpire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunAltar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "stainedGlass": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "solarRevolution": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "basilica": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "templars": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "apocripha": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "transcendence": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "frescoes": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornTomb": {
+      "val": 0,
+      "on": 0,
+      "unlocked": true,
+      "researched": false
+     },
+     "ivoryTower": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "ivoryCitadel": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "skyPalace": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornUtopia": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunspire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "marker": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornGraveyard": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornNecropolis": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackPyramid": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackObelisk": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackNexus": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackCore": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "singularity": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackLibrary": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackRadiance": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blazar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkNova": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "mausoleum": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "holyGenocide": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkParacosm": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     }
+    }
+   },
+   "diplomacy": {
+    "races": {
+     "lizards": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "sharks": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "griffins": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "nagas": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "zebras": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "spiders": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "dragons": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "leviathans": {
+      "unlocked": false,
+      "embassyLevel": 0
+     }
+    }
+   },
    "effects": {
     "catnipPerTickBase": 2.125,
     "catnipDemandRatio": 0,
@@ -9577,95 +12415,118 @@
    "crafts": {
     "wood": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "beam": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "slab": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plate": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "steel": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "concrate": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "gear": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "alloy": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "eludium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "scaffold": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "ship": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tanker": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "kerosene": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plastic": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "microchip": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "parchment": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "manuscript": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "compedium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "blueprint": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "thorium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "megalith": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "bloodstone": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tMythril": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     }
    },
    "techs": [
@@ -9673,6 +12534,241 @@
    ],
    "upgrades": [],
    "policies": [],
+   "religion": {
+    "faith": 0,
+    "faithRatio": 0,
+    "tier": 0,
+    "metas": {
+     "solarchant": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "scholasticism": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "goldenSpire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunAltar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "stainedGlass": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "solarRevolution": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "basilica": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "templars": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "apocripha": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "transcendence": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "frescoes": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornTomb": {
+      "val": 0,
+      "on": 0,
+      "unlocked": true,
+      "researched": false
+     },
+     "ivoryTower": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "ivoryCitadel": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "skyPalace": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornUtopia": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunspire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "marker": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornGraveyard": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornNecropolis": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackPyramid": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackObelisk": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackNexus": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackCore": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "singularity": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackLibrary": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackRadiance": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blazar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkNova": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "mausoleum": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "holyGenocide": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkParacosm": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     }
+    }
+   },
+   "diplomacy": {
+    "races": {
+     "lizards": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "sharks": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "griffins": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "nagas": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "zebras": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "spiders": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "dragons": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "leviathans": {
+      "unlocked": false,
+      "embassyLevel": 0
+     }
+    }
+   },
    "effects": {
     "catnipPerTickBase": 2.125,
     "catnipDemandRatio": 0,
@@ -10384,95 +13480,118 @@
    "crafts": {
     "wood": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "beam": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "slab": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plate": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "steel": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "concrate": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "gear": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "alloy": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "eludium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "scaffold": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "ship": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tanker": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "kerosene": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plastic": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "microchip": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "parchment": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "manuscript": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "compedium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "blueprint": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "thorium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "megalith": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "bloodstone": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tMythril": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     }
    },
    "techs": [
@@ -10480,6 +13599,241 @@
    ],
    "upgrades": [],
    "policies": [],
+   "religion": {
+    "faith": 0,
+    "faithRatio": 0,
+    "tier": 0,
+    "metas": {
+     "solarchant": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "scholasticism": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "goldenSpire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunAltar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "stainedGlass": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "solarRevolution": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "basilica": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "templars": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "apocripha": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "transcendence": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "frescoes": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornTomb": {
+      "val": 0,
+      "on": 0,
+      "unlocked": true,
+      "researched": false
+     },
+     "ivoryTower": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "ivoryCitadel": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "skyPalace": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornUtopia": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunspire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "marker": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornGraveyard": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornNecropolis": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackPyramid": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackObelisk": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackNexus": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackCore": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "singularity": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackLibrary": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackRadiance": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blazar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkNova": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "mausoleum": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "holyGenocide": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkParacosm": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     }
+    }
+   },
+   "diplomacy": {
+    "races": {
+     "lizards": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "sharks": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "griffins": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "nagas": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "zebras": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "spiders": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "dragons": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "leviathans": {
+      "unlocked": false,
+      "embassyLevel": 0
+     }
+    }
+   },
    "effects": {
     "catnipPerTickBase": 2.125,
     "catnipDemandRatio": 0,
@@ -11191,95 +14545,118 @@
    "crafts": {
     "wood": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "beam": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "slab": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plate": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "steel": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "concrate": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "gear": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "alloy": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "eludium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "scaffold": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "ship": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tanker": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "kerosene": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "plastic": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "microchip": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "parchment": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "manuscript": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "compedium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "blueprint": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "thorium": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "megalith": {
      "unlocked": true,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "bloodstone": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     },
     "tMythril": {
      "unlocked": false,
-     "value": 0
+     "value": 0,
+     "progress": 0
     }
    },
    "techs": [
@@ -11287,6 +14664,241 @@
    ],
    "upgrades": [],
    "policies": [],
+   "religion": {
+    "faith": 0,
+    "faithRatio": 0,
+    "tier": 0,
+    "metas": {
+     "solarchant": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "scholasticism": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "goldenSpire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunAltar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "stainedGlass": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "solarRevolution": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "basilica": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "templars": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "apocripha": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "transcendence": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "frescoes": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornTomb": {
+      "val": 0,
+      "on": 0,
+      "unlocked": true,
+      "researched": false
+     },
+     "ivoryTower": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "ivoryCitadel": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "skyPalace": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornUtopia": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "sunspire": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "marker": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornGraveyard": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "unicornNecropolis": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackPyramid": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackObelisk": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackNexus": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackCore": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "singularity": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackLibrary": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blackRadiance": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "blazar": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkNova": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "mausoleum": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "holyGenocide": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     },
+     "darkParacosm": {
+      "val": 0,
+      "on": 0,
+      "unlocked": false,
+      "researched": false
+     }
+    }
+   },
+   "diplomacy": {
+    "races": {
+     "lizards": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "sharks": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "griffins": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "nagas": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "zebras": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "spiders": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "dragons": {
+      "unlocked": false,
+      "embassyLevel": 0
+     },
+     "leviathans": {
+      "unlocked": false,
+      "embassyLevel": 0
+     }
+    }
+   },
    "effects": {
     "catnipPerTickBase": 2.125,
     "catnipDemandRatio": 0,

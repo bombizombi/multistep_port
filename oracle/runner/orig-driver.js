@@ -172,6 +172,10 @@ global.newrelic = {
 // Game bootstrap — exactly the jest beforeEach pattern
 global.gamePage = global.game = new com.nuclearunicorn.game.ui.GamePage();
 game.setUI(new classes.ui.UISystem("gameContainerId"));
+// D014 harness injection: jsdom window.confirm returns false, so confirm-gated
+// actions (adore/transcend) would silently no-op. Auto-confirm mirrors the
+// user clicking OK. Orig source untouched.
+game.ui.confirm = function (title, msg, callbackOk) { callbackOk(); };
 game.resetState();
 
 // ---------------------------------------------------------------------------
@@ -275,6 +279,90 @@ function doAction(move) {
       }
       case "hunt": game.huntAll({ preventDefault: function () {} }); return; // orig reads event.preventDefault
       case "praise": game.religion.praise(); return;
+      case "adore": game.religion.resetFaith(1.01, true); return; // confirm auto-OK'd
+      case "transcend": game.religion.transcend(); return; // confirm auto-OK'd
+      case "worship": {
+        const c = new com.nuclearunicorn.game.ui.ReligionBtnController(game);
+        const model = c.fetchModel({ id: args[0] });
+        c.buyItem(model, null, null);
+        return;
+      }
+      case "ziggurat": {
+        const c = new com.nuclearunicorn.game.ui.ZigguratBtnController(game);
+        const model = c.fetchModel({ id: args[0] });
+        c.buyItem(model, null, null);
+        return;
+      }
+      case "embassy": {
+        const race = game.diplomacy.get(args[0]);
+        const n = args.length >= 2 ? Number(args[1]) : 1;
+        const c = new classes.diplomacy.ui.EmbassyButtonController(game);
+        const model = c.fetchModel({ prices: race.embassyPrices, race });
+        // n clicks of the player path: each buyItem gates (writing + unlocked +
+        // enabled) and builds exactly one embassy at the live 1.15 ladder
+        let built = 0;
+        for (let i = 0; i < n; i++) {
+          const lvlBefore = race.embassyLevel;
+          c.buyItem(model, null, null);
+          built += race.embassyLevel - lvlBefore;
+        }
+        if (built !== n) {
+          actionLog.push({ tick: tickIndex, action, args, reason: `built ${built}/${n}` });
+        }
+        return;
+      }
+      case "trade": {
+        const race = game.diplomacy.get(args[0]);
+        const n = args.length >= 2 ? Number(args[1]) : 1;
+        // player-equivalent path: TradeButton pays [manpower, gold, buys×volume]
+        // then tradeMultiple/trade resolves. n=1 via the controller pay + trade().
+        if (n === 1) {
+          const tradePrices = [
+            { name: "manpower", val: game.diplomacy.getManpowerCost() },
+            { name: "gold", val: game.diplomacy.getGoldCost() },
+          ];
+          for (const b of race.buys) {
+            tradePrices.push({ name: b.name, val: b.val * game.diplomacy.getTradeVolume() });
+          }
+          if (!game.resPool.hasRes(tradePrices)) {
+            actionLog.push({ tick: tickIndex, action, args, reason: "cannot afford" });
+            return;
+          }
+          game.resPool.payPrices(tradePrices);
+          game.diplomacy.trade(race);
+        } else {
+          game.diplomacy.tradeMultiple(race, n);
+        }
+        return;
+      }
+      case "tradeall": {
+        const race = game.diplomacy.get(args[0]);
+        game.diplomacy.tradeAll(race);
+        return;
+      }
+      case "speciality": {
+        // CraftButtonController.assignCraftJob path
+        const craft = game.workshop.getCraft(args[0]);
+        const n = args.length >= 2 ? Number(args[1]) : 1;
+        const free = game.village.getFreeEngineers();
+        const valueCorrected = free > n ? n : free;
+        let added = 0;
+        for (let i = 0; i < valueCorrected; i++) {
+          if (game.village.sim.assignCraftJob(craft)) added += 1;
+          else break;
+        }
+        craft.value += added;
+        if (added !== n) {
+          actionLog.push({ tick: tickIndex, action, args, reason: `assigned ${added}/${n} (free=${free})` });
+        }
+        return;
+      }
+      case "craftall":
+        // game.craftAll minus the wood winter-confirm branch (headless: same end
+        // state as clicking through the confirm)
+        game.workshop.craftAll(args[0]);
+        game.updateResources();
+        return;
       case "refine": game.bld.refineCatnip(); return;
       case "observe": return;
       case "save": game.save(); return;
@@ -432,6 +520,68 @@ function doAction(move) {
           actionLog.push({ tick: tickIndex, action: "resop", args, result });
           return;
         }
+        if (fn === "setbld") {
+          const b = game.bld.get(arg1);
+          b.val = Number(arg2);
+          b.on = Number(arg2);
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "year") {
+          game.calendar.year = Number(arg1);
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "worship") {
+          game.religion.faith = Number(arg1);
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "epiphany") {
+          game.religion.faithRatio = Number(arg1);
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "faith") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.religion.faith });
+          return;
+        }
+        if (fn === "faithratio") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.religion.faithRatio });
+          return;
+        }
+        if (fn === "tier") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.religion.transcendenceTier });
+          return;
+        }
+        if (fn === "worshipval") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.religion.getRU(arg1).val });
+          return;
+        }
+        if (fn === "embassy") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.diplomacy.get(arg1).embassyLevel });
+          return;
+        }
+        if (fn === "nonrandom") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.diplomacy.nonRandomTrades });
+          return;
+        }
+        if (fn === "forceru") {
+          // D014 injection: force-own an RU (later-game prices are out of reach
+          // of this slice's economy); mirrors what buying it would set
+          const ru = game.religion.getRU(arg1);
+          ru.val = 1; ru.on = 1; ru.researched = true; ru.unlocked = true;
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "maxtrade") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.diplomacy.getMaxTradeAmt(game.diplomacy.get(arg1)) });
+          return;
+        }
+        if (fn === "standing") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.diplomacy.getFinalStanding(game.diplomacy.get(arg1)) });
+          return;
+        }
         const v = Number(arg2);
         if (!Number.isFinite(v)) throw new Error(`resop ${fn}: bad value "${arg2}"`);
         let result;
@@ -484,7 +634,7 @@ function takeSnapshot() {
     jobs[jobName] = { value: j.value, unlocked: !!j.unlocked };
   }
   const crafts = {};
-  for (const c of g.workshop.crafts) crafts[c.name] = { unlocked: !!c.unlocked, value: c.value || 0 };
+  for (const c of g.workshop.crafts) crafts[c.name] = { unlocked: !!c.unlocked, value: c.value || 0, progress: c.progress || 0 };
   const techs = g.science.techs.filter((t) => t.researched).map((t) => t.name).sort();
   const upgrades = g.workshop.upgrades.filter((u) => u.researched).map((u) => u.name).sort();
   const policies = (g.science.policies || []).filter((p) => p.researched).map((p) => p.name).sort();
@@ -501,6 +651,20 @@ function takeSnapshot() {
     },
     kittens: { count: g.village.sim.kittens.length, free: g.village.getFreeKittens(), jobs: kittenJobs },
     resources, buildings, jobs, crafts, techs, upgrades, policies,
+    religion: {
+      faith: g.religion.faith,
+      faithRatio: g.religion.faithRatio,
+      tier: g.religion.transcendenceTier,
+      metas: Object.assign(
+        {},
+        ...g.religion.religionUpgrades.map((m) => ({ [m.name]: { val: m.val || 0, on: m.on || 0, unlocked: !!m.unlocked, researched: !!m.researched } })),
+        ...g.religion.zigguratUpgrades.map((m) => ({ [m.name]: { val: m.val || 0, on: m.on || 0, unlocked: !!m.unlocked, researched: !!m.researched } })),
+        ...g.religion.transcendenceUpgrades.map((m) => ({ [m.name]: { val: m.val || 0, on: m.on || 0, unlocked: !!m.unlocked, researched: !!m.researched } })),
+      ),
+    },
+    diplomacy: {
+      races: Object.assign({}, ...g.diplomacy.races.map((r) => ({ [r.name]: { unlocked: !!r.unlocked, embassyLevel: r.embassyLevel || 0 } }))),
+    },
     effects: snapEffects(g),
   };
 }
@@ -511,7 +675,7 @@ function takeSnapshot() {
 if (process.argv[2] === "--dump-defs") {
   const g = game;
   const clone = (o) => JSON.parse(JSON.stringify(o === undefined ? null : o));
-  const unlockShape = (u) => (u ? { buildings: u.buildings || [], tabs: u.tabs || [], jobs: u.jobs || [], tech: u.tech || [], policies: u.policies || [], upgrades: u.upgrades || [], stages: (u.stages || []).map(s => typeof s === "string" ? s : (s.bld || s.name || "?") + ":" + (s.stage !== undefined ? s.stage : "?")) } : null);
+  const unlockShape = (u) => (u ? { buildings: u.buildings || [], tabs: u.tabs || [], jobs: u.jobs || [], tech: u.tech || [], policies: u.policies || [], upgrades: u.upgrades || [], zebraUpgrades: u.zebraUpgrades || [], religion: u.religion || [], crafts: u.crafts || [], stages: (u.stages || []).map(s => typeof s === "string" ? s : (s.bld || s.name || "?") + ":" + (s.stage !== undefined ? s.stage : "?")) } : null);
   const buildings = g.bld.buildingsData.map((b) => {
     const base = clone(b.effects);
     let calc = null;
@@ -547,7 +711,7 @@ if (process.argv[2] === "--dump-defs") {
   });
   const techs = g.science.techs.map((t2) => ({
     name: t2.name, prices: clone(t2.prices) || [], unlocked: !!t2.unlocked, researched: !!t2.researched,
-    unlocks: unlockShape(t2.unlocks),
+    unlocks: unlockShape(t2.unlocks), upgrades: unlockShape(t2.upgrades),
   }));
   const policies = g.science.policies.map((p) => ({
     name: p.name, prices: clone(p.prices) || [], unlocked: !!p.unlocked, researched: !!p.researched,
@@ -560,10 +724,17 @@ if (process.argv[2] === "--dump-defs") {
   const crafts = g.workshop.crafts.map((c) => ({
     name: c.name, prices: clone(c.prices) || [], unlocked: !!c.unlocked, value: c.value || 0,
     tier: c.tier === undefined ? null : c.tier, isLimited: !!c.isLimited, ignoreBonuses: !!c.ignoreBonuses,
+    progressHandicap: c.progressHandicap === undefined ? null : c.progressHandicap,
+    unlocks: unlockShape(c.unlocks), upgrades: unlockShape(c.upgrades),
+  }));
+  const zebraUpgrades = g.workshop.zebraUpgrades.map((u) => ({
+    name: u.name, prices: clone(u.prices) || [], unlocked: !!u.unlocked, researched: !!u.researched,
+    effects: clone(u.effects) || {},
+    unlocks: unlockShape(u.unlocks), upgrades: unlockShape(u.upgrades),
   }));
   const seasons = g.calendar.seasons.map((s) => ({ name: s.name, modifiers: clone(s.modifiers) || {} }));
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
-  fs.writeFileSync(outPath, JSON.stringify({ driver: "orig-driver.js", origCommit: origCommit(), buildings, techs, policies, upgrades, crafts, seasons }, null, 1));
+  fs.writeFileSync(outPath, JSON.stringify({ driver: "orig-driver.js", origCommit: origCommit(), buildings, techs, policies, upgrades, crafts, zebraUpgrades, seasons }, null, 1));
   console.log(`defs -> ${outPath} (buildings ${buildings.length}, techs ${techs.length}, policies ${policies.length}, upgrades ${upgrades.length}, crafts ${crafts.length})`);
   process.exit(0);
 }
