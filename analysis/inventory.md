@@ -34,7 +34,7 @@ Orig snapshot: `781e379f79f1e7512d168849cba21ed111502644` — 82 files,
 | `js/science.js` | 2821 | game | `analysis/recon/science.md` | **described** |
 | `js/settings.js` | 393 | game | `analysis/recon/settings.md` | **described** |
 | `js/space.js` | 1604 | game | `analysis/recon/space.md` | **described** |
-| `js/stats.js` | 247 | game | — | pending |
+| `js/stats.js` | 247 | game | `analysis/recon/stats.md` | **described** |
 | `js/time.js` | 2792 | game | `analysis/recon/time.md` | **described** |
 | `js/toolbar.js` | 242 | game | — | pending |
 | `js/ui.js` | 1198 | game | `analysis/recon/ui.md` | **described** |
