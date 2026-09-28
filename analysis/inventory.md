@@ -19,8 +19,8 @@ Orig snapshot: `781e379f79f1e7512d168849cba21ed111502644` — 82 files,
 | `js/achievements.js` | 884 | game | — | pending |
 | `js/buildings.js` | 3799 | game | `analysis/recon/buildings.md` | **described** |
 | `js/calendar.js` | 1269 | game | `analysis/recon/calendar.md` | **described** |
-| `js/challenges.js` | 1329 | game | — | pending |
-| `js/diplomacy.js` | 2233 | game | — | pending |
+| `js/challenges.js` | 1329 | game | `analysis/recon/challenges.md` | **described** |
+| `js/diplomacy.js` | 2233 | game | `analysis/recon/diplomacy.md` | **described** |
 | `js/jsx/chiral.jsx.js` | 207 | ui-jsx | — | pending |
 | `js/jsx/left.jsx.js` | 1027 | ui-jsx | — | pending |
 | `js/jsx/mid.jsx.js` | 20 | ui-jsx | — | pending |
@@ -33,7 +33,7 @@ Orig snapshot: `781e379f79f1e7512d168849cba21ed111502644` — 82 files,
 | `js/resources.js` | 1179 | game | `analysis/recon/resources.md` | **described** |
 | `js/science.js` | 2821 | game | `analysis/recon/science.md` | **described** |
 | `js/settings.js` | 393 | game | — | pending |
-| `js/space.js` | 1604 | game | — | pending |
+| `js/space.js` | 1604 | game | `analysis/recon/space.md` | **described** |
 | `js/stats.js` | 247 | game | — | pending |
 | `js/time.js` | 2792 | game | `analysis/recon/time.md` | **described** |
 | `js/toolbar.js` | 242 | game | — | pending |
