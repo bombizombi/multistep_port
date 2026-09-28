@@ -134,35 +134,16 @@ let getAmtDependsOnStock
 // L784-826 + L896-973 + isNormalCraftableResource L1173).
 
 /// Dependency seam until the real subsystems land (game-08 effects cache,
-/// prestige-01, challenges, workshop). Fresh-state values are verified against
-/// the golden fixtures; the fields are replaced by real lookups unit by unit.
+/// prestige-01, challenges, workshop). The runner builds this from its LIVE
+/// effects cache; at tick 0 the cache is empty, which reproduces the
+/// zero-cap state verified by the unit-res-caps fixture.
 type CapContext =
-    { GetEffect: string -> float // fresh: Game.Catalog.BaseEffects.getEffect
+    { GetEffect: string -> float // game-08 effects cache
       ParagonStorageRatio: float // prestige (0.0 fresh)
       CMBRBonus: float // game.getCMBRBonus() result (0.0 fresh: isCMBREnabled=false)
       UnicornTearsActive: bool // challenges (false fresh)
       SilosResearched: bool // workshop (false fresh)
       KarmaZebras: int } // game.karmaZebras (0 fresh)
-
-let baseEffectsCapContext : CapContext =
-    { GetEffect = Game.Catalog.BaseEffects.getEffect
-      ParagonStorageRatio = 0.0
-      CMBRBonus = 0.0
-      UnicornTearsActive = false
-      SilosResearched = false
-      KarmaZebras = 0 }
-
-/// State BEFORE the first tick: orig's global effects cache is empty until
-/// updateCaches() runs (game-08), so getEffect returns 0 for everything —
-/// verified against orig via the unit-res-caps scenario (only sorrow/zebras
-/// get non-zero caps there, and neither needs effects).
-let zeroCapContext : CapContext =
-    { GetEffect = fun _ -> 0.0
-      ParagonStorageRatio = 0.0
-      CMBRBonus = 0.0
-      UnicornTearsActive = false
-      SilosResearched = false
-      KarmaZebras = 0 }
 
 let isNormalCraftableResource (res: ResourceState) : bool =
     res.Def.Craftable && res.Def.Name <> "wood"
@@ -503,3 +484,30 @@ let maxAll (pool: ResPool) : ResPool =
                     { res with Value = res.MaxValue }
                 else
                     res) }
+
+// ---------------------------------------------------------------------------
+// resources-11a: persistence (orig resPool.save/load via core.js
+// filterMetadata — fields kept unless undefined).
+
+/// orig resPool.save(): filterMetadata(resources, ["name","value","unlocked",
+/// "isHidden","isHiddenFromCrafting"]) — undefined fields dropped. isHidden/
+/// isHiddenFromCrafting are settings-level (undefined at fresh).
+let save (pool: ResPool) : (string * float * bool) list =
+    pool.Order
+    |> List.choose (fun name ->
+        match get pool name with
+        | Some res -> Some(name, res.Value, res.Unlocked)
+        | None -> None)
+
+/// orig resPool.load(): restore value/unlocked by name (perTickCached/maxValue
+/// are recomputed by the pipeline, not saved).
+let load (saved: (string * float * bool) list) (pool: ResPool) : ResPool =
+    let mutable pool' = pool
+    for (name, value, unlocked) in saved do
+        match get pool' name with
+        | Some res ->
+            pool' <-
+                { pool' with
+                    ByName = pool'.ByName |> Map.add name { res with Value = value; Unlocked = unlocked } }
+        | None -> ()
+    pool'

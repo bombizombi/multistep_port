@@ -49,34 +49,39 @@ export function ResourceDef_$reflection() {
  * threads immutable state — conversion pattern #2).
  */
 export class ResourceState extends Record {
-    constructor(Def, Value, Unlocked, MaxValue) {
+    constructor(Def, Value, Unlocked, MaxValue, PerTickCached) {
         super();
         this.Def = Def;
         this.Value = Value;
         this.Unlocked = Unlocked;
         this.MaxValue = MaxValue;
+        this.PerTickCached = PerTickCached;
     }
 }
 
 export function ResourceState_$reflection() {
-    return record_type("Game.Types.ResourceState", [], ResourceState, () => [["Def", ResourceDef_$reflection()], ["Value", float64_type], ["Unlocked", bool_type], ["MaxValue", float64_type]]);
+    return record_type("Game.Types.ResourceState", [], ResourceState, () => [["Def", ResourceDef_$reflection()], ["Value", float64_type], ["Unlocked", bool_type], ["MaxValue", float64_type], ["PerTickCached", float64_type]]);
 }
 
 /**
  * The resPool registry. Order mirrors orig's resPool.resources array.
  * KarmaKittens is game.karmaKittens in orig — parked here until game-06 owns
- * GamePage state (see Game.Resources.addRes karma branch).
+ * GamePage state (see Game.Resources.addRes karma branch). Energy fields are
+ * resPool.energyProd/energyWinterProd/energyCons (resources-07).
  */
 export class ResPool extends Record {
-    constructor(Order, ByName, KarmaKittens) {
+    constructor(Order, ByName, KarmaKittens, EnergyProd, EnergyWinterProd, EnergyCons) {
         super();
         this.Order = Order;
         this.ByName = ByName;
         this.KarmaKittens = (KarmaKittens | 0);
+        this.EnergyProd = EnergyProd;
+        this.EnergyWinterProd = EnergyWinterProd;
+        this.EnergyCons = EnergyCons;
     }
 }
 
 export function ResPool_$reflection() {
-    return record_type("Game.Types.ResPool", [], ResPool, () => [["Order", list_type(string_type)], ["ByName", class_type("Microsoft.FSharp.Collections.FSharpMap`2", [string_type, ResourceState_$reflection()])], ["KarmaKittens", int32_type]]);
+    return record_type("Game.Types.ResPool", [], ResPool, () => [["Order", list_type(string_type)], ["ByName", class_type("Microsoft.FSharp.Collections.FSharpMap`2", [string_type, ResourceState_$reflection()])], ["KarmaKittens", int32_type], ["EnergyProd", float64_type], ["EnergyWinterProd", float64_type], ["EnergyCons", float64_type]]);
 }
 

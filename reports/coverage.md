@@ -37,4 +37,4 @@ reports in `analysis/recon/` (index: `analysis/inventory.md`), 244 ported work u
 | i18n.js + config.js | ~200 | recon/settings.md | i18n-01..04, config-01 (5) | 0% |
 
 Totals: **244 work units** defined; **43,800 / 43,800** core+shell lines described (**100%**).
-Ported: resources-01..10 + oracle-04 verified (sessions 2026-09-28-04/-05/-06); `unit-resources`, `unit-res-caps`, `unit-res-misc` all agree bit-exact with orig — including seeded RNG draws.
+Ported: 47 units verified (sessions 2026-09-28-04..07). Live tick pipeline bit-exact across 99 ticks; math library draw-exact; village/data catalogs round-trip identical.

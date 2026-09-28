@@ -38,13 +38,14 @@ const ORIG_LOAD_ORDER = [
 // ---------------------------------------------------------------------------
 // CLI
 const dumpCatalogOnly = process.argv[2] === "--dump-catalog";
-const scenarioPath = dumpCatalogOnly ? null : process.argv[2];
+const dumpVillageOnly = process.argv[2] === "--dump-village";
+const scenarioPath = (dumpCatalogOnly || dumpVillageOnly) ? null : process.argv[2];
 let outPath = process.argv[3];
-if (!dumpCatalogOnly && !scenarioPath) {
-  console.error("usage: node orig-driver.js <scenario.cat> [output.json]\n       node orig-driver.js --dump-catalog <output.json>");
+if (!dumpCatalogOnly && !dumpVillageOnly && !scenarioPath) {
+  console.error("usage: node orig-driver.js <scenario.cat> [output.json]\n       node orig-driver.js --dump-catalog <output.json>\n       node orig-driver.js --dump-village <output.json>");
   process.exit(2);
 }
-const scenario = dumpCatalogOnly ? null : parseScenario(fs.readFileSync(scenarioPath, "utf8"));
+const scenario = (dumpCatalogOnly || dumpVillageOnly) ? null : parseScenario(fs.readFileSync(scenarioPath, "utf8"));
 if (scenario && scenario.problems.length) {
   for (const p of scenario.problems) console.error(`scenario: ${p}`);
   if (scenario.problems.some((p) => !p.includes("ignored"))) process.exit(2);
@@ -178,6 +179,7 @@ game.resetState();
 const actionLog = [];
 const productionOverrides = {}; // resop prod test hook (D014)
 let lastLimits = {}; // resop ff/limits test hooks
+let resSaveData = null; // resop saveres/loadres test hooks
 function doAction(move) {
   const { action } = move;
   const args = move.args;
@@ -351,10 +353,62 @@ function doAction(move) {
           actionLog.push({ tick: tickIndex, action: "resop", args, result });
           return;
         }
-        if (fn === "seed") {
+        if (fn === 'gauss') {
+          const result = game.math.standardGaussianRandom();
+          actionLog.push({ tick: tickIndex, action: 'resop', args, result });
+          return;
+        }
+        if (fn === 'irwin') {
+          const result = game.math.irwinHallRandom(Number(arg1));
+          actionLog.push({ tick: tickIndex, action: 'resop', args, result });
+          return;
+        }
+        if (fn === 'binom') {
+          const result = game.math.binominalRandomInteger(Number(arg1), Number(arg2));
+          actionLog.push({ tick: tickIndex, action: 'resop', args, result });
+          return;
+        }
+        if (fn === 'geom') {
+          const result = game.math.geometricRandom(Number(arg1));
+          actionLog.push({ tick: tickIndex, action: 'resop', args, result });
+          return;
+        }
+        if (fn === 'uniform') {
+          const result = game.math.uniformRandomInteger(Number(arg1), Number(arg2));
+          actionLog.push({ tick: tickIndex, action: 'resop', args, result });
+          return;
+        }
+        if (fn === 'seed') {
           // re-seed the PRNG stream (D014: position-independent RNG verification —
           // orig's bootstrap consumed draws the F# runner never makes)
           installRng(Number(arg1) >>> 0);
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "cache") {
+          game.updateCaches();
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "gtick") {
+          const n = Number(arg1);
+          for (let i = 0; i < n; i++) game.tick();
+          tickIndex = game.ticks; // resop ops after gticks log at game time
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.ticks });
+          return;
+        }
+        if (fn === "snap") {
+          snapshots.push(takeSnapshot());
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "saveres") {
+          resSaveData = game.resPool.save({});
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "loadres") {
+          if (resSaveData) game.resPool.load(resSaveData);
           actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
           return;
         }
@@ -446,6 +500,28 @@ function takeSnapshot() {
 // ---------------------------------------------------------------------------
 // Catalog dump mode (--dump-catalog): initial resPool state, logic fields only.
 // Used by resources-01 verification (see D014 / session 04).
+if (dumpVillageOnly) {
+  const v = game.village;
+  const dump = {
+    jobNames: v.jobNames,
+    jobs: v.jobNames.map(n => {
+      const j = v.getJob(n);
+      const mods = JSON.parse(JSON.stringify(j.modifiers));
+      if (typeof j.calculateEffects === 'function') {
+        j.calculateEffects(j, game);
+        return { name: j.name, modifiers: mods, calculated: j.modifiers, value: j.value, unlocked: !!j.unlocked };
+      }
+      return { name: j.name, modifiers: mods, value: j.value, unlocked: !!j.unlocked };
+    }),
+    traits: com.nuclearunicorn.game.village.Kitten.prototype.traits.map(t => ({ name: t.name })),
+    names: com.nuclearunicorn.game.village.Kitten.prototype.names,
+    surnames: com.nuclearunicorn.game.village.Kitten.prototype.surnames
+  };
+  fs.mkdirSync(path.dirname(outPath), { recursive: true });
+  fs.writeFileSync(outPath, JSON.stringify({ driver: 'orig-driver.js', origCommit: origCommit(), village: dump }, null, 1));
+  console.log('village catalog -> ' + outPath);
+  process.exit(0);
+}
 if (dumpCatalogOnly) {
   // Bool fields: undefined ≡ false in JS truthiness — canonicalized to false so
   // the F# dump compares exactly (D014). String optionals (color/tag) stay null.
@@ -503,6 +579,7 @@ const result = {
   snapshots,
   actionLog,
 };
+if (resSaveData) result.resPoolSave = resSaveData.resources;
 fs.mkdirSync(path.dirname(outPath), { recursive: true });
 fs.writeFileSync(outPath, JSON.stringify(result, null, 1));
 console.log(`scenario "${scenario.name}": ${scenario.maxTick} ticks, ${snapshots.length} snapshots, ${rngDraws} rng draws -> ${outPath}`);

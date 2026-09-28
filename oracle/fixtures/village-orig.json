@@ -1,0 +1,206 @@
+{
+ "driver": "orig-driver.js",
+ "origCommit": "781e379f79f1e7512d168849cba21ed111502644",
+ "village": {
+  "jobNames": [
+   "woodcutter",
+   "farmer",
+   "scholar",
+   "hunter",
+   "miner",
+   "priest",
+   "geologist",
+   "engineer",
+   "ambassador"
+  ],
+  "jobs": [
+   {
+    "name": "woodcutter",
+    "modifiers": {
+     "wood": 0.018
+    },
+    "value": 0,
+    "unlocked": true
+   },
+   {
+    "name": "farmer",
+    "modifiers": {
+     "catnip": 1
+    },
+    "value": 0,
+    "unlocked": false
+   },
+   {
+    "name": "scholar",
+    "modifiers": {},
+    "calculated": {
+     "science": 0.035
+    },
+    "value": 0,
+    "unlocked": false
+   },
+   {
+    "name": "hunter",
+    "modifiers": {
+     "manpower": 0.06
+    },
+    "value": 0,
+    "unlocked": false
+   },
+   {
+    "name": "miner",
+    "modifiers": {
+     "minerals": 0.05
+    },
+    "value": 0,
+    "unlocked": false
+   },
+   {
+    "name": "priest",
+    "modifiers": {
+     "faith": 0.0015
+    },
+    "calculated": {
+     "faith": 0.0015
+    },
+    "value": 0,
+    "unlocked": false
+   },
+   {
+    "name": "geologist",
+    "modifiers": {},
+    "calculated": {
+     "coal": 0.015
+    },
+    "value": 0,
+    "unlocked": false
+   },
+   {
+    "name": "engineer",
+    "modifiers": {},
+    "value": 0,
+    "unlocked": false
+   },
+   {
+    "name": "ambassador",
+    "modifiers": {
+     "tradeVolume": 0.0007,
+     "embassyEffectCap": 0.00133,
+     "tradeBlueprintChance": 0.00008,
+     "tradeSpiceChance": 0.00009,
+     "tradeNormalResChance": 0.00003,
+     "cultureConsumptionAmbassadors": 20,
+     "spiceConsumptionAmbassadors": 0.8
+    },
+    "calculated": {
+     "tradeVolume": 0.0007,
+     "embassyEffectCap": 0.00133,
+     "tradeBlueprintChance": 0.00008,
+     "tradeSpiceChance": 0.00009,
+     "tradeNormalResChance": 0.00003,
+     "cultureConsumptionAmbassadors": 20,
+     "spiceConsumptionAmbassadors": 0.8
+    },
+    "value": 0,
+    "unlocked": false
+   }
+  ],
+  "traits": [
+   {
+    "name": "scientist"
+   },
+   {
+    "name": "manager"
+   },
+   {
+    "name": "engineer"
+   },
+   {
+    "name": "merchant"
+   },
+   {
+    "name": "wise"
+   },
+   {
+    "name": "metallurgist"
+   },
+   {
+    "name": "chemist"
+   },
+   {
+    "name": "none"
+   }
+  ],
+  "names": [
+   "Angel",
+   "Charlie",
+   "Mittens",
+   "Oreo",
+   "Lily",
+   "Ellie",
+   "Amber",
+   "Molly",
+   "Jasper",
+   "Oscar",
+   "Theo",
+   "Maddie",
+   "Cassie",
+   "Timber",
+   "Meeko",
+   "Micha",
+   "Tami",
+   "Plato",
+   "Bea",
+   "Cedar",
+   "Cleo",
+   "Dali",
+   "Fiona",
+   "Hazel",
+   "Iggi",
+   "Jasmine",
+   "Kali",
+   "Luna",
+   "Reilly",
+   "Reo",
+   "Rikka",
+   "Ruby",
+   "Tammy",
+   "Amy",
+   "Henry"
+  ],
+  "surnames": [
+   "Smoke",
+   "Dust",
+   "Chalk",
+   "Fur",
+   "Clay",
+   "Paws",
+   "Tails",
+   "Sand",
+   "Scratch",
+   "Berry",
+   "Shadow",
+   "Ash",
+   "Bark",
+   "Bowl",
+   "Brass",
+   "Dusk",
+   "Gaze",
+   "Gleam",
+   "Grass",
+   "Moss",
+   "Plaid",
+   "Puff",
+   "Rain",
+   "Silk",
+   "Silver",
+   "Speck",
+   "Stripes",
+   "Tingle",
+   "Wool",
+   "Yarn",
+   "Snail",
+   "Rabbit"
+  ]
+ }
+}

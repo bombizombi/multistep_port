@@ -1,0 +1,23 @@
+# name: unit-tick
+# seed: 20260927
+# checkpoints: 0
+# Live tick pipeline verification (game-08 cache, game-10a production slice,
+# calendar-01/02 progression, resources-11a persistence). gtick drives real
+# game.tick() on both sides; snap dumps snapshots at the current game tick.
+# Checkpoints after cache: caps materialize via the updateCaches timer event.
+0 resop cache
+0 resop caps
+0 resop gtick 1
+0 resop snap
+0 resop gtick 4
+0 resop snap
+0 resop gtick 5
+0 resop snap
+0 resop gtick 40
+0 resop snap
+0 resop gtick 49
+0 resop snap
+0 resop saveres
+0 resop addResEvent catnip 100
+0 resop loadres
+0 resop snap

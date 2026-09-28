@@ -1,0 +1,17 @@
+# name: unit-math
+# seed: 7
+# checkpoints: 0
+# math-01..04 verification: distribution draws under the seeded stream.
+# Exercises the loop AND gaussian branches, edge probabilities, Box-Muller.
+0 resop seed 7
+0 resop gauss
+0 resop gauss
+0 resop irwin 5
+0 resop irwin 150
+0 resop binom 10 0.5
+0 resop binom 200 0.5
+0 resop binom 5 0
+0 resop binom 5 1
+0 resop geom 0.3
+0 resop geom 0
+0 resop uniform 0 10
