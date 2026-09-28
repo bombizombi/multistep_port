@@ -14,10 +14,13 @@
         <Compile Include="../../../kittens_land/src/Game/Game.Catalog.Village.fs"/>
         <Compile Include="../../../kittens_land/src/Game/Game.Catalog.Resources.fs"/>
         <Compile Include="../../../kittens_land/src/Game/Game.Catalog.Defs.fs"/>
+        <Compile Include="../../../kittens_land/src/Game/Game.Catalog.World.fs"/>
         <Compile Include="../../../kittens_land/src/Game/Game.Effects.fs"/>
         <Compile Include="../../../kittens_land/src/Game/Game.Resources.fs"/>
         <Compile Include="../../../kittens_land/src/Game/Game.Buildings.fs"/>
         <Compile Include="../../../kittens_land/src/Game/Game.Managers.fs"/>
+        <Compile Include="../../../kittens_land/src/Game/Game.Village.fs"/>
+        <Compile Include="../../../kittens_land/src/Game/Game.Happiness.fs"/>
         <Compile Include="../../../kittens_land/src/Game/Game.Production.fs"/>
         <Compile Include="Program.fs"/>
     </ItemGroup>

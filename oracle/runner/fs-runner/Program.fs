@@ -314,7 +314,12 @@ let execute (scenario: Scenario) : ExecResult =
         let techs = spool.TechOrder |> List.filter (fun n -> spool.Techs.[n].Researched) |> List.sort
         let upgrades = wpool.UpgradeOrder |> List.filter (fun n -> wpool.Upgrades.[n].Researched) |> List.sort
         let policies = spool.PolicyOrder |> List.filter (fun n -> spool.Policies.[n].Researched) |> List.sort
-        let kittenJobs = vpool.Kittens |> List.map (fun k -> k.Job) |> List.sort
+        // JS Array.sort on [job|null]: null stringifies to "null" and sorts as
+        // a string — "farmer" < "null" < "scholar"/"woodcutter". Mirror exactly.
+        let kittenJobs =
+            vpool.Kittens
+            |> List.map (fun k -> k.Job)
+            |> List.sortBy (fun j -> match j with Some j -> j | None -> "null")
         let free = Game.Managers.getFreeKittens vpool
         let effectsSample =
             [ "catnipPerTickBase"; "catnipDemandRatio"; "maxKittensRatio"; "woodPerTick" ]
@@ -347,10 +352,35 @@ let execute (scenario: Scenario) : ExecResult =
         let maxKittens = Game.Managers.calculateMaxKittens cache vpool
         vpool <- { vpool with MaxKittens = maxKittens }
         let kittensPerTick = 0.01 * (1.0 + Game.Effects.getEffect cache "kittenGrowthRatio")
-        vpool <- Game.Managers.simUpdate maxKittens kittensPerTick 1 (fun () -> rngDraws <- rngDraws + 1; rand ()) vpool
+        // orig village.update starvation branch: kittens>0 and catnip value +
+        // catnipPerTick(true) < 0 -> death; growth resumes after deathTimeout.
+        // catnipPerTickConvertion is 0 at this stage (smelter seam).
+        let catnipPerTickTrue =
+            match get pool "catnip" with
+            | Some r -> r.PerTickCached
+            | None -> 0.0
+        let catnipVal = (get pool "catnip" |> Option.map (fun r -> r.Value) |> Option.defaultValue 0.0)
+        let starving =
+          vpool.Kittens.Length > 0
+          && (catnipVal + catnipPerTickTrue < 0.0)
+        vpool <- Game.Managers.starvationStep catnipVal catnipPerTickTrue 5.0 false maxKittens vpool
+        // orig calls sim.update in every branch — with rate 0 when starving
+        let growthRate = if starving then 0.0 else kittensPerTick
+        vpool <- Game.Managers.simUpdate maxKittens growthRate 1 (fun () -> rngDraws <- rngDraws + 1; rand ()) vpool
         // kittens pseudo-resource sync (game.js L4535-4539)
         let kittensRes = pool.ByName["kittens"]
         pool <- { pool with ByName = pool.ByName |> Map.add "kittens" { kittensRes with Value = float vpool.Kittens.Length; MaxValue = float vpool.MaxKittens } }
+        // happiness (village-05a): unhappiness past 5 kittens + +10% per
+        // non-common resource with value > 0 (orig luxury loop L975-990)
+        let luxCount =
+            pool.Order
+            |> List.sumBy (fun n ->
+                match get pool n with
+                | Some r when r.Def.Category <> "common" && r.Value > 0.0 -> 1
+                | _ -> 0)
+        let hctx : Game.Happiness.HappinessContext =
+            { Game.Happiness.freshHappinessContext with LuxuryCount = luxCount }
+        vpool <- { vpool with Happiness = Game.Happiness.updateHappiness hctx vpool.Kittens.Length vpool.MaxKittens }
         // (diplomacy/religion/space/challenges update seams)
 
         updateCachesPhase <- updateCachesPhase - 1
@@ -498,9 +528,17 @@ let execute (scenario: Scenario) : ExecResult =
         | "buy" ->
             let bldName = m.Args.[0]
             let n = if m.Args.Length >= 2 then int m.Args.[1] else 1
+            let affordBefore = Game.Resources.hasRes pool (Game.Buildings.getPrices cache bpool.ByName[bldName] |> List.map (fun p -> (p.Resource, p.Val))) 0.0
             let bpool', pool', built = Game.Buildings.build calendarDay cache pool n bldName bpool
             bpool <- bpool'
             pool <- pool'
+            if built <> n then
+                // orig driver logs partial/failed buys with state context
+                let b = bpool.ByName[bldName]
+                actionLog <-
+                    (m.Tick, "buy", m.Args,
+                     RText(sprintf "built %d/%d (enabled=%s, affordBefore=%s)" built n (if b.Unlocked then "true" else "false") (if affordBefore then "true" else "false")))
+                    :: actionLog
             if built > 0 then
                 // orig build tail: if (meta.unlocks) game.unlock(...);
                 // if (meta.upgrades) game.upgrade(meta.upgrades) — upgrade
@@ -573,7 +611,38 @@ let execute (scenario: Scenario) : ExecResult =
             spool <- spool'
             let _ = ok
             ()
-        | "hunt"
+        | "refine" ->
+            // orig bld.refineCatnip (js/buildings.js L3003): pay 100 catnip via the
+            // button's buyItem prices, gain 1 + craftRatio wood (advancedRefinement
+            // seam: isEnriched 50-cost variant, fresh-false)
+            let prices = [ ("catnip", 100.0) ]
+            if Game.Resources.hasRes pool prices 0.0 then
+                let craftRatio = Game.Managers.getResCraftRatio cache "wood"
+                let poolPaid = Game.Resources.payPrices calendarDay pool prices
+                let poolGained, _ = Game.Resources.addResEvent calendarDay "wood" (1.0 + craftRatio) poolPaid
+                pool <- poolGained
+                refreshCache ()
+        | "refine" ->
+            let prices = [ ("catnip", 100.0) ]
+            if Game.Resources.hasRes pool prices 0.0 then
+                let craftRatio = Game.Managers.getResCraftRatio cache "wood"
+                let poolPaid = Game.Resources.payPrices calendarDay pool prices
+                let poolGained, _ = Game.Resources.addResEvent calendarDay "wood" (1.0 + craftRatio) poolPaid
+                pool <- poolGained
+                refreshCache ()
+        | "hunt" ->
+            let hctx : Game.Village.HuntContext =
+              { GetEffect = Game.Effects.getEffect cache
+                Rand = fun () -> rngDraws <- rngDraws + 1; rand ()
+                Zebras = (match get pool "zebras" with Some z -> z.Value | None -> 0.0)
+                IronWill = false // ironWill seam (game-06 karma block)
+                GoldOreResearched =
+                  (match wpool.Upgrades |> Map.tryFind "goldOre" with
+                   | Some u -> u.Researched
+                   | None -> false)
+                AlicornmancyResearched = false // prestige seam
+                UnicornPastureVal = 0 }
+            pool <- Game.Village.huntAll hctx pool
         | "praise"
         | "save"
         | "load" -> actionLog <- (m.Tick, m.Action, m.Args, RNone) :: actionLog

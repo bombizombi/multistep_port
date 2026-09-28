@@ -275,6 +275,7 @@ function doAction(move) {
       }
       case "hunt": game.huntAll({ preventDefault: function () {} }); return; // orig reads event.preventDefault
       case "praise": game.religion.praise(); return;
+      case "refine": game.bld.refineCatnip(); return;
       case "observe": return;
       case "save": game.save(); return;
       case "load": game.load(); return;
@@ -385,7 +386,11 @@ function doAction(move) {
           actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
           return;
         }
-        if (fn === "cache") {
+        if (fn === 'seed2') {
+          actionLog.push({ tick: tickIndex, action: 'resop', args, result: 0 });
+          return;
+        }
+        if (fn === 'cache') {
           game.updateCaches();
           actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
           return;

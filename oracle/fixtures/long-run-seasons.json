@@ -1,0 +1,11326 @@
+{
+ "driver": "orig-driver.js",
+ "scenario": "long-run-seasons",
+ "seed": 20260927,
+ "origCommit": "781e379f79f1e7512d168849cba21ed111502644",
+ "rngImpl": "splitmix32-seeded sfc32",
+ "snapshots": [
+  {
+   "tick": 0,
+   "rngDraws": 33,
+   "calendar": {
+    "year": 0,
+    "day": 0,
+    "season": "spring",
+    "weather": null,
+    "cycle": 0,
+    "cycleYear": 0
+   },
+   "kittens": {
+    "count": 0,
+    "free": 0,
+    "jobs": []
+   },
+   "resources": {
+    "catnip": {
+     "v": 30,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "wood": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "minerals": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "coal": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "iron": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "titanium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "gold": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "oil": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "uranium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "unobtainium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "antimatter": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "manpower": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "science": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "culture": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "faith": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "kittens": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "zebras": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "starchart": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "temporalFlux": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "gflops": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "hashrates": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "furs": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "ivory": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "spice": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "unicorns": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alicorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "necrocorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tears": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "karma": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "paragon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "burnedParagon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "timeCrystal": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "sorrow": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "relic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "void": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "elderBox": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "wrappingPaper": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blackcoin": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "bloodstone": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tMythril": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "beam": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "slab": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "steel": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "concrate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "gear": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alloy": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "eludium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "scaffold": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "ship": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tanker": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "kerosene": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plastic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "microchip": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "parchment": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "manuscript": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "compedium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blueprint": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "thorium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "megalith": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    }
+   },
+   "buildings": {
+    "field": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "pasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aqueduct": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "hut": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "logHouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mansion": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "library": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "academy": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "observatory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "biolab": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "barn": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "warehouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "harbor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mine": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "quarry": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "smelter": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "calciner": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "steamworks": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "magneto": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "lumberMill": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "oilWell": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "workshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "factory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "reactor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "accelerator": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "tradepost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mint": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "brewery": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "amphitheatre": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chapel": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "temple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "unicornPasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ziggurat": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chronosphere": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aiCore": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraOutpost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraWorkshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraForge": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "stasisPod": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ivoryTemple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    }
+   },
+   "jobs": {
+    "woodcutter": {
+     "value": 0,
+     "unlocked": true
+    },
+    "farmer": {
+     "value": 0,
+     "unlocked": false
+    },
+    "scholar": {
+     "value": 0,
+     "unlocked": false
+    },
+    "hunter": {
+     "value": 0,
+     "unlocked": false
+    },
+    "miner": {
+     "value": 0,
+     "unlocked": false
+    },
+    "priest": {
+     "value": 0,
+     "unlocked": false
+    },
+    "geologist": {
+     "value": 0,
+     "unlocked": false
+    },
+    "engineer": {
+     "value": 0,
+     "unlocked": false
+    },
+    "ambassador": {
+     "value": 0,
+     "unlocked": false
+    }
+   },
+   "crafts": {
+    "wood": {
+     "unlocked": true,
+     "value": 0
+    },
+    "beam": {
+     "unlocked": true,
+     "value": 0
+    },
+    "slab": {
+     "unlocked": true,
+     "value": 0
+    },
+    "plate": {
+     "unlocked": true,
+     "value": 0
+    },
+    "steel": {
+     "unlocked": false,
+     "value": 0
+    },
+    "concrate": {
+     "unlocked": false,
+     "value": 0
+    },
+    "gear": {
+     "unlocked": true,
+     "value": 0
+    },
+    "alloy": {
+     "unlocked": false,
+     "value": 0
+    },
+    "eludium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "scaffold": {
+     "unlocked": true,
+     "value": 0
+    },
+    "ship": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tanker": {
+     "unlocked": false,
+     "value": 0
+    },
+    "kerosene": {
+     "unlocked": false,
+     "value": 0
+    },
+    "plastic": {
+     "unlocked": false,
+     "value": 0
+    },
+    "microchip": {
+     "unlocked": false,
+     "value": 0
+    },
+    "parchment": {
+     "unlocked": false,
+     "value": 0
+    },
+    "manuscript": {
+     "unlocked": true,
+     "value": 0
+    },
+    "compedium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "blueprint": {
+     "unlocked": false,
+     "value": 0
+    },
+    "thorium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "megalith": {
+     "unlocked": true,
+     "value": 0
+    },
+    "bloodstone": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tMythril": {
+     "unlocked": false,
+     "value": 0
+    }
+   },
+   "techs": [],
+   "upgrades": [],
+   "policies": [],
+   "effects": {
+    "catnipPerTickBase": 0,
+    "catnipDemandRatio": 0,
+    "maxKittensRatio": 0,
+    "woodPerTick": 0
+   }
+  },
+  {
+   "tick": 1000,
+   "rngDraws": 13639,
+   "calendar": {
+    "year": 0,
+    "day": 0,
+    "season": "summer",
+    "weather": null,
+    "cycle": 0,
+    "cycleYear": 0
+   },
+   "kittens": {
+    "count": 2,
+    "free": 2,
+    "jobs": [
+     null,
+     null
+    ]
+   },
+   "resources": {
+    "catnip": {
+     "v": 2040.9632592989863,
+     "m": 5000,
+     "u": true,
+     "p": 0.425
+    },
+    "wood": {
+     "v": 20,
+     "m": 200,
+     "u": true,
+     "p": 0
+    },
+    "minerals": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "coal": {
+     "v": 0,
+     "m": 60,
+     "u": false,
+     "p": 0
+    },
+    "iron": {
+     "v": 0,
+     "m": 50,
+     "u": false,
+     "p": 0
+    },
+    "titanium": {
+     "v": 0,
+     "m": 2,
+     "u": false,
+     "p": 0
+    },
+    "gold": {
+     "v": 0,
+     "m": 10,
+     "u": false,
+     "p": 0
+    },
+    "oil": {
+     "v": 0,
+     "m": 1500,
+     "u": false,
+     "p": 0
+    },
+    "uranium": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "unobtainium": {
+     "v": 0,
+     "m": 150,
+     "u": false,
+     "p": 0
+    },
+    "antimatter": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "manpower": {
+     "v": 0,
+     "m": 175,
+     "u": false,
+     "p": 0
+    },
+    "science": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "culture": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "faith": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "kittens": {
+     "v": 2,
+     "m": 2,
+     "u": true,
+     "p": 0
+    },
+    "zebras": {
+     "v": 0,
+     "m": 1,
+     "u": false,
+     "p": 0
+    },
+    "starchart": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "temporalFlux": {
+     "v": 0,
+     "m": 3000,
+     "u": false,
+     "p": 0
+    },
+    "gflops": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "hashrates": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "furs": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.02
+    },
+    "ivory": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.014
+    },
+    "spice": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.002
+    },
+    "unicorns": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alicorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "necrocorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tears": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "karma": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "paragon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "burnedParagon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "timeCrystal": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "sorrow": {
+     "v": 0,
+     "m": 17,
+     "u": false,
+     "p": 0
+    },
+    "relic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "void": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "elderBox": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "wrappingPaper": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blackcoin": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "bloodstone": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tMythril": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "beam": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "slab": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "steel": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "concrate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "gear": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alloy": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "eludium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "scaffold": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "ship": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tanker": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "kerosene": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plastic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "microchip": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "parchment": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "manuscript": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "compedium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blueprint": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "thorium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "megalith": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    }
+   },
+   "buildings": {
+    "field": {
+     "val": 17,
+     "on": 17,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "pasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aqueduct": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "hut": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "logHouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mansion": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "library": {
+     "val": 0,
+     "on": 0,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "academy": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "observatory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "biolab": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "barn": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "warehouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "harbor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mine": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "quarry": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "smelter": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "calciner": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "steamworks": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "magneto": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "lumberMill": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "oilWell": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "workshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "factory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "reactor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "accelerator": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "tradepost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mint": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "brewery": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "amphitheatre": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chapel": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "temple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "unicornPasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ziggurat": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chronosphere": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aiCore": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraOutpost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraWorkshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraForge": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "stasisPod": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ivoryTemple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    }
+   },
+   "jobs": {
+    "woodcutter": {
+     "value": 0,
+     "unlocked": true
+    },
+    "farmer": {
+     "value": 0,
+     "unlocked": false
+    },
+    "scholar": {
+     "value": 0,
+     "unlocked": false
+    },
+    "hunter": {
+     "value": 0,
+     "unlocked": false
+    },
+    "miner": {
+     "value": 0,
+     "unlocked": false
+    },
+    "priest": {
+     "value": 0,
+     "unlocked": false
+    },
+    "geologist": {
+     "value": 0,
+     "unlocked": false
+    },
+    "engineer": {
+     "value": 0,
+     "unlocked": false
+    },
+    "ambassador": {
+     "value": 0,
+     "unlocked": false
+    }
+   },
+   "crafts": {
+    "wood": {
+     "unlocked": true,
+     "value": 0
+    },
+    "beam": {
+     "unlocked": true,
+     "value": 0
+    },
+    "slab": {
+     "unlocked": true,
+     "value": 0
+    },
+    "plate": {
+     "unlocked": true,
+     "value": 0
+    },
+    "steel": {
+     "unlocked": false,
+     "value": 0
+    },
+    "concrate": {
+     "unlocked": false,
+     "value": 0
+    },
+    "gear": {
+     "unlocked": true,
+     "value": 0
+    },
+    "alloy": {
+     "unlocked": false,
+     "value": 0
+    },
+    "eludium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "scaffold": {
+     "unlocked": true,
+     "value": 0
+    },
+    "ship": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tanker": {
+     "unlocked": false,
+     "value": 0
+    },
+    "kerosene": {
+     "unlocked": false,
+     "value": 0
+    },
+    "plastic": {
+     "unlocked": false,
+     "value": 0
+    },
+    "microchip": {
+     "unlocked": false,
+     "value": 0
+    },
+    "parchment": {
+     "unlocked": false,
+     "value": 0
+    },
+    "manuscript": {
+     "unlocked": true,
+     "value": 0
+    },
+    "compedium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "blueprint": {
+     "unlocked": false,
+     "value": 0
+    },
+    "thorium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "megalith": {
+     "unlocked": true,
+     "value": 0
+    },
+    "bloodstone": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tMythril": {
+     "unlocked": false,
+     "value": 0
+    }
+   },
+   "techs": [],
+   "upgrades": [],
+   "policies": [],
+   "effects": {
+    "catnipPerTickBase": 2.125,
+    "catnipDemandRatio": 0,
+    "maxKittensRatio": 0,
+    "woodPerTick": 0
+   }
+  },
+  {
+   "tick": 2000,
+   "rngDraws": 27141,
+   "calendar": {
+    "year": 0,
+    "day": 0,
+    "season": "autumn",
+    "weather": null,
+    "cycle": 0,
+    "cycleYear": 0
+   },
+   "kittens": {
+    "count": 2,
+    "free": 0,
+    "jobs": [
+     "scholar",
+     "scholar"
+    ]
+   },
+   "resources": {
+    "catnip": {
+     "v": 2965.963259299069,
+     "m": 5000,
+     "u": true,
+     "p": 0.425
+    },
+    "wood": {
+     "v": 5,
+     "m": 200,
+     "u": true,
+     "p": 0
+    },
+    "minerals": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "coal": {
+     "v": 0,
+     "m": 60,
+     "u": false,
+     "p": 0
+    },
+    "iron": {
+     "v": 0,
+     "m": 50,
+     "u": false,
+     "p": 0
+    },
+    "titanium": {
+     "v": 0,
+     "m": 2,
+     "u": false,
+     "p": 0
+    },
+    "gold": {
+     "v": 0,
+     "m": 10,
+     "u": false,
+     "p": 0
+    },
+    "oil": {
+     "v": 0,
+     "m": 1500,
+     "u": false,
+     "p": 0
+    },
+    "uranium": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "unobtainium": {
+     "v": 0,
+     "m": 150,
+     "u": false,
+     "p": 0
+    },
+    "antimatter": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "manpower": {
+     "v": 0,
+     "m": 175,
+     "u": false,
+     "p": 0
+    },
+    "science": {
+     "v": 53.899999999999835,
+     "m": 500,
+     "u": true,
+     "p": 0.077
+    },
+    "culture": {
+     "v": 0,
+     "m": 110,
+     "u": false,
+     "p": 0
+    },
+    "faith": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "kittens": {
+     "v": 2,
+     "m": 2,
+     "u": true,
+     "p": 0
+    },
+    "zebras": {
+     "v": 0,
+     "m": 1,
+     "u": false,
+     "p": 0
+    },
+    "starchart": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "temporalFlux": {
+     "v": 0,
+     "m": 3000,
+     "u": false,
+     "p": 0
+    },
+    "gflops": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "hashrates": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "furs": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.02
+    },
+    "ivory": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.014
+    },
+    "spice": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.002
+    },
+    "unicorns": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alicorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "necrocorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tears": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "karma": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "paragon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "burnedParagon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "timeCrystal": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "sorrow": {
+     "v": 0,
+     "m": 17,
+     "u": false,
+     "p": 0
+    },
+    "relic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "void": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "elderBox": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "wrappingPaper": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blackcoin": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "bloodstone": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tMythril": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "beam": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "slab": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "steel": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "concrate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "gear": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alloy": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "eludium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "scaffold": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "ship": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tanker": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "kerosene": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plastic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "microchip": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "parchment": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "manuscript": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "compedium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blueprint": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "thorium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "megalith": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    }
+   },
+   "buildings": {
+    "field": {
+     "val": 17,
+     "on": 17,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "pasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aqueduct": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "hut": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "logHouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mansion": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "library": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "academy": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "observatory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "biolab": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "barn": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "warehouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "harbor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mine": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "quarry": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "smelter": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "calciner": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "steamworks": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "magneto": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "lumberMill": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "oilWell": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "workshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "factory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "reactor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "accelerator": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "tradepost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mint": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "brewery": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "amphitheatre": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chapel": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "temple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "unicornPasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ziggurat": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chronosphere": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aiCore": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraOutpost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraWorkshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraForge": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "stasisPod": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ivoryTemple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    }
+   },
+   "jobs": {
+    "woodcutter": {
+     "value": 0,
+     "unlocked": true
+    },
+    "farmer": {
+     "value": 0,
+     "unlocked": false
+    },
+    "scholar": {
+     "value": 2,
+     "unlocked": true
+    },
+    "hunter": {
+     "value": 0,
+     "unlocked": false
+    },
+    "miner": {
+     "value": 0,
+     "unlocked": false
+    },
+    "priest": {
+     "value": 0,
+     "unlocked": false
+    },
+    "geologist": {
+     "value": 0,
+     "unlocked": false
+    },
+    "engineer": {
+     "value": 0,
+     "unlocked": false
+    },
+    "ambassador": {
+     "value": 0,
+     "unlocked": false
+    }
+   },
+   "crafts": {
+    "wood": {
+     "unlocked": true,
+     "value": 0
+    },
+    "beam": {
+     "unlocked": true,
+     "value": 0
+    },
+    "slab": {
+     "unlocked": true,
+     "value": 0
+    },
+    "plate": {
+     "unlocked": true,
+     "value": 0
+    },
+    "steel": {
+     "unlocked": false,
+     "value": 0
+    },
+    "concrate": {
+     "unlocked": false,
+     "value": 0
+    },
+    "gear": {
+     "unlocked": true,
+     "value": 0
+    },
+    "alloy": {
+     "unlocked": false,
+     "value": 0
+    },
+    "eludium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "scaffold": {
+     "unlocked": true,
+     "value": 0
+    },
+    "ship": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tanker": {
+     "unlocked": false,
+     "value": 0
+    },
+    "kerosene": {
+     "unlocked": false,
+     "value": 0
+    },
+    "plastic": {
+     "unlocked": false,
+     "value": 0
+    },
+    "microchip": {
+     "unlocked": false,
+     "value": 0
+    },
+    "parchment": {
+     "unlocked": false,
+     "value": 0
+    },
+    "manuscript": {
+     "unlocked": true,
+     "value": 0
+    },
+    "compedium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "blueprint": {
+     "unlocked": false,
+     "value": 0
+    },
+    "thorium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "megalith": {
+     "unlocked": true,
+     "value": 0
+    },
+    "bloodstone": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tMythril": {
+     "unlocked": false,
+     "value": 0
+    }
+   },
+   "techs": [],
+   "upgrades": [],
+   "policies": [],
+   "effects": {
+    "catnipPerTickBase": 2.125,
+    "catnipDemandRatio": 0,
+    "maxKittensRatio": 0,
+    "woodPerTick": 0
+   }
+  },
+  {
+   "tick": 3000,
+   "rngDraws": 40662,
+   "calendar": {
+    "year": 0,
+    "day": 0,
+    "season": "winter",
+    "weather": null,
+    "cycle": 0,
+    "cycleYear": 0
+   },
+   "kittens": {
+    "count": 2,
+    "free": 0,
+    "jobs": [
+     "scholar",
+     "scholar"
+    ]
+   },
+   "resources": {
+    "catnip": {
+     "v": 4390.96325929925,
+     "m": 5000,
+     "u": true,
+     "p": -1.16875
+    },
+    "wood": {
+     "v": 5,
+     "m": 200,
+     "u": true,
+     "p": 0
+    },
+    "minerals": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "coal": {
+     "v": 0,
+     "m": 60,
+     "u": false,
+     "p": 0
+    },
+    "iron": {
+     "v": 0,
+     "m": 50,
+     "u": false,
+     "p": 0
+    },
+    "titanium": {
+     "v": 0,
+     "m": 2,
+     "u": false,
+     "p": 0
+    },
+    "gold": {
+     "v": 0,
+     "m": 10,
+     "u": false,
+     "p": 0
+    },
+    "oil": {
+     "v": 0,
+     "m": 1500,
+     "u": false,
+     "p": 0
+    },
+    "uranium": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "unobtainium": {
+     "v": 0,
+     "m": 150,
+     "u": false,
+     "p": 0
+    },
+    "antimatter": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "manpower": {
+     "v": 0,
+     "m": 175,
+     "u": false,
+     "p": 0
+    },
+    "science": {
+     "v": 30.899999999998894,
+     "m": 500,
+     "u": true,
+     "p": 0.077
+    },
+    "culture": {
+     "v": 0,
+     "m": 110,
+     "u": false,
+     "p": 0
+    },
+    "faith": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "kittens": {
+     "v": 2,
+     "m": 2,
+     "u": true,
+     "p": 0
+    },
+    "zebras": {
+     "v": 0,
+     "m": 1,
+     "u": false,
+     "p": 0
+    },
+    "starchart": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "temporalFlux": {
+     "v": 0,
+     "m": 3000,
+     "u": false,
+     "p": 0
+    },
+    "gflops": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "hashrates": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "furs": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.02
+    },
+    "ivory": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.014
+    },
+    "spice": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.002
+    },
+    "unicorns": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alicorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "necrocorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tears": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "karma": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "paragon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "burnedParagon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "timeCrystal": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "sorrow": {
+     "v": 0,
+     "m": 17,
+     "u": false,
+     "p": 0
+    },
+    "relic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "void": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "elderBox": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "wrappingPaper": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blackcoin": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "bloodstone": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tMythril": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "beam": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "slab": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "steel": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "concrate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "gear": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alloy": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "eludium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "scaffold": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "ship": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tanker": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "kerosene": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plastic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "microchip": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "parchment": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "manuscript": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "compedium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blueprint": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "thorium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "megalith": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    }
+   },
+   "buildings": {
+    "field": {
+     "val": 17,
+     "on": 17,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "pasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aqueduct": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "hut": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "logHouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mansion": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "library": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "academy": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "observatory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "biolab": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "barn": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "warehouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "harbor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mine": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "quarry": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "smelter": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "calciner": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "steamworks": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "magneto": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "lumberMill": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "oilWell": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "workshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "factory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "reactor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "accelerator": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "tradepost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mint": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "brewery": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "amphitheatre": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chapel": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "temple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "unicornPasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ziggurat": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chronosphere": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aiCore": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraOutpost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraWorkshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraForge": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "stasisPod": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ivoryTemple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    }
+   },
+   "jobs": {
+    "woodcutter": {
+     "value": 0,
+     "unlocked": true
+    },
+    "farmer": {
+     "value": 0,
+     "unlocked": true
+    },
+    "scholar": {
+     "value": 2,
+     "unlocked": true
+    },
+    "hunter": {
+     "value": 0,
+     "unlocked": false
+    },
+    "miner": {
+     "value": 0,
+     "unlocked": false
+    },
+    "priest": {
+     "value": 0,
+     "unlocked": false
+    },
+    "geologist": {
+     "value": 0,
+     "unlocked": false
+    },
+    "engineer": {
+     "value": 0,
+     "unlocked": false
+    },
+    "ambassador": {
+     "value": 0,
+     "unlocked": false
+    }
+   },
+   "crafts": {
+    "wood": {
+     "unlocked": true,
+     "value": 0
+    },
+    "beam": {
+     "unlocked": true,
+     "value": 0
+    },
+    "slab": {
+     "unlocked": true,
+     "value": 0
+    },
+    "plate": {
+     "unlocked": true,
+     "value": 0
+    },
+    "steel": {
+     "unlocked": false,
+     "value": 0
+    },
+    "concrate": {
+     "unlocked": false,
+     "value": 0
+    },
+    "gear": {
+     "unlocked": true,
+     "value": 0
+    },
+    "alloy": {
+     "unlocked": false,
+     "value": 0
+    },
+    "eludium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "scaffold": {
+     "unlocked": true,
+     "value": 0
+    },
+    "ship": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tanker": {
+     "unlocked": false,
+     "value": 0
+    },
+    "kerosene": {
+     "unlocked": false,
+     "value": 0
+    },
+    "plastic": {
+     "unlocked": false,
+     "value": 0
+    },
+    "microchip": {
+     "unlocked": false,
+     "value": 0
+    },
+    "parchment": {
+     "unlocked": false,
+     "value": 0
+    },
+    "manuscript": {
+     "unlocked": true,
+     "value": 0
+    },
+    "compedium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "blueprint": {
+     "unlocked": false,
+     "value": 0
+    },
+    "thorium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "megalith": {
+     "unlocked": true,
+     "value": 0
+    },
+    "bloodstone": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tMythril": {
+     "unlocked": false,
+     "value": 0
+    }
+   },
+   "techs": [
+    "agriculture"
+   ],
+   "upgrades": [],
+   "policies": [],
+   "effects": {
+    "catnipPerTickBase": 2.125,
+    "catnipDemandRatio": 0,
+    "maxKittensRatio": 0,
+    "woodPerTick": 0
+   }
+  },
+  {
+   "tick": 4000,
+   "rngDraws": 54183,
+   "calendar": {
+    "year": 1,
+    "day": 0,
+    "season": "spring",
+    "weather": null,
+    "cycle": 0,
+    "cycleYear": 1
+   },
+   "kittens": {
+    "count": 2,
+    "free": 0,
+    "jobs": [
+     "scholar",
+     "scholar"
+    ]
+   },
+   "resources": {
+    "catnip": {
+     "v": 3222.213259299432,
+     "m": 5000,
+     "u": true,
+     "p": 1.4875
+    },
+    "wood": {
+     "v": 5,
+     "m": 200,
+     "u": true,
+     "p": 0
+    },
+    "minerals": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "coal": {
+     "v": 0,
+     "m": 60,
+     "u": false,
+     "p": 0
+    },
+    "iron": {
+     "v": 0,
+     "m": 50,
+     "u": false,
+     "p": 0
+    },
+    "titanium": {
+     "v": 0,
+     "m": 2,
+     "u": false,
+     "p": 0
+    },
+    "gold": {
+     "v": 0,
+     "m": 10,
+     "u": false,
+     "p": 0
+    },
+    "oil": {
+     "v": 0,
+     "m": 1500,
+     "u": false,
+     "p": 0
+    },
+    "uranium": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "unobtainium": {
+     "v": 0,
+     "m": 150,
+     "u": false,
+     "p": 0
+    },
+    "antimatter": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "manpower": {
+     "v": 0,
+     "m": 175,
+     "u": false,
+     "p": 0
+    },
+    "science": {
+     "v": 107.89999999999714,
+     "m": 500,
+     "u": true,
+     "p": 0.077
+    },
+    "culture": {
+     "v": 0,
+     "m": 110,
+     "u": false,
+     "p": 0
+    },
+    "faith": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "kittens": {
+     "v": 2,
+     "m": 2,
+     "u": true,
+     "p": 0
+    },
+    "zebras": {
+     "v": 0,
+     "m": 1,
+     "u": false,
+     "p": 0
+    },
+    "starchart": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "temporalFlux": {
+     "v": 0,
+     "m": 3000,
+     "u": false,
+     "p": 0
+    },
+    "gflops": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "hashrates": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "furs": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.02
+    },
+    "ivory": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.014
+    },
+    "spice": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.002
+    },
+    "unicorns": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alicorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "necrocorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tears": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "karma": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "paragon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "burnedParagon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "timeCrystal": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "sorrow": {
+     "v": 0,
+     "m": 17,
+     "u": false,
+     "p": 0
+    },
+    "relic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "void": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "elderBox": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "wrappingPaper": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blackcoin": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "bloodstone": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tMythril": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "beam": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "slab": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "steel": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "concrate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "gear": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alloy": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "eludium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "scaffold": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "ship": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tanker": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "kerosene": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plastic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "microchip": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "parchment": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "manuscript": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "compedium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blueprint": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "thorium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "megalith": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    }
+   },
+   "buildings": {
+    "field": {
+     "val": 17,
+     "on": 17,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "pasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aqueduct": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "hut": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "logHouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mansion": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "library": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "academy": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "observatory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "biolab": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "barn": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "warehouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "harbor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mine": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "quarry": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "smelter": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "calciner": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "steamworks": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "magneto": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "lumberMill": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "oilWell": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "workshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "factory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "reactor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "accelerator": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "tradepost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mint": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "brewery": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "amphitheatre": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chapel": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "temple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "unicornPasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ziggurat": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chronosphere": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aiCore": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraOutpost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraWorkshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraForge": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "stasisPod": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ivoryTemple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    }
+   },
+   "jobs": {
+    "woodcutter": {
+     "value": 0,
+     "unlocked": true
+    },
+    "farmer": {
+     "value": 0,
+     "unlocked": true
+    },
+    "scholar": {
+     "value": 2,
+     "unlocked": true
+    },
+    "hunter": {
+     "value": 0,
+     "unlocked": false
+    },
+    "miner": {
+     "value": 0,
+     "unlocked": false
+    },
+    "priest": {
+     "value": 0,
+     "unlocked": false
+    },
+    "geologist": {
+     "value": 0,
+     "unlocked": false
+    },
+    "engineer": {
+     "value": 0,
+     "unlocked": false
+    },
+    "ambassador": {
+     "value": 0,
+     "unlocked": false
+    }
+   },
+   "crafts": {
+    "wood": {
+     "unlocked": true,
+     "value": 0
+    },
+    "beam": {
+     "unlocked": true,
+     "value": 0
+    },
+    "slab": {
+     "unlocked": true,
+     "value": 0
+    },
+    "plate": {
+     "unlocked": true,
+     "value": 0
+    },
+    "steel": {
+     "unlocked": false,
+     "value": 0
+    },
+    "concrate": {
+     "unlocked": false,
+     "value": 0
+    },
+    "gear": {
+     "unlocked": true,
+     "value": 0
+    },
+    "alloy": {
+     "unlocked": false,
+     "value": 0
+    },
+    "eludium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "scaffold": {
+     "unlocked": true,
+     "value": 0
+    },
+    "ship": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tanker": {
+     "unlocked": false,
+     "value": 0
+    },
+    "kerosene": {
+     "unlocked": false,
+     "value": 0
+    },
+    "plastic": {
+     "unlocked": false,
+     "value": 0
+    },
+    "microchip": {
+     "unlocked": false,
+     "value": 0
+    },
+    "parchment": {
+     "unlocked": false,
+     "value": 0
+    },
+    "manuscript": {
+     "unlocked": true,
+     "value": 0
+    },
+    "compedium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "blueprint": {
+     "unlocked": false,
+     "value": 0
+    },
+    "thorium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "megalith": {
+     "unlocked": true,
+     "value": 0
+    },
+    "bloodstone": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tMythril": {
+     "unlocked": false,
+     "value": 0
+    }
+   },
+   "techs": [
+    "agriculture"
+   ],
+   "upgrades": [],
+   "policies": [],
+   "effects": {
+    "catnipPerTickBase": 2.125,
+    "catnipDemandRatio": 0,
+    "maxKittensRatio": 0,
+    "woodPerTick": 0
+   }
+  },
+  {
+   "tick": 5000,
+   "rngDraws": 67704,
+   "calendar": {
+    "year": 1,
+    "day": 0,
+    "season": "summer",
+    "weather": null,
+    "cycle": 0,
+    "cycleYear": 1
+   },
+   "kittens": {
+    "count": 2,
+    "free": 0,
+    "jobs": [
+     "scholar",
+     "scholar"
+    ]
+   },
+   "resources": {
+    "catnip": {
+     "v": 5410.7257592995775,
+     "m": 5000,
+     "u": true,
+     "p": 0.425
+    },
+    "wood": {
+     "v": 5,
+     "m": 200,
+     "u": true,
+     "p": 0
+    },
+    "minerals": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "coal": {
+     "v": 0,
+     "m": 60,
+     "u": false,
+     "p": 0
+    },
+    "iron": {
+     "v": 0,
+     "m": 50,
+     "u": false,
+     "p": 0
+    },
+    "titanium": {
+     "v": 0,
+     "m": 2,
+     "u": false,
+     "p": 0
+    },
+    "gold": {
+     "v": 0,
+     "m": 10,
+     "u": false,
+     "p": 0
+    },
+    "oil": {
+     "v": 0,
+     "m": 1500,
+     "u": false,
+     "p": 0
+    },
+    "uranium": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "unobtainium": {
+     "v": 0,
+     "m": 150,
+     "u": false,
+     "p": 0
+    },
+    "antimatter": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "manpower": {
+     "v": 0,
+     "m": 175,
+     "u": false,
+     "p": 0
+    },
+    "science": {
+     "v": 184.89999999999532,
+     "m": 500,
+     "u": true,
+     "p": 0.077
+    },
+    "culture": {
+     "v": 0,
+     "m": 110,
+     "u": false,
+     "p": 0
+    },
+    "faith": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "kittens": {
+     "v": 2,
+     "m": 2,
+     "u": true,
+     "p": 0
+    },
+    "zebras": {
+     "v": 0,
+     "m": 1,
+     "u": false,
+     "p": 0
+    },
+    "starchart": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "temporalFlux": {
+     "v": 0,
+     "m": 3000,
+     "u": false,
+     "p": 0
+    },
+    "gflops": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "hashrates": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "furs": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.02
+    },
+    "ivory": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.014
+    },
+    "spice": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.002
+    },
+    "unicorns": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alicorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "necrocorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tears": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "karma": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "paragon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "burnedParagon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "timeCrystal": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "sorrow": {
+     "v": 0,
+     "m": 17,
+     "u": false,
+     "p": 0
+    },
+    "relic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "void": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "elderBox": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "wrappingPaper": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blackcoin": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "bloodstone": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tMythril": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "beam": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "slab": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "steel": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "concrate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "gear": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alloy": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "eludium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "scaffold": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "ship": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tanker": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "kerosene": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plastic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "microchip": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "parchment": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "manuscript": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "compedium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blueprint": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "thorium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "megalith": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    }
+   },
+   "buildings": {
+    "field": {
+     "val": 17,
+     "on": 17,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "pasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aqueduct": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "hut": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "logHouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mansion": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "library": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "academy": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "observatory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "biolab": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "barn": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "warehouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "harbor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mine": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "quarry": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "smelter": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "calciner": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "steamworks": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "magneto": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "lumberMill": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "oilWell": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "workshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "factory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "reactor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "accelerator": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "tradepost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mint": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "brewery": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "amphitheatre": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chapel": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "temple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "unicornPasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ziggurat": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chronosphere": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aiCore": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraOutpost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraWorkshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraForge": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "stasisPod": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ivoryTemple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    }
+   },
+   "jobs": {
+    "woodcutter": {
+     "value": 0,
+     "unlocked": true
+    },
+    "farmer": {
+     "value": 0,
+     "unlocked": true
+    },
+    "scholar": {
+     "value": 2,
+     "unlocked": true
+    },
+    "hunter": {
+     "value": 0,
+     "unlocked": false
+    },
+    "miner": {
+     "value": 0,
+     "unlocked": false
+    },
+    "priest": {
+     "value": 0,
+     "unlocked": false
+    },
+    "geologist": {
+     "value": 0,
+     "unlocked": false
+    },
+    "engineer": {
+     "value": 0,
+     "unlocked": false
+    },
+    "ambassador": {
+     "value": 0,
+     "unlocked": false
+    }
+   },
+   "crafts": {
+    "wood": {
+     "unlocked": true,
+     "value": 0
+    },
+    "beam": {
+     "unlocked": true,
+     "value": 0
+    },
+    "slab": {
+     "unlocked": true,
+     "value": 0
+    },
+    "plate": {
+     "unlocked": true,
+     "value": 0
+    },
+    "steel": {
+     "unlocked": false,
+     "value": 0
+    },
+    "concrate": {
+     "unlocked": false,
+     "value": 0
+    },
+    "gear": {
+     "unlocked": true,
+     "value": 0
+    },
+    "alloy": {
+     "unlocked": false,
+     "value": 0
+    },
+    "eludium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "scaffold": {
+     "unlocked": true,
+     "value": 0
+    },
+    "ship": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tanker": {
+     "unlocked": false,
+     "value": 0
+    },
+    "kerosene": {
+     "unlocked": false,
+     "value": 0
+    },
+    "plastic": {
+     "unlocked": false,
+     "value": 0
+    },
+    "microchip": {
+     "unlocked": false,
+     "value": 0
+    },
+    "parchment": {
+     "unlocked": false,
+     "value": 0
+    },
+    "manuscript": {
+     "unlocked": true,
+     "value": 0
+    },
+    "compedium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "blueprint": {
+     "unlocked": false,
+     "value": 0
+    },
+    "thorium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "megalith": {
+     "unlocked": true,
+     "value": 0
+    },
+    "bloodstone": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tMythril": {
+     "unlocked": false,
+     "value": 0
+    }
+   },
+   "techs": [
+    "agriculture"
+   ],
+   "upgrades": [],
+   "policies": [],
+   "effects": {
+    "catnipPerTickBase": 2.125,
+    "catnipDemandRatio": 0,
+    "maxKittensRatio": 0,
+    "woodPerTick": 0
+   }
+  },
+  {
+   "tick": 6000,
+   "rngDraws": 81225,
+   "calendar": {
+    "year": 1,
+    "day": 0,
+    "season": "autumn",
+    "weather": null,
+    "cycle": 0,
+    "cycleYear": 1
+   },
+   "kittens": {
+    "count": 2,
+    "free": 0,
+    "jobs": [
+     "scholar",
+     "scholar"
+    ]
+   },
+   "resources": {
+    "catnip": {
+     "v": 6410.7257592995775,
+     "m": 5000,
+     "u": true,
+     "p": 0.425
+    },
+    "wood": {
+     "v": 5,
+     "m": 200,
+     "u": true,
+     "p": 0
+    },
+    "minerals": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "coal": {
+     "v": 0,
+     "m": 60,
+     "u": false,
+     "p": 0
+    },
+    "iron": {
+     "v": 0,
+     "m": 50,
+     "u": false,
+     "p": 0
+    },
+    "titanium": {
+     "v": 0,
+     "m": 2,
+     "u": false,
+     "p": 0
+    },
+    "gold": {
+     "v": 0,
+     "m": 10,
+     "u": false,
+     "p": 0
+    },
+    "oil": {
+     "v": 0,
+     "m": 1500,
+     "u": false,
+     "p": 0
+    },
+    "uranium": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "unobtainium": {
+     "v": 0,
+     "m": 150,
+     "u": false,
+     "p": 0
+    },
+    "antimatter": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "manpower": {
+     "v": 0,
+     "m": 175,
+     "u": false,
+     "p": 0
+    },
+    "science": {
+     "v": 261.8999999999935,
+     "m": 500,
+     "u": true,
+     "p": 0.077
+    },
+    "culture": {
+     "v": 0,
+     "m": 110,
+     "u": false,
+     "p": 0
+    },
+    "faith": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "kittens": {
+     "v": 2,
+     "m": 2,
+     "u": true,
+     "p": 0
+    },
+    "zebras": {
+     "v": 0,
+     "m": 1,
+     "u": false,
+     "p": 0
+    },
+    "starchart": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "temporalFlux": {
+     "v": 0,
+     "m": 3000,
+     "u": false,
+     "p": 0
+    },
+    "gflops": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "hashrates": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "furs": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.02
+    },
+    "ivory": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.014
+    },
+    "spice": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.002
+    },
+    "unicorns": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alicorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "necrocorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tears": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "karma": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "paragon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "burnedParagon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "timeCrystal": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "sorrow": {
+     "v": 0,
+     "m": 17,
+     "u": false,
+     "p": 0
+    },
+    "relic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "void": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "elderBox": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "wrappingPaper": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blackcoin": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "bloodstone": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tMythril": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "beam": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "slab": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "steel": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "concrate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "gear": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alloy": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "eludium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "scaffold": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "ship": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tanker": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "kerosene": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plastic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "microchip": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "parchment": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "manuscript": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "compedium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blueprint": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "thorium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "megalith": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    }
+   },
+   "buildings": {
+    "field": {
+     "val": 17,
+     "on": 17,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "pasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aqueduct": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "hut": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "logHouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mansion": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "library": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "academy": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "observatory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "biolab": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "barn": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "warehouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "harbor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mine": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "quarry": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "smelter": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "calciner": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "steamworks": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "magneto": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "lumberMill": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "oilWell": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "workshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "factory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "reactor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "accelerator": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "tradepost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mint": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "brewery": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "amphitheatre": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chapel": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "temple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "unicornPasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ziggurat": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chronosphere": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aiCore": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraOutpost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraWorkshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraForge": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "stasisPod": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ivoryTemple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    }
+   },
+   "jobs": {
+    "woodcutter": {
+     "value": 0,
+     "unlocked": true
+    },
+    "farmer": {
+     "value": 0,
+     "unlocked": true
+    },
+    "scholar": {
+     "value": 2,
+     "unlocked": true
+    },
+    "hunter": {
+     "value": 0,
+     "unlocked": false
+    },
+    "miner": {
+     "value": 0,
+     "unlocked": false
+    },
+    "priest": {
+     "value": 0,
+     "unlocked": false
+    },
+    "geologist": {
+     "value": 0,
+     "unlocked": false
+    },
+    "engineer": {
+     "value": 0,
+     "unlocked": false
+    },
+    "ambassador": {
+     "value": 0,
+     "unlocked": false
+    }
+   },
+   "crafts": {
+    "wood": {
+     "unlocked": true,
+     "value": 0
+    },
+    "beam": {
+     "unlocked": true,
+     "value": 0
+    },
+    "slab": {
+     "unlocked": true,
+     "value": 0
+    },
+    "plate": {
+     "unlocked": true,
+     "value": 0
+    },
+    "steel": {
+     "unlocked": false,
+     "value": 0
+    },
+    "concrate": {
+     "unlocked": false,
+     "value": 0
+    },
+    "gear": {
+     "unlocked": true,
+     "value": 0
+    },
+    "alloy": {
+     "unlocked": false,
+     "value": 0
+    },
+    "eludium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "scaffold": {
+     "unlocked": true,
+     "value": 0
+    },
+    "ship": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tanker": {
+     "unlocked": false,
+     "value": 0
+    },
+    "kerosene": {
+     "unlocked": false,
+     "value": 0
+    },
+    "plastic": {
+     "unlocked": false,
+     "value": 0
+    },
+    "microchip": {
+     "unlocked": false,
+     "value": 0
+    },
+    "parchment": {
+     "unlocked": false,
+     "value": 0
+    },
+    "manuscript": {
+     "unlocked": true,
+     "value": 0
+    },
+    "compedium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "blueprint": {
+     "unlocked": false,
+     "value": 0
+    },
+    "thorium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "megalith": {
+     "unlocked": true,
+     "value": 0
+    },
+    "bloodstone": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tMythril": {
+     "unlocked": false,
+     "value": 0
+    }
+   },
+   "techs": [
+    "agriculture"
+   ],
+   "upgrades": [],
+   "policies": [],
+   "effects": {
+    "catnipPerTickBase": 2.125,
+    "catnipDemandRatio": 0,
+    "maxKittensRatio": 0,
+    "woodPerTick": 0
+   }
+  },
+  {
+   "tick": 7000,
+   "rngDraws": 94746,
+   "calendar": {
+    "year": 1,
+    "day": 0,
+    "season": "winter",
+    "weather": null,
+    "cycle": 0,
+    "cycleYear": 1
+   },
+   "kittens": {
+    "count": 2,
+    "free": 0,
+    "jobs": [
+     "scholar",
+     "scholar"
+    ]
+   },
+   "resources": {
+    "catnip": {
+     "v": 7410.7257592995775,
+     "m": 5000,
+     "u": true,
+     "p": -1.16875
+    },
+    "wood": {
+     "v": 5,
+     "m": 200,
+     "u": true,
+     "p": 0
+    },
+    "minerals": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "coal": {
+     "v": 0,
+     "m": 60,
+     "u": false,
+     "p": 0
+    },
+    "iron": {
+     "v": 0,
+     "m": 50,
+     "u": false,
+     "p": 0
+    },
+    "titanium": {
+     "v": 0,
+     "m": 2,
+     "u": false,
+     "p": 0
+    },
+    "gold": {
+     "v": 0,
+     "m": 10,
+     "u": false,
+     "p": 0
+    },
+    "oil": {
+     "v": 0,
+     "m": 1500,
+     "u": false,
+     "p": 0
+    },
+    "uranium": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "unobtainium": {
+     "v": 0,
+     "m": 150,
+     "u": false,
+     "p": 0
+    },
+    "antimatter": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "manpower": {
+     "v": 0,
+     "m": 175,
+     "u": false,
+     "p": 0
+    },
+    "science": {
+     "v": 338.8999999999917,
+     "m": 500,
+     "u": true,
+     "p": 0.077
+    },
+    "culture": {
+     "v": 0,
+     "m": 110,
+     "u": false,
+     "p": 0
+    },
+    "faith": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "kittens": {
+     "v": 2,
+     "m": 2,
+     "u": true,
+     "p": 0
+    },
+    "zebras": {
+     "v": 0,
+     "m": 1,
+     "u": false,
+     "p": 0
+    },
+    "starchart": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "temporalFlux": {
+     "v": 0,
+     "m": 3000,
+     "u": false,
+     "p": 0
+    },
+    "gflops": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "hashrates": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "furs": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.02
+    },
+    "ivory": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.014
+    },
+    "spice": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.002
+    },
+    "unicorns": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alicorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "necrocorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tears": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "karma": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "paragon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "burnedParagon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "timeCrystal": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "sorrow": {
+     "v": 0,
+     "m": 17,
+     "u": false,
+     "p": 0
+    },
+    "relic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "void": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "elderBox": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "wrappingPaper": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blackcoin": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "bloodstone": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tMythril": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "beam": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "slab": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "steel": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "concrate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "gear": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alloy": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "eludium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "scaffold": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "ship": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tanker": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "kerosene": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plastic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "microchip": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "parchment": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "manuscript": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "compedium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blueprint": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "thorium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "megalith": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    }
+   },
+   "buildings": {
+    "field": {
+     "val": 17,
+     "on": 17,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "pasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aqueduct": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "hut": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "logHouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mansion": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "library": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "academy": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "observatory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "biolab": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "barn": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "warehouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "harbor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mine": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "quarry": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "smelter": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "calciner": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "steamworks": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "magneto": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "lumberMill": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "oilWell": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "workshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "factory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "reactor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "accelerator": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "tradepost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mint": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "brewery": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "amphitheatre": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chapel": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "temple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "unicornPasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ziggurat": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chronosphere": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aiCore": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraOutpost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraWorkshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraForge": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "stasisPod": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ivoryTemple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    }
+   },
+   "jobs": {
+    "woodcutter": {
+     "value": 0,
+     "unlocked": true
+    },
+    "farmer": {
+     "value": 0,
+     "unlocked": true
+    },
+    "scholar": {
+     "value": 2,
+     "unlocked": true
+    },
+    "hunter": {
+     "value": 0,
+     "unlocked": false
+    },
+    "miner": {
+     "value": 0,
+     "unlocked": false
+    },
+    "priest": {
+     "value": 0,
+     "unlocked": false
+    },
+    "geologist": {
+     "value": 0,
+     "unlocked": false
+    },
+    "engineer": {
+     "value": 0,
+     "unlocked": false
+    },
+    "ambassador": {
+     "value": 0,
+     "unlocked": false
+    }
+   },
+   "crafts": {
+    "wood": {
+     "unlocked": true,
+     "value": 0
+    },
+    "beam": {
+     "unlocked": true,
+     "value": 0
+    },
+    "slab": {
+     "unlocked": true,
+     "value": 0
+    },
+    "plate": {
+     "unlocked": true,
+     "value": 0
+    },
+    "steel": {
+     "unlocked": false,
+     "value": 0
+    },
+    "concrate": {
+     "unlocked": false,
+     "value": 0
+    },
+    "gear": {
+     "unlocked": true,
+     "value": 0
+    },
+    "alloy": {
+     "unlocked": false,
+     "value": 0
+    },
+    "eludium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "scaffold": {
+     "unlocked": true,
+     "value": 0
+    },
+    "ship": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tanker": {
+     "unlocked": false,
+     "value": 0
+    },
+    "kerosene": {
+     "unlocked": false,
+     "value": 0
+    },
+    "plastic": {
+     "unlocked": false,
+     "value": 0
+    },
+    "microchip": {
+     "unlocked": false,
+     "value": 0
+    },
+    "parchment": {
+     "unlocked": false,
+     "value": 0
+    },
+    "manuscript": {
+     "unlocked": true,
+     "value": 0
+    },
+    "compedium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "blueprint": {
+     "unlocked": false,
+     "value": 0
+    },
+    "thorium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "megalith": {
+     "unlocked": true,
+     "value": 0
+    },
+    "bloodstone": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tMythril": {
+     "unlocked": false,
+     "value": 0
+    }
+   },
+   "techs": [
+    "agriculture"
+   ],
+   "upgrades": [],
+   "policies": [],
+   "effects": {
+    "catnipPerTickBase": 2.125,
+    "catnipDemandRatio": 0,
+    "maxKittensRatio": 0,
+    "woodPerTick": 0
+   }
+  },
+  {
+   "tick": 8000,
+   "rngDraws": 108267,
+   "calendar": {
+    "year": 2,
+    "day": 0,
+    "season": "spring",
+    "weather": null,
+    "cycle": 0,
+    "cycleYear": 2
+   },
+   "kittens": {
+    "count": 2,
+    "free": 0,
+    "jobs": [
+     "scholar",
+     "scholar"
+    ]
+   },
+   "resources": {
+    "catnip": {
+     "v": 7241.975759299759,
+     "m": 5000,
+     "u": true,
+     "p": 1.4875
+    },
+    "wood": {
+     "v": 5,
+     "m": 200,
+     "u": true,
+     "p": 0
+    },
+    "minerals": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "coal": {
+     "v": 0,
+     "m": 60,
+     "u": false,
+     "p": 0
+    },
+    "iron": {
+     "v": 0,
+     "m": 50,
+     "u": false,
+     "p": 0
+    },
+    "titanium": {
+     "v": 0,
+     "m": 2,
+     "u": false,
+     "p": 0
+    },
+    "gold": {
+     "v": 0,
+     "m": 10,
+     "u": false,
+     "p": 0
+    },
+    "oil": {
+     "v": 0,
+     "m": 1500,
+     "u": false,
+     "p": 0
+    },
+    "uranium": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "unobtainium": {
+     "v": 0,
+     "m": 150,
+     "u": false,
+     "p": 0
+    },
+    "antimatter": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "manpower": {
+     "v": 0,
+     "m": 175,
+     "u": false,
+     "p": 0
+    },
+    "science": {
+     "v": 415.89999999998986,
+     "m": 500,
+     "u": true,
+     "p": 0.077
+    },
+    "culture": {
+     "v": 0,
+     "m": 110,
+     "u": false,
+     "p": 0
+    },
+    "faith": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "kittens": {
+     "v": 2,
+     "m": 2,
+     "u": true,
+     "p": 0
+    },
+    "zebras": {
+     "v": 0,
+     "m": 1,
+     "u": false,
+     "p": 0
+    },
+    "starchart": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "temporalFlux": {
+     "v": 0,
+     "m": 3000,
+     "u": false,
+     "p": 0
+    },
+    "gflops": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "hashrates": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "furs": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.02
+    },
+    "ivory": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.014
+    },
+    "spice": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.002
+    },
+    "unicorns": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alicorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "necrocorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tears": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "karma": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "paragon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "burnedParagon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "timeCrystal": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "sorrow": {
+     "v": 0,
+     "m": 17,
+     "u": false,
+     "p": 0
+    },
+    "relic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "void": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "elderBox": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "wrappingPaper": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blackcoin": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "bloodstone": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tMythril": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "beam": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "slab": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "steel": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "concrate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "gear": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alloy": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "eludium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "scaffold": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "ship": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tanker": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "kerosene": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plastic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "microchip": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "parchment": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "manuscript": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "compedium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blueprint": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "thorium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "megalith": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    }
+   },
+   "buildings": {
+    "field": {
+     "val": 17,
+     "on": 17,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "pasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aqueduct": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "hut": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "logHouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mansion": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "library": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "academy": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "observatory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "biolab": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "barn": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "warehouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "harbor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mine": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "quarry": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "smelter": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "calciner": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "steamworks": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "magneto": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "lumberMill": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "oilWell": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "workshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "factory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "reactor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "accelerator": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "tradepost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mint": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "brewery": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "amphitheatre": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chapel": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "temple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "unicornPasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ziggurat": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chronosphere": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aiCore": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraOutpost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraWorkshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraForge": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "stasisPod": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ivoryTemple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    }
+   },
+   "jobs": {
+    "woodcutter": {
+     "value": 0,
+     "unlocked": true
+    },
+    "farmer": {
+     "value": 0,
+     "unlocked": true
+    },
+    "scholar": {
+     "value": 2,
+     "unlocked": true
+    },
+    "hunter": {
+     "value": 0,
+     "unlocked": false
+    },
+    "miner": {
+     "value": 0,
+     "unlocked": false
+    },
+    "priest": {
+     "value": 0,
+     "unlocked": false
+    },
+    "geologist": {
+     "value": 0,
+     "unlocked": false
+    },
+    "engineer": {
+     "value": 0,
+     "unlocked": false
+    },
+    "ambassador": {
+     "value": 0,
+     "unlocked": false
+    }
+   },
+   "crafts": {
+    "wood": {
+     "unlocked": true,
+     "value": 0
+    },
+    "beam": {
+     "unlocked": true,
+     "value": 0
+    },
+    "slab": {
+     "unlocked": true,
+     "value": 0
+    },
+    "plate": {
+     "unlocked": true,
+     "value": 0
+    },
+    "steel": {
+     "unlocked": false,
+     "value": 0
+    },
+    "concrate": {
+     "unlocked": false,
+     "value": 0
+    },
+    "gear": {
+     "unlocked": true,
+     "value": 0
+    },
+    "alloy": {
+     "unlocked": false,
+     "value": 0
+    },
+    "eludium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "scaffold": {
+     "unlocked": true,
+     "value": 0
+    },
+    "ship": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tanker": {
+     "unlocked": false,
+     "value": 0
+    },
+    "kerosene": {
+     "unlocked": false,
+     "value": 0
+    },
+    "plastic": {
+     "unlocked": false,
+     "value": 0
+    },
+    "microchip": {
+     "unlocked": false,
+     "value": 0
+    },
+    "parchment": {
+     "unlocked": false,
+     "value": 0
+    },
+    "manuscript": {
+     "unlocked": true,
+     "value": 0
+    },
+    "compedium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "blueprint": {
+     "unlocked": false,
+     "value": 0
+    },
+    "thorium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "megalith": {
+     "unlocked": true,
+     "value": 0
+    },
+    "bloodstone": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tMythril": {
+     "unlocked": false,
+     "value": 0
+    }
+   },
+   "techs": [
+    "agriculture"
+   ],
+   "upgrades": [],
+   "policies": [],
+   "effects": {
+    "catnipPerTickBase": 2.125,
+    "catnipDemandRatio": 0,
+    "maxKittensRatio": 0,
+    "woodPerTick": 0
+   }
+  },
+  {
+   "tick": 9000,
+   "rngDraws": 121788,
+   "calendar": {
+    "year": 2,
+    "day": 0,
+    "season": "summer",
+    "weather": null,
+    "cycle": 0,
+    "cycleYear": 2
+   },
+   "kittens": {
+    "count": 2,
+    "free": 0,
+    "jobs": [
+     "scholar",
+     "scholar"
+    ]
+   },
+   "resources": {
+    "catnip": {
+     "v": 8241.97575929976,
+     "m": 5000,
+     "u": true,
+     "p": 0.425
+    },
+    "wood": {
+     "v": 5,
+     "m": 200,
+     "u": true,
+     "p": 0
+    },
+    "minerals": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "coal": {
+     "v": 0,
+     "m": 60,
+     "u": false,
+     "p": 0
+    },
+    "iron": {
+     "v": 0,
+     "m": 50,
+     "u": false,
+     "p": 0
+    },
+    "titanium": {
+     "v": 0,
+     "m": 2,
+     "u": false,
+     "p": 0
+    },
+    "gold": {
+     "v": 0,
+     "m": 10,
+     "u": false,
+     "p": 0
+    },
+    "oil": {
+     "v": 0,
+     "m": 1500,
+     "u": false,
+     "p": 0
+    },
+    "uranium": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "unobtainium": {
+     "v": 0,
+     "m": 150,
+     "u": false,
+     "p": 0
+    },
+    "antimatter": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "manpower": {
+     "v": 0,
+     "m": 175,
+     "u": false,
+     "p": 0
+    },
+    "science": {
+     "v": 492.89999999998804,
+     "m": 500,
+     "u": true,
+     "p": 0.077
+    },
+    "culture": {
+     "v": 0,
+     "m": 110,
+     "u": false,
+     "p": 0
+    },
+    "faith": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "kittens": {
+     "v": 2,
+     "m": 2,
+     "u": true,
+     "p": 0
+    },
+    "zebras": {
+     "v": 0,
+     "m": 1,
+     "u": false,
+     "p": 0
+    },
+    "starchart": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "temporalFlux": {
+     "v": 0,
+     "m": 3000,
+     "u": false,
+     "p": 0
+    },
+    "gflops": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "hashrates": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "furs": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.02
+    },
+    "ivory": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.014
+    },
+    "spice": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.002
+    },
+    "unicorns": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alicorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "necrocorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tears": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "karma": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "paragon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "burnedParagon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "timeCrystal": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "sorrow": {
+     "v": 0,
+     "m": 17,
+     "u": false,
+     "p": 0
+    },
+    "relic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "void": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "elderBox": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "wrappingPaper": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blackcoin": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "bloodstone": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tMythril": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "beam": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "slab": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "steel": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "concrate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "gear": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alloy": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "eludium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "scaffold": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "ship": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tanker": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "kerosene": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plastic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "microchip": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "parchment": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "manuscript": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "compedium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blueprint": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "thorium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "megalith": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    }
+   },
+   "buildings": {
+    "field": {
+     "val": 17,
+     "on": 17,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "pasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aqueduct": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "hut": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "logHouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mansion": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "library": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "academy": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "observatory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "biolab": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "barn": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "warehouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "harbor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mine": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "quarry": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "smelter": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "calciner": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "steamworks": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "magneto": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "lumberMill": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "oilWell": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "workshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "factory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "reactor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "accelerator": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "tradepost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mint": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "brewery": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "amphitheatre": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chapel": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "temple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "unicornPasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ziggurat": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chronosphere": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aiCore": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraOutpost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraWorkshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraForge": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "stasisPod": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ivoryTemple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    }
+   },
+   "jobs": {
+    "woodcutter": {
+     "value": 0,
+     "unlocked": true
+    },
+    "farmer": {
+     "value": 0,
+     "unlocked": true
+    },
+    "scholar": {
+     "value": 2,
+     "unlocked": true
+    },
+    "hunter": {
+     "value": 0,
+     "unlocked": false
+    },
+    "miner": {
+     "value": 0,
+     "unlocked": false
+    },
+    "priest": {
+     "value": 0,
+     "unlocked": false
+    },
+    "geologist": {
+     "value": 0,
+     "unlocked": false
+    },
+    "engineer": {
+     "value": 0,
+     "unlocked": false
+    },
+    "ambassador": {
+     "value": 0,
+     "unlocked": false
+    }
+   },
+   "crafts": {
+    "wood": {
+     "unlocked": true,
+     "value": 0
+    },
+    "beam": {
+     "unlocked": true,
+     "value": 0
+    },
+    "slab": {
+     "unlocked": true,
+     "value": 0
+    },
+    "plate": {
+     "unlocked": true,
+     "value": 0
+    },
+    "steel": {
+     "unlocked": false,
+     "value": 0
+    },
+    "concrate": {
+     "unlocked": false,
+     "value": 0
+    },
+    "gear": {
+     "unlocked": true,
+     "value": 0
+    },
+    "alloy": {
+     "unlocked": false,
+     "value": 0
+    },
+    "eludium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "scaffold": {
+     "unlocked": true,
+     "value": 0
+    },
+    "ship": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tanker": {
+     "unlocked": false,
+     "value": 0
+    },
+    "kerosene": {
+     "unlocked": false,
+     "value": 0
+    },
+    "plastic": {
+     "unlocked": false,
+     "value": 0
+    },
+    "microchip": {
+     "unlocked": false,
+     "value": 0
+    },
+    "parchment": {
+     "unlocked": false,
+     "value": 0
+    },
+    "manuscript": {
+     "unlocked": true,
+     "value": 0
+    },
+    "compedium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "blueprint": {
+     "unlocked": false,
+     "value": 0
+    },
+    "thorium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "megalith": {
+     "unlocked": true,
+     "value": 0
+    },
+    "bloodstone": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tMythril": {
+     "unlocked": false,
+     "value": 0
+    }
+   },
+   "techs": [
+    "agriculture"
+   ],
+   "upgrades": [],
+   "policies": [],
+   "effects": {
+    "catnipPerTickBase": 2.125,
+    "catnipDemandRatio": 0,
+    "maxKittensRatio": 0,
+    "woodPerTick": 0
+   }
+  },
+  {
+   "tick": 10000,
+   "rngDraws": 135309,
+   "calendar": {
+    "year": 2,
+    "day": 0,
+    "season": "autumn",
+    "weather": null,
+    "cycle": 0,
+    "cycleYear": 2
+   },
+   "kittens": {
+    "count": 2,
+    "free": 0,
+    "jobs": [
+     "scholar",
+     "scholar"
+    ]
+   },
+   "resources": {
+    "catnip": {
+     "v": 9241.97575929976,
+     "m": 5000,
+     "u": true,
+     "p": 0.425
+    },
+    "wood": {
+     "v": 5,
+     "m": 200,
+     "u": true,
+     "p": 0
+    },
+    "minerals": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "coal": {
+     "v": 0,
+     "m": 60,
+     "u": false,
+     "p": 0
+    },
+    "iron": {
+     "v": 0,
+     "m": 50,
+     "u": false,
+     "p": 0
+    },
+    "titanium": {
+     "v": 0,
+     "m": 2,
+     "u": false,
+     "p": 0
+    },
+    "gold": {
+     "v": 0,
+     "m": 10,
+     "u": false,
+     "p": 0
+    },
+    "oil": {
+     "v": 0,
+     "m": 1500,
+     "u": false,
+     "p": 0
+    },
+    "uranium": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "unobtainium": {
+     "v": 0,
+     "m": 150,
+     "u": false,
+     "p": 0
+    },
+    "antimatter": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "manpower": {
+     "v": 0,
+     "m": 175,
+     "u": false,
+     "p": 0
+    },
+    "science": {
+     "v": 500,
+     "m": 500,
+     "u": true,
+     "p": 0.077
+    },
+    "culture": {
+     "v": 0,
+     "m": 110,
+     "u": false,
+     "p": 0
+    },
+    "faith": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "kittens": {
+     "v": 2,
+     "m": 2,
+     "u": true,
+     "p": 0
+    },
+    "zebras": {
+     "v": 0,
+     "m": 1,
+     "u": false,
+     "p": 0
+    },
+    "starchart": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "temporalFlux": {
+     "v": 0,
+     "m": 3000,
+     "u": false,
+     "p": 0
+    },
+    "gflops": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "hashrates": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "furs": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.02
+    },
+    "ivory": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.014
+    },
+    "spice": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.002
+    },
+    "unicorns": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alicorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "necrocorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tears": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "karma": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "paragon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "burnedParagon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "timeCrystal": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "sorrow": {
+     "v": 0,
+     "m": 17,
+     "u": false,
+     "p": 0
+    },
+    "relic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "void": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "elderBox": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "wrappingPaper": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blackcoin": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "bloodstone": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tMythril": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "beam": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "slab": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "steel": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "concrate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "gear": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alloy": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "eludium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "scaffold": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "ship": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tanker": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "kerosene": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plastic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "microchip": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "parchment": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "manuscript": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "compedium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blueprint": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "thorium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "megalith": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    }
+   },
+   "buildings": {
+    "field": {
+     "val": 17,
+     "on": 17,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "pasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aqueduct": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "hut": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "logHouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mansion": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "library": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "academy": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "observatory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "biolab": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "barn": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "warehouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "harbor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mine": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "quarry": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "smelter": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "calciner": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "steamworks": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "magneto": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "lumberMill": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "oilWell": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "workshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "factory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "reactor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "accelerator": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "tradepost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mint": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "brewery": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "amphitheatre": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chapel": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "temple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "unicornPasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ziggurat": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chronosphere": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aiCore": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraOutpost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraWorkshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraForge": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "stasisPod": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ivoryTemple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    }
+   },
+   "jobs": {
+    "woodcutter": {
+     "value": 0,
+     "unlocked": true
+    },
+    "farmer": {
+     "value": 0,
+     "unlocked": true
+    },
+    "scholar": {
+     "value": 2,
+     "unlocked": true
+    },
+    "hunter": {
+     "value": 0,
+     "unlocked": false
+    },
+    "miner": {
+     "value": 0,
+     "unlocked": false
+    },
+    "priest": {
+     "value": 0,
+     "unlocked": false
+    },
+    "geologist": {
+     "value": 0,
+     "unlocked": false
+    },
+    "engineer": {
+     "value": 0,
+     "unlocked": false
+    },
+    "ambassador": {
+     "value": 0,
+     "unlocked": false
+    }
+   },
+   "crafts": {
+    "wood": {
+     "unlocked": true,
+     "value": 0
+    },
+    "beam": {
+     "unlocked": true,
+     "value": 0
+    },
+    "slab": {
+     "unlocked": true,
+     "value": 0
+    },
+    "plate": {
+     "unlocked": true,
+     "value": 0
+    },
+    "steel": {
+     "unlocked": false,
+     "value": 0
+    },
+    "concrate": {
+     "unlocked": false,
+     "value": 0
+    },
+    "gear": {
+     "unlocked": true,
+     "value": 0
+    },
+    "alloy": {
+     "unlocked": false,
+     "value": 0
+    },
+    "eludium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "scaffold": {
+     "unlocked": true,
+     "value": 0
+    },
+    "ship": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tanker": {
+     "unlocked": false,
+     "value": 0
+    },
+    "kerosene": {
+     "unlocked": false,
+     "value": 0
+    },
+    "plastic": {
+     "unlocked": false,
+     "value": 0
+    },
+    "microchip": {
+     "unlocked": false,
+     "value": 0
+    },
+    "parchment": {
+     "unlocked": false,
+     "value": 0
+    },
+    "manuscript": {
+     "unlocked": true,
+     "value": 0
+    },
+    "compedium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "blueprint": {
+     "unlocked": false,
+     "value": 0
+    },
+    "thorium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "megalith": {
+     "unlocked": true,
+     "value": 0
+    },
+    "bloodstone": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tMythril": {
+     "unlocked": false,
+     "value": 0
+    }
+   },
+   "techs": [
+    "agriculture"
+   ],
+   "upgrades": [],
+   "policies": [],
+   "effects": {
+    "catnipPerTickBase": 2.125,
+    "catnipDemandRatio": 0,
+    "maxKittensRatio": 0,
+    "woodPerTick": 0
+   }
+  },
+  {
+   "tick": 11000,
+   "rngDraws": 148830,
+   "calendar": {
+    "year": 2,
+    "day": 0,
+    "season": "winter",
+    "weather": null,
+    "cycle": 0,
+    "cycleYear": 2
+   },
+   "kittens": {
+    "count": 2,
+    "free": 0,
+    "jobs": [
+     "scholar",
+     "scholar"
+    ]
+   },
+   "resources": {
+    "catnip": {
+     "v": 9741.97575929976,
+     "m": 5000,
+     "u": true,
+     "p": -1.16875
+    },
+    "wood": {
+     "v": 5,
+     "m": 200,
+     "u": true,
+     "p": 0
+    },
+    "minerals": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "coal": {
+     "v": 0,
+     "m": 60,
+     "u": false,
+     "p": 0
+    },
+    "iron": {
+     "v": 0,
+     "m": 50,
+     "u": false,
+     "p": 0
+    },
+    "titanium": {
+     "v": 0,
+     "m": 2,
+     "u": false,
+     "p": 0
+    },
+    "gold": {
+     "v": 0,
+     "m": 10,
+     "u": false,
+     "p": 0
+    },
+    "oil": {
+     "v": 0,
+     "m": 1500,
+     "u": false,
+     "p": 0
+    },
+    "uranium": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "unobtainium": {
+     "v": 0,
+     "m": 150,
+     "u": false,
+     "p": 0
+    },
+    "antimatter": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "manpower": {
+     "v": 0,
+     "m": 175,
+     "u": false,
+     "p": 0
+    },
+    "science": {
+     "v": 500,
+     "m": 500,
+     "u": true,
+     "p": 0.077
+    },
+    "culture": {
+     "v": 0,
+     "m": 110,
+     "u": false,
+     "p": 0
+    },
+    "faith": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "kittens": {
+     "v": 2,
+     "m": 2,
+     "u": true,
+     "p": 0
+    },
+    "zebras": {
+     "v": 0,
+     "m": 1,
+     "u": false,
+     "p": 0
+    },
+    "starchart": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "temporalFlux": {
+     "v": 0,
+     "m": 3000,
+     "u": false,
+     "p": 0
+    },
+    "gflops": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "hashrates": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "furs": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.02
+    },
+    "ivory": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.014
+    },
+    "spice": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.002
+    },
+    "unicorns": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alicorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "necrocorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tears": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "karma": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "paragon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "burnedParagon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "timeCrystal": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "sorrow": {
+     "v": 0,
+     "m": 17,
+     "u": false,
+     "p": 0
+    },
+    "relic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "void": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "elderBox": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "wrappingPaper": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blackcoin": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "bloodstone": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tMythril": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "beam": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "slab": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "steel": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "concrate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "gear": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alloy": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "eludium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "scaffold": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "ship": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tanker": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "kerosene": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plastic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "microchip": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "parchment": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "manuscript": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "compedium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blueprint": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "thorium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "megalith": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    }
+   },
+   "buildings": {
+    "field": {
+     "val": 17,
+     "on": 17,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "pasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aqueduct": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "hut": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "logHouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mansion": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "library": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "academy": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "observatory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "biolab": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "barn": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "warehouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "harbor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mine": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "quarry": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "smelter": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "calciner": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "steamworks": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "magneto": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "lumberMill": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "oilWell": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "workshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "factory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "reactor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "accelerator": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "tradepost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mint": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "brewery": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "amphitheatre": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chapel": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "temple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "unicornPasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ziggurat": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chronosphere": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aiCore": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraOutpost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraWorkshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraForge": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "stasisPod": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ivoryTemple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    }
+   },
+   "jobs": {
+    "woodcutter": {
+     "value": 0,
+     "unlocked": true
+    },
+    "farmer": {
+     "value": 0,
+     "unlocked": true
+    },
+    "scholar": {
+     "value": 2,
+     "unlocked": true
+    },
+    "hunter": {
+     "value": 0,
+     "unlocked": false
+    },
+    "miner": {
+     "value": 0,
+     "unlocked": false
+    },
+    "priest": {
+     "value": 0,
+     "unlocked": false
+    },
+    "geologist": {
+     "value": 0,
+     "unlocked": false
+    },
+    "engineer": {
+     "value": 0,
+     "unlocked": false
+    },
+    "ambassador": {
+     "value": 0,
+     "unlocked": false
+    }
+   },
+   "crafts": {
+    "wood": {
+     "unlocked": true,
+     "value": 0
+    },
+    "beam": {
+     "unlocked": true,
+     "value": 0
+    },
+    "slab": {
+     "unlocked": true,
+     "value": 0
+    },
+    "plate": {
+     "unlocked": true,
+     "value": 0
+    },
+    "steel": {
+     "unlocked": false,
+     "value": 0
+    },
+    "concrate": {
+     "unlocked": false,
+     "value": 0
+    },
+    "gear": {
+     "unlocked": true,
+     "value": 0
+    },
+    "alloy": {
+     "unlocked": false,
+     "value": 0
+    },
+    "eludium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "scaffold": {
+     "unlocked": true,
+     "value": 0
+    },
+    "ship": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tanker": {
+     "unlocked": false,
+     "value": 0
+    },
+    "kerosene": {
+     "unlocked": false,
+     "value": 0
+    },
+    "plastic": {
+     "unlocked": false,
+     "value": 0
+    },
+    "microchip": {
+     "unlocked": false,
+     "value": 0
+    },
+    "parchment": {
+     "unlocked": false,
+     "value": 0
+    },
+    "manuscript": {
+     "unlocked": true,
+     "value": 0
+    },
+    "compedium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "blueprint": {
+     "unlocked": false,
+     "value": 0
+    },
+    "thorium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "megalith": {
+     "unlocked": true,
+     "value": 0
+    },
+    "bloodstone": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tMythril": {
+     "unlocked": false,
+     "value": 0
+    }
+   },
+   "techs": [
+    "agriculture"
+   ],
+   "upgrades": [],
+   "policies": [],
+   "effects": {
+    "catnipPerTickBase": 2.125,
+    "catnipDemandRatio": 0,
+    "maxKittensRatio": 0,
+    "woodPerTick": 0
+   }
+  },
+  {
+   "tick": 12000,
+   "rngDraws": 162351,
+   "calendar": {
+    "year": 3,
+    "day": 0,
+    "season": "spring",
+    "weather": null,
+    "cycle": 0,
+    "cycleYear": 3
+   },
+   "kittens": {
+    "count": 2,
+    "free": 0,
+    "jobs": [
+     "scholar",
+     "scholar"
+    ]
+   },
+   "resources": {
+    "catnip": {
+     "v": 10073.225759299032,
+     "m": 5000,
+     "u": true,
+     "p": 1.4875
+    },
+    "wood": {
+     "v": 5,
+     "m": 200,
+     "u": true,
+     "p": 0
+    },
+    "minerals": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "coal": {
+     "v": 0,
+     "m": 60,
+     "u": false,
+     "p": 0
+    },
+    "iron": {
+     "v": 0,
+     "m": 50,
+     "u": false,
+     "p": 0
+    },
+    "titanium": {
+     "v": 0,
+     "m": 2,
+     "u": false,
+     "p": 0
+    },
+    "gold": {
+     "v": 0,
+     "m": 10,
+     "u": false,
+     "p": 0
+    },
+    "oil": {
+     "v": 0,
+     "m": 1500,
+     "u": false,
+     "p": 0
+    },
+    "uranium": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "unobtainium": {
+     "v": 0,
+     "m": 150,
+     "u": false,
+     "p": 0
+    },
+    "antimatter": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "manpower": {
+     "v": 0,
+     "m": 175,
+     "u": false,
+     "p": 0
+    },
+    "science": {
+     "v": 500,
+     "m": 500,
+     "u": true,
+     "p": 0.0779625
+    },
+    "culture": {
+     "v": 0,
+     "m": 110,
+     "u": false,
+     "p": 0
+    },
+    "faith": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "kittens": {
+     "v": 2,
+     "m": 2,
+     "u": true,
+     "p": 0
+    },
+    "zebras": {
+     "v": 0,
+     "m": 1,
+     "u": false,
+     "p": 0
+    },
+    "starchart": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "temporalFlux": {
+     "v": 0,
+     "m": 3000,
+     "u": false,
+     "p": 0
+    },
+    "gflops": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "hashrates": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "furs": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.02
+    },
+    "ivory": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.014
+    },
+    "spice": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.002
+    },
+    "unicorns": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alicorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "necrocorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tears": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "karma": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "paragon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "burnedParagon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "timeCrystal": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "sorrow": {
+     "v": 0,
+     "m": 17,
+     "u": false,
+     "p": 0
+    },
+    "relic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "void": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "elderBox": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "wrappingPaper": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blackcoin": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "bloodstone": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tMythril": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "beam": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "slab": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "steel": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "concrate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "gear": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alloy": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "eludium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "scaffold": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "ship": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tanker": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "kerosene": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plastic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "microchip": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "parchment": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "manuscript": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "compedium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blueprint": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "thorium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "megalith": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    }
+   },
+   "buildings": {
+    "field": {
+     "val": 17,
+     "on": 17,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "pasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aqueduct": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "hut": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "logHouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mansion": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "library": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "academy": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "observatory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "biolab": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "barn": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "warehouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "harbor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mine": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "quarry": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "smelter": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "calciner": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "steamworks": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "magneto": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "lumberMill": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "oilWell": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "workshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "factory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "reactor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "accelerator": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "tradepost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mint": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "brewery": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "amphitheatre": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chapel": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "temple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "unicornPasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ziggurat": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chronosphere": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aiCore": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraOutpost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraWorkshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraForge": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "stasisPod": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ivoryTemple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    }
+   },
+   "jobs": {
+    "woodcutter": {
+     "value": 0,
+     "unlocked": true
+    },
+    "farmer": {
+     "value": 0,
+     "unlocked": true
+    },
+    "scholar": {
+     "value": 2,
+     "unlocked": true
+    },
+    "hunter": {
+     "value": 0,
+     "unlocked": false
+    },
+    "miner": {
+     "value": 0,
+     "unlocked": false
+    },
+    "priest": {
+     "value": 0,
+     "unlocked": false
+    },
+    "geologist": {
+     "value": 0,
+     "unlocked": false
+    },
+    "engineer": {
+     "value": 0,
+     "unlocked": false
+    },
+    "ambassador": {
+     "value": 0,
+     "unlocked": false
+    }
+   },
+   "crafts": {
+    "wood": {
+     "unlocked": true,
+     "value": 0
+    },
+    "beam": {
+     "unlocked": true,
+     "value": 0
+    },
+    "slab": {
+     "unlocked": true,
+     "value": 0
+    },
+    "plate": {
+     "unlocked": true,
+     "value": 0
+    },
+    "steel": {
+     "unlocked": false,
+     "value": 0
+    },
+    "concrate": {
+     "unlocked": false,
+     "value": 0
+    },
+    "gear": {
+     "unlocked": true,
+     "value": 0
+    },
+    "alloy": {
+     "unlocked": false,
+     "value": 0
+    },
+    "eludium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "scaffold": {
+     "unlocked": true,
+     "value": 0
+    },
+    "ship": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tanker": {
+     "unlocked": false,
+     "value": 0
+    },
+    "kerosene": {
+     "unlocked": false,
+     "value": 0
+    },
+    "plastic": {
+     "unlocked": false,
+     "value": 0
+    },
+    "microchip": {
+     "unlocked": false,
+     "value": 0
+    },
+    "parchment": {
+     "unlocked": false,
+     "value": 0
+    },
+    "manuscript": {
+     "unlocked": true,
+     "value": 0
+    },
+    "compedium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "blueprint": {
+     "unlocked": false,
+     "value": 0
+    },
+    "thorium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "megalith": {
+     "unlocked": true,
+     "value": 0
+    },
+    "bloodstone": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tMythril": {
+     "unlocked": false,
+     "value": 0
+    }
+   },
+   "techs": [
+    "agriculture"
+   ],
+   "upgrades": [],
+   "policies": [],
+   "effects": {
+    "catnipPerTickBase": 2.125,
+    "catnipDemandRatio": 0,
+    "maxKittensRatio": 0,
+    "woodPerTick": 0
+   }
+  },
+  {
+   "tick": 12500,
+   "rngDraws": 169111,
+   "calendar": {
+    "year": 3,
+    "day": 50,
+    "season": "spring",
+    "weather": null,
+    "cycle": 0,
+    "cycleYear": 3
+   },
+   "kittens": {
+    "count": 2,
+    "free": 0,
+    "jobs": [
+     "scholar",
+     "scholar"
+    ]
+   },
+   "resources": {
+    "catnip": {
+     "v": 10573.225759299032,
+     "m": 5000,
+     "u": true,
+     "p": 1.4875
+    },
+    "wood": {
+     "v": 5,
+     "m": 200,
+     "u": true,
+     "p": 0
+    },
+    "minerals": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "coal": {
+     "v": 0,
+     "m": 60,
+     "u": false,
+     "p": 0
+    },
+    "iron": {
+     "v": 0,
+     "m": 50,
+     "u": false,
+     "p": 0
+    },
+    "titanium": {
+     "v": 0,
+     "m": 2,
+     "u": false,
+     "p": 0
+    },
+    "gold": {
+     "v": 0,
+     "m": 10,
+     "u": false,
+     "p": 0
+    },
+    "oil": {
+     "v": 0,
+     "m": 1500,
+     "u": false,
+     "p": 0
+    },
+    "uranium": {
+     "v": 0,
+     "m": 250,
+     "u": false,
+     "p": 0
+    },
+    "unobtainium": {
+     "v": 0,
+     "m": 150,
+     "u": false,
+     "p": 0
+    },
+    "antimatter": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "manpower": {
+     "v": 0,
+     "m": 175,
+     "u": false,
+     "p": 0
+    },
+    "science": {
+     "v": 500,
+     "m": 500,
+     "u": true,
+     "p": 0.0779625
+    },
+    "culture": {
+     "v": 0,
+     "m": 110,
+     "u": false,
+     "p": 0
+    },
+    "faith": {
+     "v": 0,
+     "m": 100,
+     "u": false,
+     "p": 0
+    },
+    "kittens": {
+     "v": 2,
+     "m": 2,
+     "u": true,
+     "p": 0
+    },
+    "zebras": {
+     "v": 0,
+     "m": 1,
+     "u": false,
+     "p": 0
+    },
+    "starchart": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "temporalFlux": {
+     "v": 0,
+     "m": 3000,
+     "u": false,
+     "p": 0
+    },
+    "gflops": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "hashrates": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "furs": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.02
+    },
+    "ivory": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.014
+    },
+    "spice": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": -0.002
+    },
+    "unicorns": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alicorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "necrocorn": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tears": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "karma": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "paragon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "burnedParagon": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "timeCrystal": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "sorrow": {
+     "v": 0,
+     "m": 17,
+     "u": false,
+     "p": 0
+    },
+    "relic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "void": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "elderBox": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "wrappingPaper": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blackcoin": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "bloodstone": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tMythril": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "beam": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "slab": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "steel": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "concrate": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "gear": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "alloy": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "eludium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "scaffold": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "ship": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "tanker": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "kerosene": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "plastic": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "microchip": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "parchment": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "manuscript": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "compedium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "blueprint": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "thorium": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    },
+    "megalith": {
+     "v": 0,
+     "m": 0,
+     "u": false,
+     "p": 0
+    }
+   },
+   "buildings": {
+    "field": {
+     "val": 17,
+     "on": 17,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "pasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aqueduct": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "hut": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "logHouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mansion": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "library": {
+     "val": 1,
+     "on": 1,
+     "unlocked": true,
+     "unlockable": true,
+     "stage": 0
+    },
+    "academy": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "observatory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "biolab": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "barn": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "warehouse": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "harbor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mine": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "quarry": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "smelter": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "calciner": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "steamworks": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "magneto": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "lumberMill": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "oilWell": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "workshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    },
+    "factory": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "reactor": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "accelerator": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "tradepost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "mint": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "brewery": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "amphitheatre": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chapel": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "temple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "unicornPasture": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ziggurat": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "chronosphere": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "aiCore": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraOutpost": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraWorkshop": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "zebraForge": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "stasisPod": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": false,
+     "stage": 0
+    },
+    "ivoryTemple": {
+     "val": 0,
+     "on": 0,
+     "unlocked": false,
+     "unlockable": true,
+     "stage": 0
+    }
+   },
+   "jobs": {
+    "woodcutter": {
+     "value": 0,
+     "unlocked": true
+    },
+    "farmer": {
+     "value": 0,
+     "unlocked": true
+    },
+    "scholar": {
+     "value": 2,
+     "unlocked": true
+    },
+    "hunter": {
+     "value": 0,
+     "unlocked": false
+    },
+    "miner": {
+     "value": 0,
+     "unlocked": false
+    },
+    "priest": {
+     "value": 0,
+     "unlocked": false
+    },
+    "geologist": {
+     "value": 0,
+     "unlocked": false
+    },
+    "engineer": {
+     "value": 0,
+     "unlocked": false
+    },
+    "ambassador": {
+     "value": 0,
+     "unlocked": false
+    }
+   },
+   "crafts": {
+    "wood": {
+     "unlocked": true,
+     "value": 0
+    },
+    "beam": {
+     "unlocked": true,
+     "value": 0
+    },
+    "slab": {
+     "unlocked": true,
+     "value": 0
+    },
+    "plate": {
+     "unlocked": true,
+     "value": 0
+    },
+    "steel": {
+     "unlocked": false,
+     "value": 0
+    },
+    "concrate": {
+     "unlocked": false,
+     "value": 0
+    },
+    "gear": {
+     "unlocked": true,
+     "value": 0
+    },
+    "alloy": {
+     "unlocked": false,
+     "value": 0
+    },
+    "eludium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "scaffold": {
+     "unlocked": true,
+     "value": 0
+    },
+    "ship": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tanker": {
+     "unlocked": false,
+     "value": 0
+    },
+    "kerosene": {
+     "unlocked": false,
+     "value": 0
+    },
+    "plastic": {
+     "unlocked": false,
+     "value": 0
+    },
+    "microchip": {
+     "unlocked": false,
+     "value": 0
+    },
+    "parchment": {
+     "unlocked": false,
+     "value": 0
+    },
+    "manuscript": {
+     "unlocked": true,
+     "value": 0
+    },
+    "compedium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "blueprint": {
+     "unlocked": false,
+     "value": 0
+    },
+    "thorium": {
+     "unlocked": false,
+     "value": 0
+    },
+    "megalith": {
+     "unlocked": true,
+     "value": 0
+    },
+    "bloodstone": {
+     "unlocked": false,
+     "value": 0
+    },
+    "tMythril": {
+     "unlocked": false,
+     "value": 0
+    }
+   },
+   "techs": [
+    "agriculture"
+   ],
+   "upgrades": [],
+   "policies": [],
+   "effects": {
+    "catnipPerTickBase": 2.125,
+    "catnipDemandRatio": 0,
+    "maxKittensRatio": 0,
+    "woodPerTick": 0
+   }
+  }
+ ],
+ "actionLog": [
+  {
+   "tick": 1350,
+   "action": "assign",
+   "args": [
+    "scholar",
+    "2"
+   ],
+   "reason": "assigned 2/2 (freeBefore=1, jobLimit=100000)"
+  },
+  {
+   "tick": 3000,
+   "action": "buy",
+   "args": [
+    "barn"
+   ],
+   "reason": "built 0/1 (enabled=false, affordBefore=false)"
+  },
+  {
+   "tick": 3300,
+   "action": "assign",
+   "args": [
+    "woodcutter",
+    "2"
+   ],
+   "reason": "assigned 0/2 (freeBefore=0, jobLimit=100000)"
+  }
+ ]
+}

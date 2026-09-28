@@ -157,7 +157,8 @@ type Kitten =
       Exp: float
       Seed: int
       Trait: string
-      Age: float }
+      Age: float
+      Skills: Map<string, float> }
 
 type VillagePool =
     { Kittens: Kitten list
@@ -165,7 +166,8 @@ type VillagePool =
       MaxKittens: int
       JobValues: Map<string, int> // jobRef.value counters (diverge from kitten jobs, OBS-2)
       JobUnlocked: Set<string>
-      Happiness: float }
+      Happiness: float
+      DeathTimeout: int }
 
 let initVillage (jobDefs: Game.Catalog.Village.JobDef list) : VillagePool =
     { Kittens = []
@@ -177,7 +179,8 @@ let initVillage (jobDefs: Game.Catalog.Village.JobDef list) : VillagePool =
         |> List.filter (fun j -> j.StartsUnlocked)
         |> List.map (fun j -> j.Name)
         |> Set.ofList
-      Happiness = 1.0 }
+      Happiness = 1.0
+      DeathTimeout = 0 }
 
 /// orig calculateSimMaxKittens: maxKittens effect (huts ×val etc. via cache).
 let calculateMaxKittens (cache: Game.Effects.EffectsCache) (pool: VillagePool) : int =
@@ -208,7 +211,7 @@ let private makeKitten (seed: int) : Kitten =
     let age' =
         if rand 100 < 30 then age + float (rand 30) else age
     age <- age'
-    { Name = name; Surname = surname; Job = None; Rank = 0; Exp = 0.0; Seed = seed; Trait = trait; Age = age }
+    { Name = name; Surname = surname; Job = None; Rank = 0; Exp = 0.0; Seed = seed; Trait = trait; Age = age; Skills = Map.empty }
 
 let addKitten (rand: unit -> float) (pool: VillagePool) : VillagePool =
     let seed = generateKittenSeed rand
@@ -227,7 +230,23 @@ let simUpdate (maxKittens: int) (kittensPerTick: float) (times: int) (rand: unit
                     pool <- addKitten rand pool
             if pool.Kittens.Length >= maxKittens then
                 pool <- { pool with NextKittenProgress = 0.0 }
-    pool
+    // skill XP (orig L3315-3360): baseSkillXP = max(kittens × hgMod / 10000, 0.01)
+    // (internet seam: not researched); frequency = 1 for kittens < 100 → every tick
+    let baseSkillXP = max (float pool.Kittens.Length / 10000.0) 0.01
+    let skillXP = (baseSkillXP + 0.0) * float times // + skillXP effect seam (0)
+    { pool with
+        Kittens =
+            pool.Kittens
+            |> List.map (fun k ->
+                match k.Job with
+                | Some job ->
+                    let cur = k.Skills |> Map.tryFind job |> Option.defaultValue 0.0
+                    if cur = 0.0 then
+                        // orig: first XP tick sets skills[job] = skillXP (not += from 0)
+                        { k with Skills = k.Skills |> Map.add job skillXP }
+                    else
+                        { k with Skills = k.Skills |> Map.add job (cur + skillXP) }
+                | None -> k) }
 
 /// orig village.assignJob (manager level): amt capped by free kittens and the
 /// job limit (manager default 100000 here); the counter bumps by the capped amt
@@ -235,6 +254,50 @@ let simUpdate (maxKittens: int) (kittensPerTick: float) (times: int) (rand: unit
 /// orig getFreeKittens: kittens without a job.
 let getFreeKittens (vpool: VillagePool) : int =
     vpool.Kittens |> List.filter (fun k -> k.Job = None) |> List.length
+
+/// orig sim.killKittens(amount): removes the LAST n kittens (their job counters
+/// decremented — orig routes through village.unassignJob). Stats seam (stats-01).
+let killKittens (amount: int) (vpool: VillagePool) : VillagePool =
+    let amount = min amount vpool.Kittens.Length
+    let survivors = vpool.Kittens |> List.take (vpool.Kittens.Length - amount)
+    let mutable jobValues = vpool.JobValues
+    for k in vpool.Kittens |> List.skip (vpool.Kittens.Length - amount) do
+        match k.Job with
+        | Some j ->
+            let cur = jobValues |> Map.tryFind j |> Option.defaultValue 0
+            jobValues <- jobValues |> Map.add j (max 0 (cur - 1))
+        | None -> ()
+    { vpool with Kittens = survivors; JobValues = jobValues }
+
+/// orig village.update starvation branch (L430-462): kittens > 0 and catnip
+/// value + perTick < 0 -> kill min(1, |resDiff| rounded), deathTimeout = tps*5;
+/// else deathTimeout decrements. winterIsComing freeze branch folded in.
+let starvationStep
+    (catnipValue: float)
+    (catnipPerTick: float)
+    (ticksPerSecond: float)
+    (winterIsComingActive: bool)
+    (maxKittens: int)
+    (vpool: VillagePool)
+    : VillagePool =
+    let kittens = vpool.Kittens.Length
+    if kittens > 0 then
+        let resDiff = catnipValue + catnipPerTick
+        let starving = resDiff < 0 || (winterIsComingActive && kittens > maxKittens)
+        if starving then
+            let mutable starved = int (abs (jsRound resDiff))
+            if starved > 1 then starved <- 1
+            if starved > 0 && vpool.DeathTimeout <= 0 then
+                let vpool' = killKittens starved vpool
+                { vpool' with DeathTimeout = int (ticksPerSecond * 5.0) }
+            elif vpool.DeathTimeout > 0 then
+                { vpool with DeathTimeout = vpool.DeathTimeout - 1 }
+            else
+                vpool
+        else
+            { vpool with DeathTimeout = 0 }
+    else
+        vpool
 
 let assignJob (name: string) (amt: int) (vpool: VillagePool) : VillagePool =
     let current = vpool.JobValues |> Map.tryFind name |> Option.defaultValue 0
@@ -250,11 +313,14 @@ let assignJob (name: string) (amt: int) (vpool: VillagePool) : VillagePool =
 /// (reverse iteration, no optimize at fresh — register perk not researched).
 let simAssignJob (job: string) (amt: int) (vpool: VillagePool) : VillagePool =
     let mutable vpool = vpool
+    // orig iterates kittens REVERSED collecting free ones, then shift() takes
+    // from the front — i.e. the LAST free kitten is assigned first
     let mutable freeIds =
         vpool.Kittens
         |> List.indexed
         |> List.filter (fun (_, k) -> k.Job = None)
         |> List.map fst
+        |> List.rev
     let mutable n = amt
     while n > 0 && not freeIds.IsEmpty do
         let id = freeIds.Head
@@ -284,8 +350,20 @@ let getResProduction (vpool: VillagePool) (jobDefs: Map<string, Game.Catalog.Vil
                     match jobDef.CalculatedModifiers with
                     | Some m -> m
                     | None -> jobDef.Modifiers
+                // skill mod (orig getValueModifierPerSkill L1292): tiered bonus on
+                // accumulated skill XP; master/skill multiplier effects 0 at fresh
+                let skill = k.Skills |> Map.tryFind jobName |> Option.defaultValue 0.0
+                let skillBonus =
+                    if skill < 100.0 then 0.0
+                    elif skill < 500.0 then 0.0125
+                    elif skill < 1200.0 then 0.025
+                    elif skill < 2500.0 then 0.045
+                    elif skill < 5000.0 then 0.075
+                    elif skill < 9000.0 then 0.125
+                    else 0.1875
+                let skillMod = skillBonus * (1.0 + 0.0) // × (1 + skillMultiplier seam)
                 for KeyValue(resName, baseMod) in modifiers do
-                    let mutable diff = baseMod + baseMod * 0.0 // ×(1+skill mod): skill 0 at fresh
+                    let mutable diff = baseMod + baseMod * skillMod
                     diff <- diff * 1.0 // rank multiplier: boostPerRank 0 at fresh
                     if diff > 0.0 then
                         diff <- diff * happiness

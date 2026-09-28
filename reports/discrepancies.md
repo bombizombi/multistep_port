@@ -9,7 +9,7 @@ entry in `ledger/decisions.md` and mark the discrepancy `accepted`.
 
 | id | date | area | observation | plan |
 |---|---|---|---|---|
-| — | — | — | none open | — |
+| DISC-1 | 2026-09-28 | starvation/birth interplay | first-hunt: orig runs a boom-bust cycle (birth → overpopulation → starvation death → regrow) after catnip goes negative (~t1807). By t2250 orig k=1/v=25, port k=2/v=4.5 — the phases diverge by 1-2 ticks somewhere in the first death/recovery transition. Skills, luxury happiness, assignment order all verified correct (long-run 12500t IDENTICAL without starvation). | Per-tick trace with the deep tracer on first-hunt specifically; likely the starvation branch ordering vs birth accumulation or the deathTimeout decrement path. All other 8 scenarios IDENTICAL unfiltered. |
 
 ## Discrepancy log
 

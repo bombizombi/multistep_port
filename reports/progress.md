@@ -10,17 +10,17 @@ that first, then this. Last synced: 2026-09-28 (sessions 2026-09-28-02, -03).
 | 0 Bootstrap | **done** | structure + scan + scaffold (both builds green) |
 | 1 Reconnaissance | **done** | 33/33 files described (100%); 244 port units defined with layers+deps |
 | 2 Deterministic oracle | **core done** | orig runs headless + deterministic; 3 golden fixtures bit-exact self-checked; F# port-side runner pending (phase 3) |
-| 3 Incremental migration | **in progress** | 67 units verified; EARLY GAME PLAYS END-TO-END through player actions — full unfiltered snapshot diffs bit-exact |
+| 3 Incremental migration | **in progress** | 87 units verified; 12500-tick long-run (12 seasons, hunts, skill XP, births) IDENTICAL; 8/9 scenarios unfiltered bit-exact |
 | 4 Closure | not started | |
 
 ## Unit counts (from ledger)
 
 | Status | count |
 |---|---|
-| verified | 67 (+buildings×10, science×3, workshop×3, village×3, game×1) |
+| verified | 87 (+buildings×10, science×3, workshop×3, village×3, game×1 + diplomacy/religion/space/prestige/ach/stats/time data×13, village-07 hunt, village-05 happiness, village-02b skills, village-09b starvation, buildings-11b refine, game-06a/11a/13a, calendar-03, JS-sort) |
 | in-progress | 0 |
 | translated | 0 |
-| not-started | 179 ported units + verify-01 |
+| not-started | 159 ported units + verify-01 |
 | blocked | 0 |
 
 ## Next available units (dependencies satisfied)

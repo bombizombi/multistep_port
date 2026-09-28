@@ -2,17 +2,17 @@
 import { Record } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Types.js";
 import { float64_type, int32_type, option_type, record_type, class_type, list_type, string_type } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
 import { BuildingState, UpgradeState, CraftState, mkUpgrade, CraftState_$reflection, UpgradeState_$reflection, PolicyState, ResearchState, mkPolicy, mkResearch, PolicyState_$reflection, ResearchState_$reflection } from "./Game.Types.fs.js";
-import { updateAt, tail, head, isEmpty, indexed, singleton, append, length, item, filter, empty, map } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
+import { updateAt, tail, head, isEmpty, indexed, reverse, skip, take, singleton, append, length, item, filter, empty, map } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
 import { change, empty as empty_1, add, tryFind, ofList } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Map.js";
 import { equals, disposeSafe, getEnumerator, comparePrimitives } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
 import { addResEvent, payPrices, hasRes } from "./Game.Resources.fs.js";
 import { getEffect } from "./Game.Effects.fs.js";
 import { BldPool, get$ } from "./Game.Buildings.fs.js";
 import { ofList as ofList_1 } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Set.js";
-import { uniformRandomInteger } from "./Game.Math.fs.js";
+import { jsRound, uniformRandomInteger } from "./Game.Math.fs.js";
 import { traitDefs, surnames, names } from "./Game.Catalog.Village.fs.js";
+import { min, max } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Double.js";
 import { defaultArg } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Option.js";
-import { min } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Double.js";
 
 export class SciencePool extends Record {
     constructor(TechOrder, Techs, PolicyOrder, Policies) {
@@ -282,7 +282,7 @@ export function unlock(buildings, tabs, jobs, techs, policies, upgrades, bpool, 
  * calculateEffects (D012) is the exception — handled by the caller (village).
  */
 export class Kitten extends Record {
-    constructor(Name, Surname, Job, Rank, Exp, Seed, Trait, Age) {
+    constructor(Name, Surname, Job, Rank, Exp, Seed, Trait, Age, Skills) {
         super();
         this.Name = Name;
         this.Surname = Surname;
@@ -292,15 +292,16 @@ export class Kitten extends Record {
         this.Seed = (Seed | 0);
         this.Trait = Trait;
         this.Age = Age;
+        this.Skills = Skills;
     }
 }
 
 export function Kitten_$reflection() {
-    return record_type("Game.Managers.Kitten", [], Kitten, () => [["Name", string_type], ["Surname", string_type], ["Job", option_type(string_type)], ["Rank", int32_type], ["Exp", float64_type], ["Seed", int32_type], ["Trait", string_type], ["Age", float64_type]]);
+    return record_type("Game.Managers.Kitten", [], Kitten, () => [["Name", string_type], ["Surname", string_type], ["Job", option_type(string_type)], ["Rank", int32_type], ["Exp", float64_type], ["Seed", int32_type], ["Trait", string_type], ["Age", float64_type], ["Skills", class_type("Microsoft.FSharp.Collections.FSharpMap`2", [string_type, float64_type])]]);
 }
 
 export class VillagePool extends Record {
-    constructor(Kittens, NextKittenProgress, MaxKittens, JobValues, JobUnlocked, Happiness) {
+    constructor(Kittens, NextKittenProgress, MaxKittens, JobValues, JobUnlocked, Happiness, DeathTimeout) {
         super();
         this.Kittens = Kittens;
         this.NextKittenProgress = NextKittenProgress;
@@ -308,11 +309,12 @@ export class VillagePool extends Record {
         this.JobValues = JobValues;
         this.JobUnlocked = JobUnlocked;
         this.Happiness = Happiness;
+        this.DeathTimeout = (DeathTimeout | 0);
     }
 }
 
 export function VillagePool_$reflection() {
-    return record_type("Game.Managers.VillagePool", [], VillagePool, () => [["Kittens", list_type(Kitten_$reflection())], ["NextKittenProgress", float64_type], ["MaxKittens", int32_type], ["JobValues", class_type("Microsoft.FSharp.Collections.FSharpMap`2", [string_type, int32_type])], ["JobUnlocked", class_type("Microsoft.FSharp.Collections.FSharpSet`1", [string_type])], ["Happiness", float64_type]]);
+    return record_type("Game.Managers.VillagePool", [], VillagePool, () => [["Kittens", list_type(Kitten_$reflection())], ["NextKittenProgress", float64_type], ["MaxKittens", int32_type], ["JobValues", class_type("Microsoft.FSharp.Collections.FSharpMap`2", [string_type, int32_type])], ["JobUnlocked", class_type("Microsoft.FSharp.Collections.FSharpSet`1", [string_type])], ["Happiness", float64_type], ["DeathTimeout", int32_type]]);
 }
 
 export function initVillage(jobDefs) {
@@ -320,7 +322,7 @@ export function initVillage(jobDefs) {
         Compare: (x, y) => (comparePrimitives(x, y) | 0),
     }), ofList_1(map((j_2) => j_2.Name, filter((j_1) => j_1.StartsUnlocked, jobDefs)), {
         Compare: (x_1, y_1) => (comparePrimitives(x_1, y_1) | 0),
-    }), 1);
+    }), 1, 0);
 }
 
 /**
@@ -357,11 +359,13 @@ function makeKitten(seed) {
     let age = 1 + (rand(100) / 100);
     const age$0027 = (rand(100) < 30) ? (age + rand(30)) : age;
     age = age$0027;
-    return new Kitten(name, surname, undefined, 0, 0, seed, trait, age);
+    return new Kitten(name, surname, undefined, 0, 0, seed, trait, age, empty_1({
+        Compare: (x, y) => (comparePrimitives(x, y) | 0),
+    }));
 }
 
 export function addKitten(rand, pool) {
-    return new VillagePool(append(pool.Kittens, singleton(makeKitten(generateKittenSeed(rand)))), pool.NextKittenProgress, pool.MaxKittens, pool.JobValues, pool.JobUnlocked, pool.Happiness);
+    return new VillagePool(append(pool.Kittens, singleton(makeKitten(generateKittenSeed(rand)))), pool.NextKittenProgress, pool.MaxKittens, pool.JobValues, pool.JobUnlocked, pool.Happiness, pool.DeathTimeout);
 }
 
 /**
@@ -371,21 +375,37 @@ export function simUpdate(maxKittens, kittensPerTick, times, rand, pool) {
     let NextKittenProgress, NextKittenProgress_1;
     let pool_1 = pool;
     if (length(pool_1.Kittens) < maxKittens) {
-        pool_1 = ((NextKittenProgress = (pool_1.NextKittenProgress + (times * kittensPerTick)), new VillagePool(pool_1.Kittens, NextKittenProgress, pool_1.MaxKittens, pool_1.JobValues, pool_1.JobUnlocked, pool_1.Happiness)));
+        pool_1 = ((NextKittenProgress = (pool_1.NextKittenProgress + (times * kittensPerTick)), new VillagePool(pool_1.Kittens, NextKittenProgress, pool_1.MaxKittens, pool_1.JobValues, pool_1.JobUnlocked, pool_1.Happiness, pool_1.DeathTimeout)));
         if (pool_1.NextKittenProgress >= 1) {
             const kittensToAdd = ~~Math.floor(pool_1.NextKittenProgress) | 0;
-            pool_1 = ((NextKittenProgress_1 = (pool_1.NextKittenProgress - kittensToAdd), new VillagePool(pool_1.Kittens, NextKittenProgress_1, pool_1.MaxKittens, pool_1.JobValues, pool_1.JobUnlocked, pool_1.Happiness)));
+            pool_1 = ((NextKittenProgress_1 = (pool_1.NextKittenProgress - kittensToAdd), new VillagePool(pool_1.Kittens, NextKittenProgress_1, pool_1.MaxKittens, pool_1.JobValues, pool_1.JobUnlocked, pool_1.Happiness, pool_1.DeathTimeout)));
             for (let forLoopVar = 1; forLoopVar <= kittensToAdd; forLoopVar++) {
                 if (length(pool_1.Kittens) < maxKittens) {
                     pool_1 = addKitten(rand, pool_1);
                 }
             }
             if (length(pool_1.Kittens) >= maxKittens) {
-                pool_1 = (new VillagePool(pool_1.Kittens, 0, pool_1.MaxKittens, pool_1.JobValues, pool_1.JobUnlocked, pool_1.Happiness));
+                pool_1 = (new VillagePool(pool_1.Kittens, 0, pool_1.MaxKittens, pool_1.JobValues, pool_1.JobUnlocked, pool_1.Happiness, pool_1.DeathTimeout));
             }
         }
     }
-    return pool_1;
+    const skillXP = (max(length(pool_1.Kittens) / 10000, 0.01) + 0) * times;
+    return new VillagePool(map((k) => {
+        const matchValue = k.Job;
+        if (matchValue == null) {
+            return k;
+        }
+        else {
+            const job = matchValue;
+            const cur = defaultArg(tryFind(job, k.Skills), 0);
+            if (cur === 0) {
+                return new Kitten(k.Name, k.Surname, k.Job, k.Rank, k.Exp, k.Seed, k.Trait, k.Age, add(job, skillXP, k.Skills));
+            }
+            else {
+                return new Kitten(k.Name, k.Surname, k.Job, k.Rank, k.Exp, k.Seed, k.Trait, k.Age, add(job, cur + skillXP, k.Skills));
+            }
+        }
+    }, pool_1.Kittens), pool_1.NextKittenProgress, pool_1.MaxKittens, pool_1.JobValues, pool_1.JobUnlocked, pool_1.Happiness, pool_1.DeathTimeout);
 }
 
 /**
@@ -398,11 +418,73 @@ export function getFreeKittens(vpool) {
     return length(filter((k) => equals(k.Job, undefined), vpool.Kittens)) | 0;
 }
 
+/**
+ * orig sim.killKittens(amount): removes the LAST n kittens (their job counters
+ * decremented — orig routes through village.unassignJob). Stats seam (stats-01).
+ */
+export function killKittens(amount, vpool) {
+    const amount_1 = min(amount, length(vpool.Kittens)) | 0;
+    const survivors = take(length(vpool.Kittens) - amount_1, vpool.Kittens);
+    let jobValues = vpool.JobValues;
+    const enumerator = getEnumerator(skip(length(vpool.Kittens) - amount_1, vpool.Kittens));
+    try {
+        while (enumerator["System.Collections.IEnumerator.MoveNext"]()) {
+            let table_1;
+            const matchValue = enumerator["System.Collections.Generic.IEnumerator`1.get_Current"]().Job;
+            if (matchValue == null) {
+            }
+            else {
+                const j = matchValue;
+                const cur = defaultArg(tryFind(j, jobValues), 0) | 0;
+                jobValues = ((table_1 = jobValues, add(j, max(0, cur - 1), table_1)));
+            }
+        }
+    }
+    finally {
+        disposeSafe(enumerator);
+    }
+    return new VillagePool(survivors, vpool.NextKittenProgress, vpool.MaxKittens, jobValues, vpool.JobUnlocked, vpool.Happiness, vpool.DeathTimeout);
+}
+
+/**
+ * orig village.update starvation branch (L430-462): kittens > 0 and catnip
+ * value + perTick < 0 -> kill min(1, |resDiff| rounded), deathTimeout = tps*5;
+ * else deathTimeout decrements. winterIsComing freeze branch folded in.
+ */
+export function starvationStep(catnipValue, catnipPerTick, ticksPerSecond, winterIsComingActive, maxKittens, vpool) {
+    const kittens = length(vpool.Kittens) | 0;
+    if (kittens > 0) {
+        const resDiff = catnipValue + catnipPerTick;
+        if ((resDiff < 0) ? true : (winterIsComingActive && (kittens > maxKittens))) {
+            let starved = ~~Math.abs(jsRound(resDiff));
+            if (starved > 1) {
+                starved = 1;
+            }
+            if ((starved > 0) && (vpool.DeathTimeout <= 0)) {
+                const vpool$0027 = killKittens(starved, vpool);
+                return new VillagePool(vpool$0027.Kittens, vpool$0027.NextKittenProgress, vpool$0027.MaxKittens, vpool$0027.JobValues, vpool$0027.JobUnlocked, vpool$0027.Happiness, ~~(ticksPerSecond * 5));
+            }
+            else if (vpool.DeathTimeout > 0) {
+                return new VillagePool(vpool.Kittens, vpool.NextKittenProgress, vpool.MaxKittens, vpool.JobValues, vpool.JobUnlocked, vpool.Happiness, vpool.DeathTimeout - 1);
+            }
+            else {
+                return vpool;
+            }
+        }
+        else {
+            return new VillagePool(vpool.Kittens, vpool.NextKittenProgress, vpool.MaxKittens, vpool.JobValues, vpool.JobUnlocked, vpool.Happiness, 0);
+        }
+    }
+    else {
+        return vpool;
+    }
+}
+
 export function assignJob(name, amt, vpool) {
     const current = defaultArg(tryFind(name, vpool.JobValues), 0) | 0;
     const capped = min(amt, min(getFreeKittens(vpool), 100000 - current)) | 0;
     if (capped > 0) {
-        return new VillagePool(vpool.Kittens, vpool.NextKittenProgress, vpool.MaxKittens, add(name, current + capped, vpool.JobValues), vpool.JobUnlocked, vpool.Happiness);
+        return new VillagePool(vpool.Kittens, vpool.NextKittenProgress, vpool.MaxKittens, add(name, current + capped, vpool.JobValues), vpool.JobUnlocked, vpool.Happiness, vpool.DeathTimeout);
     }
     else {
         return vpool;
@@ -415,13 +497,13 @@ export function assignJob(name, amt, vpool) {
  */
 export function simAssignJob(job, amt, vpool) {
     let vpool_1 = vpool;
-    let freeIds = map((tuple) => (tuple[0] | 0), filter((tupledArg) => equals(tupledArg[1].Job, undefined), indexed(vpool_1.Kittens)));
+    let freeIds = reverse(map((tuple) => (tuple[0] | 0), filter((tupledArg) => equals(tupledArg[1].Job, undefined), indexed(vpool_1.Kittens))));
     let n = amt;
     while ((n > 0) && !isEmpty(freeIds)) {
         const id = head(freeIds) | 0;
         freeIds = tail(freeIds);
         const k_1 = item(id, vpool_1.Kittens);
-        vpool_1 = (new VillagePool(updateAt(id, new Kitten(k_1.Name, k_1.Surname, job, k_1.Rank, k_1.Exp, k_1.Seed, k_1.Trait, k_1.Age), vpool_1.Kittens), vpool_1.NextKittenProgress, vpool_1.MaxKittens, vpool_1.JobValues, vpool_1.JobUnlocked, vpool_1.Happiness));
+        vpool_1 = (new VillagePool(updateAt(id, new Kitten(k_1.Name, k_1.Surname, job, k_1.Rank, k_1.Exp, k_1.Seed, k_1.Trait, k_1.Age, k_1.Skills), vpool_1.Kittens), vpool_1.NextKittenProgress, vpool_1.MaxKittens, vpool_1.JobValues, vpool_1.JobUnlocked, vpool_1.Happiness, vpool_1.DeathTimeout));
         n = ((n - 1) | 0);
     }
     return vpool_1;
@@ -439,18 +521,24 @@ export function getResProduction(vpool, jobDefs) {
     const enumerator = getEnumerator(vpool.Kittens);
     try {
         while (enumerator["System.Collections.IEnumerator.MoveNext"]()) {
-            let matchValue_2;
-            const matchValue = enumerator["System.Collections.Generic.IEnumerator`1.get_Current"]().Job;
+            const k = enumerator["System.Collections.Generic.IEnumerator`1.get_Current"]();
+            const matchValue = k.Job;
             if (matchValue != null) {
-                const matchValue_1 = tryFind(matchValue, jobDefs);
+                const jobName = matchValue;
+                const matchValue_1 = tryFind(jobName, jobDefs);
                 if (matchValue_1 != null) {
                     const jobDef = matchValue_1;
-                    const enumerator_1 = getEnumerator((matchValue_2 = jobDef.CalculatedModifiers, (matchValue_2 == null) ? jobDef.Modifiers : matchValue_2));
+                    let modifiers;
+                    const matchValue_2 = jobDef.CalculatedModifiers;
+                    modifiers = ((matchValue_2 == null) ? jobDef.Modifiers : matchValue_2);
+                    const skill = defaultArg(tryFind(jobName, k.Skills), 0);
+                    const skillMod = ((skill < 100) ? 0 : ((skill < 500) ? 0.0125 : ((skill < 1200) ? 0.025 : ((skill < 2500) ? 0.045 : ((skill < 5000) ? 0.075 : ((skill < 9000) ? 0.125 : 0.1875)))))) * (1 + 0);
+                    const enumerator_1 = getEnumerator(modifiers);
                     try {
                         while (enumerator_1["System.Collections.IEnumerator.MoveNext"]()) {
                             const activePatternResult = enumerator_1["System.Collections.Generic.IEnumerator`1.get_Current"]();
                             const baseMod = activePatternResult[1];
-                            let diff = baseMod + (baseMod * 0);
+                            let diff = baseMod + (baseMod * skillMod);
                             diff = (diff * 1);
                             if (diff > 0) {
                                 diff = (diff * vpool.Happiness);

@@ -1,0 +1,66 @@
+# name: long-run-seasons
+# seed: 20260927
+# checkpoints: 0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 12500
+# Season/weather machinery long-run: 12500 ticks = 12.5 seasons. Year > 3 at
+# tick 4000 → weather rolls begin (warm/cold/null per season change). Exercises
+# calendar progression, season modifiers through summer/autumn/winter catnip,
+# kitten births/starvation, hunt loot, pollution accumulation.
+
+0 gather 30
+15 buy field
+50 gather 60
+90 buy field 4
+130 gather 80
+170 buy field 4
+210 gather 100
+250 buy field 4
+290 gather 120
+330 buy field 4
+370 gather 250
+420 craft wood 5
+460 buy hut
+500 gather 500
+560 craft wood 5
+600 gather 500
+660 craft wood 5
+720 gather 500
+780 craft wood 5
+840 gather 500
+900 craft wood 5
+960 gather 500
+1020 craft wood 5
+1080 gather 500
+1140 craft wood 5
+1200 buy library
+1250 assign scholar 1
+1350 assign scholar 2
+1500 gather 500
+1800 gather 500
+2100 gather 500
+2400 gather 500
+2700 research agriculture
+3000 buy barn
+3300 assign woodcutter 2
+3600 hunt
+4000 hunt
+4400 gather 500
+4800 gather 500
+5200 gather 500
+5600 gather 500
+6000 hunt
+6400 gather 500
+6800 gather 500
+7200 gather 500
+7600 hunt
+8000 gather 500
+8400 gather 500
+8800 gather 500
+9200 hunt
+9600 gather 500
+10000 gather 500
+10400 gather 500
+10800 hunt
+11200 gather 500
+11600 gather 500
+12000 gather 500
+12400 gather 500
