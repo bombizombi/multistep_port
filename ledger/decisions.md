@@ -137,3 +137,21 @@ arithmetic port must respect:
    port (core-NN notes).
 6. `i18n.js` has a `_deffered`/`_deferred` typo silently disabling a re-init guard —
    reproduce the OBSERVED behavior, not the intended one (or record divergence).
+
+## D014 — resop test hook, dump canonicalization, cross-implementation diff (2026-09-28)
+
+1. **`resop` test-hook action** (`addRes`/`addResEvent`/`addResPerTick`): direct resPool
+   calls, mirroring how orig's own jest tests manipulate state directly. Used ONLY by
+   `unit-*` verification scenarios for modules whose behavior is not yet reachable
+   through player actions; golden player scenarios stay player-action-only.
+2. **Catalog dump canonicalization**: JS-undefined bool flags dump as `false` (their
+   truthy semantics), string optionals as `null`; `hasCustomIsRefundable` marks the one
+   function-valued override (antimatter).
+3. **Cross-implementation diffing**: `diff-snapshots.js` compares object keys
+   order-insensitively (JS vs F# emit different orders), checks only
+   scenario+seed in the header, and accepts `--include <subtree>` prefixes so a
+   partially-ported core is compared exactly on the subtrees it owns. Fixture files
+   are NEVER edited; scope grows as the port grows.
+4. **F# runner notes:** `dotnet run` executes with the project dir as cwd — use
+   absolute paths for scenario/output. `calendarDay` is threaded into the core until
+   calendar-01 owns it (verified: day = 0 after resetState).

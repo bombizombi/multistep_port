@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net11.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- The port-side oracle runner compiles the SAME Game core sources as the
+             kittens_land web app (single source of truth; Fable compiles them for
+             the browser, .NET runs them here). Keep lists in sync. -->
+        <Compile Include="../../../kittens_land/src/Game/Game.Types.fs"/>
+        <Compile Include="../../../kittens_land/src/Game/Game.Math.fs"/>
+        <Compile Include="../../../kittens_land/src/Game/Game.Catalog.Resources.fs"/>
+        <Compile Include="../../../kittens_land/src/Game/Game.Resources.fs"/>
+        <Compile Include="Program.fs"/>
+    </ItemGroup>
+
+</Project>

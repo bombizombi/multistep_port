@@ -13,7 +13,7 @@
  * game.tick() of tick T; a snapshot at tick T is taken AFTER that tick().
  * A snapshot at tick 0 (fresh state, zero ticks) is always taken.
  *
- * Action vocabulary v1 (oracle-02 contract):
+ * Action vocabulary v1.1 (oracle-02 contract + D014 test hook):
  *   gather [n]        gather catnip n times (default 1)
  *   buy <bld> [n]     buy n units of a building via its modern controller
  *   craft <res> [n]   craft n of a resource
@@ -25,11 +25,14 @@
  *   praise            praise the sun (faith)
  *   observe           no-op (explicit waiting)
  *   save / load       localStorage roundtrip (LCstorage-backed)
+ *   resop <fn> <res> <v>  TEST HOOK (D014): direct resPool call —
+ *                     fn ∈ addRes | addResEvent | addResPerTick; used only by
+ *                     unit-* verification scenarios, never by player scenarios.
  */
 
 const ACTIONS = new Set([
   "gather", "buy", "craft", "assign", "research", "upgrade",
-  "policy", "hunt", "praise", "observe", "save", "load",
+  "policy", "hunt", "praise", "observe", "save", "load", "resop",
 ]);
 
 function parseScenario(text) {
@@ -75,6 +78,9 @@ function parseScenario(text) {
     }
     if ((action === "research" || action === "upgrade" || action === "policy") && args.length !== 1) {
       problems.push(`line ${lineNo}: "${action}" needs exactly one name`); continue;
+    }
+    if (action === "resop" && args.length !== 3) {
+      problems.push(`line ${lineNo}: "resop" needs <fn> <res> <value>`); continue;
     }
     scenario.moves.push({ tick, action, args });
     maxTick = Math.max(maxTick, tick);

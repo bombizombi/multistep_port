@@ -37,18 +37,21 @@ const ORIG_LOAD_ORDER = [
 
 // ---------------------------------------------------------------------------
 // CLI
-const scenarioPath = process.argv[2];
+const dumpCatalogOnly = process.argv[2] === "--dump-catalog";
+const scenarioPath = dumpCatalogOnly ? null : process.argv[2];
 let outPath = process.argv[3];
-if (!scenarioPath) {
-  console.error("usage: node orig-driver.js <scenario.cat> [output.json]");
+if (!dumpCatalogOnly && !scenarioPath) {
+  console.error("usage: node orig-driver.js <scenario.cat> [output.json]\n       node orig-driver.js --dump-catalog <output.json>");
   process.exit(2);
 }
-const scenario = parseScenario(fs.readFileSync(scenarioPath, "utf8"));
-if (scenario.problems.length) {
+const scenario = dumpCatalogOnly ? null : parseScenario(fs.readFileSync(scenarioPath, "utf8"));
+if (scenario && scenario.problems.length) {
   for (const p of scenario.problems) console.error(`scenario: ${p}`);
   if (scenario.problems.some((p) => !p.includes("ignored"))) process.exit(2);
 }
-if (!outPath) outPath = path.resolve(__dirname, "..", "recordings", `${scenario.name}.json`);
+if (!outPath) outPath = dumpCatalogOnly
+  ? path.resolve(__dirname, "..", "fixtures", "resource-catalog-orig.json")
+  : path.resolve(__dirname, "..", "recordings", `${scenario.name}.json`);
 
 // ---------------------------------------------------------------------------
 // Deterministic environment (BEFORE any orig code loads)
@@ -78,7 +81,7 @@ function sfc32(a, b, c, d) {
     return (t >>> 0) / 4294967296;
   };
 }
-const sm = splitmix32(scenario.seed);
+const sm = splitmix32(scenario ? scenario.seed : 20260927);
 const rng = sfc32(sm(), sm(), sm(), sm());
 let rngDraws = 0;
 Math.random = function () { rngDraws++; return rng(); };
@@ -267,6 +270,20 @@ function doAction(move) {
       case "observe": return;
       case "save": game.save(); return;
       case "load": game.load(); return;
+      // resop — test-hook action (D014): direct resPool calls for unit-level
+      // verification of the resource pipeline (mirrors orig's own jest practice).
+      case "resop": {
+        const [fn, resName, valueArg] = args;
+        const v = Number(valueArg);
+        if (!Number.isFinite(v)) throw new Error(`resop ${fn}: bad value "${valueArg}"`);
+        let result;
+        if (fn === "addRes") result = game.resPool.addRes(game.resPool.get(resName), v, false);
+        else if (fn === "addResEvent") result = game.resPool.addResEvent(resName, v);
+        else if (fn === "addResPerTick") result = game.resPool.addResPerTick(resName, v);
+        else throw new Error(`resop: unknown fn "${fn}"`);
+        actionLog.push({ tick: tickIndex, action: "resop", args, result });
+        return;
+      }
       default: throw new Error(`unhandled action ${action}`);
     }
   } catch (e) {
@@ -328,6 +345,28 @@ function takeSnapshot() {
     resources, buildings, jobs, crafts, techs, upgrades, policies,
     effects: snapEffects(g),
   };
+}
+
+// ---------------------------------------------------------------------------
+// Catalog dump mode (--dump-catalog): initial resPool state, logic fields only.
+// Used by resources-01 verification (see D014 / session 04).
+if (dumpCatalogOnly) {
+  // Bool fields: undefined ≡ false in JS truthiness — canonicalized to false so
+  // the F# dump compares exactly (D014). String optionals (color/tag) stay null.
+  const boolFields = ["visible", "craftable", "calculatePerTick", "persists", "aiCanDestroy",
+    "transient", "isNotRefundable", "calculatePerDay", "calculatePerTickAndDay", "calculateOnYear"];
+  const strFields = ["name", "type", "color", "tag"];
+  const catalog = game.resPool.resources.map((r) => {
+    const o = {};
+    for (const f of strFields) o[f] = r[f] === undefined ? null : r[f];
+    for (const f of boolFields) o[f] = r[f] === undefined ? false : !!r[f];
+    o.hasCustomIsRefundable = typeof r.isRefundable === "function" && !r.isNotRefundable && r.name === "antimatter";
+    return o;
+  });
+  fs.mkdirSync(path.dirname(outPath), { recursive: true });
+  fs.writeFileSync(outPath, JSON.stringify({ driver: "orig-driver.js", origCommit: origCommit(), catalog }, null, 1));
+  console.log(`catalog: ${catalog.length} resources -> ${outPath}`);
+  process.exit(0);
 }
 
 // ---------------------------------------------------------------------------

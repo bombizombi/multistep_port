@@ -7,6 +7,10 @@
 
     <ItemGroup>
         <Compile Include="src/Shared.fs"/>
+        <Compile Include="src/Game/Game.Types.fs"/>
+        <Compile Include="src/Game/Game.Math.fs"/>
+        <Compile Include="src/Game/Game.Catalog.Resources.fs"/>
+        <Compile Include="src/Game/Game.Resources.fs"/>
         <Compile Include="src/Pages/NotFound.fs"/>
         <Compile Include="src/Pages/Layout.fs"/>
         <Compile Include="src/Pages/Page.fs"/>

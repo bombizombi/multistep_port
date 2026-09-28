@@ -1,0 +1,17 @@
+# name: unit-resources
+# seed: 20260927
+# checkpoints: 0
+# Unit verification for resources-02/03 (registry + addRes pipeline) via the
+# resop test hook (D014). Runs entirely at tick 0 (maxTick 0, no game ticks):
+# calendar.day is -1 (temporal paradox), so addRes/addResPerTick are gated while
+# addResEvent passes — exercising the paradox gate, unset-cap growth (maxValue 0
+# means unlimited), void flooring, the dust rule, and the karma DR roundtrip.
+# Cap clamping with real limits is verified in the resources-06 session.
+0 resop addResEvent catnip 1000000
+0 resop addResEvent wood 50
+0 resop addResEvent void 10.5
+0 resop addResEvent karma 100
+0 resop addRes catnip 5
+0 resop addResPerTick catnip 1.5
+0 resop addResEvent catnip -0.0000000001
+0 resop addResEvent energy 25

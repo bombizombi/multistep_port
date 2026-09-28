@@ -10,17 +10,17 @@ that first, then this. Last synced: 2026-09-28 (sessions 2026-09-28-02, -03).
 | 0 Bootstrap | **done** | structure + scan + scaffold (both builds green) |
 | 1 Reconnaissance | **done** | 33/33 files described (100%); 244 port units defined with layers+deps |
 | 2 Deterministic oracle | **core done** | orig runs headless + deterministic; 3 golden fixtures bit-exact self-checked; F# port-side runner pending (phase 3) |
-| 3 Incremental migration | **ready to start** | first targets: resources-01..03 against captured fixtures |
+| 3 Incremental migration | **in progress** | 4/244 units verified (resources-01..03 + oracle-04); first bit-exact port-vs-orig agreement |
 | 4 Closure | not started | |
 
 ## Unit counts (from ledger)
 
 | Status | count |
 |---|---|
-| verified | 26 (bootstrap×3, oracle×3, recon×20) |
-| in-progress | 1 (oracle-04 — F# runner half) |
+| verified | 30 (bootstrap×3, oracle×4, recon×20, resources×3) |
+| in-progress | 0 |
 | translated | 0 |
-| not-started | 244 ported units + verify-01 |
+| not-started | 240 ported units + verify-01 |
 | blocked | 0 |
 
 ## Next available units (dependencies satisfied)
@@ -41,7 +41,7 @@ that first, then this. Last synced: 2026-09-28 (sessions 2026-09-28-02, -03).
 
 - [x] Orig runs headless, deterministic (self-check identical)
 - [x] Golden fixtures captured (3 scenarios, bit-exact ×2 runs)
-- [ ] First core unit (resources-01/02) verified against orig fixtures
+- [x] First core units (resources-01..03) verified bit-exact against orig
 - [ ] First 1000-tick scenario agrees bit-exact (port vs orig)
 - [ ] Temple-baseline scenario (627k ticks) agrees
 - [ ] All 12 tabs render in kittens_land from ported core
