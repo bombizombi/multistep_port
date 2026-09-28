@@ -1,23 +1,33 @@
 
 import { Record } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Types.js";
-import { unit_type, bool_type, lambda_type, option_type, int32_type, record_type, float64_type, string_type } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
-import { length, item, ofArray } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
-import { equals } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
+import { unit_type, bool_type, lambda_type, option_type, int32_type, record_type, class_type, float64_type, string_type } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
+import { tryFind, ofList } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Map.js";
+import { length, item, ofArray, singleton } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
+import { equals, comparePrimitives } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
+import { defaultArg } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Option.js";
 import { uniformRandomInteger, jsRound } from "./Game.Math.fs.js";
 
 export class SeasonDef extends Record {
-    constructor(Name, CatnipModifier) {
+    constructor(Name, Modifiers) {
         super();
         this.Name = Name;
-        this.CatnipModifier = CatnipModifier;
+        this.Modifiers = Modifiers;
     }
 }
 
 export function SeasonDef_$reflection() {
-    return record_type("Game.Calendar.SeasonDef", [], SeasonDef, () => [["Name", string_type], ["CatnipModifier", float64_type]]);
+    return record_type("Game.Calendar.SeasonDef", [], SeasonDef, () => [["Name", string_type], ["Modifiers", class_type("Microsoft.FSharp.Collections.FSharpMap`2", [string_type, float64_type])]]);
 }
 
-export const seasons = ofArray([new SeasonDef("spring", 1.5), new SeasonDef("summer", 1), new SeasonDef("autumn", 1), new SeasonDef("winter", 0.25)]);
+export const seasons = ofArray([new SeasonDef("spring", ofList(singleton(["catnip", 1.5]), {
+    Compare: (x, y) => (comparePrimitives(x, y) | 0),
+})), new SeasonDef("summer", ofList(singleton(["catnip", 1]), {
+    Compare: (x_1, y_1) => (comparePrimitives(x_1, y_1) | 0),
+})), new SeasonDef("autumn", ofList(singleton(["catnip", 1]), {
+    Compare: (x_2, y_2) => (comparePrimitives(x_2, y_2) | 0),
+})), new SeasonDef("winter", ofList(singleton(["catnip", 0.25]), {
+    Compare: (x_3, y_3) => (comparePrimitives(x_3, y_3) | 0),
+}))]);
 
 export const cycleYearColors = ofArray(["#A00000", "#DBA901", "#14CD61", "#01A9DB", "#9A2EFE"]);
 
@@ -52,7 +62,7 @@ export const init = new CalendarState(0, 0, 0, undefined, 0, 0, 0, 0);
  * values below are verified against the orig harness.
  */
 export class CalendarContext extends Record {
-    constructor(GetEffect, TimeAccelerationRatio, DarkFuture, ChronomancyResearched, UnicornmancyResearched, Year1000ChallengeActive, WinterIsComingResearched, WinterIsComingActive, AdvancedAutomationResearched, CommunismResearched, WinterIsComingOn, Rand, OnParadox) {
+    constructor(GetEffect, TimeAccelerationRatio, DarkFuture, ChronomancyResearched, UnicornmancyResearched, Year1000ChallengeActive, WinterIsComingResearched, WinterIsComingActive, AdvancedAutomationResearched, CommunismResearched, WinterIsComingOn, Rand, OnParadox, OnNewDayRefresh) {
         super();
         this.GetEffect = GetEffect;
         this.TimeAccelerationRatio = TimeAccelerationRatio;
@@ -67,11 +77,12 @@ export class CalendarContext extends Record {
         this.WinterIsComingOn = WinterIsComingOn;
         this.Rand = Rand;
         this.OnParadox = OnParadox;
+        this.OnNewDayRefresh = OnNewDayRefresh;
     }
 }
 
 export function CalendarContext_$reflection() {
-    return record_type("Game.Calendar.CalendarContext", [], CalendarContext, () => [["GetEffect", lambda_type(string_type, float64_type)], ["TimeAccelerationRatio", float64_type], ["DarkFuture", bool_type], ["ChronomancyResearched", bool_type], ["UnicornmancyResearched", bool_type], ["Year1000ChallengeActive", bool_type], ["WinterIsComingResearched", bool_type], ["WinterIsComingActive", bool_type], ["AdvancedAutomationResearched", bool_type], ["CommunismResearched", bool_type], ["WinterIsComingOn", bool_type], ["Rand", lambda_type(unit_type, float64_type)], ["OnParadox", lambda_type(CalendarState_$reflection(), CalendarState_$reflection())]]);
+    return record_type("Game.Calendar.CalendarContext", [], CalendarContext, () => [["GetEffect", lambda_type(string_type, float64_type)], ["TimeAccelerationRatio", float64_type], ["DarkFuture", bool_type], ["ChronomancyResearched", bool_type], ["UnicornmancyResearched", bool_type], ["Year1000ChallengeActive", bool_type], ["WinterIsComingResearched", bool_type], ["WinterIsComingActive", bool_type], ["AdvancedAutomationResearched", bool_type], ["CommunismResearched", bool_type], ["WinterIsComingOn", bool_type], ["Rand", lambda_type(unit_type, float64_type)], ["OnParadox", lambda_type(CalendarState_$reflection(), CalendarState_$reflection())], ["OnNewDayRefresh", lambda_type(CalendarState_$reflection(), CalendarState_$reflection())]]);
 }
 
 /**
@@ -80,7 +91,7 @@ export function CalendarContext_$reflection() {
  */
 export function getWeatherMod(ctx, st, resName) {
     const season = item(st.Season, seasons);
-    let mod$0027 = (resName === season.Name) ? season.CatnipModifier : 1;
+    let mod$0027 = defaultArg(tryFind(resName, season.Modifiers), 1);
     if (resName !== "catnip") {
         return mod$0027;
     }
@@ -141,6 +152,7 @@ export function tick(ctx, st) {
         if (st_1.Day < 0) {
             st_1 = ctx.OnParadox(st_1);
         }
+        st_1 = ctx.OnNewDayRefresh(st_1);
         if (newSeason) {
             st_1 = (new CalendarState(st_1.Year, st_1.Day, st_1.Season, st_1.Weather, st_1.Cycle, st_1.CycleYear, 0, st_1.FestivalDays));
             if (st_1.Year > 3) {
@@ -190,9 +202,9 @@ export function tick(ctx, st) {
 }
 
 /**
- * Season catnip modifier of the current season (calendar-02 data, used by game-10).
+ * Season production modifiers of the current season (calendar-02, used by game-10).
  */
-export function seasonCatnipModifier(st) {
-    return item(st.Season, seasons).CatnipModifier;
+export function seasonModifiers(st) {
+    return item(st.Season, seasons).Modifiers;
 }
 

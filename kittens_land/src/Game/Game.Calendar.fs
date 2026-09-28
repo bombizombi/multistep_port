@@ -11,13 +11,15 @@ open Game.Math
 
 // --- data (calendar-01) -----------------------------------------------------
 
-type SeasonDef = { Name: string; CatnipModifier: float }
+type SeasonDef =
+    { Name: string
+      Modifiers: Map<string, float> } // keyed by RESOURCE name (orig seasons[..].modifiers)
 
 let seasons : SeasonDef list =
-    [ { Name = "spring"; CatnipModifier = 1.5 }
-      { Name = "summer"; CatnipModifier = 1.0 }
-      { Name = "autumn"; CatnipModifier = 1.0 }
-      { Name = "winter"; CatnipModifier = 0.25 } ]
+    [ { Name = "spring"; Modifiers = Map.ofList [ "catnip", 1.5 ] }
+      { Name = "summer"; Modifiers = Map.ofList [ "catnip", 1.0 ] }
+      { Name = "autumn"; Modifiers = Map.ofList [ "catnip", 1.0 ] }
+      { Name = "winter"; Modifiers = Map.ofList [ "catnip", 0.25 ] } ]
 
 let cycleYearColors : string list =
     [ "#A00000"; "#DBA901"; "#14CD61"; "#01A9DB"; "#9A2EFE" ]
@@ -70,13 +72,14 @@ type CalendarContext =
       CommunismResearched: bool // policy (false fresh) — getWeatherMod
       WinterIsComingOn: bool // challenge toggled ON (false fresh) — getWeatherMod
       Rand: unit -> float // the harness PRNG stream
-      OnParadox: CalendarState -> CalendarState } // paradox hook (resources void accrual)
+      OnParadox: CalendarState -> CalendarState // paradox hook (resources void accrual)
+      OnNewDayRefresh: CalendarState -> CalendarState } // orig onNewDay tail: game.upgrade({policies:["authocracy"]}) — the "policy hack" whose updateCaches refreshes ALL effects daily (calendar.js L730)
 
 /// Season/weather production modifier (orig getWeatherMod) — catnip only.
 /// `weather` comes from calendar-02 rolls; policy/challenge seams are fresh-false.
 let getWeatherMod (ctx: CalendarContext) (st: CalendarState) (resName: string) : float =
     let season = seasons.[st.Season]
-    let mutable mod' = if resName = season.Name then season.CatnipModifier else 1.0
+    let mutable mod' = season.Modifiers |> Map.tryFind resName |> Option.defaultValue 1.0
 
     if resName <> "catnip" then
         mod'
@@ -142,6 +145,10 @@ let tick (ctx: CalendarContext) (st: CalendarState) : CalendarState =
             () // relic addResPerDay: getEffect("relicPerDay") = 0 at fresh → no-op
         // (necrocorn pacts / blackPyramid / payDebt: religion-NN seams — no
         //  snapshotted state at fresh)
+        // orig onNewDay TAIL: game.upgrade({policies:["authocracy"]}) — the
+        // "policy hack"; game.upgrade unconditionally runs updateCaches, so
+        // EVERY new day refreshes the effects cache + perTickCached
+        st <- ctx.OnNewDayRefresh st
 
         if newSeason then
             // onNewSeason slice (calendar-02)
@@ -189,6 +196,6 @@ let tick (ctx: CalendarContext) (st: CalendarState) : CalendarState =
         // calendar.update() is empty in orig
         st
 
-/// Season catnip modifier of the current season (calendar-02 data, used by game-10).
-let seasonCatnipModifier (st: CalendarState) : float =
-    seasons.[st.Season].CatnipModifier
+/// Season production modifiers of the current season (calendar-02, used by game-10).
+let seasonModifiers (st: CalendarState) : Map<string, float> =
+    seasons.[st.Season].Modifiers

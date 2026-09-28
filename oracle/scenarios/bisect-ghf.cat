@@ -1,0 +1,7 @@
+# name: bisect-ghf
+# seed: 20260927
+# checkpoints: 80, 85, 88, 89, 90, 91, 92, 93, 94, 95, 96, 100
+0 gather 30
+15 buy field
+50 gather 60
+90 buy field 3

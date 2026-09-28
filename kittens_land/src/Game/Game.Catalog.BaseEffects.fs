@@ -6,10 +6,11 @@ module Game.Catalog.BaseEffects
 // which together seed the global effects cache before any building/upgrades exist.
 // When game-08 (effects cache) lands, this catalog becomes its seed data.
 
-let baseEffects : Map<string, float> =
+// IMPORTANT (session 08): orig has TWO separate effectsBase tables, aggregated
+// as separate managers — combining them double-counts shared keys in the sum.
+let bldBase : Map<string, float> =
     Map.ofList
-        [ // --- bld.effectsBase (js/buildings.js) ---
-          "catnipMax", 5000.0
+        [ "catnipMax", 5000.0
           "woodMax", 200.0
           "mineralsMax", 250.0
           "coalMax", 60.0
@@ -23,14 +24,13 @@ let baseEffects : Map<string, float> =
           "manpowerMax", 100.0
           "scienceMax", 250.0
           "cultureMax", 100.0
-          "faithMax", 100.0
-          // hut/logHouse/mansion "FakeBought" pollution entries are cost hacks,
-          // not caps — owned by the buildings units (buildings-01).
-          // --- time manager effectsBase (js/time.js) ---
-          "heatPerTick", 0.01
-          "heatMax", 100.0
-          "temporalFluxMax", 3000.0 // 60 * 10 * 5: 10 minutes at ticksPerSecond 5
-        ]
+          "faithMax", 100.0 ] // hut/logHouse/mansion "FakeBought" entries are cost hacks (buildings-01)
+
+let timeBase : Map<string, float> =
+    Map.ofList [ "heatPerTick", 0.01; "heatMax", 100.0; "temporalFluxMax", 3000.0 ] // 60*10*5
+
+let baseEffects : Map<string, float> =
+    bldBase |> Map.fold (fun acc k v -> Map.add k v acc) timeBase
 
 /// game.getEffect(name) at fresh state: the effects cache IS this table.
 let getEffect (name: string) : float =

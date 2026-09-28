@@ -48,3 +48,101 @@ type ResPool =
       EnergyProd: float
       EnergyWinterProd: float
       EnergyCons: float }
+
+// --- buildings-01 / science-01 / science-02 / workshop-01 / workshop-02 data ---
+
+type Price = { Resource: string; Val: float }
+
+type UnlockList =
+    { Buildings: string list
+      Tabs: string list
+      Jobs: string list
+      Tech: string list
+      Policies: string list
+      Upgrades: string list
+      Stages: string list }
+
+type StageDef =
+    { StageKey: string option
+      Prices: Price list
+      UnlockRatio: float option
+      Effects: Map<string, float> }
+
+type BuildingDef =
+    { Name: string
+      Tab: string option
+      Stage: int
+      UnlockRatio: float option
+      DefaultUnlockable: bool
+      Prices: Price list
+      PriceRatio: float option
+      LimitBuild: float option
+      TogglableOnOff: bool
+      NoStackable: bool
+      BreaksIronWill: bool
+      Effects: Map<string, float>
+      StartsUnlocked: bool
+      StartsUnlockable: bool
+      Stages: StageDef list
+      Unlocks: UnlockList option
+      Upgrades: UnlockList option
+      UnlockScheme: (string * float) option }
+
+type TechDef =
+    { Name: string
+      Prices: Price list
+      Unlocks: UnlockList option }
+
+type PolicyDef =
+    { Name: string
+      Prices: Price list
+      Unlocks: UnlockList option }
+
+type UpgradeDef =
+    { Name: string
+      Prices: Price list
+      Effects: Map<string, float> }
+
+type CraftDef =
+    { Name: string
+      Prices: Price list
+      Tier: float option
+      IgnoreBonuses: bool
+      StartsUnlocked: bool }
+
+/// Live building state (orig mutates the def; conversion pattern #2).
+type BuildingState =
+    { Def: BuildingDef
+      Val: int
+      On: int
+      Unlocked: bool
+      Unlockable: bool
+      Stage: int }
+
+/// Live tech/policy/upgrade state.
+type ResearchState =
+    { Def: TechDef
+      Unlocked: bool
+      Researched: bool }
+
+type PolicyState =
+    { Def: PolicyDef
+      Unlocked: bool
+      Researched: bool }
+
+type UpgradeState =
+    { Def: UpgradeDef
+      Unlocked: bool
+      Researched: bool }
+
+type CraftState =
+    { Def: CraftDef
+      Unlocked: bool
+      Value: float }
+
+// Typed constructors: ResearchState/PolicyState/UpgradeState share all field
+// names, and F# record inference resolves to the LAST declared — these pin the
+// intended type at every construction site.
+let mkResearch (def: TechDef) : ResearchState = { Def = def; Unlocked = false; Researched = false }
+let mkPolicy (def: PolicyDef) : PolicyState = { Def = def; Unlocked = false; Researched = false }
+let mkUpgrade (def: UpgradeDef) : UpgradeState = { Def = def; Unlocked = false; Researched = false }

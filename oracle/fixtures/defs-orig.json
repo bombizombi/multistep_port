@@ -1,0 +1,8430 @@
+{
+ "driver": "orig-driver.js",
+ "origCommit": "781e379f79f1e7512d168849cba21ed111502644",
+ "buildings": [
+  {
+   "name": "field",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": 0.3,
+   "defaultUnlockable": true,
+   "unlockable": true,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "catnip",
+     "val": 10
+    }
+   ],
+   "priceRatio": 1.12,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "catnipPerTickBase": 0.125
+   },
+   "calc": null,
+   "stages": [],
+   "unlocks": null,
+   "upgrades": null,
+   "unlockScheme": {
+    "name": "catnip",
+    "threshold": 56
+   }
+  },
+  {
+   "name": "pasture",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": 0.3,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [],
+   "priceRatio": null,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {},
+   "calc": {
+    "atVal0": {},
+    "atVal1": {}
+   },
+   "stages": [
+    {
+     "key": null,
+     "prices": [
+      {
+       "name": "catnip",
+       "val": 100
+      },
+      {
+       "name": "wood",
+       "val": 10
+      }
+     ],
+     "unlockRatio": null,
+     "effects": {
+      "catnipDemandRatio": -0.005
+     }
+    },
+    {
+     "key": null,
+     "prices": [
+      {
+       "name": "titanium",
+       "val": 250
+      }
+     ],
+     "unlockRatio": null,
+     "effects": {}
+    }
+   ],
+   "unlocks": null,
+   "upgrades": null,
+   "unlockScheme": null
+  },
+  {
+   "name": "aqueduct",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": 0.3,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [],
+   "priceRatio": null,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "catnipRatio": 0,
+    "energyProduction": 0
+   },
+   "calc": {
+    "atVal0": {
+     "catnipRatio": 0,
+     "energyProduction": 0
+    },
+    "atVal1": {
+     "catnipRatio": 0,
+     "energyProduction": 0
+    }
+   },
+   "stages": [
+    {
+     "key": null,
+     "prices": [
+      {
+       "name": "minerals",
+       "val": 75
+      }
+     ],
+     "unlockRatio": null,
+     "effects": {
+      "catnipRatio": 0.03
+     }
+    },
+    {
+     "key": null,
+     "prices": [
+      {
+       "name": "titanium",
+       "val": 2500
+      },
+      {
+       "name": "concrate",
+       "val": 100
+      },
+      {
+       "name": "gear",
+       "val": 5
+      }
+     ],
+     "unlockRatio": null,
+     "effects": {
+      "energyProduction": 5
+     }
+    }
+   ],
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "magneto"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   },
+   "unlockScheme": null
+  },
+  {
+   "name": "hut",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": 0.3,
+   "defaultUnlockable": true,
+   "unlockable": true,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "wood",
+     "val": 5
+    }
+   ],
+   "priceRatio": 2.5,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": true,
+   "effectsBase": {
+    "manpowerMax": 75,
+    "maxKittens": 2
+   },
+   "calc": null,
+   "stages": [],
+   "unlocks": {
+    "buildings": [],
+    "tabs": [
+     "village"
+    ],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   },
+   "upgrades": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [
+     "authocracy"
+    ],
+    "upgrades": [],
+    "stages": []
+   },
+   "unlockScheme": null
+  },
+  {
+   "name": "logHouse",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": 0.3,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "wood",
+     "val": 200
+    },
+    {
+     "name": "minerals",
+     "val": 250
+    }
+   ],
+   "priceRatio": 1.15,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": true,
+   "effectsBase": {
+    "manpowerMax": 50,
+    "maxKittens": 1
+   },
+   "calc": null,
+   "stages": [],
+   "unlocks": {
+    "buildings": [],
+    "tabs": [
+     "village"
+    ],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   },
+   "upgrades": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [
+     "authocracy"
+    ],
+    "upgrades": [],
+    "stages": []
+   },
+   "unlockScheme": null
+  },
+  {
+   "name": "mansion",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": null,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 25
+    },
+    {
+     "name": "slab",
+     "val": 185
+    },
+    {
+     "name": "steel",
+     "val": 75
+    }
+   ],
+   "priceRatio": 1.15,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": true,
+   "effectsBase": {
+    "manpowerMax": 50,
+    "maxKittens": 1
+   },
+   "calc": null,
+   "stages": [],
+   "unlocks": {
+    "buildings": [],
+    "tabs": [
+     "village"
+    ],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   },
+   "upgrades": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [
+     "authocracy"
+    ],
+    "upgrades": [],
+    "stages": []
+   },
+   "unlockScheme": null
+  },
+  {
+   "name": "library",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": null,
+   "defaultUnlockable": true,
+   "unlockable": true,
+   "unlocked": false,
+   "prices": [],
+   "priceRatio": 1.15,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": null,
+   "calc": {
+    "atVal0": null,
+    "atVal1": null
+   },
+   "stages": [
+    {
+     "key": null,
+     "prices": [
+      {
+       "name": "wood",
+       "val": 25
+      }
+     ],
+     "unlockRatio": 0.3,
+     "effects": {
+      "scienceRatio": 0.1,
+      "scienceMax": 250,
+      "cultureMax": 10
+     }
+    },
+    {
+     "key": null,
+     "prices": [
+      {
+       "name": "steel",
+       "val": 100
+      },
+      {
+       "name": "concrate",
+       "val": 10
+      },
+      {
+       "name": "microchip",
+       "val": 5
+      }
+     ],
+     "unlockRatio": null,
+     "effects": {
+      "scienceMaxCompendia": 1000,
+      "cultureMax": 25,
+      "energyConsumption": 2
+     }
+    }
+   ],
+   "unlocks": {
+    "buildings": [],
+    "tabs": [
+     "science"
+    ],
+    "jobs": [
+     "scholar"
+    ],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   },
+   "upgrades": {
+    "buildings": [
+     "biolab",
+     "observatory"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   },
+   "unlockScheme": null
+  },
+  {
+   "name": "academy",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": 0.3,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "wood",
+     "val": 50
+    },
+    {
+     "name": "minerals",
+     "val": 70
+    },
+    {
+     "name": "science",
+     "val": 100
+    }
+   ],
+   "priceRatio": 1.15,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "scienceRatio": 0.2,
+    "skillXP": 0.0005,
+    "scienceMax": 500,
+    "cultureMax": 25,
+    "academyMeteorBonus": 0
+   },
+   "calc": {
+    "atVal0": {
+     "scienceRatio": 0.2,
+     "skillXP": 0.0005,
+     "scienceMax": 500,
+     "cultureMax": 25,
+     "academyMeteorBonus": 0
+    },
+    "atVal1": {
+     "scienceRatio": 0.2,
+     "skillXP": 0.0005,
+     "scienceMax": 500,
+     "cultureMax": 25,
+     "academyMeteorBonus": 0
+    }
+   },
+   "stages": [],
+   "unlocks": null,
+   "upgrades": null,
+   "unlockScheme": {
+    "name": "school",
+    "threshold": 68
+   }
+  },
+  {
+   "name": "observatory",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": null,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "iron",
+     "val": 750
+    },
+    {
+     "name": "science",
+     "val": 1000
+    },
+    {
+     "name": "slab",
+     "val": 35
+    },
+    {
+     "name": "scaffold",
+     "val": 50
+    }
+   ],
+   "priceRatio": 1.1,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "starEventChance": 0.002,
+    "starAutoSuccessChance": 0.01
+   },
+   "calc": {
+    "atVal0": {
+     "starEventChance": 0.002,
+     "starAutoSuccessChance": 0.01,
+     "scienceRatio": 0.25,
+     "scienceMax": 1000
+    },
+    "atVal1": {
+     "starEventChance": 0.002,
+     "starAutoSuccessChance": 0.01,
+     "scienceRatio": 0.25,
+     "scienceMax": 1000
+    }
+   },
+   "stages": [],
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "library"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   },
+   "unlockScheme": null
+  },
+  {
+   "name": "biolab",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": null,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "science",
+     "val": 1500
+    },
+    {
+     "name": "slab",
+     "val": 100
+    },
+    {
+     "name": "plastic",
+     "val": 15
+    },
+    {
+     "name": "alloy",
+     "val": 25
+    }
+   ],
+   "priceRatio": 1.1,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "scienceRatio": 0.35,
+    "refineRatio": 0.1,
+    "scienceMax": 0,
+    "catnipPerTickCon": 0,
+    "oilPerTickProd": 0,
+    "energyConsumption": 0,
+    "compediumCraftRatio": 0,
+    "compediumGlobalCraftRatio": 0
+   },
+   "calc": {
+    "atVal0": {
+     "scienceRatio": 0.35,
+     "refineRatio": 0.1,
+     "scienceMax": 1500,
+     "catnipPerTickCon": 0,
+     "oilPerTickProd": 0,
+     "energyConsumption": 0,
+     "compediumCraftRatio": 0,
+     "compediumGlobalCraftRatio": 0
+    },
+    "atVal1": {
+     "scienceRatio": 0.35,
+     "refineRatio": 0.1,
+     "scienceMax": 1500,
+     "catnipPerTickCon": 0,
+     "oilPerTickProd": 0,
+     "energyConsumption": 0,
+     "compediumCraftRatio": 0,
+     "compediumGlobalCraftRatio": 0
+    }
+   },
+   "stages": [],
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "library"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   },
+   "unlockScheme": null
+  },
+  {
+   "name": "barn",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": 0.3,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "wood",
+     "val": 50
+    }
+   ],
+   "priceRatio": 1.75,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "catnipMax": 0,
+    "woodMax": 0,
+    "mineralsMax": 0,
+    "coalMax": 0,
+    "ironMax": 0,
+    "titaniumMax": 0,
+    "goldMax": 0
+   },
+   "calc": {
+    "atVal0": {
+     "catnipMax": 5000,
+     "woodMax": 200,
+     "mineralsMax": 250,
+     "coalMax": 60,
+     "ironMax": 50,
+     "titaniumMax": 2,
+     "goldMax": 10
+    },
+    "atVal1": {
+     "catnipMax": 5000,
+     "woodMax": 200,
+     "mineralsMax": 250,
+     "coalMax": 60,
+     "ironMax": 50,
+     "titaniumMax": 2,
+     "goldMax": 10
+    }
+   },
+   "stages": [],
+   "unlocks": null,
+   "upgrades": null,
+   "unlockScheme": null
+  },
+  {
+   "name": "warehouse",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": null,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [],
+   "priceRatio": null,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": null,
+   "calc": {
+    "atVal0": null,
+    "atVal1": null
+   },
+   "stages": [
+    {
+     "key": null,
+     "prices": [
+      {
+       "name": "beam",
+       "val": 1.5
+      },
+      {
+       "name": "slab",
+       "val": 2
+      }
+     ],
+     "unlockRatio": null,
+     "effects": {
+      "catnipMax": 0,
+      "woodMax": 150,
+      "mineralsMax": 200,
+      "coalMax": 30,
+      "ironMax": 25,
+      "titaniumMax": 10,
+      "goldMax": 5
+     }
+    },
+    {
+     "key": null,
+     "prices": [
+      {
+       "name": "titanium",
+       "val": 10000
+      },
+      {
+       "name": "eludium",
+       "val": 500
+      },
+      {
+       "name": "kerosene",
+       "val": 1000
+      },
+      {
+       "name": "blueprint",
+       "val": 500
+      },
+      {
+       "name": "starchart",
+       "val": 100000,
+       "multPriceRatio": 1.35
+      }
+     ],
+     "unlockRatio": null,
+     "effects": {
+      "moonBaseStorageBonus": 0,
+      "planetCrackerStorageBonus": 0,
+      "cryostationStorageBonus": 0,
+      "energyConsumption": 0,
+      "tradeVolume": 0
+     }
+    }
+   ],
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [
+     "transportSuperposition"
+    ],
+    "stages": []
+   },
+   "upgrades": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   },
+   "unlockScheme": {
+    "name": "minimalist",
+    "threshold": 10
+   }
+  },
+  {
+   "name": "harbor",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": null,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "slab",
+     "val": 50
+    },
+    {
+     "name": "plate",
+     "val": 75
+    },
+    {
+     "name": "scaffold",
+     "val": 5
+    }
+   ],
+   "priceRatio": 1.15,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "catnipMax": 0,
+    "woodMax": 0,
+    "mineralsMax": 0,
+    "coalMax": 0,
+    "ironMax": 0,
+    "titaniumMax": 0,
+    "goldMax": 0
+   },
+   "calc": {
+    "atVal0": {
+     "catnipMax": 2500,
+     "woodMax": 700,
+     "mineralsMax": 950,
+     "coalMax": 100,
+     "ironMax": 150,
+     "titaniumMax": 50,
+     "goldMax": 25
+    },
+    "atVal1": {
+     "catnipMax": 2500,
+     "woodMax": 700,
+     "mineralsMax": 950,
+     "coalMax": 100,
+     "ironMax": 150,
+     "titaniumMax": 50,
+     "goldMax": 25
+    }
+   },
+   "stages": [],
+   "unlocks": null,
+   "upgrades": null,
+   "unlockScheme": null
+  },
+  {
+   "name": "mine",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": 0.15,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "wood",
+     "val": 100
+    }
+   ],
+   "priceRatio": 1.15,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "mineralsRatio": 0,
+    "coalPerTickBase": 0,
+    "cathPollutionPerTickProd": 0
+   },
+   "calc": {
+    "atVal0": {
+     "mineralsRatio": 0.2,
+     "coalPerTickBase": 0,
+     "cathPollutionPerTickProd": 0.08
+    },
+    "atVal1": {
+     "mineralsRatio": 0.2,
+     "coalPerTickBase": 0,
+     "cathPollutionPerTickProd": 0.08
+    }
+   },
+   "stages": [],
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [
+     "miner"
+    ],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   },
+   "upgrades": null,
+   "unlockScheme": {
+    "name": "anthracite",
+    "threshold": 92
+   }
+  },
+  {
+   "name": "quarry",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": 0.3,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "slab",
+     "val": 1000
+    },
+    {
+     "name": "steel",
+     "val": 125
+    },
+    {
+     "name": "scaffold",
+     "val": 50
+    }
+   ],
+   "priceRatio": 1.15,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "mineralsRatio": 0.35,
+    "coalPerTickBase": 0.015,
+    "uraniumPerTickBase": 0,
+    "cathPollutionPerTickProd": 0.25,
+    "slabCraftRatio": 0
+   },
+   "calc": {
+    "atVal0": {
+     "mineralsRatio": 0.35,
+     "coalPerTickBase": 0.015,
+     "uraniumPerTickBase": 0,
+     "cathPollutionPerTickProd": 0.25,
+     "slabCraftRatio": 0
+    },
+    "atVal1": {
+     "mineralsRatio": 0.35,
+     "coalPerTickBase": 0.015,
+     "uraniumPerTickBase": 0,
+     "cathPollutionPerTickProd": 0.25,
+     "slabCraftRatio": 0
+    }
+   },
+   "stages": [],
+   "unlocks": null,
+   "upgrades": null,
+   "unlockScheme": null
+  },
+  {
+   "name": "smelter",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": 0.15,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "minerals",
+     "val": 200
+    }
+   ],
+   "priceRatio": 1.15,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "woodPerTickCon": 0,
+    "mineralsPerTickCon": 0,
+    "coalPerTickAutoprod": 0,
+    "ironPerTickAutoprod": 0,
+    "titaniumPerTickAutoprod": 0,
+    "goldPerTickAutoprod": 0,
+    "cathPollutionPerTickProd": 0.15
+   },
+   "calc": {
+    "atVal0": {
+     "woodPerTickCon": -0.05,
+     "mineralsPerTickCon": -0.1,
+     "coalPerTickAutoprod": 0,
+     "ironPerTickAutoprod": 0.02,
+     "titaniumPerTickAutoprod": 0,
+     "goldPerTickAutoprod": 0,
+     "cathPollutionPerTickProd": 0.15
+    },
+    "atVal1": {
+     "woodPerTickCon": -0.05,
+     "mineralsPerTickCon": -0.1,
+     "coalPerTickAutoprod": 0,
+     "ironPerTickAutoprod": 0.02,
+     "titaniumPerTickAutoprod": 0,
+     "goldPerTickAutoprod": 0,
+     "cathPollutionPerTickProd": 0.15
+    }
+   },
+   "stages": [],
+   "unlocks": null,
+   "upgrades": null,
+   "unlockScheme": null
+  },
+  {
+   "name": "calciner",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": null,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 15
+    },
+    {
+     "name": "oil",
+     "val": 500
+    },
+    {
+     "name": "steel",
+     "val": 100
+    },
+    {
+     "name": "blueprint",
+     "val": 1
+    }
+   ],
+   "priceRatio": 1.15,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "mineralsPerTickCon": -1.5,
+    "coalPerTickCon": 0,
+    "ironPerTickCon": 0,
+    "ironPerTickAutoprod": 0.15,
+    "titaniumPerTickAutoprod": 0.0005,
+    "oilPerTickCon": -0.024,
+    "steelPerTickProd": 0,
+    "energyConsumption": 1,
+    "cathPollutionPerTickProd": 1
+   },
+   "calc": {
+    "atVal0": {
+     "mineralsPerTickCon": -1.5,
+     "coalPerTickCon": 0,
+     "ironPerTickCon": 0,
+     "ironPerTickAutoprod": 0.15,
+     "titaniumPerTickAutoprod": 0.0005,
+     "oilPerTickCon": -0.024,
+     "steelPerTickProd": 0,
+     "energyConsumption": 1,
+     "cathPollutionPerTickProd": 1
+    },
+    "atVal1": {
+     "mineralsPerTickCon": -1.5,
+     "coalPerTickCon": 0,
+     "ironPerTickCon": 0,
+     "ironPerTickAutoprod": 0.15,
+     "titaniumPerTickAutoprod": 0.0005,
+     "oilPerTickCon": -0.024,
+     "steelPerTickProd": 0,
+     "energyConsumption": 1,
+     "cathPollutionPerTickProd": 1
+    }
+   },
+   "stages": [],
+   "unlocks": null,
+   "upgrades": null,
+   "unlockScheme": null
+  },
+  {
+   "name": "steamworks",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": null,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "steel",
+     "val": 65
+    },
+    {
+     "name": "gear",
+     "val": 20
+    },
+    {
+     "name": "blueprint",
+     "val": 1
+    }
+   ],
+   "priceRatio": 1.25,
+   "limitBuild": null,
+   "togglableOnOff": true,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "coalRatioGlobal": 0,
+    "manuscriptPerTickProd": 0,
+    "energyProduction": 1,
+    "magnetoBoostRatio": 0.15,
+    "cathPollutionPerTickProd": 1
+   },
+   "calc": {
+    "atVal0": {
+     "coalRatioGlobal": -0.8,
+     "manuscriptPerTickProd": 0,
+     "energyProduction": 1,
+     "magnetoBoostRatio": 0.15,
+     "cathPollutionPerTickProd": 1
+    },
+    "atVal1": {
+     "coalRatioGlobal": -0.8,
+     "manuscriptPerTickProd": 0,
+     "energyProduction": 1,
+     "magnetoBoostRatio": 0.15,
+     "cathPollutionPerTickProd": 1
+    }
+   },
+   "stages": [],
+   "unlocks": null,
+   "upgrades": null,
+   "unlockScheme": null
+  },
+  {
+   "name": "magneto",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": null,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "gear",
+     "val": 5
+    },
+    {
+     "name": "alloy",
+     "val": 10
+    },
+    {
+     "name": "blueprint",
+     "val": 1
+    }
+   ],
+   "priceRatio": 1.25,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "oilPerTick": -0.05,
+    "energyProduction": 5,
+    "magnetoRatio": 0.02,
+    "cathPollutionPerTickProd": 5
+   },
+   "calc": {
+    "atVal0": {
+     "oilPerTick": -0.05,
+     "energyProduction": 5,
+     "magnetoRatio": 0.02,
+     "cathPollutionPerTickProd": 5
+    },
+    "atVal1": {
+     "oilPerTick": -0.05,
+     "energyProduction": 5,
+     "magnetoRatio": 0.02,
+     "cathPollutionPerTickProd": 5
+    }
+   },
+   "stages": [],
+   "unlocks": null,
+   "upgrades": null,
+   "unlockScheme": null
+  },
+  {
+   "name": "lumberMill",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": 0.3,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "wood",
+     "val": 100
+    },
+    {
+     "name": "minerals",
+     "val": 250
+    },
+    {
+     "name": "iron",
+     "val": 50
+    }
+   ],
+   "priceRatio": 1.15,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "woodRatio": 0
+   },
+   "calc": {
+    "atVal0": {
+     "woodRatio": 0.1
+    },
+    "atVal1": {
+     "woodRatio": 0.1
+    }
+   },
+   "stages": [],
+   "unlocks": null,
+   "upgrades": null,
+   "unlockScheme": null
+  },
+  {
+   "name": "oilWell",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": null,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "steel",
+     "val": 50
+    },
+    {
+     "name": "gear",
+     "val": 25
+    },
+    {
+     "name": "scaffold",
+     "val": 25
+    }
+   ],
+   "priceRatio": 1.15,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "oilPerTickBase": 0.02,
+    "oilMax": 1500,
+    "energyConsumption": 0,
+    "cathPollutionPerTickProd": 0
+   },
+   "calc": {
+    "atVal0": {
+     "oilPerTickBase": 0.02,
+     "oilMax": 1500,
+     "energyConsumption": 0,
+     "cathPollutionPerTickProd": 0
+    },
+    "atVal1": {
+     "oilPerTickBase": 0.02,
+     "oilMax": 1500,
+     "energyConsumption": 0,
+     "cathPollutionPerTickProd": 0
+    }
+   },
+   "stages": [],
+   "unlocks": null,
+   "upgrades": null,
+   "unlockScheme": {
+    "name": "oil",
+    "threshold": 73
+   }
+  },
+  {
+   "name": "workshop",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": 0.0025,
+   "defaultUnlockable": true,
+   "unlockable": true,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "wood",
+     "val": 100
+    },
+    {
+     "name": "minerals",
+     "val": 400
+    }
+   ],
+   "priceRatio": 1.15,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "craftRatio": 0.06
+   },
+   "calc": {
+    "atVal0": {
+     "craftRatio": 0.06
+    },
+    "atVal1": {
+     "craftRatio": 0.06
+    }
+   },
+   "stages": [],
+   "unlocks": {
+    "buildings": [],
+    "tabs": [
+     "workshop"
+    ],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   },
+   "upgrades": null,
+   "unlockScheme": null
+  },
+  {
+   "name": "factory",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": null,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 2000
+    },
+    {
+     "name": "plate",
+     "val": 2500
+    },
+    {
+     "name": "concrate",
+     "val": 15
+    }
+   ],
+   "priceRatio": 1.15,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "craftRatio": 0,
+    "energyConsumption": 0,
+    "cathPollutionPerTickProd": 0,
+    "cathPollutionPerTickCon": 0
+   },
+   "calc": {
+    "atVal0": {
+     "craftRatio": 0.05,
+     "energyConsumption": 2,
+     "cathPollutionPerTickProd": 2,
+     "cathPollutionPerTickCon": 0
+    },
+    "atVal1": {
+     "craftRatio": 0.05,
+     "energyConsumption": 2,
+     "cathPollutionPerTickProd": 2,
+     "cathPollutionPerTickCon": 0
+    }
+   },
+   "stages": [],
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [
+     "liberalism",
+     "communism",
+     "fascism"
+    ],
+    "upgrades": [],
+    "stages": []
+   },
+   "upgrades": null,
+   "unlockScheme": {
+    "name": "factory",
+    "threshold": 20
+   }
+  },
+  {
+   "name": "reactor",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": null,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 3500
+    },
+    {
+     "name": "plate",
+     "val": 5000
+    },
+    {
+     "name": "concrate",
+     "val": 50
+    },
+    {
+     "name": "blueprint",
+     "val": 25
+    }
+   ],
+   "priceRatio": 1.15,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "uraniumPerTick": -0.001,
+    "thoriumPerTick": 0,
+    "productionRatio": 0.05,
+    "uraniumMax": 250,
+    "energyProduction": 10
+   },
+   "calc": {
+    "atVal0": {
+     "uraniumPerTick": -0.001,
+     "thoriumPerTick": 0,
+     "productionRatio": 0.05,
+     "uraniumMax": 250,
+     "energyProduction": 10
+    },
+    "atVal1": {
+     "uraniumPerTick": -0.001,
+     "thoriumPerTick": 0,
+     "productionRatio": 0.05,
+     "uraniumMax": 250,
+     "energyProduction": 10
+    }
+   },
+   "stages": [],
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "harbor"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   },
+   "unlockScheme": null
+  },
+  {
+   "name": "accelerator",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": null,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 7500
+    },
+    {
+     "name": "uranium",
+     "val": 25
+    },
+    {
+     "name": "concrate",
+     "val": 125
+    }
+   ],
+   "priceRatio": 1.15,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "titaniumPerTickCon": -0.015,
+    "uraniumPerTickAutoprod": 0.0025,
+    "catnipMax": 0,
+    "woodMax": 0,
+    "mineralsMax": 0,
+    "coalMax": 0,
+    "ironMax": 0,
+    "titaniumMax": 0,
+    "goldMax": 0,
+    "scienceMax": 0,
+    "energyConsumption": 0
+   },
+   "calc": {
+    "atVal0": {
+     "titaniumPerTickCon": -0.015,
+     "uraniumPerTickAutoprod": 0.0025,
+     "catnipMax": 0,
+     "woodMax": 0,
+     "mineralsMax": 0,
+     "coalMax": 0,
+     "ironMax": 0,
+     "titaniumMax": 0,
+     "goldMax": 0,
+     "scienceMax": 0,
+     "energyConsumption": 2
+    },
+    "atVal1": {
+     "titaniumPerTickCon": -0.015,
+     "uraniumPerTickAutoprod": 0.0025,
+     "catnipMax": 0,
+     "woodMax": 0,
+     "mineralsMax": 0,
+     "coalMax": 0,
+     "ironMax": 0,
+     "titaniumMax": 0,
+     "goldMax": 0,
+     "scienceMax": 0,
+     "energyConsumption": 2
+    }
+   },
+   "stages": [],
+   "unlocks": null,
+   "upgrades": null,
+   "unlockScheme": null
+  },
+  {
+   "name": "tradepost",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": 0.3,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "wood",
+     "val": 500
+    },
+    {
+     "name": "minerals",
+     "val": 200
+    },
+    {
+     "name": "gold",
+     "val": 10
+    }
+   ],
+   "priceRatio": 1.15,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "fursDemandRatio": -0.04,
+    "ivoryDemandRatio": -0.04,
+    "spiceDemandRatio": -0.04,
+    "tradeRatio": 0.015,
+    "standingRatio": 0
+   },
+   "calc": {
+    "atVal0": {
+     "fursDemandRatio": -0.04,
+     "ivoryDemandRatio": -0.04,
+     "spiceDemandRatio": -0.04,
+     "tradeRatio": 0.015,
+     "standingRatio": 0
+    },
+    "atVal1": {
+     "fursDemandRatio": -0.04,
+     "ivoryDemandRatio": -0.04,
+     "spiceDemandRatio": -0.04,
+     "tradeRatio": 0.015,
+     "standingRatio": 0
+    }
+   },
+   "stages": [],
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   },
+   "unlockScheme": null
+  },
+  {
+   "name": "mint",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": null,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "minerals",
+     "val": 5000
+    },
+    {
+     "name": "gold",
+     "val": 500
+    },
+    {
+     "name": "plate",
+     "val": 200
+    }
+   ],
+   "priceRatio": 1.15,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "goldPerTickCon": -0.005,
+    "manpowerPerTickCon": -0.75,
+    "fursPerTickProd": 0.00875,
+    "ivoryPerTickProd": 0.0021,
+    "goldMax": 100
+   },
+   "calc": {
+    "atVal0": {
+     "goldPerTickCon": -0.005,
+     "manpowerPerTickCon": -0.75,
+     "fursPerTickProd": 0.00875,
+     "ivoryPerTickProd": 0.0021,
+     "goldMax": 100
+    },
+    "atVal1": {
+     "goldPerTickCon": -0.005,
+     "manpowerPerTickCon": -0.75,
+     "fursPerTickProd": 0.00875,
+     "ivoryPerTickProd": 0.0021,
+     "goldMax": 100
+    }
+   },
+   "stages": [],
+   "unlocks": null,
+   "upgrades": null,
+   "unlockScheme": {
+    "name": "gold",
+    "threshold": 24
+   }
+  },
+  {
+   "name": "brewery",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": 0.2,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "wood",
+     "val": 1000
+    },
+    {
+     "name": "culture",
+     "val": 750
+    },
+    {
+     "name": "spice",
+     "val": 5
+    },
+    {
+     "name": "parchment",
+     "val": 375
+    }
+   ],
+   "priceRatio": 1.5,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "catnipPerTickCon": -1,
+    "spicePerTickCon": -0.1,
+    "festivalRatio": 0.01,
+    "festivalArrivalRatio": 0.001,
+    "manpowerRatio": 0
+   },
+   "calc": {
+    "atVal0": {
+     "catnipPerTickCon": -1,
+     "spicePerTickCon": -0.1,
+     "festivalRatio": 0.01,
+     "festivalArrivalRatio": 0.001,
+     "manpowerRatio": 0
+    },
+    "atVal1": {
+     "catnipPerTickCon": -1,
+     "spicePerTickCon": -0.1,
+     "festivalRatio": 0.01,
+     "festivalArrivalRatio": 0.001,
+     "manpowerRatio": 0
+    }
+   },
+   "stages": [],
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   },
+   "upgrades": null,
+   "unlockScheme": {
+    "name": "chocolate",
+    "threshold": 10
+   }
+  },
+  {
+   "name": "amphitheatre",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": null,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [],
+   "priceRatio": null,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "unhappinessRatio": 0,
+    "culturePerTickBase": 0,
+    "cultureMax": 0
+   },
+   "calc": null,
+   "stages": [
+    {
+     "key": null,
+     "prices": [
+      {
+       "name": "wood",
+       "val": 200
+      },
+      {
+       "name": "minerals",
+       "val": 1200
+      },
+      {
+       "name": "parchment",
+       "val": 3
+      }
+     ],
+     "unlockRatio": null,
+     "effects": {
+      "unhappinessRatio": -0.048,
+      "culturePerTickBase": 0.005,
+      "cultureMax": 50
+     }
+    },
+    {
+     "key": null,
+     "prices": [
+      {
+       "name": "iron",
+       "val": 1250
+      },
+      {
+       "name": "titanium",
+       "val": 75
+      }
+     ],
+     "unlockRatio": null,
+     "effects": {
+      "unhappinessRatio": -0.75,
+      "culturePerTickBase": 1,
+      "cultureMax": 300
+     }
+    }
+   ],
+   "unlocks": null,
+   "upgrades": null,
+   "unlockScheme": null
+  },
+  {
+   "name": "chapel",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": null,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "minerals",
+     "val": 2000
+    },
+    {
+     "name": "culture",
+     "val": 250
+    },
+    {
+     "name": "parchment",
+     "val": 250
+    }
+   ],
+   "priceRatio": 1.15,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "culturePerTickBase": 0,
+    "faithPerTickBase": 0,
+    "cultureMax": 0,
+    "faithMax": 0
+   },
+   "calc": {
+    "atVal0": {
+     "culturePerTickBase": 0.05,
+     "faithPerTickBase": 0.005,
+     "cultureMax": 200,
+     "faithMax": 0
+    },
+    "atVal1": {
+     "culturePerTickBase": 0.05,
+     "faithPerTickBase": 0.005,
+     "cultureMax": 200,
+     "faithMax": 0
+    }
+   },
+   "stages": [],
+   "unlocks": null,
+   "upgrades": null,
+   "unlockScheme": null
+  },
+  {
+   "name": "temple",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": null,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "gold",
+     "val": 50
+    },
+    {
+     "name": "slab",
+     "val": 25
+    },
+    {
+     "name": "plate",
+     "val": 15
+    },
+    {
+     "name": "manuscript",
+     "val": 10
+    }
+   ],
+   "priceRatio": 1.15,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "culturePerTickBase": 0,
+    "faithPerTickBase": 0,
+    "happiness": 0,
+    "manpowerMax": 0,
+    "scienceMax": 0,
+    "cultureMax": 0,
+    "faithMax": 0
+   },
+   "calc": {
+    "atVal0": {
+     "culturePerTickBase": 0.1,
+     "faithPerTickBase": 0,
+     "happiness": 0,
+     "manpowerMax": 0,
+     "scienceMax": 0,
+     "cultureMax": 0,
+     "faithMax": 100
+    },
+    "atVal1": {
+     "culturePerTickBase": 0.1,
+     "faithPerTickBase": 0,
+     "happiness": 0,
+     "manpowerMax": 0,
+     "scienceMax": 0,
+     "cultureMax": 0,
+     "faithMax": 100
+    }
+   },
+   "stages": [],
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "ziggurat"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   },
+   "unlockScheme": null
+  },
+  {
+   "name": "unicornPasture",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": 0.3,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "unicorns",
+     "val": 2
+    }
+   ],
+   "priceRatio": 1.75,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "catnipDemandRatio": -0.0015,
+    "unicornsPerTickBase": 0.001,
+    "unicornsMax": 0
+   },
+   "calc": {
+    "atVal0": {
+     "catnipDemandRatio": -0.0015,
+     "unicornsPerTickBase": 0.001,
+     "unicornsMax": 0
+    },
+    "atVal1": {
+     "catnipDemandRatio": -0.0015,
+     "unicornsPerTickBase": 0.001,
+     "unicornsMax": 0
+    }
+   },
+   "stages": [],
+   "unlocks": null,
+   "upgrades": null,
+   "unlockScheme": null
+  },
+  {
+   "name": "ziggurat",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": 0.01,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "scaffold",
+     "val": 50
+    },
+    {
+     "name": "blueprint",
+     "val": 1
+    },
+    {
+     "name": "megalith",
+     "val": 50
+    }
+   ],
+   "priceRatio": 1.25,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "cultureMaxRatio": 0.08,
+    "unicornsMax": 0,
+    "tearsMax": 0
+   },
+   "calc": {
+    "atVal0": {
+     "cultureMaxRatio": 0.08,
+     "unicornsMax": 0,
+     "tearsMax": 0
+    },
+    "atVal1": {
+     "cultureMaxRatio": 0.08,
+     "unicornsMax": 0,
+     "tearsMax": 0
+    }
+   },
+   "stages": [],
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "temple"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   },
+   "unlockScheme": null
+  },
+  {
+   "name": "chronosphere",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": null,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "unobtainium",
+     "val": 2500
+    },
+    {
+     "name": "science",
+     "val": 250000
+    },
+    {
+     "name": "timeCrystal",
+     "val": 1
+    },
+    {
+     "name": "blueprint",
+     "val": 100
+    }
+   ],
+   "priceRatio": 1.25,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "temporalParadoxChance": 0.01,
+    "resStasisRatio": 0.015,
+    "temporalFluxProduction": 0,
+    "energyConsumption": 0
+   },
+   "calc": {
+    "atVal0": {
+     "temporalParadoxChance": 0.01,
+     "resStasisRatio": 0.015,
+     "temporalFluxProduction": 0,
+     "energyConsumption": 20
+    },
+    "atVal1": {
+     "temporalParadoxChance": 0.01,
+     "resStasisRatio": 0.015,
+     "temporalFluxProduction": 0,
+     "energyConsumption": 20
+    }
+   },
+   "stages": [],
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "stasisPod"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   },
+   "unlockScheme": null
+  },
+  {
+   "name": "aiCore",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": 0.01,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "antimatter",
+     "val": 125
+    },
+    {
+     "name": "microchip",
+     "val": 25
+    },
+    {
+     "name": "science",
+     "val": 500000
+    }
+   ],
+   "priceRatio": 1.15,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "gflopsPerTickBase": 0.02,
+    "energyConsumption": 2
+   },
+   "calc": null,
+   "stages": [],
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "library"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   },
+   "unlockScheme": {
+    "name": "cyber",
+    "threshold": 5
+   }
+  },
+  {
+   "name": "zebraOutpost",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": 0.01,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "bloodstone",
+     "val": 1
+    }
+   ],
+   "priceRatio": 1.35,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "manpowerMax": 5,
+    "hunterRatio": 0.05,
+    "zebraPreparations": 0
+   },
+   "calc": {
+    "atVal0": {
+     "manpowerMax": 5,
+     "hunterRatio": 0.05,
+     "zebraPreparations": 0
+    },
+    "atVal1": {
+     "manpowerMax": 5,
+     "hunterRatio": 0.05,
+     "zebraPreparations": 0
+    }
+   },
+   "stages": [],
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "zebraWorkshop"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   },
+   "unlockScheme": null
+  },
+  {
+   "name": "zebraWorkshop",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": 0.01,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "bloodstone",
+     "val": 5
+    }
+   ],
+   "priceRatio": 1.15,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "bloodstoneRatio": 0,
+    "manpowerMax": 25
+   },
+   "calc": {
+    "atVal0": {
+     "bloodstoneRatio": 0,
+     "manpowerMax": 25,
+     "missingZebraPreparations": 0
+    },
+    "atVal1": {
+     "bloodstoneRatio": 0,
+     "manpowerMax": 25,
+     "missingZebraPreparations": 0
+    }
+   },
+   "stages": [],
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   },
+   "upgrades": {
+    "buildings": [
+     "zebraWorkshop"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   },
+   "unlockScheme": null
+  },
+  {
+   "name": "zebraForge",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": 0.01,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "bloodstone",
+     "val": 50
+    }
+   ],
+   "priceRatio": 1.15,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "tMythrilCraftRatio": 0.01,
+    "bloodstoneRatio": 0,
+    "manpowerMax": 50,
+    "preparationRatio": 0
+   },
+   "calc": {
+    "atVal0": {
+     "tMythrilCraftRatio": 0.01,
+     "bloodstoneRatio": 0,
+     "manpowerMax": 50,
+     "preparationRatio": 0
+    },
+    "atVal1": {
+     "tMythrilCraftRatio": 0.01,
+     "bloodstoneRatio": 0,
+     "manpowerMax": 50,
+     "preparationRatio": 0
+    }
+   },
+   "stages": [],
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   },
+   "upgrades": {
+    "buildings": [
+     "zebraOutpost"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   },
+   "unlockScheme": null
+  },
+  {
+   "name": "stasisPod",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": 0.01,
+   "defaultUnlockable": false,
+   "unlockable": false,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "tMythril",
+     "val": 1
+    },
+    {
+     "name": "timeCrystal",
+     "val": 2
+    },
+    {
+     "name": "void",
+     "val": 100
+    }
+   ],
+   "priceRatio": 1.25,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "zebrasMax": 1
+   },
+   "calc": null,
+   "stages": [],
+   "unlocks": null,
+   "upgrades": {
+    "buildings": [
+     "zebraOutpost"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   },
+   "unlockScheme": null
+  },
+  {
+   "name": "ivoryTemple",
+   "tab": null,
+   "stage": 0,
+   "unlockRatio": 0.1,
+   "defaultUnlockable": true,
+   "unlockable": true,
+   "unlocked": false,
+   "prices": [
+    {
+     "name": "tMythril",
+     "val": 1
+    },
+    {
+     "name": "ivory",
+     "val": 100
+    }
+   ],
+   "priceRatio": 1.15,
+   "limitBuild": null,
+   "togglableOnOff": false,
+   "noStackable": false,
+   "breaksIronWill": false,
+   "effectsBase": {
+    "ivoryPerTickCon": 0,
+    "mineralsPerTickProd": 0,
+    "titaniumPerTickCon": 0,
+    "alicornPerTickCon": 0,
+    "tMythrilPerTick": 0,
+    "manpowerMax": 10
+   },
+   "calc": {
+    "atVal0": {
+     "ivoryPerTickCon": 0,
+     "mineralsPerTickProd": 0,
+     "titaniumPerTickCon": 0,
+     "alicornPerTickCon": 0,
+     "tMythrilPerTick": 0,
+     "manpowerMax": 10
+    },
+    "atVal1": {
+     "ivoryPerTickCon": 0,
+     "mineralsPerTickProd": 0,
+     "titaniumPerTickCon": 0,
+     "alicornPerTickCon": 0,
+     "tMythrilPerTick": 0,
+     "manpowerMax": 10
+    }
+   },
+   "stages": [],
+   "unlocks": null,
+   "upgrades": null,
+   "unlockScheme": null
+  }
+ ],
+ "techs": [
+  {
+   "name": "calendar",
+   "prices": [
+    {
+     "name": "science",
+     "val": 30
+    }
+   ],
+   "unlocked": true,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [
+     "time"
+    ],
+    "jobs": [],
+    "tech": [
+     "agriculture"
+    ],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "agriculture",
+   "prices": [
+    {
+     "name": "science",
+     "val": 100
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "barn"
+    ],
+    "tabs": [
+     "queue"
+    ],
+    "jobs": [
+     "farmer"
+    ],
+    "tech": [
+     "mining",
+     "archery"
+    ],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "archery",
+   "prices": [
+    {
+     "name": "science",
+     "val": 300
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "zebraOutpost",
+     "zebraWorkshop",
+     "zebraForge"
+    ],
+    "tabs": [],
+    "jobs": [
+     "hunter"
+    ],
+    "tech": [
+     "animal"
+    ],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "mining",
+   "prices": [
+    {
+     "name": "science",
+     "val": 500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "mine",
+     "workshop"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "metal"
+    ],
+    "policies": [],
+    "upgrades": [
+     "bolas"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "metal",
+   "prices": [
+    {
+     "name": "science",
+     "val": 900
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "smelter"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [
+     "huntingArmor",
+     "prospecting"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "animal",
+   "prices": [
+    {
+     "name": "science",
+     "val": 500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "pasture",
+     "unicornPasture"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "civil",
+     "math",
+     "construction"
+    ],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "brewery",
+   "prices": [
+    {
+     "name": "science",
+     "val": 1200
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "civil",
+   "prices": [
+    {
+     "name": "science",
+     "val": 1500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "currency"
+    ],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "math",
+   "prices": [
+    {
+     "name": "science",
+     "val": 1000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "academy"
+    ],
+    "tabs": [
+     "stats"
+    ],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [
+     "celestialMechanics"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "construction",
+   "prices": [
+    {
+     "name": "science",
+     "val": 1300
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "logHouse",
+     "warehouse",
+     "lumberMill",
+     "ziggurat"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "engineering"
+    ],
+    "policies": [],
+    "upgrades": [
+     "compositeBow",
+     "advancedRefinement",
+     "reinforcedSaw"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "engineering",
+   "prices": [
+    {
+     "name": "science",
+     "val": 1500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "aqueduct"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "writing"
+    ],
+    "policies": [
+     "stripMining",
+     "clearCutting",
+     "environmentalism"
+    ],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "currency",
+   "prices": [
+    {
+     "name": "science",
+     "val": 2200
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "tradepost"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [
+     "diplomacy",
+     "isolationism"
+    ],
+    "upgrades": [
+     "goldOre"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "writing",
+   "prices": [
+    {
+     "name": "science",
+     "val": 3600
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "amphitheatre"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "philosophy",
+     "machinery",
+     "steel"
+    ],
+    "policies": [
+     "liberty",
+     "tradition"
+    ],
+    "upgrades": [
+     "register"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "philosophy",
+   "prices": [
+    {
+     "name": "science",
+     "val": 9500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "temple"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "theology"
+    ],
+    "policies": [
+     "stoicism",
+     "epicurianism"
+    ],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "machinery",
+   "prices": [
+    {
+     "name": "science",
+     "val": 15000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "steamworks"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [
+     "printingPress",
+     "factoryAutomation",
+     "crossbow"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "steel",
+   "prices": [
+    {
+     "name": "science",
+     "val": 12000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [
+     "deepMining",
+     "coalFurnace",
+     "combustionEngine",
+     "reinforcedWarehouses",
+     "steelAxe",
+     "steelArmor"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "theology",
+   "prices": [
+    {
+     "name": "science",
+     "val": 20000
+    },
+    {
+     "name": "manuscript",
+     "val": 35
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [
+     "priest"
+    ],
+    "tech": [
+     "astronomy",
+     "cryptotheology"
+    ],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "astronomy",
+   "prices": [
+    {
+     "name": "science",
+     "val": 28000
+    },
+    {
+     "name": "manuscript",
+     "val": 65
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "observatory"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "navigation"
+    ],
+    "policies": [
+     "knowledgeSharing",
+     "culturalExchange",
+     "bigStickPolicy",
+     "cityOnAHill"
+    ],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "navigation",
+   "prices": [
+    {
+     "name": "science",
+     "val": 35000
+    },
+    {
+     "name": "manuscript",
+     "val": 100
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "harbor"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "physics",
+     "archeology",
+     "architecture"
+    ],
+    "policies": [],
+    "upgrades": [
+     "caravanserai",
+     "cargoShips",
+     "astrolabe",
+     "titaniumMirrors",
+     "titaniumAxe"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "architecture",
+   "prices": [
+    {
+     "name": "science",
+     "val": 42000
+    },
+    {
+     "name": "compedium",
+     "val": 10
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "mansion",
+     "mint"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "acoustics"
+    ],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "physics",
+   "prices": [
+    {
+     "name": "science",
+     "val": 50000
+    },
+    {
+     "name": "compedium",
+     "val": 35
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "chemistry",
+     "electricity",
+     "metaphysics"
+    ],
+    "policies": [],
+    "upgrades": [
+     "pneumaticPress",
+     "pyrolysis",
+     "steelSaw"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "metaphysics",
+   "prices": [
+    {
+     "name": "unobtainium",
+     "val": 5
+    },
+    {
+     "name": "science",
+     "val": 55000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "chemistry",
+   "prices": [
+    {
+     "name": "science",
+     "val": 60000
+    },
+    {
+     "name": "compedium",
+     "val": 50
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "calciner",
+     "oilWell"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [
+     "alloyAxe",
+     "alloyArmor",
+     "alloyWarehouses",
+     "alloyBarns"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "acoustics",
+   "prices": [
+    {
+     "name": "science",
+     "val": 60000
+    },
+    {
+     "name": "compedium",
+     "val": 60
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "chapel"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "drama"
+    ],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "drama",
+   "prices": [
+    {
+     "name": "science",
+     "val": 90000
+    },
+    {
+     "name": "parchment",
+     "val": 5000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "brewery"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "archeology",
+   "prices": [
+    {
+     "name": "science",
+     "val": 65000
+    },
+    {
+     "name": "compedium",
+     "val": 65
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "quarry"
+    ],
+    "tabs": [],
+    "jobs": [
+     "geologist"
+    ],
+    "tech": [
+     "biology"
+    ],
+    "policies": [],
+    "upgrades": [
+     "geodesy"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "electricity",
+   "prices": [
+    {
+     "name": "science",
+     "val": 75000
+    },
+    {
+     "name": "compedium",
+     "val": 85
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "magneto"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "industrialization"
+    ],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "biology",
+   "prices": [
+    {
+     "name": "science",
+     "val": 85000
+    },
+    {
+     "name": "compedium",
+     "val": 100
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "biolab"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "biochemistry"
+    ],
+    "policies": [],
+    "upgrades": [
+     "petri"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "biochemistry",
+   "prices": [
+    {
+     "name": "science",
+     "val": 145000
+    },
+    {
+     "name": "compedium",
+     "val": 500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "genetics"
+    ],
+    "policies": [],
+    "upgrades": [
+     "biofuel"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "genetics",
+   "prices": [
+    {
+     "name": "science",
+     "val": 190000
+    },
+    {
+     "name": "compedium",
+     "val": 1500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [
+     "unicornSelection",
+     "gmo"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "industrialization",
+   "prices": [
+    {
+     "name": "science",
+     "val": 100000
+    },
+    {
+     "name": "blueprint",
+     "val": 25
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "mechanization",
+     "metalurgy",
+     "combustion"
+    ],
+    "policies": [
+     "sustainability",
+     "fullIndustrialization"
+    ],
+    "upgrades": [
+     "barges",
+     "advancedAutomation",
+     "logistics"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "mechanization",
+   "prices": [
+    {
+     "name": "science",
+     "val": 115000
+    },
+    {
+     "name": "blueprint",
+     "val": 45
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "factory"
+    ],
+    "tabs": [],
+    "jobs": [
+     "engineer"
+    ],
+    "tech": [
+     "electronics"
+    ],
+    "policies": [],
+    "upgrades": [
+     "pumpjack",
+     "strenghtenBuild"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "metalurgy",
+   "prices": [
+    {
+     "name": "science",
+     "val": 125000
+    },
+    {
+     "name": "blueprint",
+     "val": 60
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [
+     "electrolyticSmelting",
+     "oxidation",
+     "miningDrill"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "combustion",
+   "prices": [
+    {
+     "name": "science",
+     "val": 115000
+    },
+    {
+     "name": "blueprint",
+     "val": 45
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "ecology"
+    ],
+    "policies": [],
+    "upgrades": [
+     "offsetPress",
+     "fuelInjectors",
+     "oilRefinery"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "ecology",
+   "prices": [
+    {
+     "name": "science",
+     "val": 125000
+    },
+    {
+     "name": "blueprint",
+     "val": 55
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [
+     "conservation",
+     "openWoodlands"
+    ],
+    "upgrades": [
+     "carbonSequestration"
+    ],
+    "stages": [
+     "pasture:1"
+    ]
+   }
+  },
+  {
+   "name": "electronics",
+   "prices": [
+    {
+     "name": "science",
+     "val": 135000
+    },
+    {
+     "name": "blueprint",
+     "val": 70
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "nuclearFission",
+     "rocketry",
+     "robotics"
+    ],
+    "policies": [],
+    "upgrades": [
+     "cadSystems",
+     "refrigeration",
+     "seti",
+     "factoryLogistics",
+     "factoryOptimization",
+     "internet"
+    ],
+    "stages": [
+     "library:1",
+     "amphitheatre:1"
+    ]
+   }
+  },
+  {
+   "name": "robotics",
+   "prices": [
+    {
+     "name": "science",
+     "val": 140000
+    },
+    {
+     "name": "blueprint",
+     "val": 80
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "ai"
+    ],
+    "policies": [],
+    "upgrades": [
+     "steelPlants",
+     "rotaryKiln",
+     "assistance",
+     "factoryRobotics"
+    ],
+    "stages": [
+     "aqueduct:1"
+    ]
+   }
+  },
+  {
+   "name": "ai",
+   "prices": [
+    {
+     "name": "science",
+     "val": 250000
+    },
+    {
+     "name": "blueprint",
+     "val": 150
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "aiCore"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "quantumCryptography"
+    ],
+    "policies": [],
+    "upgrades": [
+     "neuralNetworks",
+     "aiEngineers",
+     "machineLearning"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "quantumCryptography",
+   "prices": [
+    {
+     "name": "science",
+     "val": 1250000
+    },
+    {
+     "name": "relic",
+     "val": 1024
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "blackchain"
+    ],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "blackchain",
+   "prices": [
+    {
+     "name": "science",
+     "val": 5000000
+    },
+    {
+     "name": "relic",
+     "val": 4096
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [
+     "invisibleBlackHand"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "nuclearFission",
+   "prices": [
+    {
+     "name": "science",
+     "val": 150000
+    },
+    {
+     "name": "blueprint",
+     "val": 100
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "reactor"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "nanotechnology",
+     "particlePhysics"
+    ],
+    "policies": [],
+    "upgrades": [
+     "reactorVessel",
+     "nuclearSmelters"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "rocketry",
+   "prices": [
+    {
+     "name": "science",
+     "val": 175000
+    },
+    {
+     "name": "blueprint",
+     "val": 125
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [
+     "space"
+    ],
+    "jobs": [],
+    "tech": [
+     "sattelites",
+     "oilProcessing"
+    ],
+    "policies": [],
+    "upgrades": [
+     "oilDistillation"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "oilProcessing",
+   "prices": [
+    {
+     "name": "science",
+     "val": 215000
+    },
+    {
+     "name": "blueprint",
+     "val": 150
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [
+     "factoryProcessing"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "sattelites",
+   "prices": [
+    {
+     "name": "science",
+     "val": 190000
+    },
+    {
+     "name": "blueprint",
+     "val": 125
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "orbitalEngineering"
+    ],
+    "policies": [
+     "outerSpaceTreaty",
+     "militarizeSpace"
+    ],
+    "upgrades": [
+     "photolithography",
+     "orbitalGeodesy",
+     "uplink",
+     "thinFilm"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "orbitalEngineering",
+   "prices": [
+    {
+     "name": "science",
+     "val": 250000
+    },
+    {
+     "name": "blueprint",
+     "val": 250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "exogeology",
+     "thorium"
+    ],
+    "policies": [],
+    "upgrades": [
+     "hubbleTelescope",
+     "satelliteRadio",
+     "astrophysicists",
+     "solarSatellites",
+     "spaceEngineers",
+     "starlink"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "thorium",
+   "prices": [
+    {
+     "name": "science",
+     "val": 375000
+    },
+    {
+     "name": "blueprint",
+     "val": 375
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [
+     "thoriumReactors",
+     "thoriumEngine",
+     "qdot"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "exogeology",
+   "prices": [
+    {
+     "name": "science",
+     "val": 275000
+    },
+    {
+     "name": "blueprint",
+     "val": 250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "advExogeology"
+    ],
+    "policies": [],
+    "upgrades": [
+     "unobtainiumReflectors",
+     "unobtainiumHuts",
+     "unobtainiumDrill",
+     "hydroPlantTurbines",
+     "storageBunkers"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "advExogeology",
+   "prices": [
+    {
+     "name": "science",
+     "val": 325000
+    },
+    {
+     "name": "blueprint",
+     "val": 350
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [
+     "eludiumCracker",
+     "eludiumReflectors",
+     "eludiumHuts",
+     "mWReactor",
+     "freightfulExchange"
+    ],
+    "stages": [
+     "warehouse:1"
+    ]
+   }
+  },
+  {
+   "name": "nanotechnology",
+   "prices": [
+    {
+     "name": "science",
+     "val": 200000
+    },
+    {
+     "name": "blueprint",
+     "val": 150
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "superconductors"
+    ],
+    "policies": [],
+    "upgrades": [
+     "augumentation",
+     "nanosuits",
+     "photovoltaic",
+     "fluidizedReactors"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "superconductors",
+   "prices": [
+    {
+     "name": "science",
+     "val": 225000
+    },
+    {
+     "name": "blueprint",
+     "val": 175
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "antimatter"
+    ],
+    "policies": [],
+    "upgrades": [
+     "coldFusion",
+     "spaceManufacturing",
+     "cryocomputing"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "antimatter",
+   "prices": [
+    {
+     "name": "science",
+     "val": 500000
+    },
+    {
+     "name": "antimatter",
+     "val": 1
+    },
+    {
+     "name": "relic",
+     "val": 1
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "terraformation"
+    ],
+    "policies": [],
+    "upgrades": [
+     "amReactors",
+     "amBases",
+     "amDrive",
+     "amFission"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "terraformation",
+   "prices": [
+    {
+     "name": "science",
+     "val": 750000
+    },
+    {
+     "name": "relic",
+     "val": 5
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "hydroponics"
+    ],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "hydroponics",
+   "prices": [
+    {
+     "name": "science",
+     "val": 1000000
+    },
+    {
+     "name": "relic",
+     "val": 25
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "exogeophysics"
+    ],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "exogeophysics",
+   "prices": [
+    {
+     "name": "science",
+     "val": 25000000
+    },
+    {
+     "name": "relic",
+     "val": 500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "particlePhysics",
+   "prices": [
+    {
+     "name": "science",
+     "val": 185000
+    },
+    {
+     "name": "blueprint",
+     "val": 135
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "accelerator"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "chronophysics",
+     "dimensionalPhysics"
+    ],
+    "policies": [],
+    "upgrades": [
+     "enrichedUranium",
+     "railgun"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "dimensionalPhysics",
+   "prices": [
+    {
+     "name": "science",
+     "val": 235000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [
+     "energyRifts",
+     "lhc",
+     "transportSuperposition"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "artificialGravity",
+   "prices": [
+    {
+     "name": "science",
+     "val": 320000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [
+     "spiceNavigation",
+     "longRangeSpaceships"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "chronophysics",
+   "prices": [
+    {
+     "name": "science",
+     "val": 250000
+    },
+    {
+     "name": "timeCrystal",
+     "val": 5
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [
+     "chronosphere",
+     "stasisPod"
+    ],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "tachyonTheory"
+    ],
+    "policies": [],
+    "upgrades": [
+     "stasisChambers",
+     "fluxCondensator"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "tachyonTheory",
+   "prices": [
+    {
+     "name": "science",
+     "val": 750000
+    },
+    {
+     "name": "timeCrystal",
+     "val": 25
+    },
+    {
+     "name": "relic",
+     "val": 1
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "voidSpace"
+    ],
+    "policies": [],
+    "upgrades": [
+     "tachyonAccelerators",
+     "chronoforge",
+     "chronoEngineers"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "cryptotheology",
+   "prices": [
+    {
+     "name": "science",
+     "val": 650000
+    },
+    {
+     "name": "relic",
+     "val": 5
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [
+     "relicStation"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "voidSpace",
+   "prices": [
+    {
+     "name": "science",
+     "val": 800000
+    },
+    {
+     "name": "timeCrystal",
+     "val": 30
+    },
+    {
+     "name": "void",
+     "val": 100
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [
+     "paradoxalKnowledge"
+    ],
+    "policies": [],
+    "upgrades": [
+     "voidAspiration"
+    ],
+    "stages": []
+   }
+  },
+  {
+   "name": "paradoxalKnowledge",
+   "prices": [
+    {
+     "name": "science",
+     "val": 1000000
+    },
+    {
+     "name": "timeCrystal",
+     "val": 40
+    },
+    {
+     "name": "void",
+     "val": 250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [
+     "distorsion"
+    ],
+    "stages": []
+   }
+  }
+ ],
+ "policies": [
+  {
+   "name": "liberty",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 150
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [
+     "authocracy",
+     "republic"
+    ],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "tradition",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 150
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [
+     "authocracy",
+     "monarchy"
+    ],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "monarchy",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 1500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [
+     "liberalism",
+     "fascism"
+    ],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "authocracy",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 1500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [
+     "communism",
+     "fascism",
+     "socialism"
+    ],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "republic",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 1500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [
+     "liberalism",
+     "communism",
+     "socialism"
+    ],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "socialism",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 7500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [
+     "scientificCommunism"
+    ],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "scientificCommunism",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 8500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "liberalism",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 15000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "communism",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 15000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "fascism",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 15000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "technocracy",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 150000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "theocracy",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 150000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "expansionism",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 150000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "transkittenism",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 1500000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "necrocracy",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 1500000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "radicalXenophobia",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 1500000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "diplomacy",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 1600
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [
+     "knowledgeSharing",
+     "culturalExchange"
+    ],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "isolationism",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 1600
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [
+     "bigStickPolicy",
+     "cityOnAHill"
+    ],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "zebraRelationsAppeasement",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 5000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "zebraRelationsBellicosity",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 5000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "knowledgeSharing",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 4000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "culturalExchange",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 4000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "bigStickPolicy",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 4000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "cityOnAHill",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 4000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "outerSpaceTreaty",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 10000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "militarizeSpace",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 10000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "lizardRelationsEcologists",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 2100
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "lizardRelationsPriests",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 2100
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "lizardRelationsDiplomats",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 2100
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "sharkRelationsScribes",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 2200
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "sharkRelationsMerchants",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 2200
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "sharkRelationsBotanists",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 2200
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "griffinRelationsMetallurgists",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 16000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "griffinRelationsScouts",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 16000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "griffinRelationsMachinists",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 16000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "nagaRelationsMasons",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 8000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "nagaRelationsCultists",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 8000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "nagaRelationsArchitects",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 8000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "spiderRelationsGeologists",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 20000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "spiderRelationsChemists",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 20000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "spiderRelationsPaleontologists",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 20000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "dragonRelationsPhysicists",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 30000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "dragonRelationsAstrologers",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 30000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "dragonRelationsDynamicists",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 30000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "stoicism",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 2500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [
+     "rationality",
+     "mysticism",
+     "rationing",
+     "frugality"
+    ],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "epicurianism",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 2500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [
+     "rationality",
+     "mysticism",
+     "carnivale",
+     "extravagance"
+    ],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "carnivale",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 3500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "extravagance",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 3500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "rationing",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 3500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "frugality",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 3500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "rationality",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 3000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "mysticism",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 3000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "stripMining",
+   "prices": [
+    {
+     "name": "science",
+     "val": 2000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [
+     "sustainability",
+     "fullIndustrialization"
+    ],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "clearCutting",
+   "prices": [
+    {
+     "name": "science",
+     "val": 2000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [
+     "sustainability",
+     "fullIndustrialization"
+    ],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "environmentalism",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 2000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [
+     "conservation",
+     "openWoodlands"
+    ],
+    "upgrades": [],
+    "stages": []
+   }
+  },
+  {
+   "name": "sustainability",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 10000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "fullIndustrialization",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 10000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "conservation",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 10000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "openWoodlands",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 10000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "cryochamberExtraction",
+   "prices": [
+    {
+     "name": "manpower",
+     "val": 10000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "terraformingInsight",
+   "prices": [
+    {
+     "name": "manpower",
+     "val": 10000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "siphoning",
+   "prices": [
+    {
+     "name": "necrocorn",
+     "val": 1
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "feedingFrenzy",
+   "prices": [
+    {
+     "name": "necrocorn",
+     "val": 1
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  },
+  {
+   "name": "upfrontPayment",
+   "prices": [
+    {
+     "name": "necrocorn",
+     "val": 1
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "unlocks": null
+  }
+ ],
+ "upgrades": [
+  {
+   "name": "mineralHoes",
+   "prices": [
+    {
+     "name": "minerals",
+     "val": 275
+    },
+    {
+     "name": "science",
+     "val": 100
+    }
+   ],
+   "unlocked": true,
+   "researched": false,
+   "effects": {
+    "catnipJobRatio": 0.5
+   }
+  },
+  {
+   "name": "ironHoes",
+   "prices": [
+    {
+     "name": "iron",
+     "val": 25
+    },
+    {
+     "name": "science",
+     "val": 200
+    }
+   ],
+   "unlocked": true,
+   "researched": false,
+   "effects": {
+    "catnipJobRatio": 0.3
+   }
+  },
+  {
+   "name": "mineralAxes",
+   "prices": [
+    {
+     "name": "minerals",
+     "val": 500
+    },
+    {
+     "name": "science",
+     "val": 100
+    }
+   ],
+   "unlocked": true,
+   "researched": false,
+   "effects": {
+    "woodJobRatio": 0.7
+   }
+  },
+  {
+   "name": "ironAxes",
+   "prices": [
+    {
+     "name": "iron",
+     "val": 50
+    },
+    {
+     "name": "science",
+     "val": 200
+    }
+   ],
+   "unlocked": true,
+   "researched": false,
+   "effects": {
+    "woodJobRatio": 0.5
+   }
+  },
+  {
+   "name": "steelAxe",
+   "prices": [
+    {
+     "name": "science",
+     "val": 20000
+    },
+    {
+     "name": "steel",
+     "val": 75
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "woodJobRatio": 0.5
+   }
+  },
+  {
+   "name": "reinforcedSaw",
+   "prices": [
+    {
+     "name": "iron",
+     "val": 1000
+    },
+    {
+     "name": "science",
+     "val": 2500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "lumberMillRatio": 0.2
+   }
+  },
+  {
+   "name": "steelSaw",
+   "prices": [
+    {
+     "name": "science",
+     "val": 52000
+    },
+    {
+     "name": "steel",
+     "val": 750
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "lumberMillRatio": 0.2
+   }
+  },
+  {
+   "name": "titaniumSaw",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 500
+    },
+    {
+     "name": "science",
+     "val": 70000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "lumberMillRatio": 0.15
+   }
+  },
+  {
+   "name": "alloySaw",
+   "prices": [
+    {
+     "name": "science",
+     "val": 85000
+    },
+    {
+     "name": "alloy",
+     "val": 75
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "lumberMillRatio": 0.15
+   }
+  },
+  {
+   "name": "titaniumAxe",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 10
+    },
+    {
+     "name": "science",
+     "val": 38000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "woodJobRatio": 0.5
+   }
+  },
+  {
+   "name": "alloyAxe",
+   "prices": [
+    {
+     "name": "science",
+     "val": 70000
+    },
+    {
+     "name": "alloy",
+     "val": 25
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "woodJobRatio": 0.5
+   }
+  },
+  {
+   "name": "unobtainiumAxe",
+   "prices": [
+    {
+     "name": "unobtainium",
+     "val": 75
+    },
+    {
+     "name": "science",
+     "val": 125000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "woodJobRatio": 0.5
+   }
+  },
+  {
+   "name": "unobtainiumSaw",
+   "prices": [
+    {
+     "name": "unobtainium",
+     "val": 125
+    },
+    {
+     "name": "science",
+     "val": 145000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "lumberMillRatio": 0.25
+   }
+  },
+  {
+   "name": "stoneBarns",
+   "prices": [
+    {
+     "name": "wood",
+     "val": 1000
+    },
+    {
+     "name": "minerals",
+     "val": 750
+    },
+    {
+     "name": "iron",
+     "val": 50
+    },
+    {
+     "name": "science",
+     "val": 500
+    }
+   ],
+   "unlocked": true,
+   "researched": false,
+   "effects": {
+    "barnRatio": 0.75
+   }
+  },
+  {
+   "name": "reinforcedBarns",
+   "prices": [
+    {
+     "name": "iron",
+     "val": 100
+    },
+    {
+     "name": "science",
+     "val": 800
+    },
+    {
+     "name": "beam",
+     "val": 25
+    },
+    {
+     "name": "slab",
+     "val": 10
+    }
+   ],
+   "unlocked": true,
+   "researched": false,
+   "effects": {
+    "barnRatio": 0.8
+   }
+  },
+  {
+   "name": "reinforcedWarehouses",
+   "prices": [
+    {
+     "name": "science",
+     "val": 15000
+    },
+    {
+     "name": "plate",
+     "val": 50
+    },
+    {
+     "name": "steel",
+     "val": 50
+    },
+    {
+     "name": "scaffold",
+     "val": 25
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "warehouseRatio": 0.25
+   }
+  },
+  {
+   "name": "titaniumBarns",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 25
+    },
+    {
+     "name": "science",
+     "val": 60000
+    },
+    {
+     "name": "steel",
+     "val": 200
+    },
+    {
+     "name": "scaffold",
+     "val": 250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "barnRatio": 1
+   }
+  },
+  {
+   "name": "alloyBarns",
+   "prices": [
+    {
+     "name": "science",
+     "val": 75000
+    },
+    {
+     "name": "plate",
+     "val": 750
+    },
+    {
+     "name": "alloy",
+     "val": 20
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "barnRatio": 1
+   }
+  },
+  {
+   "name": "concreteBarns",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 2000
+    },
+    {
+     "name": "science",
+     "val": 100000
+    },
+    {
+     "name": "concrate",
+     "val": 45
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "barnRatio": 0.75
+   }
+  },
+  {
+   "name": "titaniumWarehouses",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 50
+    },
+    {
+     "name": "science",
+     "val": 70000
+    },
+    {
+     "name": "steel",
+     "val": 500
+    },
+    {
+     "name": "scaffold",
+     "val": 500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "warehouseRatio": 0.5
+   }
+  },
+  {
+   "name": "alloyWarehouses",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 750
+    },
+    {
+     "name": "science",
+     "val": 90000
+    },
+    {
+     "name": "alloy",
+     "val": 50
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "warehouseRatio": 0.45
+   }
+  },
+  {
+   "name": "concreteWarehouses",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 1250
+    },
+    {
+     "name": "science",
+     "val": 100000
+    },
+    {
+     "name": "concrate",
+     "val": 35
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "warehouseRatio": 0.35
+   }
+  },
+  {
+   "name": "storageBunkers",
+   "prices": [
+    {
+     "name": "unobtainium",
+     "val": 500
+    },
+    {
+     "name": "science",
+     "val": 25000
+    },
+    {
+     "name": "concrate",
+     "val": 1250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "warehouseRatio": 0.2
+   }
+  },
+  {
+   "name": "energyRifts",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 7500
+    },
+    {
+     "name": "uranium",
+     "val": 250
+    },
+    {
+     "name": "science",
+     "val": 200000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "stasisChambers",
+   "prices": [
+    {
+     "name": "uranium",
+     "val": 2000
+    },
+    {
+     "name": "science",
+     "val": 235000
+    },
+    {
+     "name": "timeCrystal",
+     "val": 1
+    },
+    {
+     "name": "alloy",
+     "val": 200
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "acceleratorRatio": 0.95
+   }
+  },
+  {
+   "name": "voidEnergy",
+   "prices": [
+    {
+     "name": "uranium",
+     "val": 2500
+    },
+    {
+     "name": "science",
+     "val": 275000
+    },
+    {
+     "name": "timeCrystal",
+     "val": 2
+    },
+    {
+     "name": "alloy",
+     "val": 250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "acceleratorRatio": 0.75
+   }
+  },
+  {
+   "name": "darkEnergy",
+   "prices": [
+    {
+     "name": "science",
+     "val": 350000
+    },
+    {
+     "name": "timeCrystal",
+     "val": 3
+    },
+    {
+     "name": "eludium",
+     "val": 75
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "acceleratorRatio": 2.5
+   }
+  },
+  {
+   "name": "chronoforge",
+   "prices": [
+    {
+     "name": "science",
+     "val": 500000
+    },
+    {
+     "name": "timeCrystal",
+     "val": 10
+    },
+    {
+     "name": "relic",
+     "val": 5
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "tachyonModerator",
+   "prices": [
+    {
+     "name": "science",
+     "val": 16000
+    },
+    {
+     "name": "gear",
+     "val": 500
+    },
+    {
+     "name": "titanium",
+     "val": 250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "tachyonAccelerators",
+   "prices": [
+    {
+     "name": "science",
+     "val": 500000
+    },
+    {
+     "name": "timeCrystal",
+     "val": 10
+    },
+    {
+     "name": "eludium",
+     "val": 125
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "acceleratorRatio": 5
+   }
+  },
+  {
+   "name": "fluxCondensator",
+   "prices": [
+    {
+     "name": "unobtainium",
+     "val": 5000
+    },
+    {
+     "name": "timeCrystal",
+     "val": 5
+    },
+    {
+     "name": "alloy",
+     "val": 250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "lhc",
+   "prices": [
+    {
+     "name": "unobtainium",
+     "val": 100
+    },
+    {
+     "name": "science",
+     "val": 250000
+    },
+    {
+     "name": "alloy",
+     "val": 150
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "photovoltaic",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 5000
+    },
+    {
+     "name": "science",
+     "val": 75000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "solarFarmRatio": 0.5
+   }
+  },
+  {
+   "name": "thinFilm",
+   "prices": [
+    {
+     "name": "uranium",
+     "val": 1000
+    },
+    {
+     "name": "unobtainium",
+     "val": 200
+    },
+    {
+     "name": "science",
+     "val": 125000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "solarFarmSeasonRatio": 1
+   }
+  },
+  {
+   "name": "qdot",
+   "prices": [
+    {
+     "name": "science",
+     "val": 175000
+    },
+    {
+     "name": "eludium",
+     "val": 200
+    },
+    {
+     "name": "thorium",
+     "val": 1000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "solarFarmSeasonRatio": 1
+   }
+  },
+  {
+   "name": "solarSatellites",
+   "prices": [
+    {
+     "name": "science",
+     "val": 225000
+    },
+    {
+     "name": "alloy",
+     "val": 750
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "cargoShips",
+   "prices": [
+    {
+     "name": "science",
+     "val": 55000
+    },
+    {
+     "name": "blueprint",
+     "val": 15
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "harborRatio": 0.01
+   }
+  },
+  {
+   "name": "barges",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 1500
+    },
+    {
+     "name": "science",
+     "val": 100000
+    },
+    {
+     "name": "blueprint",
+     "val": 30
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "harborCoalRatio": 0.5
+   }
+  },
+  {
+   "name": "reactorVessel",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 5000
+    },
+    {
+     "name": "uranium",
+     "val": 125
+    },
+    {
+     "name": "science",
+     "val": 135000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "shipLimit": 0.05
+   }
+  },
+  {
+   "name": "ironwood",
+   "prices": [
+    {
+     "name": "wood",
+     "val": 15000
+    },
+    {
+     "name": "iron",
+     "val": 3000
+    },
+    {
+     "name": "science",
+     "val": 30000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "hutPriceRatio": -0.5
+   }
+  },
+  {
+   "name": "concreteHuts",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 3000
+    },
+    {
+     "name": "science",
+     "val": 125000
+    },
+    {
+     "name": "concrate",
+     "val": 45
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "hutPriceRatio": -0.3
+   }
+  },
+  {
+   "name": "unobtainiumHuts",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 15000
+    },
+    {
+     "name": "unobtainium",
+     "val": 350
+    },
+    {
+     "name": "science",
+     "val": 200000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "hutPriceRatio": -0.25
+   }
+  },
+  {
+   "name": "eludiumHuts",
+   "prices": [
+    {
+     "name": "science",
+     "val": 275000
+    },
+    {
+     "name": "eludium",
+     "val": 125
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "hutPriceRatio": -0.1
+   }
+  },
+  {
+   "name": "silos",
+   "prices": [
+    {
+     "name": "science",
+     "val": 50000
+    },
+    {
+     "name": "steel",
+     "val": 125
+    },
+    {
+     "name": "blueprint",
+     "val": 5
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "refrigeration",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 2500
+    },
+    {
+     "name": "science",
+     "val": 125000
+    },
+    {
+     "name": "blueprint",
+     "val": 15
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "catnipMaxRatio": 0.75
+   }
+  },
+  {
+   "name": "compositeBow",
+   "prices": [
+    {
+     "name": "wood",
+     "val": 200
+    },
+    {
+     "name": "iron",
+     "val": 100
+    },
+    {
+     "name": "science",
+     "val": 500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "manpowerJobRatio": 0.5,
+    "manpowerMax": 0,
+    "explorerAtk": 5
+   }
+  },
+  {
+   "name": "crossbow",
+   "prices": [
+    {
+     "name": "iron",
+     "val": 1500
+    },
+    {
+     "name": "science",
+     "val": 12000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "manpowerJobRatio": 0.25,
+    "explorerAtk": 10
+   }
+  },
+  {
+   "name": "railgun",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 5000
+    },
+    {
+     "name": "science",
+     "val": 150000
+    },
+    {
+     "name": "blueprint",
+     "val": 25
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "manpowerJobRatio": 0.25,
+    "explorerAtk": 20
+   }
+  },
+  {
+   "name": "bolas",
+   "prices": [
+    {
+     "name": "wood",
+     "val": 50
+    },
+    {
+     "name": "minerals",
+     "val": 250
+    },
+    {
+     "name": "science",
+     "val": 1000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "hunterRatio": 1,
+    "explorerAtk": 2,
+    "manpowerMax": 0
+   }
+  },
+  {
+   "name": "huntingArmor",
+   "prices": [
+    {
+     "name": "iron",
+     "val": 750
+    },
+    {
+     "name": "science",
+     "val": 2000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "hunterRatio": 2,
+    "explorerDef": 2,
+    "manpowerMax": 0
+   }
+  },
+  {
+   "name": "steelArmor",
+   "prices": [
+    {
+     "name": "science",
+     "val": 10000
+    },
+    {
+     "name": "steel",
+     "val": 50
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "hunterRatio": 0.5,
+    "explorerDef": 5
+   }
+  },
+  {
+   "name": "alloyArmor",
+   "prices": [
+    {
+     "name": "science",
+     "val": 50000
+    },
+    {
+     "name": "alloy",
+     "val": 25
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "hunterRatio": 0.5,
+    "explorerDef": 10
+   }
+  },
+  {
+   "name": "nanosuits",
+   "prices": [
+    {
+     "name": "science",
+     "val": 185000
+    },
+    {
+     "name": "alloy",
+     "val": 250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "hunterRatio": 0.5,
+    "explorerDef": 20
+   }
+  },
+  {
+   "name": "caravanserai",
+   "prices": [
+    {
+     "name": "gold",
+     "val": 250
+    },
+    {
+     "name": "science",
+     "val": 25000
+    },
+    {
+     "name": "ivory",
+     "val": 10000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "freightfulExchange",
+   "prices": [
+    {
+     "name": "science",
+     "val": 450000
+    },
+    {
+     "name": "eludium",
+     "val": 100
+    },
+    {
+     "name": "titanium",
+     "val": 1000
+    },
+    {
+     "name": "tanker",
+     "val": 5000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "transportSuperposition",
+   "prices": [
+    {
+     "name": "science",
+     "val": 500000
+    },
+    {
+     "name": "eludium",
+     "val": 1500
+    },
+    {
+     "name": "thorium",
+     "val": 25000
+    },
+    {
+     "name": "tanker",
+     "val": 500000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "advancedRefinement",
+   "prices": [
+    {
+     "name": "catnip",
+     "val": 5000
+    },
+    {
+     "name": "science",
+     "val": 500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "prospecting",
+   "prices": [
+    {
+     "name": "minerals",
+     "val": 1000
+    },
+    {
+     "name": "science",
+     "val": 1000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "goldOre",
+   "prices": [
+    {
+     "name": "minerals",
+     "val": 800
+    },
+    {
+     "name": "iron",
+     "val": 100
+    },
+    {
+     "name": "science",
+     "val": 1000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "geodesy",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 250
+    },
+    {
+     "name": "science",
+     "val": 90000
+    },
+    {
+     "name": "starchart",
+     "val": 500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "register",
+   "prices": [
+    {
+     "name": "gold",
+     "val": 10
+    },
+    {
+     "name": "science",
+     "val": 500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "strenghtenBuild",
+   "prices": [
+    {
+     "name": "science",
+     "val": 100000
+    },
+    {
+     "name": "concrate",
+     "val": 50
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "barnRatio": 0.05,
+    "warehouseRatio": 0.05
+   }
+  },
+  {
+   "name": "miningDrill",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 1750
+    },
+    {
+     "name": "science",
+     "val": 100000
+    },
+    {
+     "name": "steel",
+     "val": 750
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "unobtainiumDrill",
+   "prices": [
+    {
+     "name": "unobtainium",
+     "val": 250
+    },
+    {
+     "name": "science",
+     "val": 250000
+    },
+    {
+     "name": "alloy",
+     "val": 1250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "coalFurnace",
+   "prices": [
+    {
+     "name": "minerals",
+     "val": 5000
+    },
+    {
+     "name": "iron",
+     "val": 2000
+    },
+    {
+     "name": "science",
+     "val": 5000
+    },
+    {
+     "name": "beam",
+     "val": 35
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "deepMining",
+   "prices": [
+    {
+     "name": "iron",
+     "val": 1200
+    },
+    {
+     "name": "science",
+     "val": 5000
+    },
+    {
+     "name": "beam",
+     "val": 50
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "pyrolysis",
+   "prices": [
+    {
+     "name": "science",
+     "val": 35000
+    },
+    {
+     "name": "compedium",
+     "val": 5
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "coalSuperRatio": 0.2
+   }
+  },
+  {
+   "name": "electrolyticSmelting",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 2000
+    },
+    {
+     "name": "science",
+     "val": 100000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "smelterRatio": 0.95
+   }
+  },
+  {
+   "name": "oxidation",
+   "prices": [
+    {
+     "name": "science",
+     "val": 100000
+    },
+    {
+     "name": "steel",
+     "val": 5000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "calcinerRatio": 0.95
+   }
+  },
+  {
+   "name": "steelPlants",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 3500
+    },
+    {
+     "name": "science",
+     "val": 140000
+    },
+    {
+     "name": "gear",
+     "val": 750
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "calcinerSteelRatio": 0.1
+   }
+  },
+  {
+   "name": "automatedPlants",
+   "prices": [
+    {
+     "name": "science",
+     "val": 200000
+    },
+    {
+     "name": "alloy",
+     "val": 750
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "calcinerSteelCraftRatio": 0.25
+   }
+  },
+  {
+   "name": "nuclearPlants",
+   "prices": [
+    {
+     "name": "uranium",
+     "val": 10000
+    },
+    {
+     "name": "science",
+     "val": 250000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "calcinerSteelReactorBonus": 0.02
+   }
+  },
+  {
+   "name": "rotaryKiln",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 5000
+    },
+    {
+     "name": "science",
+     "val": 145000
+    },
+    {
+     "name": "gear",
+     "val": 500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "calcinerRatio": 0.75
+   }
+  },
+  {
+   "name": "fluidizedReactors",
+   "prices": [
+    {
+     "name": "science",
+     "val": 175000
+    },
+    {
+     "name": "alloy",
+     "val": 200
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "calcinerRatio": 1
+   }
+  },
+  {
+   "name": "nuclearSmelters",
+   "prices": [
+    {
+     "name": "uranium",
+     "val": 250
+    },
+    {
+     "name": "science",
+     "val": 165000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "orbitalGeodesy",
+   "prices": [
+    {
+     "name": "oil",
+     "val": 35000
+    },
+    {
+     "name": "science",
+     "val": 150000
+    },
+    {
+     "name": "alloy",
+     "val": 1000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "printingPress",
+   "prices": [
+    {
+     "name": "science",
+     "val": 7500
+    },
+    {
+     "name": "gear",
+     "val": 45
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "offsetPress",
+   "prices": [
+    {
+     "name": "oil",
+     "val": 15000
+    },
+    {
+     "name": "science",
+     "val": 100000
+    },
+    {
+     "name": "gear",
+     "val": 250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "photolithography",
+   "prices": [
+    {
+     "name": "oil",
+     "val": 50000
+    },
+    {
+     "name": "uranium",
+     "val": 250
+    },
+    {
+     "name": "science",
+     "val": 250000
+    },
+    {
+     "name": "alloy",
+     "val": 1250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "uplink",
+   "prices": [
+    {
+     "name": "science",
+     "val": 75000
+    },
+    {
+     "name": "alloy",
+     "val": 1750
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "uplinkDCRatio": 0.01,
+    "uplinkLabRatio": 0.01
+   }
+  },
+  {
+   "name": "starlink",
+   "prices": [
+    {
+     "name": "oil",
+     "val": 25000
+    },
+    {
+     "name": "science",
+     "val": 175000
+    },
+    {
+     "name": "alloy",
+     "val": 5000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "uplinkLabRatio": 0.01
+   }
+  },
+  {
+   "name": "cryocomputing",
+   "prices": [
+    {
+     "name": "science",
+     "val": 125000
+    },
+    {
+     "name": "eludium",
+     "val": 15
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "machineLearning",
+   "prices": [
+    {
+     "name": "antimatter",
+     "val": 125
+    },
+    {
+     "name": "science",
+     "val": 175000
+    },
+    {
+     "name": "eludium",
+     "val": 25
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "dataCenterAIRatio": 0.1
+   }
+  },
+  {
+   "name": "factoryAutomation",
+   "prices": [
+    {
+     "name": "science",
+     "val": 10000
+    },
+    {
+     "name": "gear",
+     "val": 25
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "advancedAutomation",
+   "prices": [
+    {
+     "name": "science",
+     "val": 100000
+    },
+    {
+     "name": "gear",
+     "val": 75
+    },
+    {
+     "name": "blueprint",
+     "val": 25
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "pneumaticPress",
+   "prices": [
+    {
+     "name": "science",
+     "val": 20000
+    },
+    {
+     "name": "gear",
+     "val": 30
+    },
+    {
+     "name": "blueprint",
+     "val": 5
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "combustionEngine",
+   "prices": [
+    {
+     "name": "science",
+     "val": 20000
+    },
+    {
+     "name": "gear",
+     "val": 25
+    },
+    {
+     "name": "blueprint",
+     "val": 5
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "coalRatioGlobalReduction": 0.2
+   }
+  },
+  {
+   "name": "fuelInjectors",
+   "prices": [
+    {
+     "name": "oil",
+     "val": 20000
+    },
+    {
+     "name": "science",
+     "val": 100000
+    },
+    {
+     "name": "gear",
+     "val": 250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "coalRatioGlobalReduction": 0.2
+   }
+  },
+  {
+   "name": "factoryLogistics",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 2000
+    },
+    {
+     "name": "science",
+     "val": 100000
+    },
+    {
+     "name": "gear",
+     "val": 250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "carbonSequestration",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 1250
+    },
+    {
+     "name": "science",
+     "val": 75000
+    },
+    {
+     "name": "gear",
+     "val": 125
+    },
+    {
+     "name": "steel",
+     "val": 4000
+    },
+    {
+     "name": "alloy",
+     "val": 1000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "factoryOptimization",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 1250
+    },
+    {
+     "name": "science",
+     "val": 75000
+    },
+    {
+     "name": "gear",
+     "val": 125
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "t1CraftRatio": 10,
+    "t2CraftRatio": 2,
+    "queueCap": 1
+   }
+  },
+  {
+   "name": "factoryRobotics",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 2500
+    },
+    {
+     "name": "science",
+     "val": 100000
+    },
+    {
+     "name": "gear",
+     "val": 250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "t1CraftRatio": 10,
+    "t2CraftRatio": 5,
+    "t3CraftRatio": 2,
+    "queueCap": 2
+   }
+  },
+  {
+   "name": "spaceEngineers",
+   "prices": [
+    {
+     "name": "science",
+     "val": 225000
+    },
+    {
+     "name": "alloy",
+     "val": 500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "t1CraftRatio": 10,
+    "t2CraftRatio": 5,
+    "t3CraftRatio": 2,
+    "t4CraftRatio": 2,
+    "queueCap": 2
+   }
+  },
+  {
+   "name": "aiEngineers",
+   "prices": [
+    {
+     "name": "antimatter",
+     "val": 500
+    },
+    {
+     "name": "science",
+     "val": 35000
+    },
+    {
+     "name": "eludium",
+     "val": 50
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "t1CraftRatio": 10,
+    "t2CraftRatio": 5,
+    "t3CraftRatio": 5,
+    "t4CraftRatio": 2,
+    "t5CraftRatio": 2,
+    "queueCap": 3
+   }
+  },
+  {
+   "name": "chronoEngineers",
+   "prices": [
+    {
+     "name": "science",
+     "val": 500000
+    },
+    {
+     "name": "timeCrystal",
+     "val": 5
+    },
+    {
+     "name": "eludium",
+     "val": 100
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "t1CraftRatio": 10,
+    "t2CraftRatio": 5,
+    "t3CraftRatio": 2,
+    "t4CraftRatio": 2,
+    "t5CraftRatio": 2,
+    "queueCap": 3
+   }
+  },
+  {
+   "name": "spaceManufacturing",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 125000
+    },
+    {
+     "name": "science",
+     "val": 250000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "celestialMechanics",
+   "prices": [
+    {
+     "name": "science",
+     "val": 250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "astrolabe",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 5
+    },
+    {
+     "name": "science",
+     "val": 25000
+    },
+    {
+     "name": "starchart",
+     "val": 75
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "titaniumMirrors",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 15
+    },
+    {
+     "name": "science",
+     "val": 20000
+    },
+    {
+     "name": "starchart",
+     "val": 20
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "libraryRatio": 0.02
+   }
+  },
+  {
+   "name": "unobtainiumReflectors",
+   "prices": [
+    {
+     "name": "unobtainium",
+     "val": 75
+    },
+    {
+     "name": "science",
+     "val": 250000
+    },
+    {
+     "name": "starchart",
+     "val": 750
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "libraryRatio": 0.02
+   }
+  },
+  {
+   "name": "eludiumReflectors",
+   "prices": [
+    {
+     "name": "science",
+     "val": 250000
+    },
+    {
+     "name": "eludium",
+     "val": 15
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "libraryRatio": 0.02
+   }
+  },
+  {
+   "name": "hydroPlantTurbines",
+   "prices": [
+    {
+     "name": "unobtainium",
+     "val": 125
+    },
+    {
+     "name": "science",
+     "val": 250000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "hydroPlantRatio": 0.15
+   }
+  },
+  {
+   "name": "amBases",
+   "prices": [
+    {
+     "name": "antimatter",
+     "val": 250
+    },
+    {
+     "name": "eludium",
+     "val": 15
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "aiBases",
+   "prices": [
+    {
+     "name": "antimatter",
+     "val": 7500
+    },
+    {
+     "name": "science",
+     "val": 750000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "amFission",
+   "prices": [
+    {
+     "name": "antimatter",
+     "val": 175
+    },
+    {
+     "name": "science",
+     "val": 525000
+    },
+    {
+     "name": "thorium",
+     "val": 7500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "eludiumAutomationBonus": 0.25
+   }
+  },
+  {
+   "name": "amReactors",
+   "prices": [
+    {
+     "name": "antimatter",
+     "val": 750
+    },
+    {
+     "name": "eludium",
+     "val": 35
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "spaceScienceRatio": 0.95
+   }
+  },
+  {
+   "name": "amReactorsMK2",
+   "prices": [
+    {
+     "name": "antimatter",
+     "val": 1750
+    },
+    {
+     "name": "eludium",
+     "val": 70
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "spaceScienceRatio": 1.5
+   }
+  },
+  {
+   "name": "voidReactors",
+   "prices": [
+    {
+     "name": "antimatter",
+     "val": 2500
+    },
+    {
+     "name": "void",
+     "val": 250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "spaceScienceRatio": 4
+   }
+  },
+  {
+   "name": "relicStation",
+   "prices": [
+    {
+     "name": "antimatter",
+     "val": 5000
+    },
+    {
+     "name": "eludium",
+     "val": 100
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "beaconRelicsPerDay": 0.01
+   }
+  },
+  {
+   "name": "amDrive",
+   "prices": [
+    {
+     "name": "antimatter",
+     "val": 125
+    },
+    {
+     "name": "science",
+     "val": 450000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "routeSpeed": 25
+   }
+  },
+  {
+   "name": "pumpjack",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 250
+    },
+    {
+     "name": "science",
+     "val": 100000
+    },
+    {
+     "name": "gear",
+     "val": 125
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "oilWellRatio": 0.45
+   }
+  },
+  {
+   "name": "petri",
+   "prices": [
+    {
+     "name": "plastic",
+     "val": 250
+    },
+    {
+     "name": "science",
+     "val": 65000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "biofuel",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 1250
+    },
+    {
+     "name": "science",
+     "val": 150000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "unicornSelection",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 1500
+    },
+    {
+     "name": "science",
+     "val": 175000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "unicornsGlobalRatio": 0.25,
+    "unicornsMaxRatio": 0
+   }
+  },
+  {
+   "name": "alicornStable",
+   "prices": [
+    {
+     "name": "wood",
+     "val": 3000
+    },
+    {
+     "name": "gold",
+     "val": 100
+    },
+    {
+     "name": "alicorn",
+     "val": 20
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "alicornMax": 0
+   }
+  },
+  {
+   "name": "gmo",
+   "prices": [
+    {
+     "name": "catnip",
+     "val": 1000000
+    },
+    {
+     "name": "titanium",
+     "val": 1500
+    },
+    {
+     "name": "science",
+     "val": 175000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "biofuelRatio": 0.6
+   }
+  },
+  {
+   "name": "cadSystems",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 750
+    },
+    {
+     "name": "science",
+     "val": 125000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "cadBlueprintCraftRatio": 0.01
+   }
+  },
+  {
+   "name": "seti",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 250
+    },
+    {
+     "name": "science",
+     "val": 125000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "logistics",
+   "prices": [
+    {
+     "name": "science",
+     "val": 100000
+    },
+    {
+     "name": "gear",
+     "val": 100
+    },
+    {
+     "name": "scaffold",
+     "val": 1000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "skillMultiplier": 0.15
+   }
+  },
+  {
+   "name": "augumentation",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 5000
+    },
+    {
+     "name": "uranium",
+     "val": 50
+    },
+    {
+     "name": "science",
+     "val": 150000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "skillMultiplier": 1
+   }
+  },
+  {
+   "name": "internet",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 5000
+    },
+    {
+     "name": "uranium",
+     "val": 50
+    },
+    {
+     "name": "science",
+     "val": 150000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "neuralNetworks",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 7500
+    },
+    {
+     "name": "science",
+     "val": 200000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "assistance",
+   "prices": [
+    {
+     "name": "science",
+     "val": 100000
+    },
+    {
+     "name": "steel",
+     "val": 10000
+    },
+    {
+     "name": "gear",
+     "val": 250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "catnipDemandWorkerRatioGlobal": -0.25
+   }
+  },
+  {
+   "name": "enrichedUranium",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 7500
+    },
+    {
+     "name": "uranium",
+     "val": 150
+    },
+    {
+     "name": "science",
+     "val": 175000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "uraniumRatio": 0.25
+   }
+  },
+  {
+   "name": "coldFusion",
+   "prices": [
+    {
+     "name": "science",
+     "val": 200000
+    },
+    {
+     "name": "eludium",
+     "val": 25
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "reactorEnergyRatio": 0.25
+   }
+  },
+  {
+   "name": "thoriumReactors",
+   "prices": [
+    {
+     "name": "science",
+     "val": 400000
+    },
+    {
+     "name": "thorium",
+     "val": 10000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "reactorThoriumPerTick": -0.05,
+    "reactorEnergyRatio": 0.25
+   }
+  },
+  {
+   "name": "enrichedThorium",
+   "prices": [
+    {
+     "name": "science",
+     "val": 500000
+    },
+    {
+     "name": "thorium",
+     "val": 12500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "reactorThoriumPerTick": 0.0125
+   }
+  },
+  {
+   "name": "hubbleTelescope",
+   "prices": [
+    {
+     "name": "oil",
+     "val": 50000
+    },
+    {
+     "name": "science",
+     "val": 250000
+    },
+    {
+     "name": "alloy",
+     "val": 1250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "starchartGlobalRatio": 0.3
+   }
+  },
+  {
+   "name": "satnav",
+   "prices": [
+    {
+     "name": "science",
+     "val": 200000
+    },
+    {
+     "name": "alloy",
+     "val": 750
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "satnavRatio": 0.0125
+   }
+  },
+  {
+   "name": "satelliteRadio",
+   "prices": [
+    {
+     "name": "science",
+     "val": 225000
+    },
+    {
+     "name": "alloy",
+     "val": 5000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "broadcastTowerRatio": 0.005
+   }
+  },
+  {
+   "name": "astrophysicists",
+   "prices": [
+    {
+     "name": "unobtainium",
+     "val": 350
+    },
+    {
+     "name": "science",
+     "val": 250000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "mWReactor",
+   "prices": [
+    {
+     "name": "science",
+     "val": 150000
+    },
+    {
+     "name": "eludium",
+     "val": 50
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "lunarOutpostRatio": 0.75
+   }
+  },
+  {
+   "name": "eludiumCracker",
+   "prices": [
+    {
+     "name": "science",
+     "val": 275000
+    },
+    {
+     "name": "eludium",
+     "val": 250
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "crackerRatio": 1
+   }
+  },
+  {
+   "name": "thoriumEngine",
+   "prices": [
+    {
+     "name": "science",
+     "val": 400000
+    },
+    {
+     "name": "gear",
+     "val": 40000
+    },
+    {
+     "name": "alloy",
+     "val": 2000
+    },
+    {
+     "name": "ship",
+     "val": 10000
+    },
+    {
+     "name": "thorium",
+     "val": 100000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "routeSpeed": 50
+   }
+  },
+  {
+   "name": "spiceNavigation",
+   "prices": [
+    {
+     "name": "science",
+     "val": 350000
+    },
+    {
+     "name": "starchart",
+     "val": 500000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "longRangeSpaceships",
+   "prices": [
+    {
+     "name": "science",
+     "val": 440000
+    },
+    {
+     "name": "gear",
+     "val": 90000
+    },
+    {
+     "name": "alloy",
+     "val": 3500
+    },
+    {
+     "name": "tanker",
+     "val": 500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "oilRefinery",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 1250
+    },
+    {
+     "name": "science",
+     "val": 125000
+    },
+    {
+     "name": "gear",
+     "val": 500
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "oilWellRatio": 0.35
+   }
+  },
+  {
+   "name": "oilDistillation",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 5000
+    },
+    {
+     "name": "science",
+     "val": 175000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "oilWellRatio": 0.75
+   }
+  },
+  {
+   "name": "factoryProcessing",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 7500
+    },
+    {
+     "name": "science",
+     "val": 195000
+    },
+    {
+     "name": "concrate",
+     "val": 125
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "factoryRefineRatio": 0.05
+   }
+  },
+  {
+   "name": "voidAspiration",
+   "prices": [
+    {
+     "name": "antimatter",
+     "val": 2000
+    },
+    {
+     "name": "timeCrystal",
+     "val": 15
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  },
+  {
+   "name": "distorsion",
+   "prices": [
+    {
+     "name": "antimatter",
+     "val": 2000
+    },
+    {
+     "name": "science",
+     "val": 300000
+    },
+    {
+     "name": "timeCrystal",
+     "val": 25
+    },
+    {
+     "name": "void",
+     "val": 1000
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "temporalParadoxDayBonus": 2
+   }
+  },
+  {
+   "name": "turnSmoothly",
+   "prices": [
+    {
+     "name": "unobtainium",
+     "val": 100000
+    },
+    {
+     "name": "temporalFlux",
+     "val": 6500
+    },
+    {
+     "name": "timeCrystal",
+     "val": 25
+    },
+    {
+     "name": "void",
+     "val": 750
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {
+    "temporalFluxProductionChronosphere": 1
+   }
+  },
+  {
+   "name": "invisibleBlackHand",
+   "prices": [
+    {
+     "name": "temporalFlux",
+     "val": 4096
+    },
+    {
+     "name": "timeCrystal",
+     "val": 128
+    },
+    {
+     "name": "void",
+     "val": 32
+    },
+    {
+     "name": "blackcoin",
+     "val": 64
+    }
+   ],
+   "unlocked": false,
+   "researched": false,
+   "effects": {}
+  }
+ ],
+ "crafts": [
+  {
+   "name": "wood",
+   "prices": [
+    {
+     "name": "catnip",
+     "val": 100
+    }
+   ],
+   "unlocked": true,
+   "value": 0,
+   "tier": 1,
+   "isLimited": false,
+   "ignoreBonuses": true
+  },
+  {
+   "name": "beam",
+   "prices": [
+    {
+     "name": "wood",
+     "val": 175
+    }
+   ],
+   "unlocked": true,
+   "value": 0,
+   "tier": 1,
+   "isLimited": false,
+   "ignoreBonuses": false
+  },
+  {
+   "name": "slab",
+   "prices": [
+    {
+     "name": "minerals",
+     "val": 250
+    }
+   ],
+   "unlocked": true,
+   "value": 0,
+   "tier": 1,
+   "isLimited": false,
+   "ignoreBonuses": false
+  },
+  {
+   "name": "plate",
+   "prices": [
+    {
+     "name": "iron",
+     "val": 125
+    }
+   ],
+   "unlocked": true,
+   "value": 0,
+   "tier": 1,
+   "isLimited": false,
+   "ignoreBonuses": false
+  },
+  {
+   "name": "steel",
+   "prices": [
+    {
+     "name": "coal",
+     "val": 100
+    },
+    {
+     "name": "iron",
+     "val": 100
+    }
+   ],
+   "unlocked": false,
+   "value": 0,
+   "tier": 2,
+   "isLimited": false,
+   "ignoreBonuses": false
+  },
+  {
+   "name": "concrate",
+   "prices": [
+    {
+     "name": "slab",
+     "val": 2500
+    },
+    {
+     "name": "steel",
+     "val": 25
+    }
+   ],
+   "unlocked": false,
+   "value": 0,
+   "tier": 4,
+   "isLimited": false,
+   "ignoreBonuses": false
+  },
+  {
+   "name": "gear",
+   "prices": [
+    {
+     "name": "steel",
+     "val": 15
+    }
+   ],
+   "unlocked": true,
+   "value": 0,
+   "tier": 3,
+   "isLimited": false,
+   "ignoreBonuses": false
+  },
+  {
+   "name": "alloy",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 10
+    },
+    {
+     "name": "steel",
+     "val": 75
+    }
+   ],
+   "unlocked": false,
+   "value": 0,
+   "tier": 4,
+   "isLimited": false,
+   "ignoreBonuses": false
+  },
+  {
+   "name": "eludium",
+   "prices": [
+    {
+     "name": "unobtainium",
+     "val": 1000
+    },
+    {
+     "name": "alloy",
+     "val": 2500
+    }
+   ],
+   "unlocked": false,
+   "value": 0,
+   "tier": 5,
+   "isLimited": false,
+   "ignoreBonuses": false
+  },
+  {
+   "name": "scaffold",
+   "prices": [
+    {
+     "name": "beam",
+     "val": 50
+    }
+   ],
+   "unlocked": true,
+   "value": 0,
+   "tier": 2,
+   "isLimited": false,
+   "ignoreBonuses": false
+  },
+  {
+   "name": "ship",
+   "prices": [
+    {
+     "name": "starchart",
+     "val": 25
+    },
+    {
+     "name": "plate",
+     "val": 150
+    },
+    {
+     "name": "scaffold",
+     "val": 100
+    }
+   ],
+   "unlocked": false,
+   "value": 0,
+   "tier": 3,
+   "isLimited": false,
+   "ignoreBonuses": false
+  },
+  {
+   "name": "tanker",
+   "prices": [
+    {
+     "name": "alloy",
+     "val": 1250
+    },
+    {
+     "name": "ship",
+     "val": 200
+    },
+    {
+     "name": "blueprint",
+     "val": 5
+    }
+   ],
+   "unlocked": false,
+   "value": 0,
+   "tier": 5,
+   "isLimited": false,
+   "ignoreBonuses": false
+  },
+  {
+   "name": "kerosene",
+   "prices": [
+    {
+     "name": "oil",
+     "val": 7500
+    }
+   ],
+   "unlocked": false,
+   "value": 0,
+   "tier": 2,
+   "isLimited": false,
+   "ignoreBonuses": false
+  },
+  {
+   "name": "plastic",
+   "prices": [
+    {
+     "name": "oil",
+     "val": 1000
+    }
+   ],
+   "unlocked": false,
+   "value": 0,
+   "tier": 2,
+   "isLimited": false,
+   "ignoreBonuses": false
+  },
+  {
+   "name": "microchip",
+   "prices": [
+    {
+     "name": "plastic",
+     "val": 50
+    },
+    {
+     "name": "gold",
+     "val": 1000
+    },
+    {
+     "name": "spice",
+     "val": 750
+    }
+   ],
+   "unlocked": false,
+   "value": 0,
+   "tier": 3,
+   "isLimited": false,
+   "ignoreBonuses": false
+  },
+  {
+   "name": "parchment",
+   "prices": [
+    {
+     "name": "furs",
+     "val": 175
+    }
+   ],
+   "unlocked": false,
+   "value": 0,
+   "tier": 1,
+   "isLimited": false,
+   "ignoreBonuses": false
+  },
+  {
+   "name": "manuscript",
+   "prices": [
+    {
+     "name": "culture",
+     "val": 400
+    },
+    {
+     "name": "parchment",
+     "val": 25
+    }
+   ],
+   "unlocked": true,
+   "value": 0,
+   "tier": 2,
+   "isLimited": false,
+   "ignoreBonuses": false
+  },
+  {
+   "name": "compedium",
+   "prices": [
+    {
+     "name": "science",
+     "val": 9000
+    },
+    {
+     "name": "manuscript",
+     "val": 55
+    }
+   ],
+   "unlocked": false,
+   "value": 0,
+   "tier": 3,
+   "isLimited": false,
+   "ignoreBonuses": false
+  },
+  {
+   "name": "blueprint",
+   "prices": [
+    {
+     "name": "science",
+     "val": 25000
+    },
+    {
+     "name": "compedium",
+     "val": 25
+    }
+   ],
+   "unlocked": false,
+   "value": 0,
+   "tier": 3,
+   "isLimited": false,
+   "ignoreBonuses": false
+  },
+  {
+   "name": "thorium",
+   "prices": [
+    {
+     "name": "uranium",
+     "val": 250
+    }
+   ],
+   "unlocked": false,
+   "value": 0,
+   "tier": 3,
+   "isLimited": false,
+   "ignoreBonuses": false
+  },
+  {
+   "name": "megalith",
+   "prices": [
+    {
+     "name": "beam",
+     "val": 25
+    },
+    {
+     "name": "slab",
+     "val": 50
+    },
+    {
+     "name": "plate",
+     "val": 5
+    }
+   ],
+   "unlocked": true,
+   "value": 0,
+   "tier": 3,
+   "isLimited": false,
+   "ignoreBonuses": false
+  },
+  {
+   "name": "bloodstone",
+   "prices": [
+    {
+     "name": "timeCrystal",
+     "val": 5000
+    },
+    {
+     "name": "relic",
+     "val": 10000
+    }
+   ],
+   "unlocked": false,
+   "value": 0,
+   "tier": 5,
+   "isLimited": false,
+   "ignoreBonuses": false
+  },
+  {
+   "name": "tMythril",
+   "prices": [
+    {
+     "name": "bloodstone",
+     "val": 5
+    },
+    {
+     "name": "ivory",
+     "val": 1000
+    },
+    {
+     "name": "titanium",
+     "val": 500
+    }
+   ],
+   "unlocked": false,
+   "value": 0,
+   "tier": 7,
+   "isLimited": false,
+   "ignoreBonuses": false
+  }
+ ],
+ "seasons": [
+  {
+   "name": "spring",
+   "modifiers": {
+    "catnip": 1.5
+   }
+  },
+  {
+   "name": "summer",
+   "modifiers": {
+    "catnip": 1
+   }
+  },
+  {
+   "name": "autumn",
+   "modifiers": {
+    "catnip": 1
+   }
+  },
+  {
+   "name": "winter",
+   "modifiers": {
+    "catnip": 0.25
+   }
+  }
+ ]
+}

@@ -4033,7 +4033,7 @@
    },
    "resources": {
     "catnip": {
-     "v": 100,
+     "v": 0,
      "m": 5000,
      "u": false,
      "p": 0
@@ -4835,7 +4835,7 @@
    },
    "resources": {
     "catnip": {
-     "v": 100,
+     "v": 0,
      "m": 5000,
      "u": false,
      "p": 0
@@ -5755,6 +5755,369 @@
     "snap"
    ],
    "result": 0
+  }
+ ],
+ "resPoolSave": [
+  {
+   "name": "catnip",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "wood",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false,
+   "isHiddenFromCrafting": false
+  },
+  {
+   "name": "minerals",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "coal",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "iron",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "titanium",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "gold",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "oil",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "uranium",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "unobtainium",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "antimatter",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "manpower",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "science",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "culture",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "faith",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "kittens",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "zebras",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "starchart",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "temporalFlux",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "gflops",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "hashrates",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "furs",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "ivory",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "spice",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "unicorns",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "alicorn",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "necrocorn",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "tears",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "karma",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "paragon",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "burnedParagon",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "timeCrystal",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "sorrow",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "relic",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "void",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "elderBox",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "wrappingPaper",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "blackcoin",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "bloodstone",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "tMythril",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "beam",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "slab",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "plate",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "steel",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "concrate",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "gear",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "alloy",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "eludium",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "scaffold",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "ship",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "tanker",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "kerosene",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "plastic",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "microchip",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "parchment",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "manuscript",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "compedium",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "blueprint",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "thorium",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
+  },
+  {
+   "name": "megalith",
+   "value": 0,
+   "unlocked": false,
+   "isHidden": false
   }
  ]
 }

@@ -1,0 +1,40 @@
+# name: bisect5
+# seed: 20260927
+# checkpoints: 500, 510, 520, 530, 540, 550, 560, 570, 580, 590, 600, 610, 620, 630, 640, 650, 660, 670, 680, 690, 700, 710, 720, 730, 740, 750, 760, 770, 780, 790, 800, 810, 820, 830, 840, 850, 860, 870, 880, 890, 900, 910, 920, 930, 940, 950, 960, 970, 980, 990, 1000
+# Science-pipeline bring-up: fields -> wood -> hut -> library -> scholars ->
+# research agriculture (100 science). KNOWN ISSUE: science production stays 0 despite
+# library+scholars — unlock gate not yet identified (see session report); the research
+# action is expected to fail with cannot-afford for now. Still a valuable long-run fixture.
+0 gather 30
+15 buy field
+50 gather 60
+90 buy field 4
+130 gather 80
+170 buy field 4
+210 gather 100
+250 buy field 4
+290 gather 120
+330 buy field 4
+370 gather 250
+420 craft wood 5
+460 buy hut
+500 gather 500
+560 craft wood 5
+600 gather 500
+660 craft wood 5
+720 gather 500
+780 craft wood 5
+840 gather 500
+900 craft wood 5
+960 gather 500
+1020 craft wood 5
+1080 gather 500
+1140 craft wood 5
+1200 buy library
+1250 assign scholar 1
+1350 assign scholar 2
+1500 gather 500
+1800 gather 500
+2100 gather 500
+2400 gather 500
+2950 research agriculture

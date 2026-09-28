@@ -4,10 +4,11 @@ module FsRunner.Program
 // snapshots in the same JSON shape as oracle/runner/orig-driver.js, so
 // tools/diff-snapshots.js can compare implementations bit-exactly.
 //
-// Scope note (sessions 2026-09-28-04/-05/-06): the resources pipeline exists in
-// the core (resources-01..10). Player actions are still logged as
-// not-yet-ported; snapshot comparison uses --include filters on the subtrees
-// the port owns (see D014).
+// Scope note (sessions 2026-09-28-04..08): resources pipeline, math library,
+// calendar, effects cache, production formula, buildings/science/workshop
+// managers, village sim core. Player actions run through the same code paths a
+// player click reaches. Snapshot comparison uses --include filters on subtrees
+// the port owns where needed (see D014).
 
 open System
 open System.IO
@@ -60,7 +61,7 @@ let num (v: float) : string =
     if Double.IsNaN v || Double.IsInfinity v then "null" else string v
 
 // ---------------------------------------------------------------------------
-// Scenario parsing (subset of oracle/runner/scenario.js; same file format)
+// Scenario parsing (same file format as oracle/runner/scenario.js)
 
 type Move = { Tick: int; Action: string; Args: string list }
 
@@ -105,20 +106,20 @@ let parseScenario (text: string) : Scenario =
                     if tick > maxTick then maxTick <- tick
                 | _ -> ()
 
-    checkpoints <- 0 :: maxTick :: checkpoints // snapshot at 0 and end always
+    checkpoints <- 0 :: maxTick :: checkpoints
     { Name = name
       Seed = seed
       Checkpoints = checkpoints |> List.distinct |> List.sort
-      Moves = moves |> List.rev |> List.sortBy (fun m -> m.Tick) // rev: restore file order (prepend), stable sort keeps it within a tick
+      Moves = moves |> List.rev |> List.sortBy (fun m -> m.Tick)
       MaxTick = maxTick }
 
 // ---------------------------------------------------------------------------
-// Scenario execution against the F# core
+// resop result kinds: numbers, booleans, or absent (orig: undefined → key dropped)
 
-/// resop result kinds: numbers, booleans, or absent (orig: undefined → key dropped)
 type ResKind =
     | RNum of float
     | RBool of bool
+    | RText of string
     | RNone
 
 type CalJson =
@@ -129,8 +130,17 @@ type CalJson =
       cycle: int
       cycleYear: int }
 
+type BldSnap = string * (int * int * bool * bool * int)
+type JobSnap = string * int * bool
+type CraftSnap = string * bool * float
+
 type ExecResult =
-    { Snapshots: (int * (string * (float * float * bool * float)) list * int * CalJson) list
+    { Snapshots:
+        (int * (string * (float * float * bool * float)) list * int * CalJson
+             * BldSnap list * JobSnap list * CraftSnap list
+             * string list * string list * string list
+             * string option list * int * (string * float) list)
+          list
       ActionLog: (int * string * string list * ResKind) list
       ResSave: (string * float * bool) list option }
 
@@ -141,17 +151,15 @@ let parseSpec (s: string) : (string * float) list =
         (parts.[0], float parts.[1]))
     |> Array.toList
 
+// ---------------------------------------------------------------------------
+// Scenario execution against the F# core — the full live pipeline.
+
 let execute (scenario: Scenario) : ExecResult =
-    // live game state (the port's tick pipeline slice)
     let mutable pool = init Game.Catalog.Resources.resourceDefs
     let mutable cache = Game.Effects.empty
     let mutable calendar = Game.Calendar.init
     let mutable ticks = 0
-    // timer (game-03a): the only event that touches snapshotted state at fresh is
-    // updateCaches (frequency 5, fires at ticks 1, 6, 11, ...); the other
-    // constructor events touch no snapshotted state at fresh (seams).
     let mutable updateCachesPhase = 0
-    // calendarDay: owned by calendar-01; verified day = 0 after resetState
     let mutable calendarDay = 0
     let mutable rngDraws = 0
     let mutable rand =
@@ -161,9 +169,14 @@ let execute (scenario: Scenario) : ExecResult =
     let mutable prodOverrides = Map.empty<string, float>
     let mutable lastLimits = Map.empty<string, float>
     let mutable resSave: (string * float * bool) list option = None
-    let mutable curLogTick = 0 // follows game.ticks once gtick advances time
+    let mutable curLogTick = 0
     let mutable snapshots = []
     let mutable actionLog = []
+    // manager pools (buildings-02 / science-03 / workshop-03 / village-02)
+    let mutable bpool = Game.Buildings.init Game.Catalog.Defs.buildingDefs
+    let mutable spool = Game.Managers.initScience Game.Catalog.Defs.techDefs Game.Catalog.Defs.policyDefs
+    let mutable wpool = Game.Managers.initWorkshop Game.Catalog.Defs.upgradeDefs Game.Catalog.Defs.craftDefs
+    let mutable vpool = Game.Managers.initVillage Game.Catalog.Village.jobDefs
 
     let capCtx () : CapContext =
         { GetEffect = Game.Effects.getEffect cache
@@ -173,7 +186,42 @@ let execute (scenario: Scenario) : ExecResult =
           SilosResearched = false
           KarmaZebras = 0 }
 
-    let calCtx () : Game.Calendar.CalendarContext =
+    let emptyGroup () : Game.Effects.ManagerGroup = { Base = Map.empty; Items = [] }
+    let religionGroup () = emptyGroup ()
+    let challengesGroup () = emptyGroup ()
+    let prestigeGroup () = emptyGroup ()
+    let spaceGroup () = emptyGroup ()
+    let timeGroup () : Game.Effects.ManagerGroup =
+        { Base =
+            Game.Catalog.BaseEffects.baseEffects
+            |> Map.filter (fun k _ -> k.StartsWith("heat") || k.StartsWith("temporalFlux"))
+          Items = [] }
+    let villageGroup () = emptyGroup ()
+
+    let bldGroup () : Game.Effects.ManagerGroup =
+        { Base = Game.Catalog.BaseEffects.bldBase
+          Items =
+            bpool.Order
+            |> List.choose (fun n ->
+                match Game.Buildings.get bpool n with
+                | Some b -> Some(Game.Buildings.activeEffects b, (fun name _ -> Game.Buildings.providerEffect b name))
+                | None -> None) }
+    let workshopGroup () : Game.Effects.ManagerGroup =
+        { Base = Map.empty
+          Items =
+            wpool.UpgradeOrder
+            |> List.choose (fun n ->
+                match wpool.Upgrades |> Map.tryFind n with
+                | Some u when u.Researched -> Some(u.Def.Effects, (fun _ v -> v))
+                | _ -> None) }
+    let scienceGroup () = emptyGroup () // techs carry no static effects in this version
+
+    let allGroups () =
+        [ workshopGroup (); religionGroup (); bldGroup (); challengesGroup (); prestigeGroup (); spaceGroup (); timeGroup (); villageGroup (); scienceGroup () ]
+
+    // calCtx -> refreshCache -> prodCtx -> calCtx is a genuine tie-the-knot
+    // cycle (the daily refresh recomputes production with the live calendar)
+    let rec calCtx () : Game.Calendar.CalendarContext =
         { Game.Calendar.CalendarContext.GetEffect = Game.Effects.getEffect cache
           TimeAccelerationRatio = 0.0
           DarkFuture = false
@@ -186,10 +234,50 @@ let execute (scenario: Scenario) : ExecResult =
           CommunismResearched = false
           WinterIsComingOn = false
           Rand = fun () -> rngDraws <- rngDraws + 1; rand ()
-          OnParadox = fun st -> st }
+          OnParadox = fun st -> st
+          // orig mutates the calendar in place before the onNewDay refresh;
+          // commit the rolled-over state first so production sees the new season
+          OnNewDayRefresh = fun st -> calendar <- st; refreshCache (); st }
 
-    let prodCtx () : Game.Production.ProductionContext =
-        Game.Production.freshProductionContext cache calendar (calCtx ())
+    and prodCtx () : Game.Production.ProductionContext =
+        let fresh = Game.Production.freshProductionContext cache calendar (calCtx ())
+        let jobDefMap =
+            Game.Catalog.Village.jobDefs |> List.map (fun j -> (j.Name, j)) |> Map.ofList
+        { fresh with
+            VillageResProduction =
+              fun resName ->
+                (Game.Managers.getResProduction vpool jobDefMap)
+                |> Map.tryFind resName
+                |> Option.defaultValue 0.0
+            VillageResConsumption =
+              fun resName ->
+                // orig village.getResConsumption (js/village.js L811): catnip
+                // -0.85/kitten; furs/ivory/spice luxury demands (philosophy seam 0)
+                let count = vpool.Kittens.Length
+                match resName with
+                | "catnip" -> -0.85 * float count
+                | "furs" -> -0.01 * float count
+                | "ivory" -> -0.007 * float count
+                | "spice" -> -0.001 * float count
+                | _ -> 0.0 }
+
+    and refreshCache () =
+        cache <- Game.Effects.updateCaches cache (allGroups ())
+        let pctx = prodCtx ()
+        pool <-
+            { pool with
+                ByName =
+                    pool.ByName
+                    |> Map.map (fun _ res ->
+                        if res.Def.CalculatePerTick then
+                            { res with
+                                PerTickCached =
+                                    Game.Production.fixFloatPointNumber (
+                                        Game.Production.calcResourcePerTick pctx pool res.Def.Name
+                                    ) }
+                        else
+                            res) }
+
 
     let takeSnapshot () =
         let resources =
@@ -206,10 +294,36 @@ let execute (scenario: Scenario) : ExecResult =
               weather = calendar.Weather
               cycle = calendar.Cycle
               cycleYear = calendar.CycleYear }
-        (ticks, resources, rngDraws, calJson)
-    // gtick: the port's game.tick() slice — updateModel order with seams:
-    // resPool.update → (bld/village/etc seams: no snapshotted state at fresh)
-    // → timer.update (updateCaches every 5 ticks) → calendar.tick
+        let buildings =
+            bpool.Order
+            |> List.choose (fun n ->
+                match Game.Buildings.get bpool n with
+                | Some b -> Some(n, (b.Val, b.On, b.Unlocked, b.Unlockable, b.Stage))
+                | None -> None)
+        let jobs =
+            vpool.JobValues
+            |> Map.toList
+            |> List.sortBy fst
+            |> List.map (fun (n, v) -> (n, v, vpool.JobUnlocked.Contains n))
+        let crafts =
+            wpool.CraftOrder
+            |> List.choose (fun n ->
+                match Game.Managers.getCraft wpool n with
+                | Some c -> Some(n, c.Unlocked, c.Value)
+                | None -> None)
+        let techs = spool.TechOrder |> List.filter (fun n -> spool.Techs.[n].Researched) |> List.sort
+        let upgrades = wpool.UpgradeOrder |> List.filter (fun n -> wpool.Upgrades.[n].Researched) |> List.sort
+        let policies = spool.PolicyOrder |> List.filter (fun n -> spool.Policies.[n].Researched) |> List.sort
+        let kittenJobs = vpool.Kittens |> List.map (fun k -> k.Job) |> List.sort
+        let free = Game.Managers.getFreeKittens vpool
+        let effectsSample =
+            [ "catnipPerTickBase"; "catnipDemandRatio"; "maxKittensRatio"; "woodPerTick" ]
+            |> List.map (fun k -> (k, Game.Effects.getEffect cache k))
+        (ticks, resources, rngDraws, calJson, buildings, jobs, crafts, techs, upgrades, policies, kittenJobs, free, effectsSample)
+
+    // gtick: the port's game.tick() — updateModel order:
+    // resPool.update → bld.update → village sim (+ kittens sync) → timer
+    // (updateCaches+updateResources every 5 ticks) → calendar.tick
     let gtick () =
         let uctx =
             { Cap = capCtx ()
@@ -227,30 +341,24 @@ let execute (scenario: Scenario) : ExecResult =
               EnergyChallengeResearched = false
               EnergyChallengeActive = false }
         pool <- update uctx calendarDay pool
-        // (bld/village/diplomacy/religion/space/challenges update seams; kittens
-        //  pseudo-resource sync = 0 at fresh)
+        bpool <- Game.Buildings.update pool bpool
+        // village sim (village-02/04): births at 0.01 base × growth ratio;
+        // starvation seam engages once production can go negative
+        let maxKittens = Game.Managers.calculateMaxKittens cache vpool
+        vpool <- { vpool with MaxKittens = maxKittens }
+        let kittensPerTick = 0.01 * (1.0 + Game.Effects.getEffect cache "kittenGrowthRatio")
+        vpool <- Game.Managers.simUpdate maxKittens kittensPerTick 1 (fun () -> rngDraws <- rngDraws + 1; rand ()) vpool
+        // kittens pseudo-resource sync (game.js L4535-4539)
+        let kittensRes = pool.ByName["kittens"]
+        pool <- { pool with ByName = pool.ByName |> Map.add "kittens" { kittensRes with Value = float vpool.Kittens.Length; MaxValue = float vpool.MaxKittens } }
+        // (diplomacy/religion/space/challenges update seams)
 
         updateCachesPhase <- updateCachesPhase - 1
         if updateCachesPhase <= 0 then
             updateCachesPhase <- 5
-            cache <- Game.Effects.updateCaches cache
-            // game.updateResources(): cache perTick values
-            let pctx = prodCtx ()
-            pool <-
-                { pool with
-                    ByName =
-                        pool.ByName
-                        |> Map.map (fun _ res ->
-                            if res.Def.CalculatePerTick then
-                                { res with
-                                    PerTickCached =
-                                        Game.Production.fixFloatPointNumber (
-                                            Game.Production.calcResourcePerTick pctx pool res.Def.Name
-                                        ) }
-                            else
-                                res) }
+            refreshCache ()
         // (policy recalc 25 / achievements 50 / winter catnip 25 / time queue 10 /
-        //  server events: seams — no snapshotted state at fresh)
+        //  server events: seams)
 
         calendar <- Game.Calendar.tick (calCtx ()) calendar
         ticks <- ticks + 1
@@ -264,7 +372,7 @@ let execute (scenario: Scenario) : ExecResult =
                 pool <- updateMaxValueAll (capCtx ()) pool
                 actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
             | [ "cache" ] ->
-                cache <- Game.Effects.updateCaches cache
+                cache <- Game.Effects.updateCaches cache (allGroups ())
                 actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
             | [ "gtick"; n ] ->
                 for _ in 1..int n do
@@ -317,7 +425,7 @@ let execute (scenario: Scenario) : ExecResult =
                 pool <- payPrices calendarDay pool (parseSpec spec)
                 actionLog <- (curLogTick, "resop", m.Args, RBool true) :: actionLog
             | [ "ff"; days ] ->
-                let pool', limits = fastforward 10.0 (float days) calendarDay pool // ticksPerDay = 10
+                let pool', limits = fastforward 10.0 (float days) calendarDay pool
                 pool <- pool'
                 lastLimits <- limits
                 actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
@@ -334,10 +442,7 @@ let execute (scenario: Scenario) : ExecResult =
                 actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
             | [ "energydelta" ] ->
                 actionLog <-
-                    (m.Tick,
-                     "resop",
-                     m.Args,
-                     RNum(getEnergyDelta false false pool.EnergyProd pool.EnergyCons))
+                    (curLogTick, "resop", m.Args, RNum(getEnergyDelta false false pool.EnergyProd pool.EnergyCons))
                     :: actionLog
             | [ "gauss" ] ->
                 let result = Game.Math.standardGaussianRandom (fun () -> rngDraws <- rngDraws + 1; rand ())
@@ -368,8 +473,7 @@ let execute (scenario: Scenario) : ExecResult =
             | [ fn; resName; valueArg ] ->
                 let v = float valueArg
                 // orig get(name) returns false for unknown names; addRes then
-                // reads/writes a primitive — writes no-op, reads give undefined,
-                // and the return value is NaN (JSON null). Mirror that outcome.
+                // reads/writes a primitive — writes no-op, return NaN (JSON null)
                 let known = get pool resName |> Option.isSome
                 let pool', delta =
                     if not known then pool, nan
@@ -385,13 +489,90 @@ let execute (scenario: Scenario) : ExecResult =
                 pool <- pool'
                 actionLog <- (curLogTick, "resop", m.Args, RNum delta) :: actionLog
             | _ -> actionLog <- (curLogTick, "resop", m.Args, RNone) :: actionLog
-        | "gather"
-        | "buy"
-        | "craft"
-        | "assign"
-        | "research"
-        | "upgrade"
-        | "policy"
+        // player actions (buildings-02/science-03/workshop-03/village-03 wiring)
+        | "gather" ->
+            let n = if m.Args.Length >= 1 then int m.Args.[0] else 1
+            for _ in 1..n do
+                let res = pool.ByName["catnip"]
+                pool <- { pool with ByName = pool.ByName |> Map.add "catnip" { res with Value = res.Value + 1.0 } }
+        | "buy" ->
+            let bldName = m.Args.[0]
+            let n = if m.Args.Length >= 2 then int m.Args.[1] else 1
+            let bpool', pool', built = Game.Buildings.build calendarDay cache pool n bldName bpool
+            bpool <- bpool'
+            pool <- pool'
+            if built > 0 then
+                // orig build tail: if (meta.unlocks) game.unlock(...);
+                // if (meta.upgrades) game.upgrade(meta.upgrades) — upgrade
+                // unconditionally runs updateCaches (ENTRY + EXIT), so buildings
+                // WITH an upgrades key (hut: policies [authocracy]!) refresh the
+                // cache immediately; field (upgrades: null) does not
+                let b = bpool.ByName[bldName]
+                match b.Def.Unlocks with
+                | Some u ->
+                    vpool <- { vpool with JobUnlocked = vpool.JobUnlocked |> Set.union (Set.ofList u.Jobs) }
+                    let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs [] u.Tech u.Policies u.Upgrades bpool spool wpool
+                    bpool <- bp2
+                    spool <- sp2
+                    wpool <- wp2
+                | None -> ()
+                match b.Def.Upgrades with
+                | Some _ ->
+                    // game.upgrade recalculates EFFECTS ONLY (no unlock marks!);
+                    // with all calculateEffects val-constant, only the cache
+                    // refresh is observable
+                    refreshCache () // game.upgrade entry
+                    refreshCache () // game.upgrade exit
+                | None -> ()
+        | "craft" ->
+            let pool', wpool', _, _ = Game.Managers.craft calendarDay cache m.Args.[0] (float m.Args.[1]) pool wpool
+            pool <- pool'
+            wpool <- wpool'
+            refreshCache () // orig game.craft calls updateResources (game.js L4631)
+        | "assign" ->
+            let jobName = m.Args.[0]
+            let n = if m.Args.Length >= 2 then int m.Args.[1] else 1
+            let freeBefore = Game.Managers.getFreeKittens vpool
+            vpool <- Game.Managers.assignJob jobName n vpool
+            vpool <- Game.Managers.simAssignJob jobName n vpool
+            let assigned = vpool.JobValues |> Map.tryFind jobName |> Option.defaultValue 0
+            // orig driver logs when the assignment could not fully complete
+            // (jobLimit: manager default 100000 at this stage)
+            if freeBefore < n || assigned < n then
+                actionLog <-
+                    (m.Tick, "assign", m.Args,
+                     RText(sprintf "assigned %d/%d (freeBefore=%d, jobLimit=100000)" assigned n freeBefore))
+                    :: actionLog
+
+        | "research" ->
+            let pool', spool', ok = Game.Managers.research calendarDay m.Args.[0] pool spool
+            pool <- pool'
+            spool <- spool'
+            if ok then
+              refreshCache () // research onPurchase reaches game.upgrade -> updateCaches
+              match Game.Managers.getTech spool' m.Args.[0] with
+              | Some t ->
+                  match t.Def.Unlocks with
+                  | Some u ->
+                      vpool <- { vpool with JobUnlocked = vpool.JobUnlocked |> Set.union (Set.ofList u.Jobs) }
+                      let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs [] u.Tech u.Policies u.Upgrades bpool spool wpool
+                      bpool <- bp2
+                      spool <- sp2
+                      wpool <- wp2
+                  | None -> ()
+              | None -> ()
+        | "upgrade" ->
+            let pool', wpool', ok = Game.Managers.buyUpgrade calendarDay m.Args.[0] pool wpool
+            pool <- pool'
+            wpool <- wpool'
+            let _ = ok
+            ()
+        | "policy" ->
+            let pool', spool', ok = Game.Managers.researchPolicy calendarDay m.Args.[0] pool spool
+            pool <- pool'
+            spool <- spool'
+            let _ = ok
+            ()
         | "hunt"
         | "praise"
         | "save"
@@ -399,21 +580,28 @@ let execute (scenario: Scenario) : ExecResult =
         | "observe" -> ()
         | other -> actionLog <- (m.Tick, other, m.Args, RNone) :: actionLog
 
-    // run all scenario moves (tick-0 moves = the pinned D010 semantics; the auto
-    // snapshot is taken AFTER tick-0 moves, matching orig-driver ordering —
-    // snap-op snapshots pushed during moves precede it)
-    for m in scenario.Moves do
-        doMove m
+    // scenario run loop mirroring orig-driver (D010): tick-0 moves before the
+    // tick-0 snapshot; moves at tick T before tick T's gtick; checkpoint
+    // snapshots after that tick; snap-op snapshots pushed during moves precede it
+    let movesAt tick = scenario.Moves |> List.filter (fun m -> m.Tick = tick)
 
+    for m in movesAt 0 do
+        doMove m
     snapshots <- takeSnapshot () :: snapshots
+
+    for tick in 1..scenario.MaxTick do
+        for m in movesAt tick do
+            doMove m
+        gtick ()
+        if scenario.Checkpoints |> List.contains tick then
+            snapshots <- takeSnapshot () :: snapshots
 
     { Snapshots = List.rev snapshots
       ActionLog = List.rev actionLog
       ResSave = resSave }
 
 // ---------------------------------------------------------------------------
-// Village dump (--dump-village): round-trip verification of village-01 data
-// against orig's dump (same JSON shape).
+// Village dump (--dump-village): round-trip verification of village-01 data.
 
 let dumpVillage () =
     let modJson (m: Map<string, float>) =
@@ -460,9 +648,15 @@ let dumpCatalog () =
     "{\n  \"driver\": \"fs-runner\",\n  \"origCommit\": \"n/a (F# core)\",\n  \"catalog\": [" + items + "]\n}"
 
 // ---------------------------------------------------------------------------
-// Snapshot JSON (resources subtree only until more core exists)
+// Snapshot JSON
 
-let snapshotJson ((tick, resources, rngDraws, cal): int * (string * (float * float * bool * float)) list * int * CalJson) : string =
+let snapshotJson
+    ((tick, resources, rngDraws, cal, buildings, jobs, crafts, techs, upgrades, policies, kittenJobs, free, effectsSample):
+        int * (string * (float * float * bool * float)) list * int * CalJson
+            * BldSnap list * JobSnap list * CraftSnap list
+            * string list * string list * string list
+            * string option list * int * (string * float) list)
+    : string =
     let resItems =
         resources
         |> List.map (fun (n, (v, m, u, p)) ->
@@ -475,8 +669,40 @@ let snapshotJson ((tick, resources, rngDraws, cal): int * (string * (float * flo
                 (num p))
         |> String.concat ","
     let weather = match cal.weather with Some w -> sprintf "\"%s\"" (esc w) | None -> "null"
+    let buildingsJson =
+        buildings
+        |> List.map (fun (n, (v, on, unl, able, st)) ->
+            sprintf
+                "\"%s\":{\"val\":%d,\"on\":%d,\"unlocked\":%s,\"unlockable\":%s,\"stage\":%d}"
+                (esc n) v on (if unl then "true" else "false") (if able then "true" else "false") st)
+        |> String.concat ","
+    let jobsJson =
+        jobs
+        |> List.map (fun (n, v, unl) ->
+            sprintf "\"%s\":{\"value\":%d,\"unlocked\":%s}" (esc n) v (if unl then "true" else "false"))
+        |> String.concat ","
+    let craftsJson =
+        crafts
+        |> List.map (fun (n, unl, value) ->
+            sprintf "\"%s\":{\"unlocked\":%s,\"value\":%s}" (esc n) (if unl then "true" else "false") (num value))
+        |> String.concat ","
+    let nameArr xs = xs |> List.map (fun x -> sprintf "\"%s\"" (esc x)) |> String.concat ","
+    let kittenJobsJson =
+        kittenJobs
+        |> List.map (fun j -> match j with Some j -> sprintf "\"%s\"" (esc j) | None -> "null")
+        |> String.concat ","
+    let kittensJson =
+        sprintf
+            "{\"count\":%d,\"free\":%d,\"jobs\":[%s]}"
+            kittenJobs.Length
+            free
+            kittenJobsJson
+    let effectsJson =
+        effectsSample
+        |> List.map (fun (k, v) -> sprintf "\"%s\":%s" (esc k) (num v))
+        |> String.concat ","
     sprintf
-        "{\"tick\":%d,\"rngDraws\":%d,\"calendar\":{\"year\":%s,\"day\":%s,\"season\":\"%s\",\"weather\":%s,\"cycle\":%d,\"cycleYear\":%d},\"resources\":{%s}}"
+        "{\"tick\":%d,\"rngDraws\":%d,\"calendar\":{\"year\":%s,\"day\":%s,\"season\":\"%s\",\"weather\":%s,\"cycle\":%d,\"cycleYear\":%d},\"kittens\":%s,\"resources\":{%s},\"buildings\":{%s},\"jobs\":{%s},\"crafts\":{%s},\"techs\":[%s],\"upgrades\":[%s],\"policies\":[%s],\"effects\":{%s}}"
         tick
         rngDraws
         (num cal.year)
@@ -485,12 +711,21 @@ let snapshotJson ((tick, resources, rngDraws, cal): int * (string * (float * flo
         weather
         cal.cycle
         cal.cycleYear
+        kittensJson
         resItems
+        buildingsJson
+        jobsJson
+        craftsJson
+        (nameArr techs)
+        (nameArr upgrades)
+        (nameArr policies)
+        effectsJson
 
 let resKindJson (rk: ResKind) : string =
     match rk with
     | RNum v -> sprintf "\"result\":%s" (num v)
     | RBool b -> sprintf "\"result\":%s" (if b then "true" else "false")
+    | RText w -> sprintf "\"reason\":\"%s\"" (esc w)
     | RNone -> "\"reason\":null"
 
 let logJson ((tick, action, args, rk): int * string * string list * ResKind) : string =

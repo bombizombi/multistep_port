@@ -38,7 +38,7 @@ const ORIG_LOAD_ORDER = [
 // ---------------------------------------------------------------------------
 // CLI
 const dumpCatalogOnly = process.argv[2] === "--dump-catalog";
-const dumpVillageOnly = process.argv[2] === "--dump-village";
+const dumpVillageOnly = process.argv[2] === "--dump-village" || process.argv[2] === "--dump-defs";
 const scenarioPath = (dumpCatalogOnly || dumpVillageOnly) ? null : process.argv[2];
 let outPath = process.argv[3];
 if (!dumpCatalogOnly && !dumpVillageOnly && !scenarioPath) {
@@ -403,7 +403,10 @@ function doAction(move) {
           return;
         }
         if (fn === "saveres") {
-          resSaveData = game.resPool.save({});
+          // orig resPool.save() MUTATES its argument and returns undefined
+          const sd = {};
+          game.resPool.save(sd);
+          resSaveData = sd;
           actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
           return;
         }
@@ -500,6 +503,65 @@ function takeSnapshot() {
 // ---------------------------------------------------------------------------
 // Catalog dump mode (--dump-catalog): initial resPool state, logic fields only.
 // Used by resources-01 verification (see D014 / session 04).
+if (process.argv[2] === "--dump-defs") {
+  const g = game;
+  const clone = (o) => JSON.parse(JSON.stringify(o === undefined ? null : o));
+  const unlockShape = (u) => (u ? { buildings: u.buildings || [], tabs: u.tabs || [], jobs: u.jobs || [], tech: u.tech || [], policies: u.policies || [], upgrades: u.upgrades || [], stages: (u.stages || []).map(s => typeof s === "string" ? s : (s.bld || s.name || "?") + ":" + (s.stage !== undefined ? s.stage : "?")) } : null);
+  const buildings = g.bld.buildingsData.map((b) => {
+    const base = clone(b.effects);
+    let calc = null;
+    if (typeof b.calculateEffects === "function") {
+      const before = clone(b.effects);
+      const saveVal = b.val;
+      b.val = 0; b.calculateEffects(b, g);
+      const atVal0 = clone(b.effects);
+      b.val = 1; b.calculateEffects(b, g);
+      const atVal1 = clone(b.effects);
+      b.val = saveVal; b.calculateEffects(b, g); b.effects = before;
+      calc = { atVal0, atVal1 };
+    }
+    return {
+      name: b.name, tab: b.tab || null, stage: b.stage || 0,
+      unlockRatio: b.unlockRatio === undefined ? null : b.unlockRatio,
+      defaultUnlockable: !!b.defaultUnlockable, unlockable: !!b.unlockable, unlocked: !!b.unlocked,
+      prices: clone(b.prices) || [], priceRatio: b.priceRatio === undefined ? null : b.priceRatio,
+      limitBuild: b.limitBuild === undefined ? null : b.limitBuild,
+      togglableOnOff: !!b.togglableOnOff, noStackable: !!b.noStackable,
+      breaksIronWill: !!b.breakIronWill,
+      effectsBase: base, calc,
+      stages: (b.stages || []).map((s) => ({
+        key: s.name || s.key || null,
+        prices: clone(s.prices) || [],
+        unlockRatio: s.unlockRatio === undefined ? null : s.unlockRatio,
+        effects: clone(s.effects) || {},
+      })),
+      unlocks: unlockShape(b.unlocks),
+      upgrades: unlockShape(b.upgrades),
+      unlockScheme: b.unlockScheme ? { name: b.unlockScheme.name, threshold: b.unlockScheme.threshold } : null,
+    };
+  });
+  const techs = g.science.techs.map((t2) => ({
+    name: t2.name, prices: clone(t2.prices) || [], unlocked: !!t2.unlocked, researched: !!t2.researched,
+    unlocks: unlockShape(t2.unlocks),
+  }));
+  const policies = g.science.policies.map((p) => ({
+    name: p.name, prices: clone(p.prices) || [], unlocked: !!p.unlocked, researched: !!p.researched,
+    unlocks: unlockShape(p.unlocks),
+  }));
+  const upgrades = g.workshop.upgrades.map((u) => ({
+    name: u.name, prices: clone(u.prices) || [], unlocked: !!u.unlocked, researched: !!u.researched,
+    effects: clone(u.effects) || {},
+  }));
+  const crafts = g.workshop.crafts.map((c) => ({
+    name: c.name, prices: clone(c.prices) || [], unlocked: !!c.unlocked, value: c.value || 0,
+    tier: c.tier === undefined ? null : c.tier, isLimited: !!c.isLimited, ignoreBonuses: !!c.ignoreBonuses,
+  }));
+  const seasons = g.calendar.seasons.map((s) => ({ name: s.name, modifiers: clone(s.modifiers) || {} }));
+  fs.mkdirSync(path.dirname(outPath), { recursive: true });
+  fs.writeFileSync(outPath, JSON.stringify({ driver: "orig-driver.js", origCommit: origCommit(), buildings, techs, policies, upgrades, crafts, seasons }, null, 1));
+  console.log(`defs -> ${outPath} (buildings ${buildings.length}, techs ${techs.length}, policies ${policies.length}, upgrades ${upgrades.length}, crafts ${crafts.length})`);
+  process.exit(0);
+}
 if (dumpVillageOnly) {
   const v = game.village;
   const dump = {

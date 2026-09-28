@@ -1,6 +1,6 @@
 
 import { Record, Union } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Types.js";
-import { int32_type, class_type, list_type, float64_type, record_type, option_type, bool_type, string_type, union_type } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
+import { tuple_type, int32_type, class_type, list_type, float64_type, record_type, option_type, bool_type, string_type, union_type } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
 
 export class RefundableRule extends Union {
     constructor(tag, fields) {
@@ -83,5 +83,216 @@ export class ResPool extends Record {
 
 export function ResPool_$reflection() {
     return record_type("Game.Types.ResPool", [], ResPool, () => [["Order", list_type(string_type)], ["ByName", class_type("Microsoft.FSharp.Collections.FSharpMap`2", [string_type, ResourceState_$reflection()])], ["KarmaKittens", int32_type], ["EnergyProd", float64_type], ["EnergyWinterProd", float64_type], ["EnergyCons", float64_type]]);
+}
+
+export class Price extends Record {
+    constructor(Resource, Val) {
+        super();
+        this.Resource = Resource;
+        this.Val = Val;
+    }
+}
+
+export function Price_$reflection() {
+    return record_type("Game.Types.Price", [], Price, () => [["Resource", string_type], ["Val", float64_type]]);
+}
+
+export class UnlockList extends Record {
+    constructor(Buildings, Tabs, Jobs, Tech, Policies, Upgrades, Stages) {
+        super();
+        this.Buildings = Buildings;
+        this.Tabs = Tabs;
+        this.Jobs = Jobs;
+        this.Tech = Tech;
+        this.Policies = Policies;
+        this.Upgrades = Upgrades;
+        this.Stages = Stages;
+    }
+}
+
+export function UnlockList_$reflection() {
+    return record_type("Game.Types.UnlockList", [], UnlockList, () => [["Buildings", list_type(string_type)], ["Tabs", list_type(string_type)], ["Jobs", list_type(string_type)], ["Tech", list_type(string_type)], ["Policies", list_type(string_type)], ["Upgrades", list_type(string_type)], ["Stages", list_type(string_type)]]);
+}
+
+export class StageDef extends Record {
+    constructor(StageKey, Prices, UnlockRatio, Effects) {
+        super();
+        this.StageKey = StageKey;
+        this.Prices = Prices;
+        this.UnlockRatio = UnlockRatio;
+        this.Effects = Effects;
+    }
+}
+
+export function StageDef_$reflection() {
+    return record_type("Game.Types.StageDef", [], StageDef, () => [["StageKey", option_type(string_type)], ["Prices", list_type(Price_$reflection())], ["UnlockRatio", option_type(float64_type)], ["Effects", class_type("Microsoft.FSharp.Collections.FSharpMap`2", [string_type, float64_type])]]);
+}
+
+export class BuildingDef extends Record {
+    constructor(Name, Tab, Stage, UnlockRatio, DefaultUnlockable, Prices, PriceRatio, LimitBuild, TogglableOnOff, NoStackable, BreaksIronWill, Effects, StartsUnlocked, StartsUnlockable, Stages, Unlocks, Upgrades, UnlockScheme) {
+        super();
+        this.Name = Name;
+        this.Tab = Tab;
+        this.Stage = (Stage | 0);
+        this.UnlockRatio = UnlockRatio;
+        this.DefaultUnlockable = DefaultUnlockable;
+        this.Prices = Prices;
+        this.PriceRatio = PriceRatio;
+        this.LimitBuild = LimitBuild;
+        this.TogglableOnOff = TogglableOnOff;
+        this.NoStackable = NoStackable;
+        this.BreaksIronWill = BreaksIronWill;
+        this.Effects = Effects;
+        this.StartsUnlocked = StartsUnlocked;
+        this.StartsUnlockable = StartsUnlockable;
+        this.Stages = Stages;
+        this.Unlocks = Unlocks;
+        this.Upgrades = Upgrades;
+        this.UnlockScheme = UnlockScheme;
+    }
+}
+
+export function BuildingDef_$reflection() {
+    return record_type("Game.Types.BuildingDef", [], BuildingDef, () => [["Name", string_type], ["Tab", option_type(string_type)], ["Stage", int32_type], ["UnlockRatio", option_type(float64_type)], ["DefaultUnlockable", bool_type], ["Prices", list_type(Price_$reflection())], ["PriceRatio", option_type(float64_type)], ["LimitBuild", option_type(float64_type)], ["TogglableOnOff", bool_type], ["NoStackable", bool_type], ["BreaksIronWill", bool_type], ["Effects", class_type("Microsoft.FSharp.Collections.FSharpMap`2", [string_type, float64_type])], ["StartsUnlocked", bool_type], ["StartsUnlockable", bool_type], ["Stages", list_type(StageDef_$reflection())], ["Unlocks", option_type(UnlockList_$reflection())], ["Upgrades", option_type(UnlockList_$reflection())], ["UnlockScheme", option_type(tuple_type(string_type, float64_type))]]);
+}
+
+export class TechDef extends Record {
+    constructor(Name, Prices, Unlocks) {
+        super();
+        this.Name = Name;
+        this.Prices = Prices;
+        this.Unlocks = Unlocks;
+    }
+}
+
+export function TechDef_$reflection() {
+    return record_type("Game.Types.TechDef", [], TechDef, () => [["Name", string_type], ["Prices", list_type(Price_$reflection())], ["Unlocks", option_type(UnlockList_$reflection())]]);
+}
+
+export class PolicyDef extends Record {
+    constructor(Name, Prices, Unlocks) {
+        super();
+        this.Name = Name;
+        this.Prices = Prices;
+        this.Unlocks = Unlocks;
+    }
+}
+
+export function PolicyDef_$reflection() {
+    return record_type("Game.Types.PolicyDef", [], PolicyDef, () => [["Name", string_type], ["Prices", list_type(Price_$reflection())], ["Unlocks", option_type(UnlockList_$reflection())]]);
+}
+
+export class UpgradeDef extends Record {
+    constructor(Name, Prices, Effects) {
+        super();
+        this.Name = Name;
+        this.Prices = Prices;
+        this.Effects = Effects;
+    }
+}
+
+export function UpgradeDef_$reflection() {
+    return record_type("Game.Types.UpgradeDef", [], UpgradeDef, () => [["Name", string_type], ["Prices", list_type(Price_$reflection())], ["Effects", class_type("Microsoft.FSharp.Collections.FSharpMap`2", [string_type, float64_type])]]);
+}
+
+export class CraftDef extends Record {
+    constructor(Name, Prices, Tier, IgnoreBonuses, StartsUnlocked) {
+        super();
+        this.Name = Name;
+        this.Prices = Prices;
+        this.Tier = Tier;
+        this.IgnoreBonuses = IgnoreBonuses;
+        this.StartsUnlocked = StartsUnlocked;
+    }
+}
+
+export function CraftDef_$reflection() {
+    return record_type("Game.Types.CraftDef", [], CraftDef, () => [["Name", string_type], ["Prices", list_type(Price_$reflection())], ["Tier", option_type(float64_type)], ["IgnoreBonuses", bool_type], ["StartsUnlocked", bool_type]]);
+}
+
+/**
+ * Live building state (orig mutates the def; conversion pattern #2).
+ */
+export class BuildingState extends Record {
+    constructor(Def, Val, On, Unlocked, Unlockable, Stage) {
+        super();
+        this.Def = Def;
+        this.Val = (Val | 0);
+        this.On = (On | 0);
+        this.Unlocked = Unlocked;
+        this.Unlockable = Unlockable;
+        this.Stage = (Stage | 0);
+    }
+}
+
+export function BuildingState_$reflection() {
+    return record_type("Game.Types.BuildingState", [], BuildingState, () => [["Def", BuildingDef_$reflection()], ["Val", int32_type], ["On", int32_type], ["Unlocked", bool_type], ["Unlockable", bool_type], ["Stage", int32_type]]);
+}
+
+/**
+ * Live tech/policy/upgrade state.
+ */
+export class ResearchState extends Record {
+    constructor(Def, Unlocked, Researched) {
+        super();
+        this.Def = Def;
+        this.Unlocked = Unlocked;
+        this.Researched = Researched;
+    }
+}
+
+export function ResearchState_$reflection() {
+    return record_type("Game.Types.ResearchState", [], ResearchState, () => [["Def", TechDef_$reflection()], ["Unlocked", bool_type], ["Researched", bool_type]]);
+}
+
+export class PolicyState extends Record {
+    constructor(Def, Unlocked, Researched) {
+        super();
+        this.Def = Def;
+        this.Unlocked = Unlocked;
+        this.Researched = Researched;
+    }
+}
+
+export function PolicyState_$reflection() {
+    return record_type("Game.Types.PolicyState", [], PolicyState, () => [["Def", PolicyDef_$reflection()], ["Unlocked", bool_type], ["Researched", bool_type]]);
+}
+
+export class UpgradeState extends Record {
+    constructor(Def, Unlocked, Researched) {
+        super();
+        this.Def = Def;
+        this.Unlocked = Unlocked;
+        this.Researched = Researched;
+    }
+}
+
+export function UpgradeState_$reflection() {
+    return record_type("Game.Types.UpgradeState", [], UpgradeState, () => [["Def", UpgradeDef_$reflection()], ["Unlocked", bool_type], ["Researched", bool_type]]);
+}
+
+export class CraftState extends Record {
+    constructor(Def, Unlocked, Value) {
+        super();
+        this.Def = Def;
+        this.Unlocked = Unlocked;
+        this.Value = Value;
+    }
+}
+
+export function CraftState_$reflection() {
+    return record_type("Game.Types.CraftState", [], CraftState, () => [["Def", CraftDef_$reflection()], ["Unlocked", bool_type], ["Value", float64_type]]);
+}
+
+export function mkResearch(def) {
+    return new ResearchState(def, false, false);
+}
+
+export function mkPolicy(def) {
+    return new PolicyState(def, false, false);
+}
+
+export function mkUpgrade(def) {
+    return new UpgradeState(def, false, false);
 }
 

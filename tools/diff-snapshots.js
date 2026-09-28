@@ -16,7 +16,7 @@
  */
 const fs = require("fs");
 
-function* walk(node, path, prefixes) {
+function* walk(node, path, prefixes, skip) {
   if (prefixes && prefixes.length > 0 && !prefixes.some((p) => path === "$" || path.startsWith(`$/${p}`) || `$/${p}`.startsWith(path + "/") || path === "$")) {
     // skip subtrees not under any include prefix (but keep walking toward them)
     if (!prefixes.some((p) => path.startsWith(`$/${p}`))) return;
@@ -26,10 +26,13 @@ function* walk(node, path, prefixes) {
     return;
   }
   if (Array.isArray(node)) {
-    for (let i = 0; i < node.length; i++) yield* walk(node[i], `${path}/${i}`, prefixes);
+    for (let i = 0; i < node.length; i++) yield* walk(node[i], `${path}/${i}`, prefixes, skip);
     return;
   }
-  for (const k of Object.keys(node).sort()) yield* walk(node[k], `${path}/${k}`, prefixes);
+  for (const k of Object.keys(node).sort()) {
+    if (skip && skip.has(k) && (path === "$" || path.startsWith("$/snapshots/"))) continue;
+    yield* walk(node[k], `${path}/${k}`, prefixes, skip);
+  }
 }
 
 function main() {
@@ -43,6 +46,7 @@ function main() {
   const B = JSON.parse(fs.readFileSync(bPath, "utf8"));
 
   // header: scenario + seed must match; driver/rngImpl/origCommit are metadata
+  // Cross-driver comparisons are the whole point — the walker now skips those keys.
   for (const k of ["scenario", "seed"]) {
     if (JSON.stringify(A[k]) !== JSON.stringify(B[k])) {
       console.log(`DIFFERENT (header): ${k}: ${JSON.stringify(A[k])} vs ${JSON.stringify(B[k])}`);
@@ -59,8 +63,16 @@ function main() {
 
   let diverged = null;
   let lastMatches = [];
-  const wa = walk(A, "$", prefixes.length ? prefixes : null);
-  const wb = walk(B, "$", prefixes.length ? prefixes : null);
+  const crossDriver = A.driver !== B.driver;
+  const SKIP = new Set(["driver", "origCommit", "rngImpl", "resPoolSave"]);
+  if (crossDriver) SKIP.add("rngDraws"); // orig bootstrap consumes 33 draws pre-scenario (D014)
+  const walkRoot = (doc) => {
+    const clone = {};
+    for (const k of Object.keys(doc).sort()) if (!SKIP.has(k)) clone[k] = doc[k];
+    return clone;
+  };
+  const wa = walk(walkRoot(A), "$", prefixes.length ? prefixes : null, SKIP);
+  const wb = walk(walkRoot(B), "$", prefixes.length ? prefixes : null, SKIP);
   while (true) {
     const ia = wa.next();
     const ib = wb.next();

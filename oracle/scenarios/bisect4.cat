@@ -1,0 +1,16 @@
+# name: bisect4
+# seed: 20260927
+# checkpoints: 540,541,542,543,544,545,546,547,548,549,550,551,552,553,554,555,556,557,558,559,560,561,562,563,564,565,566,567,568,569,570,575,580,600
+0 gather 30
+15 buy field
+50 gather 60
+90 buy field 4
+130 gather 80
+170 buy field 4
+210 gather 100
+250 buy field 4
+290 gather 120
+330 buy field 4
+370 gather 250
+420 craft wood 5
+460 buy hut

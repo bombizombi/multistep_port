@@ -1,0 +1,5 @@
+# name: bisect2
+# seed: 20260927
+# checkpoints: 0, 14, 15, 16, 17, 20, 30, 50
+0 gather 30
+15 buy field

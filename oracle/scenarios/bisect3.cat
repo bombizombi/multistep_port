@@ -1,0 +1,12 @@
+# name: bisect3
+# seed: 20260927
+# checkpoints: 558, 559, 560, 561, 562, 563, 564, 565, 566, 570, 600, 620
+0 gather 30
+15 buy field
+50 gather 60
+90 buy field 4
+170 buy field 4
+250 buy field 4
+330 buy field 4
+420 craft wood 5
+460 buy hut

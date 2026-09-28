@@ -1,0 +1,402 @@
+
+import { CraftDef, UpgradeDef, PolicyDef, TechDef, UnlockList, StageDef, BuildingDef, Price } from "./Game.Types.fs.js";
+import { ofArray, empty, singleton } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
+import { empty as empty_1, ofList } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Map.js";
+import { comparePrimitives } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
+
+export const buildingDefs = ofArray([new BuildingDef("field", undefined, 0, 0.3, true, singleton(new Price("catnip", 10)), 1.12, undefined, false, false, false, ofList(singleton(["catnipPerTickBase", 0.125]), {
+    Compare: (x, y) => (comparePrimitives(x, y) | 0),
+}), false, true, empty(), undefined, undefined, ["catnip", 56]), new BuildingDef("pasture", undefined, 0, 0.3, false, empty(), undefined, undefined, false, false, false, empty_1({
+    Compare: (x_1, y_1) => (comparePrimitives(x_1, y_1) | 0),
+}), false, false, ofArray([new StageDef(undefined, ofArray([new Price("catnip", 100), new Price("wood", 10)]), undefined, ofList(singleton(["catnipDemandRatio", -0.005]), {
+    Compare: (x_2, y_2) => (comparePrimitives(x_2, y_2) | 0),
+})), new StageDef(undefined, singleton(new Price("titanium", 250)), undefined, empty_1({
+    Compare: (x_3, y_3) => (comparePrimitives(x_3, y_3) | 0),
+}))]), undefined, undefined, undefined), new BuildingDef("aqueduct", undefined, 0, 0.3, false, empty(), undefined, undefined, false, false, false, ofList(ofArray([["catnipRatio", 0], ["energyProduction", 0]]), {
+    Compare: (x_4, y_4) => (comparePrimitives(x_4, y_4) | 0),
+}), false, false, ofArray([new StageDef(undefined, singleton(new Price("minerals", 75)), undefined, ofList(singleton(["catnipRatio", 0.03]), {
+    Compare: (x_5, y_5) => (comparePrimitives(x_5, y_5) | 0),
+})), new StageDef(undefined, ofArray([new Price("titanium", 2500), new Price("concrate", 100), new Price("gear", 5)]), undefined, ofList(singleton(["energyProduction", 5]), {
+    Compare: (x_6, y_6) => (comparePrimitives(x_6, y_6) | 0),
+}))]), undefined, new UnlockList(singleton("magneto"), empty(), empty(), empty(), empty(), empty(), empty()), undefined), new BuildingDef("hut", undefined, 0, 0.3, true, singleton(new Price("wood", 5)), 2.5, undefined, false, false, true, ofList(ofArray([["manpowerMax", 75], ["maxKittens", 2]]), {
+    Compare: (x_7, y_7) => (comparePrimitives(x_7, y_7) | 0),
+}), false, true, empty(), new UnlockList(empty(), singleton("village"), empty(), empty(), empty(), empty(), empty()), new UnlockList(empty(), empty(), empty(), empty(), singleton("authocracy"), empty(), empty()), undefined), new BuildingDef("logHouse", undefined, 0, 0.3, false, ofArray([new Price("wood", 200), new Price("minerals", 250)]), 1.15, undefined, false, false, true, ofList(ofArray([["manpowerMax", 50], ["maxKittens", 1]]), {
+    Compare: (x_8, y_8) => (comparePrimitives(x_8, y_8) | 0),
+}), false, false, empty(), new UnlockList(empty(), singleton("village"), empty(), empty(), empty(), empty(), empty()), new UnlockList(empty(), empty(), empty(), empty(), singleton("authocracy"), empty(), empty()), undefined), new BuildingDef("mansion", undefined, 0, undefined, false, ofArray([new Price("titanium", 25), new Price("slab", 185), new Price("steel", 75)]), 1.15, undefined, false, false, true, ofList(ofArray([["manpowerMax", 50], ["maxKittens", 1]]), {
+    Compare: (x_9, y_9) => (comparePrimitives(x_9, y_9) | 0),
+}), false, false, empty(), new UnlockList(empty(), singleton("village"), empty(), empty(), empty(), empty(), empty()), new UnlockList(empty(), empty(), empty(), empty(), singleton("authocracy"), empty(), empty()), undefined), new BuildingDef("library", undefined, 0, undefined, true, empty(), 1.15, undefined, false, false, false, empty_1({
+    Compare: (x_10, y_10) => (comparePrimitives(x_10, y_10) | 0),
+}), false, true, ofArray([new StageDef(undefined, singleton(new Price("wood", 25)), 0.3, ofList(ofArray([["scienceRatio", 0.1], ["scienceMax", 250], ["cultureMax", 10]]), {
+    Compare: (x_11, y_11) => (comparePrimitives(x_11, y_11) | 0),
+})), new StageDef(undefined, ofArray([new Price("steel", 100), new Price("concrate", 10), new Price("microchip", 5)]), undefined, ofList(ofArray([["scienceMaxCompendia", 1000], ["cultureMax", 25], ["energyConsumption", 2]]), {
+    Compare: (x_12, y_12) => (comparePrimitives(x_12, y_12) | 0),
+}))]), new UnlockList(empty(), singleton("science"), singleton("scholar"), empty(), empty(), empty(), empty()), new UnlockList(ofArray(["biolab", "observatory"]), empty(), empty(), empty(), empty(), empty(), empty()), undefined), new BuildingDef("academy", undefined, 0, 0.3, false, ofArray([new Price("wood", 50), new Price("minerals", 70), new Price("science", 100)]), 1.15, undefined, false, false, false, ofList(ofArray([["scienceRatio", 0.2], ["skillXP", 0.0005], ["scienceMax", 500], ["cultureMax", 25], ["academyMeteorBonus", 0]]), {
+    Compare: (x_13, y_13) => (comparePrimitives(x_13, y_13) | 0),
+}), false, false, empty(), undefined, undefined, ["school", 68]), new BuildingDef("observatory", undefined, 0, undefined, false, ofArray([new Price("iron", 750), new Price("science", 1000), new Price("slab", 35), new Price("scaffold", 50)]), 1.1, undefined, false, false, false, ofList(ofArray([["starEventChance", 0.002], ["starAutoSuccessChance", 0.01], ["scienceRatio", 0.25], ["scienceMax", 1000]]), {
+    Compare: (x_14, y_14) => (comparePrimitives(x_14, y_14) | 0),
+}), false, false, empty(), undefined, new UnlockList(singleton("library"), empty(), empty(), empty(), empty(), empty(), empty()), undefined), new BuildingDef("biolab", undefined, 0, undefined, false, ofArray([new Price("science", 1500), new Price("slab", 100), new Price("plastic", 15), new Price("alloy", 25)]), 1.1, undefined, false, false, false, ofList(ofArray([["scienceRatio", 0.35], ["refineRatio", 0.1], ["scienceMax", 1500], ["catnipPerTickCon", 0], ["oilPerTickProd", 0], ["energyConsumption", 0], ["compediumCraftRatio", 0], ["compediumGlobalCraftRatio", 0]]), {
+    Compare: (x_15, y_15) => (comparePrimitives(x_15, y_15) | 0),
+}), false, false, empty(), undefined, new UnlockList(singleton("library"), empty(), empty(), empty(), empty(), empty(), empty()), undefined), new BuildingDef("barn", undefined, 0, 0.3, false, singleton(new Price("wood", 50)), 1.75, undefined, false, false, false, ofList(ofArray([["catnipMax", 5000], ["woodMax", 200], ["mineralsMax", 250], ["coalMax", 60], ["ironMax", 50], ["titaniumMax", 2], ["goldMax", 10]]), {
+    Compare: (x_16, y_16) => (comparePrimitives(x_16, y_16) | 0),
+}), false, false, empty(), undefined, undefined, undefined), new BuildingDef("warehouse", undefined, 0, undefined, false, empty(), undefined, undefined, false, false, false, empty_1({
+    Compare: (x_17, y_17) => (comparePrimitives(x_17, y_17) | 0),
+}), false, false, ofArray([new StageDef(undefined, ofArray([new Price("beam", 1.5), new Price("slab", 2)]), undefined, ofList(ofArray([["catnipMax", 0], ["woodMax", 150], ["mineralsMax", 200], ["coalMax", 30], ["ironMax", 25], ["titaniumMax", 10], ["goldMax", 5]]), {
+    Compare: (x_18, y_18) => (comparePrimitives(x_18, y_18) | 0),
+})), new StageDef(undefined, ofArray([new Price("titanium", 10000), new Price("eludium", 500), new Price("kerosene", 1000), new Price("blueprint", 500), new Price("starchart", 100000)]), undefined, ofList(ofArray([["moonBaseStorageBonus", 0], ["planetCrackerStorageBonus", 0], ["cryostationStorageBonus", 0], ["energyConsumption", 0], ["tradeVolume", 0]]), {
+    Compare: (x_19, y_19) => (comparePrimitives(x_19, y_19) | 0),
+}))]), new UnlockList(empty(), empty(), empty(), empty(), empty(), singleton("transportSuperposition"), empty()), new UnlockList(empty(), empty(), empty(), empty(), empty(), empty(), empty()), ["minimalist", 10]), new BuildingDef("harbor", undefined, 0, undefined, false, ofArray([new Price("slab", 50), new Price("plate", 75), new Price("scaffold", 5)]), 1.15, undefined, false, false, false, ofList(ofArray([["catnipMax", 2500], ["woodMax", 700], ["mineralsMax", 950], ["coalMax", 100], ["ironMax", 150], ["titaniumMax", 50], ["goldMax", 25]]), {
+    Compare: (x_20, y_20) => (comparePrimitives(x_20, y_20) | 0),
+}), false, false, empty(), undefined, undefined, undefined), new BuildingDef("mine", undefined, 0, 0.15, false, singleton(new Price("wood", 100)), 1.15, undefined, false, false, false, ofList(ofArray([["mineralsRatio", 0.2], ["coalPerTickBase", 0], ["cathPollutionPerTickProd", 0.08]]), {
+    Compare: (x_21, y_21) => (comparePrimitives(x_21, y_21) | 0),
+}), false, false, empty(), new UnlockList(empty(), empty(), singleton("miner"), empty(), empty(), empty(), empty()), undefined, ["anthracite", 92]), new BuildingDef("quarry", undefined, 0, 0.3, false, ofArray([new Price("slab", 1000), new Price("steel", 125), new Price("scaffold", 50)]), 1.15, undefined, false, false, false, ofList(ofArray([["mineralsRatio", 0.35], ["coalPerTickBase", 0.015], ["uraniumPerTickBase", 0], ["cathPollutionPerTickProd", 0.25], ["slabCraftRatio", 0]]), {
+    Compare: (x_22, y_22) => (comparePrimitives(x_22, y_22) | 0),
+}), false, false, empty(), undefined, undefined, undefined), new BuildingDef("smelter", undefined, 0, 0.15, false, singleton(new Price("minerals", 200)), 1.15, undefined, false, false, false, ofList(ofArray([["woodPerTickCon", -0.05], ["mineralsPerTickCon", -0.1], ["coalPerTickAutoprod", 0], ["ironPerTickAutoprod", 0.02], ["titaniumPerTickAutoprod", 0], ["goldPerTickAutoprod", 0], ["cathPollutionPerTickProd", 0.15]]), {
+    Compare: (x_23, y_23) => (comparePrimitives(x_23, y_23) | 0),
+}), false, false, empty(), undefined, undefined, undefined), new BuildingDef("calciner", undefined, 0, undefined, false, ofArray([new Price("titanium", 15), new Price("oil", 500), new Price("steel", 100), new Price("blueprint", 1)]), 1.15, undefined, false, false, false, ofList(ofArray([["mineralsPerTickCon", -1.5], ["coalPerTickCon", 0], ["ironPerTickCon", 0], ["ironPerTickAutoprod", 0.15], ["titaniumPerTickAutoprod", 0.0005], ["oilPerTickCon", -0.024], ["steelPerTickProd", 0], ["energyConsumption", 1], ["cathPollutionPerTickProd", 1]]), {
+    Compare: (x_24, y_24) => (comparePrimitives(x_24, y_24) | 0),
+}), false, false, empty(), undefined, undefined, undefined), new BuildingDef("steamworks", undefined, 0, undefined, false, ofArray([new Price("steel", 65), new Price("gear", 20), new Price("blueprint", 1)]), 1.25, undefined, true, false, false, ofList(ofArray([["coalRatioGlobal", -0.8], ["manuscriptPerTickProd", 0], ["energyProduction", 1], ["magnetoBoostRatio", 0.15], ["cathPollutionPerTickProd", 1]]), {
+    Compare: (x_25, y_25) => (comparePrimitives(x_25, y_25) | 0),
+}), false, false, empty(), undefined, undefined, undefined), new BuildingDef("magneto", undefined, 0, undefined, false, ofArray([new Price("gear", 5), new Price("alloy", 10), new Price("blueprint", 1)]), 1.25, undefined, false, false, false, ofList(ofArray([["oilPerTick", -0.05], ["energyProduction", 5], ["magnetoRatio", 0.02], ["cathPollutionPerTickProd", 5]]), {
+    Compare: (x_26, y_26) => (comparePrimitives(x_26, y_26) | 0),
+}), false, false, empty(), undefined, undefined, undefined), new BuildingDef("lumberMill", undefined, 0, 0.3, false, ofArray([new Price("wood", 100), new Price("minerals", 250), new Price("iron", 50)]), 1.15, undefined, false, false, false, ofList(singleton(["woodRatio", 0.1]), {
+    Compare: (x_27, y_27) => (comparePrimitives(x_27, y_27) | 0),
+}), false, false, empty(), undefined, undefined, undefined), new BuildingDef("oilWell", undefined, 0, undefined, false, ofArray([new Price("steel", 50), new Price("gear", 25), new Price("scaffold", 25)]), 1.15, undefined, false, false, false, ofList(ofArray([["oilPerTickBase", 0.02], ["oilMax", 1500], ["energyConsumption", 0], ["cathPollutionPerTickProd", 0]]), {
+    Compare: (x_28, y_28) => (comparePrimitives(x_28, y_28) | 0),
+}), false, false, empty(), undefined, undefined, ["oil", 73]), new BuildingDef("workshop", undefined, 0, 0.0025, true, ofArray([new Price("wood", 100), new Price("minerals", 400)]), 1.15, undefined, false, false, false, ofList(singleton(["craftRatio", 0.06]), {
+    Compare: (x_29, y_29) => (comparePrimitives(x_29, y_29) | 0),
+}), false, true, empty(), new UnlockList(empty(), singleton("workshop"), empty(), empty(), empty(), empty(), empty()), undefined, undefined), new BuildingDef("factory", undefined, 0, undefined, false, ofArray([new Price("titanium", 2000), new Price("plate", 2500), new Price("concrate", 15)]), 1.15, undefined, false, false, false, ofList(ofArray([["craftRatio", 0.05], ["energyConsumption", 2], ["cathPollutionPerTickProd", 2], ["cathPollutionPerTickCon", 0]]), {
+    Compare: (x_30, y_30) => (comparePrimitives(x_30, y_30) | 0),
+}), false, false, empty(), new UnlockList(empty(), empty(), empty(), empty(), ofArray(["liberalism", "communism", "fascism"]), empty(), empty()), undefined, ["factory", 20]), new BuildingDef("reactor", undefined, 0, undefined, false, ofArray([new Price("titanium", 3500), new Price("plate", 5000), new Price("concrate", 50), new Price("blueprint", 25)]), 1.15, undefined, false, false, false, ofList(ofArray([["uraniumPerTick", -0.001], ["thoriumPerTick", 0], ["productionRatio", 0.05], ["uraniumMax", 250], ["energyProduction", 10]]), {
+    Compare: (x_31, y_31) => (comparePrimitives(x_31, y_31) | 0),
+}), false, false, empty(), undefined, new UnlockList(singleton("harbor"), empty(), empty(), empty(), empty(), empty(), empty()), undefined), new BuildingDef("accelerator", undefined, 0, undefined, false, ofArray([new Price("titanium", 7500), new Price("uranium", 25), new Price("concrate", 125)]), 1.15, undefined, false, false, false, ofList(ofArray([["titaniumPerTickCon", -0.015], ["uraniumPerTickAutoprod", 0.0025], ["catnipMax", 0], ["woodMax", 0], ["mineralsMax", 0], ["coalMax", 0], ["ironMax", 0], ["titaniumMax", 0], ["goldMax", 0], ["scienceMax", 0], ["energyConsumption", 2]]), {
+    Compare: (x_32, y_32) => (comparePrimitives(x_32, y_32) | 0),
+}), false, false, empty(), undefined, undefined, undefined), new BuildingDef("tradepost", undefined, 0, 0.3, false, ofArray([new Price("wood", 500), new Price("minerals", 200), new Price("gold", 10)]), 1.15, undefined, false, false, false, ofList(ofArray([["fursDemandRatio", -0.04], ["ivoryDemandRatio", -0.04], ["spiceDemandRatio", -0.04], ["tradeRatio", 0.015], ["standingRatio", 0]]), {
+    Compare: (x_33, y_33) => (comparePrimitives(x_33, y_33) | 0),
+}), false, false, empty(), undefined, new UnlockList(empty(), empty(), empty(), empty(), empty(), empty(), empty()), undefined), new BuildingDef("mint", undefined, 0, undefined, false, ofArray([new Price("minerals", 5000), new Price("gold", 500), new Price("plate", 200)]), 1.15, undefined, false, false, false, ofList(ofArray([["goldPerTickCon", -0.005], ["manpowerPerTickCon", -0.75], ["fursPerTickProd", 0.00875], ["ivoryPerTickProd", 0.0021], ["goldMax", 100]]), {
+    Compare: (x_34, y_34) => (comparePrimitives(x_34, y_34) | 0),
+}), false, false, empty(), undefined, undefined, ["gold", 24]), new BuildingDef("brewery", undefined, 0, 0.2, false, ofArray([new Price("wood", 1000), new Price("culture", 750), new Price("spice", 5), new Price("parchment", 375)]), 1.5, undefined, false, false, false, ofList(ofArray([["catnipPerTickCon", -1], ["spicePerTickCon", -0.1], ["festivalRatio", 0.01], ["festivalArrivalRatio", 0.001], ["manpowerRatio", 0]]), {
+    Compare: (x_35, y_35) => (comparePrimitives(x_35, y_35) | 0),
+}), false, false, empty(), new UnlockList(empty(), empty(), empty(), empty(), empty(), empty(), empty()), undefined, ["chocolate", 10]), new BuildingDef("amphitheatre", undefined, 0, undefined, false, empty(), undefined, undefined, false, false, false, ofList(ofArray([["unhappinessRatio", 0], ["culturePerTickBase", 0], ["cultureMax", 0]]), {
+    Compare: (x_36, y_36) => (comparePrimitives(x_36, y_36) | 0),
+}), false, false, ofArray([new StageDef(undefined, ofArray([new Price("wood", 200), new Price("minerals", 1200), new Price("parchment", 3)]), undefined, ofList(ofArray([["unhappinessRatio", -0.048], ["culturePerTickBase", 0.005], ["cultureMax", 50]]), {
+    Compare: (x_37, y_37) => (comparePrimitives(x_37, y_37) | 0),
+})), new StageDef(undefined, ofArray([new Price("iron", 1250), new Price("titanium", 75)]), undefined, ofList(ofArray([["unhappinessRatio", -0.75], ["culturePerTickBase", 1], ["cultureMax", 300]]), {
+    Compare: (x_38, y_38) => (comparePrimitives(x_38, y_38) | 0),
+}))]), undefined, undefined, undefined), new BuildingDef("chapel", undefined, 0, undefined, false, ofArray([new Price("minerals", 2000), new Price("culture", 250), new Price("parchment", 250)]), 1.15, undefined, false, false, false, ofList(ofArray([["culturePerTickBase", 0.05], ["faithPerTickBase", 0.005], ["cultureMax", 200], ["faithMax", 0]]), {
+    Compare: (x_39, y_39) => (comparePrimitives(x_39, y_39) | 0),
+}), false, false, empty(), undefined, undefined, undefined), new BuildingDef("temple", undefined, 0, undefined, false, ofArray([new Price("gold", 50), new Price("slab", 25), new Price("plate", 15), new Price("manuscript", 10)]), 1.15, undefined, false, false, false, ofList(ofArray([["culturePerTickBase", 0.1], ["faithPerTickBase", 0], ["happiness", 0], ["manpowerMax", 0], ["scienceMax", 0], ["cultureMax", 0], ["faithMax", 100]]), {
+    Compare: (x_40, y_40) => (comparePrimitives(x_40, y_40) | 0),
+}), false, false, empty(), undefined, new UnlockList(singleton("ziggurat"), empty(), empty(), empty(), empty(), empty(), empty()), undefined), new BuildingDef("unicornPasture", undefined, 0, 0.3, false, singleton(new Price("unicorns", 2)), 1.75, undefined, false, false, false, ofList(ofArray([["catnipDemandRatio", -0.0015], ["unicornsPerTickBase", 0.001], ["unicornsMax", 0]]), {
+    Compare: (x_41, y_41) => (comparePrimitives(x_41, y_41) | 0),
+}), false, false, empty(), undefined, undefined, undefined), new BuildingDef("ziggurat", undefined, 0, 0.01, false, ofArray([new Price("scaffold", 50), new Price("blueprint", 1), new Price("megalith", 50)]), 1.25, undefined, false, false, false, ofList(ofArray([["cultureMaxRatio", 0.08], ["unicornsMax", 0], ["tearsMax", 0]]), {
+    Compare: (x_42, y_42) => (comparePrimitives(x_42, y_42) | 0),
+}), false, false, empty(), undefined, new UnlockList(singleton("temple"), empty(), empty(), empty(), empty(), empty(), empty()), undefined), new BuildingDef("chronosphere", undefined, 0, undefined, false, ofArray([new Price("unobtainium", 2500), new Price("science", 250000), new Price("timeCrystal", 1), new Price("blueprint", 100)]), 1.25, undefined, false, false, false, ofList(ofArray([["temporalParadoxChance", 0.01], ["resStasisRatio", 0.015], ["temporalFluxProduction", 0], ["energyConsumption", 20]]), {
+    Compare: (x_43, y_43) => (comparePrimitives(x_43, y_43) | 0),
+}), false, false, empty(), undefined, new UnlockList(singleton("stasisPod"), empty(), empty(), empty(), empty(), empty(), empty()), undefined), new BuildingDef("aiCore", undefined, 0, 0.01, false, ofArray([new Price("antimatter", 125), new Price("microchip", 25), new Price("science", 500000)]), 1.15, undefined, false, false, false, ofList(ofArray([["gflopsPerTickBase", 0.02], ["energyConsumption", 2]]), {
+    Compare: (x_44, y_44) => (comparePrimitives(x_44, y_44) | 0),
+}), false, false, empty(), undefined, new UnlockList(singleton("library"), empty(), empty(), empty(), empty(), empty(), empty()), ["cyber", 5]), new BuildingDef("zebraOutpost", undefined, 0, 0.01, false, singleton(new Price("bloodstone", 1)), 1.35, undefined, false, false, false, ofList(ofArray([["manpowerMax", 5], ["hunterRatio", 0.05], ["zebraPreparations", 0]]), {
+    Compare: (x_45, y_45) => (comparePrimitives(x_45, y_45) | 0),
+}), false, false, empty(), undefined, new UnlockList(singleton("zebraWorkshop"), empty(), empty(), empty(), empty(), empty(), empty()), undefined), new BuildingDef("zebraWorkshop", undefined, 0, 0.01, false, singleton(new Price("bloodstone", 5)), 1.15, undefined, false, false, false, ofList(ofArray([["bloodstoneRatio", 0], ["manpowerMax", 25], ["missingZebraPreparations", 0]]), {
+    Compare: (x_46, y_46) => (comparePrimitives(x_46, y_46) | 0),
+}), false, false, empty(), new UnlockList(empty(), empty(), empty(), empty(), empty(), empty(), empty()), new UnlockList(singleton("zebraWorkshop"), empty(), empty(), empty(), empty(), empty(), empty()), undefined), new BuildingDef("zebraForge", undefined, 0, 0.01, false, singleton(new Price("bloodstone", 50)), 1.15, undefined, false, false, false, ofList(ofArray([["tMythrilCraftRatio", 0.01], ["bloodstoneRatio", 0], ["manpowerMax", 50], ["preparationRatio", 0]]), {
+    Compare: (x_47, y_47) => (comparePrimitives(x_47, y_47) | 0),
+}), false, false, empty(), new UnlockList(empty(), empty(), empty(), empty(), empty(), empty(), empty()), new UnlockList(singleton("zebraOutpost"), empty(), empty(), empty(), empty(), empty(), empty()), undefined), new BuildingDef("stasisPod", undefined, 0, 0.01, false, ofArray([new Price("tMythril", 1), new Price("timeCrystal", 2), new Price("void", 100)]), 1.25, undefined, false, false, false, ofList(singleton(["zebrasMax", 1]), {
+    Compare: (x_48, y_48) => (comparePrimitives(x_48, y_48) | 0),
+}), false, false, empty(), undefined, new UnlockList(singleton("zebraOutpost"), empty(), empty(), empty(), empty(), empty(), empty()), undefined), new BuildingDef("ivoryTemple", undefined, 0, 0.1, true, ofArray([new Price("tMythril", 1), new Price("ivory", 100)]), 1.15, undefined, false, false, false, ofList(ofArray([["ivoryPerTickCon", 0], ["mineralsPerTickProd", 0], ["titaniumPerTickCon", 0], ["alicornPerTickCon", 0], ["tMythrilPerTick", 0], ["manpowerMax", 10]]), {
+    Compare: (x_49, y_49) => (comparePrimitives(x_49, y_49) | 0),
+}), false, true, empty(), undefined, undefined, undefined)]);
+
+export const techDefs = ofArray([new TechDef("calendar", singleton(new Price("science", 30)), new UnlockList(empty(), singleton("time"), empty(), singleton("agriculture"), empty(), empty(), empty())), new TechDef("agriculture", singleton(new Price("science", 100)), new UnlockList(singleton("barn"), singleton("queue"), singleton("farmer"), ofArray(["mining", "archery"]), empty(), empty(), empty())), new TechDef("archery", singleton(new Price("science", 300)), new UnlockList(ofArray(["zebraOutpost", "zebraWorkshop", "zebraForge"]), empty(), singleton("hunter"), singleton("animal"), empty(), empty(), empty())), new TechDef("mining", singleton(new Price("science", 500)), new UnlockList(ofArray(["mine", "workshop"]), empty(), empty(), singleton("metal"), empty(), singleton("bolas"), empty())), new TechDef("metal", singleton(new Price("science", 900)), new UnlockList(singleton("smelter"), empty(), empty(), empty(), empty(), ofArray(["huntingArmor", "prospecting"]), empty())), new TechDef("animal", singleton(new Price("science", 500)), new UnlockList(ofArray(["pasture", "unicornPasture"]), empty(), empty(), ofArray(["civil", "math", "construction"]), empty(), empty(), empty())), new TechDef("brewery", singleton(new Price("science", 1200)), undefined), new TechDef("civil", singleton(new Price("science", 1500)), new UnlockList(empty(), empty(), empty(), singleton("currency"), empty(), empty(), empty())), new TechDef("math", singleton(new Price("science", 1000)), new UnlockList(singleton("academy"), singleton("stats"), empty(), empty(), empty(), singleton("celestialMechanics"), empty())), new TechDef("construction", singleton(new Price("science", 1300)), new UnlockList(ofArray(["logHouse", "warehouse", "lumberMill", "ziggurat"]), empty(), empty(), singleton("engineering"), empty(), ofArray(["compositeBow", "advancedRefinement", "reinforcedSaw"]), empty())), new TechDef("engineering", singleton(new Price("science", 1500)), new UnlockList(singleton("aqueduct"), empty(), empty(), singleton("writing"), ofArray(["stripMining", "clearCutting", "environmentalism"]), empty(), empty())), new TechDef("currency", singleton(new Price("science", 2200)), new UnlockList(singleton("tradepost"), empty(), empty(), empty(), ofArray(["diplomacy", "isolationism"]), singleton("goldOre"), empty())), new TechDef("writing", singleton(new Price("science", 3600)), new UnlockList(singleton("amphitheatre"), empty(), empty(), ofArray(["philosophy", "machinery", "steel"]), ofArray(["liberty", "tradition"]), singleton("register"), empty())), new TechDef("philosophy", singleton(new Price("science", 9500)), new UnlockList(singleton("temple"), empty(), empty(), singleton("theology"), ofArray(["stoicism", "epicurianism"]), empty(), empty())), new TechDef("machinery", singleton(new Price("science", 15000)), new UnlockList(singleton("steamworks"), empty(), empty(), empty(), empty(), ofArray(["printingPress", "factoryAutomation", "crossbow"]), empty())), new TechDef("steel", singleton(new Price("science", 12000)), new UnlockList(empty(), empty(), empty(), empty(), empty(), ofArray(["deepMining", "coalFurnace", "combustionEngine", "reinforcedWarehouses", "steelAxe", "steelArmor"]), empty())), new TechDef("theology", ofArray([new Price("science", 20000), new Price("manuscript", 35)]), new UnlockList(empty(), empty(), singleton("priest"), ofArray(["astronomy", "cryptotheology"]), empty(), empty(), empty())), new TechDef("astronomy", ofArray([new Price("science", 28000), new Price("manuscript", 65)]), new UnlockList(singleton("observatory"), empty(), empty(), singleton("navigation"), ofArray(["knowledgeSharing", "culturalExchange", "bigStickPolicy", "cityOnAHill"]), empty(), empty())), new TechDef("navigation", ofArray([new Price("science", 35000), new Price("manuscript", 100)]), new UnlockList(singleton("harbor"), empty(), empty(), ofArray(["physics", "archeology", "architecture"]), empty(), ofArray(["caravanserai", "cargoShips", "astrolabe", "titaniumMirrors", "titaniumAxe"]), empty())), new TechDef("architecture", ofArray([new Price("science", 42000), new Price("compedium", 10)]), new UnlockList(ofArray(["mansion", "mint"]), empty(), empty(), singleton("acoustics"), empty(), empty(), empty())), new TechDef("physics", ofArray([new Price("science", 50000), new Price("compedium", 35)]), new UnlockList(empty(), empty(), empty(), ofArray(["chemistry", "electricity", "metaphysics"]), empty(), ofArray(["pneumaticPress", "pyrolysis", "steelSaw"]), empty())), new TechDef("metaphysics", ofArray([new Price("unobtainium", 5), new Price("science", 55000)]), undefined), new TechDef("chemistry", ofArray([new Price("science", 60000), new Price("compedium", 50)]), new UnlockList(ofArray(["calciner", "oilWell"]), empty(), empty(), empty(), empty(), ofArray(["alloyAxe", "alloyArmor", "alloyWarehouses", "alloyBarns"]), empty())), new TechDef("acoustics", ofArray([new Price("science", 60000), new Price("compedium", 60)]), new UnlockList(singleton("chapel"), empty(), empty(), singleton("drama"), empty(), empty(), empty())), new TechDef("drama", ofArray([new Price("science", 90000), new Price("parchment", 5000)]), new UnlockList(singleton("brewery"), empty(), empty(), empty(), empty(), empty(), empty())), new TechDef("archeology", ofArray([new Price("science", 65000), new Price("compedium", 65)]), new UnlockList(singleton("quarry"), empty(), singleton("geologist"), singleton("biology"), empty(), singleton("geodesy"), empty())), new TechDef("electricity", ofArray([new Price("science", 75000), new Price("compedium", 85)]), new UnlockList(singleton("magneto"), empty(), empty(), singleton("industrialization"), empty(), empty(), empty())), new TechDef("biology", ofArray([new Price("science", 85000), new Price("compedium", 100)]), new UnlockList(singleton("biolab"), empty(), empty(), singleton("biochemistry"), empty(), singleton("petri"), empty())), new TechDef("biochemistry", ofArray([new Price("science", 145000), new Price("compedium", 500)]), new UnlockList(empty(), empty(), empty(), singleton("genetics"), empty(), singleton("biofuel"), empty())), new TechDef("genetics", ofArray([new Price("science", 190000), new Price("compedium", 1500)]), new UnlockList(empty(), empty(), empty(), empty(), empty(), ofArray(["unicornSelection", "gmo"]), empty())), new TechDef("industrialization", ofArray([new Price("science", 100000), new Price("blueprint", 25)]), new UnlockList(empty(), empty(), empty(), ofArray(["mechanization", "metalurgy", "combustion"]), ofArray(["sustainability", "fullIndustrialization"]), ofArray(["barges", "advancedAutomation", "logistics"]), empty())), new TechDef("mechanization", ofArray([new Price("science", 115000), new Price("blueprint", 45)]), new UnlockList(singleton("factory"), empty(), singleton("engineer"), singleton("electronics"), empty(), ofArray(["pumpjack", "strenghtenBuild"]), empty())), new TechDef("metalurgy", ofArray([new Price("science", 125000), new Price("blueprint", 60)]), new UnlockList(empty(), empty(), empty(), empty(), empty(), ofArray(["electrolyticSmelting", "oxidation", "miningDrill"]), empty())), new TechDef("combustion", ofArray([new Price("science", 115000), new Price("blueprint", 45)]), new UnlockList(empty(), empty(), empty(), singleton("ecology"), empty(), ofArray(["offsetPress", "fuelInjectors", "oilRefinery"]), empty())), new TechDef("ecology", ofArray([new Price("science", 125000), new Price("blueprint", 55)]), new UnlockList(empty(), empty(), empty(), empty(), ofArray(["conservation", "openWoodlands"]), singleton("carbonSequestration"), singleton("pasture:1"))), new TechDef("electronics", ofArray([new Price("science", 135000), new Price("blueprint", 70)]), new UnlockList(empty(), empty(), empty(), ofArray(["nuclearFission", "rocketry", "robotics"]), empty(), ofArray(["cadSystems", "refrigeration", "seti", "factoryLogistics", "factoryOptimization", "internet"]), ofArray(["library:1", "amphitheatre:1"]))), new TechDef("robotics", ofArray([new Price("science", 140000), new Price("blueprint", 80)]), new UnlockList(empty(), empty(), empty(), singleton("ai"), empty(), ofArray(["steelPlants", "rotaryKiln", "assistance", "factoryRobotics"]), singleton("aqueduct:1"))), new TechDef("ai", ofArray([new Price("science", 250000), new Price("blueprint", 150)]), new UnlockList(singleton("aiCore"), empty(), empty(), singleton("quantumCryptography"), empty(), ofArray(["neuralNetworks", "aiEngineers", "machineLearning"]), empty())), new TechDef("quantumCryptography", ofArray([new Price("science", 1250000), new Price("relic", 1024)]), new UnlockList(empty(), empty(), empty(), singleton("blackchain"), empty(), empty(), empty())), new TechDef("blackchain", ofArray([new Price("science", 5000000), new Price("relic", 4096)]), new UnlockList(empty(), empty(), empty(), empty(), empty(), singleton("invisibleBlackHand"), empty())), new TechDef("nuclearFission", ofArray([new Price("science", 150000), new Price("blueprint", 100)]), new UnlockList(singleton("reactor"), empty(), empty(), ofArray(["nanotechnology", "particlePhysics"]), empty(), ofArray(["reactorVessel", "nuclearSmelters"]), empty())), new TechDef("rocketry", ofArray([new Price("science", 175000), new Price("blueprint", 125)]), new UnlockList(empty(), singleton("space"), empty(), ofArray(["sattelites", "oilProcessing"]), empty(), singleton("oilDistillation"), empty())), new TechDef("oilProcessing", ofArray([new Price("science", 215000), new Price("blueprint", 150)]), new UnlockList(empty(), empty(), empty(), empty(), empty(), singleton("factoryProcessing"), empty())), new TechDef("sattelites", ofArray([new Price("science", 190000), new Price("blueprint", 125)]), new UnlockList(empty(), empty(), empty(), singleton("orbitalEngineering"), ofArray(["outerSpaceTreaty", "militarizeSpace"]), ofArray(["photolithography", "orbitalGeodesy", "uplink", "thinFilm"]), empty())), new TechDef("orbitalEngineering", ofArray([new Price("science", 250000), new Price("blueprint", 250)]), new UnlockList(empty(), empty(), empty(), ofArray(["exogeology", "thorium"]), empty(), ofArray(["hubbleTelescope", "satelliteRadio", "astrophysicists", "solarSatellites", "spaceEngineers", "starlink"]), empty())), new TechDef("thorium", ofArray([new Price("science", 375000), new Price("blueprint", 375)]), new UnlockList(empty(), empty(), empty(), empty(), empty(), ofArray(["thoriumReactors", "thoriumEngine", "qdot"]), empty())), new TechDef("exogeology", ofArray([new Price("science", 275000), new Price("blueprint", 250)]), new UnlockList(empty(), empty(), empty(), singleton("advExogeology"), empty(), ofArray(["unobtainiumReflectors", "unobtainiumHuts", "unobtainiumDrill", "hydroPlantTurbines", "storageBunkers"]), empty())), new TechDef("advExogeology", ofArray([new Price("science", 325000), new Price("blueprint", 350)]), new UnlockList(empty(), empty(), empty(), empty(), empty(), ofArray(["eludiumCracker", "eludiumReflectors", "eludiumHuts", "mWReactor", "freightfulExchange"]), singleton("warehouse:1"))), new TechDef("nanotechnology", ofArray([new Price("science", 200000), new Price("blueprint", 150)]), new UnlockList(empty(), empty(), empty(), singleton("superconductors"), empty(), ofArray(["augumentation", "nanosuits", "photovoltaic", "fluidizedReactors"]), empty())), new TechDef("superconductors", ofArray([new Price("science", 225000), new Price("blueprint", 175)]), new UnlockList(empty(), empty(), empty(), singleton("antimatter"), empty(), ofArray(["coldFusion", "spaceManufacturing", "cryocomputing"]), empty())), new TechDef("antimatter", ofArray([new Price("science", 500000), new Price("antimatter", 1), new Price("relic", 1)]), new UnlockList(empty(), empty(), empty(), singleton("terraformation"), empty(), ofArray(["amReactors", "amBases", "amDrive", "amFission"]), empty())), new TechDef("terraformation", ofArray([new Price("science", 750000), new Price("relic", 5)]), new UnlockList(empty(), empty(), empty(), singleton("hydroponics"), empty(), empty(), empty())), new TechDef("hydroponics", ofArray([new Price("science", 1000000), new Price("relic", 25)]), new UnlockList(empty(), empty(), empty(), singleton("exogeophysics"), empty(), empty(), empty())), new TechDef("exogeophysics", ofArray([new Price("science", 25000000), new Price("relic", 500)]), undefined), new TechDef("particlePhysics", ofArray([new Price("science", 185000), new Price("blueprint", 135)]), new UnlockList(singleton("accelerator"), empty(), empty(), ofArray(["chronophysics", "dimensionalPhysics"]), empty(), ofArray(["enrichedUranium", "railgun"]), empty())), new TechDef("dimensionalPhysics", singleton(new Price("science", 235000)), new UnlockList(empty(), empty(), empty(), empty(), empty(), ofArray(["energyRifts", "lhc", "transportSuperposition"]), empty())), new TechDef("artificialGravity", singleton(new Price("science", 320000)), new UnlockList(empty(), empty(), empty(), empty(), empty(), ofArray(["spiceNavigation", "longRangeSpaceships"]), empty())), new TechDef("chronophysics", ofArray([new Price("science", 250000), new Price("timeCrystal", 5)]), new UnlockList(ofArray(["chronosphere", "stasisPod"]), empty(), empty(), singleton("tachyonTheory"), empty(), ofArray(["stasisChambers", "fluxCondensator"]), empty())), new TechDef("tachyonTheory", ofArray([new Price("science", 750000), new Price("timeCrystal", 25), new Price("relic", 1)]), new UnlockList(empty(), empty(), empty(), singleton("voidSpace"), empty(), ofArray(["tachyonAccelerators", "chronoforge", "chronoEngineers"]), empty())), new TechDef("cryptotheology", ofArray([new Price("science", 650000), new Price("relic", 5)]), new UnlockList(empty(), empty(), empty(), empty(), empty(), singleton("relicStation"), empty())), new TechDef("voidSpace", ofArray([new Price("science", 800000), new Price("timeCrystal", 30), new Price("void", 100)]), new UnlockList(empty(), empty(), empty(), singleton("paradoxalKnowledge"), empty(), singleton("voidAspiration"), empty())), new TechDef("paradoxalKnowledge", ofArray([new Price("science", 1000000), new Price("timeCrystal", 40), new Price("void", 250)]), new UnlockList(empty(), empty(), empty(), empty(), empty(), singleton("distorsion"), empty()))]);
+
+export const policyDefs = ofArray([new PolicyDef("liberty", singleton(new Price("culture", 150)), new UnlockList(empty(), empty(), empty(), empty(), ofArray(["authocracy", "republic"]), empty(), empty())), new PolicyDef("tradition", singleton(new Price("culture", 150)), new UnlockList(empty(), empty(), empty(), empty(), ofArray(["authocracy", "monarchy"]), empty(), empty())), new PolicyDef("monarchy", singleton(new Price("culture", 1500)), new UnlockList(empty(), empty(), empty(), empty(), ofArray(["liberalism", "fascism"]), empty(), empty())), new PolicyDef("authocracy", singleton(new Price("culture", 1500)), new UnlockList(empty(), empty(), empty(), empty(), ofArray(["communism", "fascism", "socialism"]), empty(), empty())), new PolicyDef("republic", singleton(new Price("culture", 1500)), new UnlockList(empty(), empty(), empty(), empty(), ofArray(["liberalism", "communism", "socialism"]), empty(), empty())), new PolicyDef("socialism", singleton(new Price("culture", 7500)), new UnlockList(empty(), empty(), empty(), empty(), singleton("scientificCommunism"), empty(), empty())), new PolicyDef("scientificCommunism", singleton(new Price("culture", 8500)), undefined), new PolicyDef("liberalism", singleton(new Price("culture", 15000)), undefined), new PolicyDef("communism", singleton(new Price("culture", 15000)), undefined), new PolicyDef("fascism", singleton(new Price("culture", 15000)), undefined), new PolicyDef("technocracy", singleton(new Price("culture", 150000)), undefined), new PolicyDef("theocracy", singleton(new Price("culture", 150000)), undefined), new PolicyDef("expansionism", singleton(new Price("culture", 150000)), undefined), new PolicyDef("transkittenism", singleton(new Price("culture", 1500000)), undefined), new PolicyDef("necrocracy", singleton(new Price("culture", 1500000)), undefined), new PolicyDef("radicalXenophobia", singleton(new Price("culture", 1500000)), new UnlockList(empty(), empty(), empty(), empty(), empty(), empty(), empty())), new PolicyDef("diplomacy", singleton(new Price("culture", 1600)), new UnlockList(empty(), empty(), empty(), empty(), ofArray(["knowledgeSharing", "culturalExchange"]), empty(), empty())), new PolicyDef("isolationism", singleton(new Price("culture", 1600)), new UnlockList(empty(), empty(), empty(), empty(), ofArray(["bigStickPolicy", "cityOnAHill"]), empty(), empty())), new PolicyDef("zebraRelationsAppeasement", singleton(new Price("culture", 5000)), undefined), new PolicyDef("zebraRelationsBellicosity", singleton(new Price("culture", 5000)), undefined), new PolicyDef("knowledgeSharing", singleton(new Price("culture", 4000)), undefined), new PolicyDef("culturalExchange", singleton(new Price("culture", 4000)), undefined), new PolicyDef("bigStickPolicy", singleton(new Price("culture", 4000)), undefined), new PolicyDef("cityOnAHill", singleton(new Price("culture", 4000)), undefined), new PolicyDef("outerSpaceTreaty", singleton(new Price("culture", 10000)), undefined), new PolicyDef("militarizeSpace", singleton(new Price("culture", 10000)), undefined), new PolicyDef("lizardRelationsEcologists", singleton(new Price("culture", 2100)), undefined), new PolicyDef("lizardRelationsPriests", singleton(new Price("culture", 2100)), undefined), new PolicyDef("lizardRelationsDiplomats", singleton(new Price("culture", 2100)), undefined), new PolicyDef("sharkRelationsScribes", singleton(new Price("culture", 2200)), undefined), new PolicyDef("sharkRelationsMerchants", singleton(new Price("culture", 2200)), undefined), new PolicyDef("sharkRelationsBotanists", singleton(new Price("culture", 2200)), undefined), new PolicyDef("griffinRelationsMetallurgists", singleton(new Price("culture", 16000)), undefined), new PolicyDef("griffinRelationsScouts", singleton(new Price("culture", 16000)), undefined), new PolicyDef("griffinRelationsMachinists", singleton(new Price("culture", 16000)), undefined), new PolicyDef("nagaRelationsMasons", singleton(new Price("culture", 8000)), undefined), new PolicyDef("nagaRelationsCultists", singleton(new Price("culture", 8000)), undefined), new PolicyDef("nagaRelationsArchitects", singleton(new Price("culture", 8000)), undefined), new PolicyDef("spiderRelationsGeologists", singleton(new Price("culture", 20000)), undefined), new PolicyDef("spiderRelationsChemists", singleton(new Price("culture", 20000)), undefined), new PolicyDef("spiderRelationsPaleontologists", singleton(new Price("culture", 20000)), undefined), new PolicyDef("dragonRelationsPhysicists", singleton(new Price("culture", 30000)), undefined), new PolicyDef("dragonRelationsAstrologers", singleton(new Price("culture", 30000)), undefined), new PolicyDef("dragonRelationsDynamicists", singleton(new Price("culture", 30000)), undefined), new PolicyDef("stoicism", singleton(new Price("culture", 2500)), new UnlockList(empty(), empty(), empty(), empty(), ofArray(["rationality", "mysticism", "rationing", "frugality"]), empty(), empty())), new PolicyDef("epicurianism", singleton(new Price("culture", 2500)), new UnlockList(empty(), empty(), empty(), empty(), ofArray(["rationality", "mysticism", "carnivale", "extravagance"]), empty(), empty())), new PolicyDef("carnivale", singleton(new Price("culture", 3500)), undefined), new PolicyDef("extravagance", singleton(new Price("culture", 3500)), undefined), new PolicyDef("rationing", singleton(new Price("culture", 3500)), undefined), new PolicyDef("frugality", singleton(new Price("culture", 3500)), undefined), new PolicyDef("rationality", singleton(new Price("culture", 3000)), undefined), new PolicyDef("mysticism", singleton(new Price("culture", 3000)), undefined), new PolicyDef("stripMining", singleton(new Price("science", 2000)), new UnlockList(empty(), empty(), empty(), empty(), ofArray(["sustainability", "fullIndustrialization"]), empty(), empty())), new PolicyDef("clearCutting", singleton(new Price("science", 2000)), new UnlockList(empty(), empty(), empty(), empty(), ofArray(["sustainability", "fullIndustrialization"]), empty(), empty())), new PolicyDef("environmentalism", singleton(new Price("culture", 2000)), new UnlockList(empty(), empty(), empty(), empty(), ofArray(["conservation", "openWoodlands"]), empty(), empty())), new PolicyDef("sustainability", singleton(new Price("culture", 10000)), undefined), new PolicyDef("fullIndustrialization", singleton(new Price("culture", 10000)), undefined), new PolicyDef("conservation", singleton(new Price("culture", 10000)), undefined), new PolicyDef("openWoodlands", singleton(new Price("culture", 10000)), undefined), new PolicyDef("cryochamberExtraction", singleton(new Price("manpower", 10000)), undefined), new PolicyDef("terraformingInsight", singleton(new Price("manpower", 10000)), undefined), new PolicyDef("siphoning", singleton(new Price("necrocorn", 1)), undefined), new PolicyDef("feedingFrenzy", singleton(new Price("necrocorn", 1)), undefined), new PolicyDef("upfrontPayment", singleton(new Price("necrocorn", 1)), undefined)]);
+
+export const upgradeDefs = ofArray([new UpgradeDef("mineralHoes", ofArray([new Price("minerals", 275), new Price("science", 100)]), ofList(singleton(["catnipJobRatio", 0.5]), {
+    Compare: (x, y) => (comparePrimitives(x, y) | 0),
+})), new UpgradeDef("ironHoes", ofArray([new Price("iron", 25), new Price("science", 200)]), ofList(singleton(["catnipJobRatio", 0.3]), {
+    Compare: (x_1, y_1) => (comparePrimitives(x_1, y_1) | 0),
+})), new UpgradeDef("mineralAxes", ofArray([new Price("minerals", 500), new Price("science", 100)]), ofList(singleton(["woodJobRatio", 0.7]), {
+    Compare: (x_2, y_2) => (comparePrimitives(x_2, y_2) | 0),
+})), new UpgradeDef("ironAxes", ofArray([new Price("iron", 50), new Price("science", 200)]), ofList(singleton(["woodJobRatio", 0.5]), {
+    Compare: (x_3, y_3) => (comparePrimitives(x_3, y_3) | 0),
+})), new UpgradeDef("steelAxe", ofArray([new Price("science", 20000), new Price("steel", 75)]), ofList(singleton(["woodJobRatio", 0.5]), {
+    Compare: (x_4, y_4) => (comparePrimitives(x_4, y_4) | 0),
+})), new UpgradeDef("reinforcedSaw", ofArray([new Price("iron", 1000), new Price("science", 2500)]), ofList(singleton(["lumberMillRatio", 0.2]), {
+    Compare: (x_5, y_5) => (comparePrimitives(x_5, y_5) | 0),
+})), new UpgradeDef("steelSaw", ofArray([new Price("science", 52000), new Price("steel", 750)]), ofList(singleton(["lumberMillRatio", 0.2]), {
+    Compare: (x_6, y_6) => (comparePrimitives(x_6, y_6) | 0),
+})), new UpgradeDef("titaniumSaw", ofArray([new Price("titanium", 500), new Price("science", 70000)]), ofList(singleton(["lumberMillRatio", 0.15]), {
+    Compare: (x_7, y_7) => (comparePrimitives(x_7, y_7) | 0),
+})), new UpgradeDef("alloySaw", ofArray([new Price("science", 85000), new Price("alloy", 75)]), ofList(singleton(["lumberMillRatio", 0.15]), {
+    Compare: (x_8, y_8) => (comparePrimitives(x_8, y_8) | 0),
+})), new UpgradeDef("titaniumAxe", ofArray([new Price("titanium", 10), new Price("science", 38000)]), ofList(singleton(["woodJobRatio", 0.5]), {
+    Compare: (x_9, y_9) => (comparePrimitives(x_9, y_9) | 0),
+})), new UpgradeDef("alloyAxe", ofArray([new Price("science", 70000), new Price("alloy", 25)]), ofList(singleton(["woodJobRatio", 0.5]), {
+    Compare: (x_10, y_10) => (comparePrimitives(x_10, y_10) | 0),
+})), new UpgradeDef("unobtainiumAxe", ofArray([new Price("unobtainium", 75), new Price("science", 125000)]), ofList(singleton(["woodJobRatio", 0.5]), {
+    Compare: (x_11, y_11) => (comparePrimitives(x_11, y_11) | 0),
+})), new UpgradeDef("unobtainiumSaw", ofArray([new Price("unobtainium", 125), new Price("science", 145000)]), ofList(singleton(["lumberMillRatio", 0.25]), {
+    Compare: (x_12, y_12) => (comparePrimitives(x_12, y_12) | 0),
+})), new UpgradeDef("stoneBarns", ofArray([new Price("wood", 1000), new Price("minerals", 750), new Price("iron", 50), new Price("science", 500)]), ofList(singleton(["barnRatio", 0.75]), {
+    Compare: (x_13, y_13) => (comparePrimitives(x_13, y_13) | 0),
+})), new UpgradeDef("reinforcedBarns", ofArray([new Price("iron", 100), new Price("science", 800), new Price("beam", 25), new Price("slab", 10)]), ofList(singleton(["barnRatio", 0.8]), {
+    Compare: (x_14, y_14) => (comparePrimitives(x_14, y_14) | 0),
+})), new UpgradeDef("reinforcedWarehouses", ofArray([new Price("science", 15000), new Price("plate", 50), new Price("steel", 50), new Price("scaffold", 25)]), ofList(singleton(["warehouseRatio", 0.25]), {
+    Compare: (x_15, y_15) => (comparePrimitives(x_15, y_15) | 0),
+})), new UpgradeDef("titaniumBarns", ofArray([new Price("titanium", 25), new Price("science", 60000), new Price("steel", 200), new Price("scaffold", 250)]), ofList(singleton(["barnRatio", 1]), {
+    Compare: (x_16, y_16) => (comparePrimitives(x_16, y_16) | 0),
+})), new UpgradeDef("alloyBarns", ofArray([new Price("science", 75000), new Price("plate", 750), new Price("alloy", 20)]), ofList(singleton(["barnRatio", 1]), {
+    Compare: (x_17, y_17) => (comparePrimitives(x_17, y_17) | 0),
+})), new UpgradeDef("concreteBarns", ofArray([new Price("titanium", 2000), new Price("science", 100000), new Price("concrate", 45)]), ofList(singleton(["barnRatio", 0.75]), {
+    Compare: (x_18, y_18) => (comparePrimitives(x_18, y_18) | 0),
+})), new UpgradeDef("titaniumWarehouses", ofArray([new Price("titanium", 50), new Price("science", 70000), new Price("steel", 500), new Price("scaffold", 500)]), ofList(singleton(["warehouseRatio", 0.5]), {
+    Compare: (x_19, y_19) => (comparePrimitives(x_19, y_19) | 0),
+})), new UpgradeDef("alloyWarehouses", ofArray([new Price("titanium", 750), new Price("science", 90000), new Price("alloy", 50)]), ofList(singleton(["warehouseRatio", 0.45]), {
+    Compare: (x_20, y_20) => (comparePrimitives(x_20, y_20) | 0),
+})), new UpgradeDef("concreteWarehouses", ofArray([new Price("titanium", 1250), new Price("science", 100000), new Price("concrate", 35)]), ofList(singleton(["warehouseRatio", 0.35]), {
+    Compare: (x_21, y_21) => (comparePrimitives(x_21, y_21) | 0),
+})), new UpgradeDef("storageBunkers", ofArray([new Price("unobtainium", 500), new Price("science", 25000), new Price("concrate", 1250)]), ofList(singleton(["warehouseRatio", 0.2]), {
+    Compare: (x_22, y_22) => (comparePrimitives(x_22, y_22) | 0),
+})), new UpgradeDef("energyRifts", ofArray([new Price("titanium", 7500), new Price("uranium", 250), new Price("science", 200000)]), empty_1({
+    Compare: (x_23, y_23) => (comparePrimitives(x_23, y_23) | 0),
+})), new UpgradeDef("stasisChambers", ofArray([new Price("uranium", 2000), new Price("science", 235000), new Price("timeCrystal", 1), new Price("alloy", 200)]), ofList(singleton(["acceleratorRatio", 0.95]), {
+    Compare: (x_24, y_24) => (comparePrimitives(x_24, y_24) | 0),
+})), new UpgradeDef("voidEnergy", ofArray([new Price("uranium", 2500), new Price("science", 275000), new Price("timeCrystal", 2), new Price("alloy", 250)]), ofList(singleton(["acceleratorRatio", 0.75]), {
+    Compare: (x_25, y_25) => (comparePrimitives(x_25, y_25) | 0),
+})), new UpgradeDef("darkEnergy", ofArray([new Price("science", 350000), new Price("timeCrystal", 3), new Price("eludium", 75)]), ofList(singleton(["acceleratorRatio", 2.5]), {
+    Compare: (x_26, y_26) => (comparePrimitives(x_26, y_26) | 0),
+})), new UpgradeDef("chronoforge", ofArray([new Price("science", 500000), new Price("timeCrystal", 10), new Price("relic", 5)]), empty_1({
+    Compare: (x_27, y_27) => (comparePrimitives(x_27, y_27) | 0),
+})), new UpgradeDef("tachyonModerator", ofArray([new Price("science", 16000), new Price("gear", 500), new Price("titanium", 250)]), empty_1({
+    Compare: (x_28, y_28) => (comparePrimitives(x_28, y_28) | 0),
+})), new UpgradeDef("tachyonAccelerators", ofArray([new Price("science", 500000), new Price("timeCrystal", 10), new Price("eludium", 125)]), ofList(singleton(["acceleratorRatio", 5]), {
+    Compare: (x_29, y_29) => (comparePrimitives(x_29, y_29) | 0),
+})), new UpgradeDef("fluxCondensator", ofArray([new Price("unobtainium", 5000), new Price("timeCrystal", 5), new Price("alloy", 250)]), empty_1({
+    Compare: (x_30, y_30) => (comparePrimitives(x_30, y_30) | 0),
+})), new UpgradeDef("lhc", ofArray([new Price("unobtainium", 100), new Price("science", 250000), new Price("alloy", 150)]), empty_1({
+    Compare: (x_31, y_31) => (comparePrimitives(x_31, y_31) | 0),
+})), new UpgradeDef("photovoltaic", ofArray([new Price("titanium", 5000), new Price("science", 75000)]), ofList(singleton(["solarFarmRatio", 0.5]), {
+    Compare: (x_32, y_32) => (comparePrimitives(x_32, y_32) | 0),
+})), new UpgradeDef("thinFilm", ofArray([new Price("uranium", 1000), new Price("unobtainium", 200), new Price("science", 125000)]), ofList(singleton(["solarFarmSeasonRatio", 1]), {
+    Compare: (x_33, y_33) => (comparePrimitives(x_33, y_33) | 0),
+})), new UpgradeDef("qdot", ofArray([new Price("science", 175000), new Price("eludium", 200), new Price("thorium", 1000)]), ofList(singleton(["solarFarmSeasonRatio", 1]), {
+    Compare: (x_34, y_34) => (comparePrimitives(x_34, y_34) | 0),
+})), new UpgradeDef("solarSatellites", ofArray([new Price("science", 225000), new Price("alloy", 750)]), empty_1({
+    Compare: (x_35, y_35) => (comparePrimitives(x_35, y_35) | 0),
+})), new UpgradeDef("cargoShips", ofArray([new Price("science", 55000), new Price("blueprint", 15)]), ofList(singleton(["harborRatio", 0.01]), {
+    Compare: (x_36, y_36) => (comparePrimitives(x_36, y_36) | 0),
+})), new UpgradeDef("barges", ofArray([new Price("titanium", 1500), new Price("science", 100000), new Price("blueprint", 30)]), ofList(singleton(["harborCoalRatio", 0.5]), {
+    Compare: (x_37, y_37) => (comparePrimitives(x_37, y_37) | 0),
+})), new UpgradeDef("reactorVessel", ofArray([new Price("titanium", 5000), new Price("uranium", 125), new Price("science", 135000)]), ofList(singleton(["shipLimit", 0.05]), {
+    Compare: (x_38, y_38) => (comparePrimitives(x_38, y_38) | 0),
+})), new UpgradeDef("ironwood", ofArray([new Price("wood", 15000), new Price("iron", 3000), new Price("science", 30000)]), ofList(singleton(["hutPriceRatio", -0.5]), {
+    Compare: (x_39, y_39) => (comparePrimitives(x_39, y_39) | 0),
+})), new UpgradeDef("concreteHuts", ofArray([new Price("titanium", 3000), new Price("science", 125000), new Price("concrate", 45)]), ofList(singleton(["hutPriceRatio", -0.3]), {
+    Compare: (x_40, y_40) => (comparePrimitives(x_40, y_40) | 0),
+})), new UpgradeDef("unobtainiumHuts", ofArray([new Price("titanium", 15000), new Price("unobtainium", 350), new Price("science", 200000)]), ofList(singleton(["hutPriceRatio", -0.25]), {
+    Compare: (x_41, y_41) => (comparePrimitives(x_41, y_41) | 0),
+})), new UpgradeDef("eludiumHuts", ofArray([new Price("science", 275000), new Price("eludium", 125)]), ofList(singleton(["hutPriceRatio", -0.1]), {
+    Compare: (x_42, y_42) => (comparePrimitives(x_42, y_42) | 0),
+})), new UpgradeDef("silos", ofArray([new Price("science", 50000), new Price("steel", 125), new Price("blueprint", 5)]), empty_1({
+    Compare: (x_43, y_43) => (comparePrimitives(x_43, y_43) | 0),
+})), new UpgradeDef("refrigeration", ofArray([new Price("titanium", 2500), new Price("science", 125000), new Price("blueprint", 15)]), ofList(singleton(["catnipMaxRatio", 0.75]), {
+    Compare: (x_44, y_44) => (comparePrimitives(x_44, y_44) | 0),
+})), new UpgradeDef("compositeBow", ofArray([new Price("wood", 200), new Price("iron", 100), new Price("science", 500)]), ofList(ofArray([["manpowerJobRatio", 0.5], ["manpowerMax", 0], ["explorerAtk", 5]]), {
+    Compare: (x_45, y_45) => (comparePrimitives(x_45, y_45) | 0),
+})), new UpgradeDef("crossbow", ofArray([new Price("iron", 1500), new Price("science", 12000)]), ofList(ofArray([["manpowerJobRatio", 0.25], ["explorerAtk", 10]]), {
+    Compare: (x_46, y_46) => (comparePrimitives(x_46, y_46) | 0),
+})), new UpgradeDef("railgun", ofArray([new Price("titanium", 5000), new Price("science", 150000), new Price("blueprint", 25)]), ofList(ofArray([["manpowerJobRatio", 0.25], ["explorerAtk", 20]]), {
+    Compare: (x_47, y_47) => (comparePrimitives(x_47, y_47) | 0),
+})), new UpgradeDef("bolas", ofArray([new Price("wood", 50), new Price("minerals", 250), new Price("science", 1000)]), ofList(ofArray([["hunterRatio", 1], ["explorerAtk", 2], ["manpowerMax", 0]]), {
+    Compare: (x_48, y_48) => (comparePrimitives(x_48, y_48) | 0),
+})), new UpgradeDef("huntingArmor", ofArray([new Price("iron", 750), new Price("science", 2000)]), ofList(ofArray([["hunterRatio", 2], ["explorerDef", 2], ["manpowerMax", 0]]), {
+    Compare: (x_49, y_49) => (comparePrimitives(x_49, y_49) | 0),
+})), new UpgradeDef("steelArmor", ofArray([new Price("science", 10000), new Price("steel", 50)]), ofList(ofArray([["hunterRatio", 0.5], ["explorerDef", 5]]), {
+    Compare: (x_50, y_50) => (comparePrimitives(x_50, y_50) | 0),
+})), new UpgradeDef("alloyArmor", ofArray([new Price("science", 50000), new Price("alloy", 25)]), ofList(ofArray([["hunterRatio", 0.5], ["explorerDef", 10]]), {
+    Compare: (x_51, y_51) => (comparePrimitives(x_51, y_51) | 0),
+})), new UpgradeDef("nanosuits", ofArray([new Price("science", 185000), new Price("alloy", 250)]), ofList(ofArray([["hunterRatio", 0.5], ["explorerDef", 20]]), {
+    Compare: (x_52, y_52) => (comparePrimitives(x_52, y_52) | 0),
+})), new UpgradeDef("caravanserai", ofArray([new Price("gold", 250), new Price("science", 25000), new Price("ivory", 10000)]), empty_1({
+    Compare: (x_53, y_53) => (comparePrimitives(x_53, y_53) | 0),
+})), new UpgradeDef("freightfulExchange", ofArray([new Price("science", 450000), new Price("eludium", 100), new Price("titanium", 1000), new Price("tanker", 5000)]), empty_1({
+    Compare: (x_54, y_54) => (comparePrimitives(x_54, y_54) | 0),
+})), new UpgradeDef("transportSuperposition", ofArray([new Price("science", 500000), new Price("eludium", 1500), new Price("thorium", 25000), new Price("tanker", 500000)]), empty_1({
+    Compare: (x_55, y_55) => (comparePrimitives(x_55, y_55) | 0),
+})), new UpgradeDef("advancedRefinement", ofArray([new Price("catnip", 5000), new Price("science", 500)]), empty_1({
+    Compare: (x_56, y_56) => (comparePrimitives(x_56, y_56) | 0),
+})), new UpgradeDef("prospecting", ofArray([new Price("minerals", 1000), new Price("science", 1000)]), empty_1({
+    Compare: (x_57, y_57) => (comparePrimitives(x_57, y_57) | 0),
+})), new UpgradeDef("goldOre", ofArray([new Price("minerals", 800), new Price("iron", 100), new Price("science", 1000)]), empty_1({
+    Compare: (x_58, y_58) => (comparePrimitives(x_58, y_58) | 0),
+})), new UpgradeDef("geodesy", ofArray([new Price("titanium", 250), new Price("science", 90000), new Price("starchart", 500)]), empty_1({
+    Compare: (x_59, y_59) => (comparePrimitives(x_59, y_59) | 0),
+})), new UpgradeDef("register", ofArray([new Price("gold", 10), new Price("science", 500)]), empty_1({
+    Compare: (x_60, y_60) => (comparePrimitives(x_60, y_60) | 0),
+})), new UpgradeDef("strenghtenBuild", ofArray([new Price("science", 100000), new Price("concrate", 50)]), ofList(ofArray([["barnRatio", 0.05], ["warehouseRatio", 0.05]]), {
+    Compare: (x_61, y_61) => (comparePrimitives(x_61, y_61) | 0),
+})), new UpgradeDef("miningDrill", ofArray([new Price("titanium", 1750), new Price("science", 100000), new Price("steel", 750)]), empty_1({
+    Compare: (x_62, y_62) => (comparePrimitives(x_62, y_62) | 0),
+})), new UpgradeDef("unobtainiumDrill", ofArray([new Price("unobtainium", 250), new Price("science", 250000), new Price("alloy", 1250)]), empty_1({
+    Compare: (x_63, y_63) => (comparePrimitives(x_63, y_63) | 0),
+})), new UpgradeDef("coalFurnace", ofArray([new Price("minerals", 5000), new Price("iron", 2000), new Price("science", 5000), new Price("beam", 35)]), empty_1({
+    Compare: (x_64, y_64) => (comparePrimitives(x_64, y_64) | 0),
+})), new UpgradeDef("deepMining", ofArray([new Price("iron", 1200), new Price("science", 5000), new Price("beam", 50)]), empty_1({
+    Compare: (x_65, y_65) => (comparePrimitives(x_65, y_65) | 0),
+})), new UpgradeDef("pyrolysis", ofArray([new Price("science", 35000), new Price("compedium", 5)]), ofList(singleton(["coalSuperRatio", 0.2]), {
+    Compare: (x_66, y_66) => (comparePrimitives(x_66, y_66) | 0),
+})), new UpgradeDef("electrolyticSmelting", ofArray([new Price("titanium", 2000), new Price("science", 100000)]), ofList(singleton(["smelterRatio", 0.95]), {
+    Compare: (x_67, y_67) => (comparePrimitives(x_67, y_67) | 0),
+})), new UpgradeDef("oxidation", ofArray([new Price("science", 100000), new Price("steel", 5000)]), ofList(singleton(["calcinerRatio", 0.95]), {
+    Compare: (x_68, y_68) => (comparePrimitives(x_68, y_68) | 0),
+})), new UpgradeDef("steelPlants", ofArray([new Price("titanium", 3500), new Price("science", 140000), new Price("gear", 750)]), ofList(singleton(["calcinerSteelRatio", 0.1]), {
+    Compare: (x_69, y_69) => (comparePrimitives(x_69, y_69) | 0),
+})), new UpgradeDef("automatedPlants", ofArray([new Price("science", 200000), new Price("alloy", 750)]), ofList(singleton(["calcinerSteelCraftRatio", 0.25]), {
+    Compare: (x_70, y_70) => (comparePrimitives(x_70, y_70) | 0),
+})), new UpgradeDef("nuclearPlants", ofArray([new Price("uranium", 10000), new Price("science", 250000)]), ofList(singleton(["calcinerSteelReactorBonus", 0.02]), {
+    Compare: (x_71, y_71) => (comparePrimitives(x_71, y_71) | 0),
+})), new UpgradeDef("rotaryKiln", ofArray([new Price("titanium", 5000), new Price("science", 145000), new Price("gear", 500)]), ofList(singleton(["calcinerRatio", 0.75]), {
+    Compare: (x_72, y_72) => (comparePrimitives(x_72, y_72) | 0),
+})), new UpgradeDef("fluidizedReactors", ofArray([new Price("science", 175000), new Price("alloy", 200)]), ofList(singleton(["calcinerRatio", 1]), {
+    Compare: (x_73, y_73) => (comparePrimitives(x_73, y_73) | 0),
+})), new UpgradeDef("nuclearSmelters", ofArray([new Price("uranium", 250), new Price("science", 165000)]), empty_1({
+    Compare: (x_74, y_74) => (comparePrimitives(x_74, y_74) | 0),
+})), new UpgradeDef("orbitalGeodesy", ofArray([new Price("oil", 35000), new Price("science", 150000), new Price("alloy", 1000)]), empty_1({
+    Compare: (x_75, y_75) => (comparePrimitives(x_75, y_75) | 0),
+})), new UpgradeDef("printingPress", ofArray([new Price("science", 7500), new Price("gear", 45)]), empty_1({
+    Compare: (x_76, y_76) => (comparePrimitives(x_76, y_76) | 0),
+})), new UpgradeDef("offsetPress", ofArray([new Price("oil", 15000), new Price("science", 100000), new Price("gear", 250)]), empty_1({
+    Compare: (x_77, y_77) => (comparePrimitives(x_77, y_77) | 0),
+})), new UpgradeDef("photolithography", ofArray([new Price("oil", 50000), new Price("uranium", 250), new Price("science", 250000), new Price("alloy", 1250)]), empty_1({
+    Compare: (x_78, y_78) => (comparePrimitives(x_78, y_78) | 0),
+})), new UpgradeDef("uplink", ofArray([new Price("science", 75000), new Price("alloy", 1750)]), ofList(ofArray([["uplinkDCRatio", 0.01], ["uplinkLabRatio", 0.01]]), {
+    Compare: (x_79, y_79) => (comparePrimitives(x_79, y_79) | 0),
+})), new UpgradeDef("starlink", ofArray([new Price("oil", 25000), new Price("science", 175000), new Price("alloy", 5000)]), ofList(singleton(["uplinkLabRatio", 0.01]), {
+    Compare: (x_80, y_80) => (comparePrimitives(x_80, y_80) | 0),
+})), new UpgradeDef("cryocomputing", ofArray([new Price("science", 125000), new Price("eludium", 15)]), empty_1({
+    Compare: (x_81, y_81) => (comparePrimitives(x_81, y_81) | 0),
+})), new UpgradeDef("machineLearning", ofArray([new Price("antimatter", 125), new Price("science", 175000), new Price("eludium", 25)]), ofList(singleton(["dataCenterAIRatio", 0.1]), {
+    Compare: (x_82, y_82) => (comparePrimitives(x_82, y_82) | 0),
+})), new UpgradeDef("factoryAutomation", ofArray([new Price("science", 10000), new Price("gear", 25)]), empty_1({
+    Compare: (x_83, y_83) => (comparePrimitives(x_83, y_83) | 0),
+})), new UpgradeDef("advancedAutomation", ofArray([new Price("science", 100000), new Price("gear", 75), new Price("blueprint", 25)]), empty_1({
+    Compare: (x_84, y_84) => (comparePrimitives(x_84, y_84) | 0),
+})), new UpgradeDef("pneumaticPress", ofArray([new Price("science", 20000), new Price("gear", 30), new Price("blueprint", 5)]), empty_1({
+    Compare: (x_85, y_85) => (comparePrimitives(x_85, y_85) | 0),
+})), new UpgradeDef("combustionEngine", ofArray([new Price("science", 20000), new Price("gear", 25), new Price("blueprint", 5)]), ofList(singleton(["coalRatioGlobalReduction", 0.2]), {
+    Compare: (x_86, y_86) => (comparePrimitives(x_86, y_86) | 0),
+})), new UpgradeDef("fuelInjectors", ofArray([new Price("oil", 20000), new Price("science", 100000), new Price("gear", 250)]), ofList(singleton(["coalRatioGlobalReduction", 0.2]), {
+    Compare: (x_87, y_87) => (comparePrimitives(x_87, y_87) | 0),
+})), new UpgradeDef("factoryLogistics", ofArray([new Price("titanium", 2000), new Price("science", 100000), new Price("gear", 250)]), empty_1({
+    Compare: (x_88, y_88) => (comparePrimitives(x_88, y_88) | 0),
+})), new UpgradeDef("carbonSequestration", ofArray([new Price("titanium", 1250), new Price("science", 75000), new Price("gear", 125), new Price("steel", 4000), new Price("alloy", 1000)]), empty_1({
+    Compare: (x_89, y_89) => (comparePrimitives(x_89, y_89) | 0),
+})), new UpgradeDef("factoryOptimization", ofArray([new Price("titanium", 1250), new Price("science", 75000), new Price("gear", 125)]), ofList(ofArray([["t1CraftRatio", 10], ["t2CraftRatio", 2], ["queueCap", 1]]), {
+    Compare: (x_90, y_90) => (comparePrimitives(x_90, y_90) | 0),
+})), new UpgradeDef("factoryRobotics", ofArray([new Price("titanium", 2500), new Price("science", 100000), new Price("gear", 250)]), ofList(ofArray([["t1CraftRatio", 10], ["t2CraftRatio", 5], ["t3CraftRatio", 2], ["queueCap", 2]]), {
+    Compare: (x_91, y_91) => (comparePrimitives(x_91, y_91) | 0),
+})), new UpgradeDef("spaceEngineers", ofArray([new Price("science", 225000), new Price("alloy", 500)]), ofList(ofArray([["t1CraftRatio", 10], ["t2CraftRatio", 5], ["t3CraftRatio", 2], ["t4CraftRatio", 2], ["queueCap", 2]]), {
+    Compare: (x_92, y_92) => (comparePrimitives(x_92, y_92) | 0),
+})), new UpgradeDef("aiEngineers", ofArray([new Price("antimatter", 500), new Price("science", 35000), new Price("eludium", 50)]), ofList(ofArray([["t1CraftRatio", 10], ["t2CraftRatio", 5], ["t3CraftRatio", 5], ["t4CraftRatio", 2], ["t5CraftRatio", 2], ["queueCap", 3]]), {
+    Compare: (x_93, y_93) => (comparePrimitives(x_93, y_93) | 0),
+})), new UpgradeDef("chronoEngineers", ofArray([new Price("science", 500000), new Price("timeCrystal", 5), new Price("eludium", 100)]), ofList(ofArray([["t1CraftRatio", 10], ["t2CraftRatio", 5], ["t3CraftRatio", 2], ["t4CraftRatio", 2], ["t5CraftRatio", 2], ["queueCap", 3]]), {
+    Compare: (x_94, y_94) => (comparePrimitives(x_94, y_94) | 0),
+})), new UpgradeDef("spaceManufacturing", ofArray([new Price("titanium", 125000), new Price("science", 250000)]), empty_1({
+    Compare: (x_95, y_95) => (comparePrimitives(x_95, y_95) | 0),
+})), new UpgradeDef("celestialMechanics", singleton(new Price("science", 250)), empty_1({
+    Compare: (x_96, y_96) => (comparePrimitives(x_96, y_96) | 0),
+})), new UpgradeDef("astrolabe", ofArray([new Price("titanium", 5), new Price("science", 25000), new Price("starchart", 75)]), empty_1({
+    Compare: (x_97, y_97) => (comparePrimitives(x_97, y_97) | 0),
+})), new UpgradeDef("titaniumMirrors", ofArray([new Price("titanium", 15), new Price("science", 20000), new Price("starchart", 20)]), ofList(singleton(["libraryRatio", 0.02]), {
+    Compare: (x_98, y_98) => (comparePrimitives(x_98, y_98) | 0),
+})), new UpgradeDef("unobtainiumReflectors", ofArray([new Price("unobtainium", 75), new Price("science", 250000), new Price("starchart", 750)]), ofList(singleton(["libraryRatio", 0.02]), {
+    Compare: (x_99, y_99) => (comparePrimitives(x_99, y_99) | 0),
+})), new UpgradeDef("eludiumReflectors", ofArray([new Price("science", 250000), new Price("eludium", 15)]), ofList(singleton(["libraryRatio", 0.02]), {
+    Compare: (x_100, y_100) => (comparePrimitives(x_100, y_100) | 0),
+})), new UpgradeDef("hydroPlantTurbines", ofArray([new Price("unobtainium", 125), new Price("science", 250000)]), ofList(singleton(["hydroPlantRatio", 0.15]), {
+    Compare: (x_101, y_101) => (comparePrimitives(x_101, y_101) | 0),
+})), new UpgradeDef("amBases", ofArray([new Price("antimatter", 250), new Price("eludium", 15)]), empty_1({
+    Compare: (x_102, y_102) => (comparePrimitives(x_102, y_102) | 0),
+})), new UpgradeDef("aiBases", ofArray([new Price("antimatter", 7500), new Price("science", 750000)]), empty_1({
+    Compare: (x_103, y_103) => (comparePrimitives(x_103, y_103) | 0),
+})), new UpgradeDef("amFission", ofArray([new Price("antimatter", 175), new Price("science", 525000), new Price("thorium", 7500)]), ofList(singleton(["eludiumAutomationBonus", 0.25]), {
+    Compare: (x_104, y_104) => (comparePrimitives(x_104, y_104) | 0),
+})), new UpgradeDef("amReactors", ofArray([new Price("antimatter", 750), new Price("eludium", 35)]), ofList(singleton(["spaceScienceRatio", 0.95]), {
+    Compare: (x_105, y_105) => (comparePrimitives(x_105, y_105) | 0),
+})), new UpgradeDef("amReactorsMK2", ofArray([new Price("antimatter", 1750), new Price("eludium", 70)]), ofList(singleton(["spaceScienceRatio", 1.5]), {
+    Compare: (x_106, y_106) => (comparePrimitives(x_106, y_106) | 0),
+})), new UpgradeDef("voidReactors", ofArray([new Price("antimatter", 2500), new Price("void", 250)]), ofList(singleton(["spaceScienceRatio", 4]), {
+    Compare: (x_107, y_107) => (comparePrimitives(x_107, y_107) | 0),
+})), new UpgradeDef("relicStation", ofArray([new Price("antimatter", 5000), new Price("eludium", 100)]), ofList(singleton(["beaconRelicsPerDay", 0.01]), {
+    Compare: (x_108, y_108) => (comparePrimitives(x_108, y_108) | 0),
+})), new UpgradeDef("amDrive", ofArray([new Price("antimatter", 125), new Price("science", 450000)]), ofList(singleton(["routeSpeed", 25]), {
+    Compare: (x_109, y_109) => (comparePrimitives(x_109, y_109) | 0),
+})), new UpgradeDef("pumpjack", ofArray([new Price("titanium", 250), new Price("science", 100000), new Price("gear", 125)]), ofList(singleton(["oilWellRatio", 0.45]), {
+    Compare: (x_110, y_110) => (comparePrimitives(x_110, y_110) | 0),
+})), new UpgradeDef("petri", ofArray([new Price("plastic", 250), new Price("science", 65000)]), empty_1({
+    Compare: (x_111, y_111) => (comparePrimitives(x_111, y_111) | 0),
+})), new UpgradeDef("biofuel", ofArray([new Price("titanium", 1250), new Price("science", 150000)]), empty_1({
+    Compare: (x_112, y_112) => (comparePrimitives(x_112, y_112) | 0),
+})), new UpgradeDef("unicornSelection", ofArray([new Price("titanium", 1500), new Price("science", 175000)]), ofList(ofArray([["unicornsGlobalRatio", 0.25], ["unicornsMaxRatio", 0]]), {
+    Compare: (x_113, y_113) => (comparePrimitives(x_113, y_113) | 0),
+})), new UpgradeDef("alicornStable", ofArray([new Price("wood", 3000), new Price("gold", 100), new Price("alicorn", 20)]), ofList(singleton(["alicornMax", 0]), {
+    Compare: (x_114, y_114) => (comparePrimitives(x_114, y_114) | 0),
+})), new UpgradeDef("gmo", ofArray([new Price("catnip", 1000000), new Price("titanium", 1500), new Price("science", 175000)]), ofList(singleton(["biofuelRatio", 0.6]), {
+    Compare: (x_115, y_115) => (comparePrimitives(x_115, y_115) | 0),
+})), new UpgradeDef("cadSystems", ofArray([new Price("titanium", 750), new Price("science", 125000)]), ofList(singleton(["cadBlueprintCraftRatio", 0.01]), {
+    Compare: (x_116, y_116) => (comparePrimitives(x_116, y_116) | 0),
+})), new UpgradeDef("seti", ofArray([new Price("titanium", 250), new Price("science", 125000)]), empty_1({
+    Compare: (x_117, y_117) => (comparePrimitives(x_117, y_117) | 0),
+})), new UpgradeDef("logistics", ofArray([new Price("science", 100000), new Price("gear", 100), new Price("scaffold", 1000)]), ofList(singleton(["skillMultiplier", 0.15]), {
+    Compare: (x_118, y_118) => (comparePrimitives(x_118, y_118) | 0),
+})), new UpgradeDef("augumentation", ofArray([new Price("titanium", 5000), new Price("uranium", 50), new Price("science", 150000)]), ofList(singleton(["skillMultiplier", 1]), {
+    Compare: (x_119, y_119) => (comparePrimitives(x_119, y_119) | 0),
+})), new UpgradeDef("internet", ofArray([new Price("titanium", 5000), new Price("uranium", 50), new Price("science", 150000)]), empty_1({
+    Compare: (x_120, y_120) => (comparePrimitives(x_120, y_120) | 0),
+})), new UpgradeDef("neuralNetworks", ofArray([new Price("titanium", 7500), new Price("science", 200000)]), empty_1({
+    Compare: (x_121, y_121) => (comparePrimitives(x_121, y_121) | 0),
+})), new UpgradeDef("assistance", ofArray([new Price("science", 100000), new Price("steel", 10000), new Price("gear", 250)]), ofList(singleton(["catnipDemandWorkerRatioGlobal", -0.25]), {
+    Compare: (x_122, y_122) => (comparePrimitives(x_122, y_122) | 0),
+})), new UpgradeDef("enrichedUranium", ofArray([new Price("titanium", 7500), new Price("uranium", 150), new Price("science", 175000)]), ofList(singleton(["uraniumRatio", 0.25]), {
+    Compare: (x_123, y_123) => (comparePrimitives(x_123, y_123) | 0),
+})), new UpgradeDef("coldFusion", ofArray([new Price("science", 200000), new Price("eludium", 25)]), ofList(singleton(["reactorEnergyRatio", 0.25]), {
+    Compare: (x_124, y_124) => (comparePrimitives(x_124, y_124) | 0),
+})), new UpgradeDef("thoriumReactors", ofArray([new Price("science", 400000), new Price("thorium", 10000)]), ofList(ofArray([["reactorThoriumPerTick", -0.05], ["reactorEnergyRatio", 0.25]]), {
+    Compare: (x_125, y_125) => (comparePrimitives(x_125, y_125) | 0),
+})), new UpgradeDef("enrichedThorium", ofArray([new Price("science", 500000), new Price("thorium", 12500)]), ofList(singleton(["reactorThoriumPerTick", 0.0125]), {
+    Compare: (x_126, y_126) => (comparePrimitives(x_126, y_126) | 0),
+})), new UpgradeDef("hubbleTelescope", ofArray([new Price("oil", 50000), new Price("science", 250000), new Price("alloy", 1250)]), ofList(singleton(["starchartGlobalRatio", 0.3]), {
+    Compare: (x_127, y_127) => (comparePrimitives(x_127, y_127) | 0),
+})), new UpgradeDef("satnav", ofArray([new Price("science", 200000), new Price("alloy", 750)]), ofList(singleton(["satnavRatio", 0.0125]), {
+    Compare: (x_128, y_128) => (comparePrimitives(x_128, y_128) | 0),
+})), new UpgradeDef("satelliteRadio", ofArray([new Price("science", 225000), new Price("alloy", 5000)]), ofList(singleton(["broadcastTowerRatio", 0.005]), {
+    Compare: (x_129, y_129) => (comparePrimitives(x_129, y_129) | 0),
+})), new UpgradeDef("astrophysicists", ofArray([new Price("unobtainium", 350), new Price("science", 250000)]), empty_1({
+    Compare: (x_130, y_130) => (comparePrimitives(x_130, y_130) | 0),
+})), new UpgradeDef("mWReactor", ofArray([new Price("science", 150000), new Price("eludium", 50)]), ofList(singleton(["lunarOutpostRatio", 0.75]), {
+    Compare: (x_131, y_131) => (comparePrimitives(x_131, y_131) | 0),
+})), new UpgradeDef("eludiumCracker", ofArray([new Price("science", 275000), new Price("eludium", 250)]), ofList(singleton(["crackerRatio", 1]), {
+    Compare: (x_132, y_132) => (comparePrimitives(x_132, y_132) | 0),
+})), new UpgradeDef("thoriumEngine", ofArray([new Price("science", 400000), new Price("gear", 40000), new Price("alloy", 2000), new Price("ship", 10000), new Price("thorium", 100000)]), ofList(singleton(["routeSpeed", 50]), {
+    Compare: (x_133, y_133) => (comparePrimitives(x_133, y_133) | 0),
+})), new UpgradeDef("spiceNavigation", ofArray([new Price("science", 350000), new Price("starchart", 500000)]), empty_1({
+    Compare: (x_134, y_134) => (comparePrimitives(x_134, y_134) | 0),
+})), new UpgradeDef("longRangeSpaceships", ofArray([new Price("science", 440000), new Price("gear", 90000), new Price("alloy", 3500), new Price("tanker", 500)]), empty_1({
+    Compare: (x_135, y_135) => (comparePrimitives(x_135, y_135) | 0),
+})), new UpgradeDef("oilRefinery", ofArray([new Price("titanium", 1250), new Price("science", 125000), new Price("gear", 500)]), ofList(singleton(["oilWellRatio", 0.35]), {
+    Compare: (x_136, y_136) => (comparePrimitives(x_136, y_136) | 0),
+})), new UpgradeDef("oilDistillation", ofArray([new Price("titanium", 5000), new Price("science", 175000)]), ofList(singleton(["oilWellRatio", 0.75]), {
+    Compare: (x_137, y_137) => (comparePrimitives(x_137, y_137) | 0),
+})), new UpgradeDef("factoryProcessing", ofArray([new Price("titanium", 7500), new Price("science", 195000), new Price("concrate", 125)]), ofList(singleton(["factoryRefineRatio", 0.05]), {
+    Compare: (x_138, y_138) => (comparePrimitives(x_138, y_138) | 0),
+})), new UpgradeDef("voidAspiration", ofArray([new Price("antimatter", 2000), new Price("timeCrystal", 15)]), empty_1({
+    Compare: (x_139, y_139) => (comparePrimitives(x_139, y_139) | 0),
+})), new UpgradeDef("distorsion", ofArray([new Price("antimatter", 2000), new Price("science", 300000), new Price("timeCrystal", 25), new Price("void", 1000)]), ofList(singleton(["temporalParadoxDayBonus", 2]), {
+    Compare: (x_140, y_140) => (comparePrimitives(x_140, y_140) | 0),
+})), new UpgradeDef("turnSmoothly", ofArray([new Price("unobtainium", 100000), new Price("temporalFlux", 6500), new Price("timeCrystal", 25), new Price("void", 750)]), ofList(singleton(["temporalFluxProductionChronosphere", 1]), {
+    Compare: (x_141, y_141) => (comparePrimitives(x_141, y_141) | 0),
+})), new UpgradeDef("invisibleBlackHand", ofArray([new Price("temporalFlux", 4096), new Price("timeCrystal", 128), new Price("void", 32), new Price("blackcoin", 64)]), empty_1({
+    Compare: (x_142, y_142) => (comparePrimitives(x_142, y_142) | 0),
+}))]);
+
+export const craftDefs = ofArray([new CraftDef("wood", singleton(new Price("catnip", 100)), 1, true, true), new CraftDef("beam", singleton(new Price("wood", 175)), 1, false, true), new CraftDef("slab", singleton(new Price("minerals", 250)), 1, false, true), new CraftDef("plate", singleton(new Price("iron", 125)), 1, false, true), new CraftDef("steel", ofArray([new Price("coal", 100), new Price("iron", 100)]), 2, false, false), new CraftDef("concrate", ofArray([new Price("slab", 2500), new Price("steel", 25)]), 4, false, false), new CraftDef("gear", singleton(new Price("steel", 15)), 3, false, true), new CraftDef("alloy", ofArray([new Price("titanium", 10), new Price("steel", 75)]), 4, false, false), new CraftDef("eludium", ofArray([new Price("unobtainium", 1000), new Price("alloy", 2500)]), 5, false, false), new CraftDef("scaffold", singleton(new Price("beam", 50)), 2, false, true), new CraftDef("ship", ofArray([new Price("starchart", 25), new Price("plate", 150), new Price("scaffold", 100)]), 3, false, false), new CraftDef("tanker", ofArray([new Price("alloy", 1250), new Price("ship", 200), new Price("blueprint", 5)]), 5, false, false), new CraftDef("kerosene", singleton(new Price("oil", 7500)), 2, false, false), new CraftDef("plastic", singleton(new Price("oil", 1000)), 2, false, false), new CraftDef("microchip", ofArray([new Price("plastic", 50), new Price("gold", 1000), new Price("spice", 750)]), 3, false, false), new CraftDef("parchment", singleton(new Price("furs", 175)), 1, false, false), new CraftDef("manuscript", ofArray([new Price("culture", 400), new Price("parchment", 25)]), 2, false, true), new CraftDef("compedium", ofArray([new Price("science", 9000), new Price("manuscript", 55)]), 3, false, false), new CraftDef("blueprint", ofArray([new Price("science", 25000), new Price("compedium", 25)]), 3, false, false), new CraftDef("thorium", singleton(new Price("uranium", 250)), 3, false, false), new CraftDef("megalith", ofArray([new Price("beam", 25), new Price("slab", 50), new Price("plate", 5)]), 3, false, true), new CraftDef("bloodstone", ofArray([new Price("timeCrystal", 5000), new Price("relic", 10000)]), 5, false, false), new CraftDef("tMythril", ofArray([new Price("bloodstone", 5), new Price("ivory", 1000), new Price("titanium", 500)]), 7, false, false)]);
+
