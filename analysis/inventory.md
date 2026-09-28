@@ -11,12 +11,12 @@ Orig snapshot: `781e379f79f1e7512d168849cba21ed111502644` — 82 files,
 | orig file | lines | role | recon report | status |
 |---|---:|---|---|---|
 | `config.js` | 10 | game | — | pending |
-| `core.js` | 2857 | game | — | pending |
+| `core.js` | 2857 | game | `analysis/recon/core.md` | **described** |
 | `emulator.html` | 68 | html | — | pending |
 | `game.js` | 6433 | game | `analysis/recon/game.md` | **described** |
 | `i18n.js` | 191 | game | — | pending |
 | `index.html` | 639 | html | — | pending |
-| `js/achievements.js` | 884 | game | — | pending |
+| `js/achievements.js` | 884 | game | `analysis/recon/achievements.md` | **described** |
 | `js/buildings.js` | 3799 | game | `analysis/recon/buildings.md` | **described** |
 | `js/calendar.js` | 1269 | game | `analysis/recon/calendar.md` | **described** |
 | `js/challenges.js` | 1329 | game | `analysis/recon/challenges.md` | **described** |
