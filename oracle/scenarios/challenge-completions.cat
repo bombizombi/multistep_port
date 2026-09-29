@@ -1,0 +1,27 @@
+# name: challenge-completions
+# seed: 20260927
+# checkpoints: 0, 10, 20, 30, 40, 60, 80
+# challenges-05/06/07/08: completion paths (postApocalypse at cathPollution 0,
+# unicornTears at necrocorn 1, anarchy at aiCore), unicornTears extra tear
+# prices via the resWeights table, pacifism steamworks priceRules, pending
+# flags, actionOnCompletion policy unlocks.
+0 resop seed 20260927
+0 resop setchallenge postApocalypse active
+10 resop setchallenge unicornTears active
+10 resop setres unicorns 200
+10 resop setres tears 200
+10 resop setres science 200
+15 buy library
+15 buy library
+20 resop setchallenge pacifism active
+20 resop setres blueprint 50
+20 resop setres gold 5000
+20 resop setres iron 5000
+25 buy steamworks
+30 resop setchallenge pacifism complete
+30 resop setchallenge unicornTears complete
+35 resop setres necrocorn 1
+40 resop setbld aiCore 1
+60 resop setchallenge winterIsComing pending
+60 resop setchallenge blackSky pending
+80 resop setchallenge winterIsComing unpending

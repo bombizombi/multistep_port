@@ -44,6 +44,9 @@ let getCountCompletions (cp: ChallengePool) : int =
 let getCountUniqueCompletions (cp: ChallengePool) : int =
     cp.Order |> List.sumBy (fun n -> if cp.Challenges.[n].Researched then 1 else 0)
 
+let getCountPending (cp: ChallengePool) : int =
+    cp.Order |> List.sumBy (fun n -> if cp.Challenges.[n].Pending then 1 else 0)
+
 /// orig researchChallenge (L660+): researched, on++, active off. Completion
 /// conditions are polled in update() — space/aiCore seams never fire here.
 let researchChallenge (name: string) (cp: ChallengePool) : ChallengePool =
@@ -76,9 +79,52 @@ let setActive (name: string) (active: bool) (cp: ChallengePool) : ChallengePool 
 
 let private ldr = Game.Math.getLimitedDR
 
+/// orig getTradeBonusEffect (L318-330): tradepost ladder, requires completions
+/// and an inactive challenge. tradepostVal is the live building val; the
+/// tradeRatio 0.015 is the tradepost meta's own static effect.
+let private getTradeBonusEffect (_cp: ChallengePool) (getEffect: string -> float) (tradepostVal: float) : float =
+    let c = _cp.Challenges.["pacifism"]
+    if c.On = 0 || c.Active then 0.0
+    else
+        let tradeKnowledge = getEffect "tradeKnowledge"
+        let tradepostLimit = (7.0 + tradeKnowledge * 3.0) * (0.99 + tradeKnowledge * 0.01)
+        let tradepostRatioLimit = ldr (0.099 + tradeKnowledge * 0.0075) 0.25
+        0.015 * (min tradepostLimit (tradepostVal * tradepostRatioLimit))
+
+/// unicornTears price weight table (L420-450). NegativeInfinity sentinels keep
+/// already-priced resources out of the modification; "default" 10 for the rest.
+let private resWeights : Map<string, float> =
+    Map.ofList [
+        "catnip", 0.0; "wood", 0.5; "minerals", 0.35; "iron", 1.0
+        "titanium", 200.0; "uranium", 150000.0; "unobtainium", 1e6; "antimatter", 1e10
+        "starchart", 200.0; "spice", 250.0
+        "beam", 0.75; "slab", 0.75; "plate", 5.0; "concrate", 25.0; "gear", 20.0
+        "alloy", 300.0; "eludium", 1e8; "ship", 1500.0; "tanker", 150000.0; "kerosene", 7000.0
+        "parchment", 2.0; "compedium", 20.0; "blueprint", 50.0; "thorium", 180000.0
+        "unicorns", System.Double.NegativeInfinity
+        "alicorn", System.Double.NegativeInfinity
+        "tears", System.Double.NegativeInfinity
+        "megalith", System.Double.NegativeInfinity
+        "default", 10.0
+    ]
+
+let getResWeight (resName: string) : float =
+    match resWeights |> Map.tryFind resName with
+    | Some w -> w
+    | None -> resWeights.["default"]
+
+/// unicornTears.sumPricesWeighted (L401-412): weight×val per line, NaN lines
+/// skipped (indeterminate 0×Infinity), NaN totals collapse to 0.
+let sumPricesWeighted (prices: (string * float) list) : float =
+    let mutable total = 0.0
+    for resName, value in prices do
+        let lineValue = getResWeight resName * value
+        if not (System.Double.IsNaN lineValue) then total <- total + lineValue
+    if System.Double.IsNaN total then 0.0 else total
+
 /// Per-challenge calculateEffects. Returns the override table to MERGE over
 /// the static def effects (orig writes onto self.effects).
-let private calculateEffectsFor (cp: ChallengePool) (getEffect: string -> float) (name: string) : Map<string, float> =
+let private calculateEffectsFor (cp: ChallengePool) (getEffect: string -> float) (tradepostVal: float) (name: string) : Map<string, float> =
     let c = cp.Challenges.[name]
     match name with
     | "winterIsComing" ->
@@ -128,9 +174,35 @@ let private calculateEffectsFor (cp: ChallengePool) (getEffect: string -> float)
         // L230-261: no effects table
         Map.empty
     | "pacifism" ->
-        // L261-331: weapon- efficiency effects via updateTradeKnowledgeRatio —
-        // tradepost-gated seam; static table (tradeRatio bonus) via provider
-        Map.empty
+        // L261-331: full active/inactive tables. steamworksFakeBought:
+        // floor(1.5*on || 1)/(on || 1). Inactive tradeKnowledgeRatio comes from
+        // getTradeBonusEffect (tradepost ladder, 0 while active or on = 0).
+        if c.Active then
+            Map.ofList [
+                "alicornPerTickRatio", 0.0
+                "tradeKnowledge", 0.0
+                "weaponEfficency", -0.1
+                "policyFakeBought", 1.0
+                "embassyFakeBought", 1.0
+                "steamworksFakeBought", System.Math.Floor(max 1.0 (1.5 * float c.On)) / (max 1.0 (float c.On))
+                "tradeKnowledgeRatio", 0.0
+            ]
+        else
+            Map.ofList [
+                "alicornPerTickRatio", 0.1
+                "tradeKnowledge", 1.0
+                "weaponEfficency", 0.0
+                "policyFakeBought", 0.0
+                "embassyFakeBought", 0.0
+                "steamworksFakeBought", 0.0
+                "tradeKnowledgeRatio", getTradeBonusEffect cp getEffect tradepostVal
+            ]
+    | "postApocalypse" ->
+        // L458-494: arrivalSlowdown while active; cryochamberSupport is 1 both ways
+        if c.Active then
+            Map.ofList ["arrivalSlowdown", 10.0; "cryochamberSupport", 1.0]
+        else
+            Map.ofList ["arrivalSlowdown", 0.0; "cryochamberSupport", 1.0]
     | "unicornTears" ->
         // L333-458: MAUSOLEUM-style feature gate — getFeatureFlag always true
         // in the harness
@@ -163,7 +235,7 @@ let private calculateEffectsFor (cp: ChallengePool) (getEffect: string -> float)
 
 /// The challenges manager group: provider = amt × on (stackOptions: noStack /
 /// LDRLimit / capMagnitude), then calculateEffects overrides merged.
-let challengesGroup (cp: ChallengePool) (getEffect: string -> float) : Game.Effects.ManagerGroup =
+let challengesGroup (cp: ChallengePool) (getEffect: string -> float) (tradepostVal: float) : Game.Effects.ManagerGroup =
     { Base = Map.empty
       Items =
         Game.Catalog.World.challengeDefs
@@ -171,7 +243,7 @@ let challengesGroup (cp: ChallengePool) (getEffect: string -> float) : Game.Effe
             let state = cp.Challenges.[def.Name]
             if state.On > 0 || state.Active then
                 // merge calculateEffects overrides over the static table
-                let overrides = calculateEffectsFor cp getEffect def.Name
+                let overrides = calculateEffectsFor cp getEffect tradepostVal def.Name
                 let effects =
                     overrides
                     |> Map.fold (fun acc k v -> Map.add k v acc) def.Effects

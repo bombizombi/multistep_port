@@ -18,7 +18,7 @@ type ResourceDef =
       Color: string option
       Craftable: bool
       CalculatePerTick: bool
-      Persists: bool
+      Persists: bool option // JS tri-state: None = undefined (strict ===false skips)
       AiCanDestroy: bool
       Transient: bool
       Tag: string option
@@ -165,6 +165,7 @@ type ZebraUpgradeDef =
 type UndoData =
     | BuildUndo of building: string * count: int          // bld.undo (sellInternal, 50% refund)
     | CFUUndo of metaId: string * val_: int               // time.undo (sellInternal, 100% refund)
+    | VSUUndo of metaId: string * val_: int               // time.undo buildVSU (100% refund)
     | CraftUndo of craft: string * gained: float * spent: (string * float) list
     | TradeUndo of trades: float * spent: (string * float) list * gained: (string * float) list
     | PraiseUndo of faithSpent: float * worshipGained: float

@@ -546,6 +546,15 @@ let starvationStep
     else
         vpool
 
+/// orig sim.sortKittensByExp (village.js L3395-3400): rank asc then exp asc
+/// (JS stable sort → F# stable List.sortWith). Used by cryochamber reserves.
+let sortKittensByExp (pool: VillagePool) : VillagePool =
+    let sorted =
+        pool.Kittens
+        |> List.sortWith (fun a b ->
+            if a.Rank <> b.Rank then compare a.Rank b.Rank else compare a.Exp b.Exp)
+    { pool with Kittens = sorted }
+
 let assignJob (name: string) (amt: int) (jobLimit: int) (vpool: VillagePool) : VillagePool =
     let current = vpool.JobValues |> Map.tryFind name |> Option.defaultValue 0
     let free = getFreeKittens vpool

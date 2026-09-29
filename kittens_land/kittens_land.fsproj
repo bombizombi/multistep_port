@@ -16,14 +16,14 @@
         <Compile Include="src/Game/Game.Catalog.Defs.fs"/>
         <Compile Include="src/Game/Game.Catalog.World.fs"/>
         <Compile Include="src/Game/Game.Effects.fs"/>
-        <Compile Include="src/Game/Game.Resources.fs"/>
+        <Compile Include="src/Game/Game.Resources.fs"/><Compile Include="src/Game/Game.Challenges.fs"/>
+  
         <Compile Include="src/Game/Game.Buildings.fs"/>
         <Compile Include="src/Game/Game.Managers.fs"/>
         <Compile Include="src/Game/Game.Village.fs"/>
         <Compile Include="src/Game/Game.Happiness.fs"/>
         <Compile Include="src/Game/Game.Religion.fs"/>
         <Compile Include="src/Game/Game.Diplomacy.fs"/>
-        <Compile Include="src/Game/Game.Challenges.fs"/>
         <Compile Include="src/Game/Game.Time.fs"/>
         <Compile Include="src/Game/Game.Prestige.fs"/>
         <Compile Include="src/Game/Game.Stats.fs"/>

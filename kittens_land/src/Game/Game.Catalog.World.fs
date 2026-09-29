@@ -67,7 +67,7 @@ type CFUDef =
       UpgradesCFU: string list // meta.upgrades.chronoforge (accelerator→impedance etc.)
       AutomationInit: bool option } // isAutomationEnabled field: None = absent in orig def
 
-type VSUDef = { Name: string; Prices: Price list; Effects: Map<string, float> }
+type VSUDef = { Name: string; Prices: Price list; Effects: Map<string, float>; PriceRatio: float option; BreaksIronWill: bool option }
 type CycleDef = { Name: string; Effects: Map<string, float> }
 
 /// village map biomes — RNG skeleton data only (village-14/15 slice): the
@@ -355,12 +355,12 @@ let cfuDefs : CFUDef list =
 
 let vsuDefs : VSUDef list =
     [
-      { Name = "cryochambers"; Prices = [{ Resource = "karma"; Val = 1 }; { Resource = "timeCrystal"; Val = 2 }; { Resource = "void"; Val = 100 }]; Effects = Map.ofList ["maxKittens", 1] }
-      { Name = "usedCryochambers"; Prices = []; Effects = Map.empty }
-      { Name = "voidHoover"; Prices = [{ Resource = "antimatter"; Val = 1000 }; { Resource = "timeCrystal"; Val = 10 }; { Resource = "void"; Val = 250 }]; Effects = Map.ofList ["temporalParadoxVoid", 1] }
-      { Name = "voidRift"; Prices = [{ Resource = "void"; Val = 75 }]; Effects = Map.ofList ["umbraBoostRatio", 0.1; "globalResourceRatio", 0.02] }
-      { Name = "chronocontrol"; Prices = [{ Resource = "temporalFlux"; Val = 3000 }; { Resource = "timeCrystal"; Val = 30 }; { Resource = "void"; Val = 500 }]; Effects = Map.ofList ["temporalParadoxDay", 0; "energyConsumption", 15] }
-      { Name = "voidResonator"; Prices = [{ Resource = "timeCrystal"; Val = 1000 }; { Resource = "relic"; Val = 10000 }; { Resource = "void"; Val = 50 }]; Effects = Map.ofList ["voidResonance", 0.1] }
+      { Name = "cryochambers"; Prices = [{ Resource = "karma"; Val = 1 }; { Resource = "timeCrystal"; Val = 2 }; { Resource = "void"; Val = 100 }]; Effects = Map.ofList ["maxKittens", 1]; PriceRatio = Some 1.25; BreaksIronWill = Some true }
+      { Name = "usedCryochambers"; Prices = []; Effects = Map.empty; PriceRatio = Some 1.25; BreaksIronWill = None }
+      { Name = "voidHoover"; Prices = [{ Resource = "antimatter"; Val = 1000 }; { Resource = "timeCrystal"; Val = 10 }; { Resource = "void"; Val = 250 }]; Effects = Map.ofList ["temporalParadoxVoid", 1]; PriceRatio = Some 1.25; BreaksIronWill = None }
+      { Name = "voidRift"; Prices = [{ Resource = "void"; Val = 75 }]; Effects = Map.ofList ["umbraBoostRatio", 0.1; "globalResourceRatio", 0.02]; PriceRatio = Some 1.3; BreaksIronWill = None }
+      { Name = "chronocontrol"; Prices = [{ Resource = "temporalFlux"; Val = 3000 }; { Resource = "timeCrystal"; Val = 30 }; { Resource = "void"; Val = 500 }]; Effects = Map.ofList ["temporalParadoxDay", 0; "energyConsumption", 15]; PriceRatio = Some 1.25; BreaksIronWill = None }
+      { Name = "voidResonator"; Prices = [{ Resource = "timeCrystal"; Val = 1000 }; { Resource = "relic"; Val = 10000 }; { Resource = "void"; Val = 50 }]; Effects = Map.ofList ["voidResonance", 0.1]; PriceRatio = Some 1.25; BreaksIronWill = None }
     ]
 
 let cycleDefs : CycleDef list =

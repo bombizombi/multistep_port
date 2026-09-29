@@ -74,7 +74,7 @@ let calcResourcePerTick (ctx: ProductionContext) (pool: ResPool) (resName: strin
         | Some r -> r.Def
         | None ->
             { Name = resName; Category = ""; Visible = false; Color = None; Craftable = false;
-              CalculatePerTick = true; Persists = false; AiCanDestroy = false; Transient = false;
+              CalculatePerTick = true; Persists = None; AiCanDestroy = false; Transient = false;
               Tag = None; IsNotRefundable = false; CalculatePerDay = false; CalculatePerTickAndDay = false;
               CalculateOnYear = false; RefundableRule = Default }
     let eff = getEffect ctx.Cache

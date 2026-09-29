@@ -36,7 +36,7 @@ const ACTIONS = new Set([
   "ziggurat", "embassy", "trade", "tradeall", "perk", "festival",
   "feedelder", "undo", "pact", "accelerate", "observe", "save", "load",
   "resop", "refine",
-  "shatter", "useheat", "cfu",
+  "shatter", "useheat", "cfu", "vsu",
 ]);
 
 function parseScenario(text) {

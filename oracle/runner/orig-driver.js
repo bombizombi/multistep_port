@@ -446,6 +446,18 @@ function doAction(move) {
         game.updateCaches();
         return;
       }
+      case "vsu": {
+        // VoidSpaceBtnController.build(model, 1) via the stackable fetchModel
+        const controller = new classes.ui.time.VoidSpaceBtnController(game);
+        const model = controller.fetchModel({ id: args[0] });
+        const valBefore = model.metadata.val;
+        controller.build(model, 1);
+        if (model.metadata.val === valBefore) {
+          actionLog.push({ tick: tickIndex, action, args, reason: "cannot-afford-or-locked" });
+        }
+        game.updateCaches();
+        return;
+      }
       case "save": game.save(); return;
       case "load": game.load(); return;
       // resop — test-hook action (D014): direct resPool calls for unit-level
@@ -641,6 +653,7 @@ function doAction(move) {
           const chall = game.challenges.getChallenge(arg1);
           if (arg2 === "active") { chall.active = true; chall.unlocked = true; }
           else if (arg2 === "inactive") { chall.active = false; }
+          else if (arg2 === "pending") { chall.pending = arg3 === undefined || arg3 === "1"; }
           else if (arg2 === "complete") { chall.researched = true; chall.on += 1; chall.active = false; }
           game.calculateAllEffects();
           actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
@@ -695,6 +708,29 @@ function doAction(move) {
           // D014 injection: game.time.applyRedshift(days) with the calendar
           const events = game.time.applyRedshift(Number(arg1));
           actionLog.push({ tick: tickIndex, action: "resop", args, result: events });
+          return;
+        }
+        if (fn === "reserves") {
+          // reserveMan.calculateReserves(isIronWillPending) + log cryochambers
+          game.challenges.reserves.calculateReserves(arg1 === "1");
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.challenges.reserves.reserveCryochambers || 0 });
+          return;
+        }
+        if (fn === "reservesadd") {
+          game.challenges.reserves.addReserves();
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "shattergc") {
+          game.time.shatterInGroupCycles(Number(arg1));
+          game.updateCaches();
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "shatteric") {
+          game.time.shatterInCycles(Number(arg1));
+          game.updateCaches();
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
           return;
         }
         if (fn === "unlockalltime") {
@@ -879,7 +915,12 @@ function takeSnapshot() {
     diplomacy: {
       races: Object.assign({}, ...g.diplomacy.races.map((r) => ({ [r.name]: { unlocked: !!r.unlocked, embassyLevel: r.embassyLevel || 0, energy: r.energy || 0, duration: r.duration || 0 } }))),
     },
-    challenges: Object.assign({}, ...g.challenges.challenges.map((c) => ({ [c.name]: { unlocked: !!c.unlocked, active: !!c.active, researched: !!c.researched, on: c.on || 0 } }))),
+    challenges: Object.assign({}, ...g.challenges.challenges.map((c) => ({ [c.name]: { unlocked: !!c.unlocked, pending: !!c.pending, active: !!c.active, researched: !!c.researched, on: c.on || 0 } }))),
+    reserves: {
+      resources: JSON.parse(JSON.stringify(g.challenges.reserves.reserveResources || {})),
+      kittenCount: (g.challenges.reserves.reserveKittens || []).length,
+      cryochambers: g.challenges.reserves.reserveCryochambers || 0,
+    },
     pacts: Object.assign({}, ...g.religion.pactsManager.pacts.map((p) => ({ [p.name]: { val: p.val || 0, on: p.on || 0, unlocked: !!p.unlocked } }))),
     time: {
       flux: g.time.flux || 0,

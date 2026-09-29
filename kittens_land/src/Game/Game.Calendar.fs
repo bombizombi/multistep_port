@@ -80,7 +80,11 @@ type CalendarContext =
       OnNewDayRefresh: CalendarState -> CalendarState
       OnNewDayTail: CalendarState -> CalendarState
       OnObserveTimeout: CalendarState -> CalendarState
-      OnFlux: float -> unit }  // time.flux bookkeeping (time-01); arg = delta // orig onNewDay tail: game.upgrade({policies:["authocracy"]}) — the "policy hack" whose updateCaches refreshes ALL effects daily (calendar.js L730)
+      OnFlux: float -> unit // time.flux bookkeeping (time-01); arg = delta
+      OnNewSeasonTail: CalendarState -> CalendarState // steamworks autumn unjam seam
+      }
+      // orig onNewDay tail: game.upgrade({policies:["authocracy"]}) — the
+      // "policy hack" whose updateCaches refreshes ALL effects daily (L730)
 
 /// Season/weather production modifier (orig getWeatherMod) — catnip only.
 /// `weather` comes from calendar-02 rolls; policy/challenge seams are fresh-false.
@@ -204,6 +208,11 @@ let tick (ctx: CalendarContext) (st: CalendarState) : CalendarState =
 
             // (steamworks unjam: workshop seam; pasture upgrade fan-out:
             //  buildings-01 seam — neither touches snapshotted state at fresh)
+
+            // onNewSeason tail: steamworks unjam at autumn (season 2) with
+            // advancedAutomation (js/calendar.js L951-953); pasture upgrade
+            // fan-out is a buildings seam
+            st <- ctx.OnNewSeasonTail st
 
             if newYear then
                 // onNewYear slice (calendar-01): stats/seams at fresh, then

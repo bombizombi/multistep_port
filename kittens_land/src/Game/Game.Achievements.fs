@@ -109,7 +109,7 @@ let private evalCondition (ctx: AchContext) (name: string) : bool =
     | "serenity" -> float ctx.KittenCount >= 50 && ctx.DeadKittens = 0.0
     | "utopiaProject" -> ctx.Happiness >= 1.5 && float ctx.KittenCount > 35.0
     | "deathStranding" -> false // space seam
-    | "cathammer" -> ctx.TrueYear >= 500.0 // darkFutureBeginning
+    | "cathammer" -> ctx.TotalYears >= 40000.0 // stats.totalYears >= darkFutureBeginning
     | "eternalBacchanalia" -> ctx.FestivalDays >= 100.0 * 100.0 * 1.0
     | "challenger" -> false // challenge completions seam
     | "betterSafeThanSorry" -> false // badge condition (fullyHidden)
@@ -147,7 +147,7 @@ let update (ctx: AchContext) (rand: unit -> float) (ap: AchPool) : AchPool * flo
             // variants of the base ones — ironWill/paragon/startedWithout...)
             let starHit =
                 match def.Name with
-                | "jupiterAscending" -> false
+                | "cathammer" -> ctx.TrueYear >= 40000.0
                 | _ -> false
             if starHit then ap <- unlockStarAchievement def.Name ap
     for def in Game.Catalog.World.badgeDefs do
