@@ -1,0 +1,20 @@
+# name: probe-sat2
+# seed: 20260927
+# checkpoints: 0, 500, 501
+0 resop seed 20260927
+0 resop setres oil 100000
+0 resop setres manpower 50000
+0 resop setres science 500000
+0 resop setres starchart 5000
+0 resop setres titanium 50000
+0 resop setres kerosene 10000
+10 mission orbitalLaunch
+100 mission moonMission
+200 mission duneMission
+300 mission piscineMission
+350 resop setres uranium 10000
+400 sbuilding spaceElevator 3
+500 sbuilding sattelite 2
+500 resop satprobe2
+501 resop satprobe2
+502 resop satprobe2

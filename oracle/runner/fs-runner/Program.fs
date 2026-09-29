@@ -58,7 +58,9 @@ let private esc (s: string) =
 
 let num (v: float) : string =
     let v = norm v
-    if Double.IsNaN v || Double.IsInfinity v then "null" else string v
+    // JS Number.toString(): lowercase exponent separator (byte-level parity
+    // for the save blob; JSON parses both cases but orig emits "e")
+    if Double.IsNaN v || Double.IsInfinity v then "null" else (string v).Replace("E", "e")
 
 // ---------------------------------------------------------------------------
 // Scenario parsing (same file format as oracle/runner/scenario.js)
@@ -156,6 +158,7 @@ type SnapTuple =
            * (string * (int * int)) list)
         * ((string * (int * int * bool)) list * string option)
         * int * float * float
+        * string // spaceSnap (space section JSON, formatted at checkpoint time)
 
 type ExecResult =
     { Snapshots: SnapTuple list
@@ -222,6 +225,7 @@ let execute (scenario: Scenario) : ExecResult =
     let mutable steamworksJammed = false
     // LCstorage["com.nuclearunicorn.kittengame.savedata"] equivalent (game-13)
     let mutable lcStorageSave = ""
+    let mutable ticksBeforeSave = 400 // orig game.js L2296 (80s @ 5tps)
     // console.filters["craft"].unlocked — set by the first craft msg (core.js L537)
     let mutable craftFilterUnlocked = false
     // classes.reserveMan (challenges-10): reserveResources / reserveKittens /
@@ -383,7 +387,13 @@ let execute (scenario: Scenario) : ExecResult =
     let challengesGroup () = emptyGroup ()
     let prestigeGroup () = Game.Prestige.prestigeGroup ppool
     let spacepRef = ref (Game.Space.init ()) // late-bound: synced in refreshCache/gtick
-    let spaceGroup () = Game.Space.spaceGroup !spacepRef
+    let mutable queueSourcesUnlocked = set [ "buildings" ] // time.queue sources (js/time.js); "buildings" starts unlocked
+    let energyChallengeResearched () = (match cpool.Challenges |> Map.tryFind "energy" with Some c -> c.Researched | None -> false)
+    let energyChallengeActive () = (match cpool.Challenges |> Map.tryFind "energy" with Some c -> c.Active | None -> false)
+    let spaceGroup () =
+        Game.Space.spaceGroup pool.EnergyCons pool.EnergyProd
+            (Game.Resources.getEnergyDelta (energyChallengeResearched ()) (energyChallengeActive ()) pool.EnergyProd pool.EnergyCons)
+            !spacepRef
     let timeGroup () : Game.Effects.ManagerGroup =
         { Base =
             Game.Catalog.BaseEffects.baseEffects
@@ -1198,8 +1208,8 @@ let execute (scenario: Scenario) : ExecResult =
               CalendarSeason = calendar.Season
               PastureOn = 0
               EnergyLoss = 0.0
-              EnergyChallengeResearched = false
-              EnergyChallengeActive = false }
+              EnergyChallengeResearched = energyChallengeResearched ()
+              EnergyChallengeActive = energyChallengeActive () }
         pool <- update uctxF calendarDay pool
         // game.updateResources — refresh perTickCached through refreshCache's
         // prodCtx path (updateCaches also rebuilds the effect cache)
@@ -1442,8 +1452,8 @@ let execute (scenario: Scenario) : ExecResult =
               CalendarSeason = calendar.Season
               PastureOn = 0
               EnergyLoss = 0.0
-              EnergyChallengeResearched = false
-              EnergyChallengeActive = false }
+              EnergyChallengeResearched = energyChallengeResearched ()
+              EnergyChallengeActive = energyChallengeActive () }
         pool <- update uctx calendarDay pool
         bpool <- Game.Buildings.update pool bpool
         // aiCore per-tick action (js/buildings.js L2172-2175): gflops accrual +
@@ -1671,12 +1681,73 @@ let execute (scenario: Scenario) : ExecResult =
         toggle "calciner" (Game.Challenges.isActive cpool "blackSky")
         toggle "steamworks" (Game.Challenges.isActive cpool "pacifism")
         toggle "field" (Game.Challenges.isActive cpool "postApocalypse")
+        // calculateAllEffects: upgrade({buildings:[warehouse], spaceBuilding:[hydroponics]})
+        // then metaKeys — space metas (programs, flat building map, planets)
+        // sit between buildings and chronoforge/voidSpace
+        upgradeMetas [ ("buildings", [ "warehouse" ]); ("spaceBuilding", [ "hydroponics" ]) ]
+        upgradeMetas
+            [ ("spaceMission", Game.Catalog.Space.programDefs |> List.map (fun d -> d.Name))
+              ("spaceBuilding", Game.Catalog.Space.buildingDefs |> List.map (fun d -> d.Name))
+              ("planet", Game.Catalog.Space.planetDefs |> List.map (fun d -> d.Name)) ]
         let chronosphereOn = (Game.Buildings.get bpool "chronosphere" |> Option.map (fun b -> b.On) |> Option.defaultValue 0)
         tpool <- Game.Time.vsuCalculate tpool chronosphereOn (Game.Effects.getEffect cache)
         for name in List.rev tpool.CfuOrder do
             tpool <- Game.Time.cfuCalculate (timeCalcCtx ()) name tpool
         refreshCache ()
 
+
+    /// orig game.upgrade(list) (game.js): updateCaches; per type in list
+    /// order, names REVERSED; calculateEffects XOR updateEffects per meta;
+    /// spaceBuilding also runs cycleEffectsBasics; an empty name list aborts
+    /// the whole call INCLUDING the trailing updateCaches (orig `return`).
+    and upgradeMetas (list: (string * string list) list) : unit =
+        refreshCache () // leading updateCaches
+        let mutable aborted = false
+        for (typ, names) in list do
+            if aborted then ()
+            elif names = [] then aborted <- true
+            else
+                for name in List.rev names do
+                    match typ with
+                    | "spaceBuilding" ->
+                        let ctx = spaceCalcCtx ()
+                        spacep <-
+                            (if Game.Space.hasCalcEffects name then Game.Space.calculateEffects ctx name spacep
+                             elif Game.Space.hasUpdateEffects name then Game.Space.updateEffects ctx name spacep
+                             else spacep)
+                        spacep <- Game.Space.cycleEffectsBasics ctx name spacep
+                    | "challenges" ->
+                        // challenge calculateEffects replicas: priceRules toggles
+                        // (challenge effect values flow via the provider side)
+                        if name = "blackSky" then
+                            priceRulesExtra <- (if Game.Challenges.isActive cpool "blackSky" then Set.add "calciner" priceRulesExtra else Set.remove "calciner" priceRulesExtra)
+                        elif name = "pacifism" then
+                            priceRulesExtra <- (if Game.Challenges.isActive cpool "pacifism" then Set.add "steamworks" priceRulesExtra else Set.remove "steamworks" priceRulesExtra)
+                        elif name = "postApocalypse" then
+                            priceRulesExtra <- (if Game.Challenges.isActive cpool "postApocalypse" then Set.add "field" priceRulesExtra else Set.remove "field" priceRulesExtra)
+                    | "planet" ->
+                        // cath.calculateEffects (js/space.js L326-330)
+                        if name = "cath" then
+                            let rocketry = (match spool.Techs |> Map.tryFind "rocketry" with Some t -> t.Researched | None -> false)
+                            if rocketry then queueSourcesUnlocked <- Set.add "spaceMission" queueSourcesUnlocked
+                    | _ -> () // buildings/spaceMission/zigguratUpgrades/policies/upgrades: no observable meta recalc at this slice
+        if not aborted then refreshCache () // trailing updateCaches
+
+    /// space meta recalc context (js/space.js calculateEffects reads)
+    and spaceCalcCtx () : Game.Space.SpaceCalcCtx =
+        let wsRes (n: string) = (match wpool.Upgrades |> Map.tryFind n with Some u -> u.Researched | None -> false)
+        let chAct (n: string) = (match cpool.Challenges |> Map.tryFind n with Some c -> c.Active | None -> false)
+        let perkRes (n: string) = (match ppool.Perks |> Map.tryFind n with Some p -> p.Researched | None -> false)
+        { GetEffect = fun n -> Game.Effects.getEffect cache n
+          SolarSatellitesResearched = wsRes "solarSatellites"
+          AmBasesResearched = wsRes "amBases"
+          AiBasesResearched = wsRes "aiBases"
+          BlackSkyActive = chAct "blackSky"
+          DarkFutureYears = calendar.Year - 40000.0
+          NumerologyActive = perkRes "numerology"
+          NumerologyCycleMult = fun _ -> None // zodiac cycle mults land with the calendar-cycles unit
+          AiCoreOn = (Game.Buildings.get bpool "aiCore" |> Option.map (fun b -> b.On) |> Option.defaultValue 0)
+          RunUpgradeFanout = upgradeMetas }
 
     // --- game-13: save/load core ------------------------------------------------
     // LCstorage["com.nuclearunicorn.kittengame.savedata"] equivalent + the
@@ -1995,45 +2066,34 @@ let execute (scenario: Scenario) : ExecResult =
         arrEnd ()
         objEnd (); sb.Append "," |> ignore
 
-        // space.save (space-NN statics at this slice — metas match orig defaults)
+        // space.save (js/space.js save): filterMetadata name/val/on/unlocked
+        // + planets name/buildings/reached/unlocked/routeDays — live state
         key "space"; objStart ()
         key "hideResearched"; boolv false; sb.Append "," |> ignore
         key "programs"; arrStart ()
-        let programs = [ "orbitalLaunch", true; "moonMission", false; "duneMission", false; "piscineMission", false; "heliosMission", false; "terminusMission", false; "kairoMission", false; "rorschachMission", false; "yarnMission", false; "umbraMission", false; "charonMission", false; "centaurusSystemMission", false; "furthestRingMission", false ]
         let firstSp = ref true
-        for pn, pu in programs do
+        for pn in spacep.ProgramOrder do
             sep firstSp
-            objStart (); key "name"; str pn; sb.Append "," |> ignore; key "val"; intv 0; sb.Append "," |> ignore; key "on"; intv 0; sb.Append "," |> ignore; key "unlocked"; boolv pu; objEnd ()
+            let m = spacep.Programs.[pn]
+            objStart (); key "name"; str pn; sb.Append "," |> ignore; key "val"; intv m.Val; sb.Append "," |> ignore; key "on"; intv m.On; sb.Append "," |> ignore; key "unlocked"; boolv m.Unlocked; objEnd ()
         arrEnd (); sb.Append "," |> ignore
         key "planets"; arrStart ()
-        let planets = [
-            "cath", [ "spaceElevator"; "sattelite"; "spaceStation" ], 0
-            "moon", [ "moonOutpost"; "moonBase" ], 30
-            "dune", [ "planetCracker"; "hydrofracturer"; "spiceRefinery" ], 356
-            "piscine", [ "researchVessel"; "orbitalArray" ], 256
-            "helios", [ "sunlifter"; "containmentChamber"; "heatsink"; "sunforge" ], 1200
-            "terminus", [ "cryostation" ], 2500
-            "kairo", [ "spaceBeacon" ], 5000
-            "yarn", [ "terraformingStation"; "hydroponics" ], 3800
-            "umbra", [ "hrHarvester"; "navigationRelay"; "spaceShuttle" ], 7500
-            "charon", [ "entangler" ], 25000
-            "centaurusSystem", [ "tectonic"; "moltenCore" ], 120000
-            "furthestRing", [], 725000000
-        ]
         let firstPl = ref true
-        for pn, blds, rd in planets do
+        for pn in spacep.PlanetOrder do
             sep firstPl
+            let pl = spacep.Planets.[pn]
             objStart ()
             key "name"; str pn; sb.Append "," |> ignore
             key "buildings"; arrStart ()
             let firstPb = ref true
-            for bn in blds do
+            for bn in Game.Catalog.Space.buildingDefs |> List.filter (fun d0 -> d0.Planet = pn) |> List.map (fun d0 -> d0.Name) do
                 sep firstPb
-                objStart (); key "name"; str bn; sb.Append "," |> ignore; key "val"; intv 0; sb.Append "," |> ignore; key "on"; intv 0; sb.Append "," |> ignore; key "unlocked"; boolv false; objEnd ()
+                let m = spacep.Buildings.[bn]
+                objStart (); key "name"; str bn; sb.Append "," |> ignore; key "val"; intv m.Val; sb.Append "," |> ignore; key "on"; intv m.On; sb.Append "," |> ignore; key "unlocked"; boolv m.Unlocked; objEnd ()
             arrEnd (); sb.Append "," |> ignore
-            key "reached"; boolv false; sb.Append "," |> ignore
-            key "unlocked"; boolv false; sb.Append "," |> ignore
-            key "routeDays"; numv (float rd)
+            key "reached"; boolv pl.Reached; sb.Append "," |> ignore
+            key "unlocked"; boolv pl.Unlocked; sb.Append "," |> ignore
+            key "routeDays"; numv pl.RouteDays
             objEnd ()
         arrEnd ()
         objEnd (); sb.Append "," |> ignore
@@ -2078,7 +2138,10 @@ let execute (scenario: Scenario) : ExecResult =
         arrEnd (); sb.Append "," |> ignore
         key "queueItems"; arrStart (); arrEnd (); sb.Append "," |> ignore
         key "queueSources"; objStart ()
-        let qs = [ "buildings", true; "tech", false; "upgrades", false; "policies", false; "embassies", false; "religion", false; "zebraUpgrades", false; "spaceMission", false; "spaceBuilding", false; "zigguratUpgrades", false; "transcendenceUpgrades", false; "chronoforge", false; "voidSpace", false ]
+        let qs =
+            [ "buildings"; "tech"; "upgrades"; "policies"; "embassies"; "religion"; "zebraUpgrades";
+              "spaceMission"; "spaceBuilding"; "zigguratUpgrades"; "transcendenceUpgrades"; "chronoforge"; "voidSpace" ]
+            |> List.map (fun k -> (k, Set.contains k queueSourcesUnlocked))
         let firstQs = ref true
         for q0, qv in qs do
             sep firstQs
@@ -2237,6 +2300,18 @@ let execute (scenario: Scenario) : ExecResult =
         let voidSnap = (voidp.VuOrder |> List.map (fun n -> (n, (voidp.VUs.[n].Val, voidp.VUs.[n].On, voidp.VUs.[n].Unlocked))), voidp.Faction)
         let observeSnap = calendar.ObserveRemainingTime
         let winterSnap = winterCatnipPerTick
+        let spaceSnap =
+            let metaJson (n: string) (m: Game.Space.SpaceMeta) =
+                sprintf "\"%s\":{\"val\":%d,\"on\":%d,\"unlocked\":%s}" (esc n) m.Val m.On (if m.Unlocked then "true" else "false")
+            let progs = spacep.ProgramOrder |> List.map (fun n -> metaJson n spacep.Programs.[n]) |> String.concat ","
+            let blds = spacep.BuildingOrder |> List.map (fun n -> metaJson n spacep.Buildings.[n]) |> String.concat ","
+            let pls =
+                spacep.PlanetOrder
+                |> List.map (fun n ->
+                    let pl = spacep.Planets.[n]
+                    sprintf "\"%s\":{\"reached\":%s,\"unlocked\":%s,\"routeDays\":%s}" (esc n) (if pl.Reached then "true" else "false") (if pl.Unlocked then "true" else "false") (num pl.RouteDays))
+                |> String.concat ","
+            sprintf "{\"programs\":{%s},\"buildings\":{%s},\"planets\":{%s}}" progs blds pls
         let techs = spool.TechOrder |> List.filter (fun n -> spool.Techs.[n].Researched) |> List.sort
         let upgrades = wpool.UpgradeOrder |> List.filter (fun n -> wpool.Upgrades.[n].Researched) |> List.sort
         // JS Array.sort on [job|null]: null stringifies to "null" and sorts as
@@ -2252,12 +2327,18 @@ let execute (scenario: Scenario) : ExecResult =
         (ticks, resources, rngDraws, calJson, buildings, jobs, crafts, techs, upgrades, policies, kittenJobs, free, effectsSample,
          religion, diplomacy, rpool.Faith, rpool.FaithRatio, rpool.TranscendenceTier, rpool.Corruption,
          statsSnap, statsCurrentSnap, achSnap, badgeSnap,
-         challengeSnap, pactSnap, reservesSnap, kittenSnap, timeSnap, voidSnap, observeSnap, winterSnap, vpool.Happiness)
+         challengeSnap, pactSnap, reservesSnap, kittenSnap, timeSnap, voidSnap, observeSnap, winterSnap, vpool.Happiness, spaceSnap)
 
     // gtick: the port's game.tick() — updateModel order:
     // resPool.update → bld.update → village sim (+ kittens sync) → timer
     // (updateCaches+updateResources every 5 ticks) → calendar.tick
     let gtick () =
+        // game.update() head (L4453-4461): autosave countdown; save() resets
+        // ticksBeforeSave to autosaveFrequency (400)
+        ticksBeforeSave <- ticksBeforeSave - 1
+        if ticksBeforeSave = 0 then
+            lcStorageSave <- buildSaveString ()
+            ticksBeforeSave <- 400
         // orig game.tick (L4464-4473): updateModel — run TWICE on accelerated
         // even ticks (the Tempus Fugit hack) — then time.update, timers, calendar.
         updateModelBody ()
@@ -2266,7 +2347,7 @@ let execute (scenario: Scenario) : ExecResult =
 
         // space.update (L1100-1145): routes + planet reach + building unlocks
         spacep <-
-            Game.Space.update (Game.Effects.getEffect cache) Game.Calendar.ticksPerDay spacep
+            Game.Space.update (Game.Effects.getEffect cache) (fun _ -> queueSourcesUnlocked <- Set.add "spaceBuilding" queueSourcesUnlocked) Game.Calendar.ticksPerDay spacep
         spacep <- Game.Space.unlockBuildings (fun tn -> (match spool.Techs |> Map.tryFind tn with Some x -> x.Researched | None -> false)) spacep
         // time.update (time-02/03): accelerated flux burn + heat engine +
         // blastFurnace/timeBoiler actions. calculateRedshift is a bookkeeping
@@ -2772,7 +2853,7 @@ let execute (scenario: Scenario) : ExecResult =
                 actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
             | [ "energydelta" ] ->
                 actionLog <-
-                    (curLogTick, "resop", m.Args, RNum(getEnergyDelta false false pool.EnergyProd pool.EnergyCons))
+                    (curLogTick, "resop", m.Args, RNum(Game.Resources.getEnergyDelta (energyChallengeResearched ()) (energyChallengeActive ()) pool.EnergyProd pool.EnergyCons))
                     :: actionLog
             | [ "gauss" ] ->
                 let result = Game.Math.standardGaussianRandom (fun () -> rngDraws <- rngDraws + 1; rand ())
@@ -2873,7 +2954,11 @@ let execute (scenario: Scenario) : ExecResult =
             let amt = float m.Args.[1]
             // orig craft registers the undo with prices at the PRE-buy ladder
             let craftDef = wpool.Crafts.[craftName]
-            let prices = Game.Managers.getCraftPrice cache (traditionResearched ()) craftDef.Def |> List.map (fun p -> (p.Resource, p.Val * ceil amt))
+            let basePrices = Game.Managers.getCraftPrice cache (traditionResearched ()) craftDef.Def
+            let prices = basePrices |> List.map (fun p -> (p.Resource, p.Val * ceil amt))
+            // move-probe parity: affordBefore reads the RAW-n prices
+            let affordBefore = (match Game.Resources.hasRes pool (basePrices |> List.map (fun p -> (p.Resource, p.Val * amt))) 0.0 with true -> true | _ -> false)
+            let valueBefore = (match Game.Resources.get pool craftName with Some r -> r.Value | None -> 0.0)
             let pool', wpool', ok = Game.Managers.craft calendarDay cache (traditionResearched ()) (crctx ()) craftName amt pool wpool
             pool <- pool'
             wpool <- wpool'
@@ -2883,6 +2968,16 @@ let execute (scenario: Scenario) : ExecResult =
                 stpool <- Game.Stats.bumpStatCurrent "totalCrafts" 1.0 stpool
                 let gained = (1.0 + Game.Managers.getResCraftRatio cache (crctx ()) craftName) * ceil amt
                 registerUndo [ { ManagerId = "workshop"; Data = Game.Types.CraftUndo(craftName, gained, prices) } ]
+            let gainedActual = (match Game.Resources.get pool craftName with Some r -> r.Value | None -> 0.0) - valueBefore
+            if not affordBefore || gainedActual < amt then
+                let pj =
+                    basePrices
+                    |> List.map (fun p -> sprintf "{\"name\":\"%s\",\"val\":%s}" (esc p.Resource) (num (p.Val * amt)))
+                    |> String.concat ","
+                actionLog <-
+                    (m.Tick, "craft", m.Args,
+                     RText(sprintf "gained %s/%s (affordBefore=%s, prices=[%s])" (num gainedActual) (num amt) (if affordBefore then "true" else "false") pj))
+                    :: actionLog
             refreshCache () // orig game.craft → workshop.craft + updateResources (unconditional)
         | "assign" ->
             let jobName = m.Args.[0]
@@ -3306,7 +3401,7 @@ let execute (scenario: Scenario) : ExecResult =
         | "mission" ->
             // MissionBtnController.build(model, 1)
             let name = m.Args.[0]
-            let sp2, pool2, counter = Game.Space.buyProgram calendarDay name 1 spacep pool
+            let sp2, pool2, counter = Game.Space.buyProgram (Game.Effects.getEffect cache) (Game.Challenges.isActive cpool "blackSky") calendarDay name 1 spacep pool
             spacep <- sp2
             pool <- pool2
             if counter > 0 then
@@ -3324,15 +3419,29 @@ let execute (scenario: Scenario) : ExecResult =
             // PlanetBuildingBtnController.build(model, n)
             let name = m.Args.[0]
             let n = if m.Args.Length >= 2 then int m.Args.[1] else 1
-            let sp2, pool2, counter = Game.Space.buyBuilding calendarDay name n spacep pool
+            let sp2, pool2, counter = Game.Space.buyBuilding (Game.Effects.getEffect cache) (Game.Challenges.isActive cpool "blackSky") calendarDay name n spacep pool
             spacep <- sp2
             pool <- pool2
             if counter > 0 then
                 let def = Game.Catalog.Space.buildingDefs |> List.find (fun d0 -> d0.Name = name)
+                // controller.build order: breakIronWill; meta.unlocks;
+                // meta.calculateEffects + cycleEffectsBasics; meta.upgrades
+                // (updateEffects first, then game.upgrade). The full IW
+                // fan-out (liberty/zebraOutpost recalcs) lands with the
+                // IW-space scenario (space-12).
+                if Game.Space.breakIronWill name then ironWill <- false
                 for pol in def.UnlocksPolicies do
                     match spool.Policies |> Map.tryFind pol with
                     | Some p0 -> spool <- { spool with Policies = spool.Policies |> Map.add pol { p0 with Unlocked = true } }
                     | None -> ()
+                if Game.Space.hasCalcEffects name then
+                    spacep <- Game.Space.calculateEffects (spaceCalcCtx ()) name spacep
+                    spacep <- Game.Space.cycleEffectsBasics (spaceCalcCtx ()) name spacep
+                let ups = Game.Space.buildingUpgrades name
+                if ups <> [] then
+                    if Game.Space.hasUpdateEffects name then
+                        spacep <- Game.Space.updateEffects (spaceCalcCtx ()) name spacep
+                    upgradeMetas ups
                 refreshCache ()
             else
                 actionLog <- (m.Tick, "sbuilding", m.Args, RText "cannot-afford-or-locked") :: actionLog
@@ -3488,7 +3597,7 @@ let dumpCatalog () =
 // Snapshot JSON
 
 let snapshotJson
-    ((tick, resources, rngDraws, cal, buildings, jobs, crafts, techs, upgrades, policies, kittenJobs, free, effectsSample, religion, diplomacy, faith, faithRatio, tier, rpoolCorruption, statsSnap, statsCurrentSnap, achSnap, badgeSnap, challengeSnap, pactSnap, reservesSnap, kittenSnap, timeSnap, voidSnap, observeSnap, winterSnap, happiness: float): SnapTuple)
+    ((tick, resources, rngDraws, cal, buildings, jobs, crafts, techs, upgrades, policies, kittenJobs, free, effectsSample, religion, diplomacy, faith, faithRatio, tier, rpoolCorruption, statsSnap, statsCurrentSnap, achSnap, badgeSnap, challengeSnap, pactSnap, reservesSnap, kittenSnap, timeSnap, voidSnap, observeSnap, winterSnap, happiness: float, spaceSnap: string): SnapTuple)
     : string =
     let resItems =
         resources
@@ -3616,7 +3725,7 @@ let snapshotJson
         |> List.map (fun (k, v) -> sprintf "\"%s\":%s" (esc k) (num v))
         |> String.concat ","
     sprintf
-        "{\"tick\":%d,\"rngDraws\":%d,\"calendar\":{\"year\":%s,\"day\":%s,\"season\":\"%s\",\"weather\":%s,\"cycle\":%d,\"cycleYear\":%d,\"cryptoPrice\":%s,\"festivalDays\":%d},\"kittens\":%s,\"resources\":{%s},\"buildings\":{%s},\"jobs\":{%s},\"crafts\":{%s},\"techs\":[%s],\"upgrades\":[%s],\"policies\":{%s},\"religion\":{\"faith\":%s,\"faithRatio\":%s,\"tier\":%d,\"corruption\":%s,\"metas\":{%s}},\"diplomacy\":{\"races\":{%s}},\"stats\":{\"total\":{%s},\"current\":{%s}},\"achievements\":{%s},\"badges\":{%s},\"challenges\":{%s},\"pacts\":{%s},\"reserves\":%s,\"kittenIds\":[%s],\"time\":%s,\"void\":%s,\"observeRemainingTime\":%d,\"winterCatnipPerTick\":%s,\"happiness\":%s,\"effects\":{%s}}"
+        "{\"tick\":%d,\"rngDraws\":%d,\"calendar\":{\"year\":%s,\"day\":%s,\"season\":\"%s\",\"weather\":%s,\"cycle\":%d,\"cycleYear\":%d,\"cryptoPrice\":%s,\"festivalDays\":%d},\"kittens\":%s,\"resources\":{%s},\"buildings\":{%s},\"jobs\":{%s},\"crafts\":{%s},\"techs\":[%s],\"upgrades\":[%s],\"policies\":{%s},\"religion\":{\"faith\":%s,\"faithRatio\":%s,\"tier\":%d,\"corruption\":%s,\"metas\":{%s}},\"diplomacy\":{\"races\":{%s}},\"stats\":{\"total\":{%s},\"current\":{%s}},\"achievements\":{%s},\"badges\":{%s},\"challenges\":{%s},\"pacts\":{%s},\"reserves\":%s,\"kittenIds\":[%s],\"time\":%s,\"void\":%s,\"observeRemainingTime\":%d,\"winterCatnipPerTick\":%s,\"happiness\":%s,\"effects\":{%s},\"space\":%s}"
         tick
         rngDraws
         (num cal.year)
@@ -3655,6 +3764,7 @@ let snapshotJson
         (num winterSnap)
         (num happiness)
         effectsJson
+        spaceSnap
 
 let resKindJson (rk: ResKind) : string =
     match rk with

@@ -1,0 +1,27 @@
+# name: space-buildings
+# seed: 20260927
+# checkpoints: 0, 100, 200, 300, 400, 500, 600
+# space-08/10: bulk planet-building purchases with real price ladders
+# (spaceElevator 1.15, sattelite 1.08 + oil 1.05, spaceStation 1.12),
+# calculated effects at on>1 (starchart ×on × spaceRatio, energyConsumption
+# accumulation), breakIronWill flag flip, live save section (savedump).
+0 resop seed 20260927
+0 resop setres oil 600000
+0 resop setres manpower 50000
+0 resop setres science 5000000
+0 resop setres starchart 60000
+0 resop setres titanium 200000
+0 resop setres kerosene 20000
+0 resop setres unobtainium 5000
+0 resop setres alloy 5000
+0 resop setres concrate 5000
+0 resop setres uranium 20000
+10 mission orbitalLaunch
+100 mission moonMission
+200 mission duneMission
+250 mission piscineMission
+400 sbuilding spaceElevator 4
+450 sbuilding sattelite 4
+500 sbuilding spaceStation 2
+550 resop savedump
+600 resop energydelta

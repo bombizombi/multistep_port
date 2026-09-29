@@ -760,6 +760,15 @@ function doAction(move) {
           actionLog.push({ tick: tickIndex, action: "resop", args, result: (blob || "").length });
           return;
         }
+        if (fn === "satprobe2") {
+          const s = game.space.getBuilding("sattelite");
+          console.log("SAT2 tick=" + tickIndex + " val=" + s.val + " on=" + s.on +
+            " effPTS=" + s.effects.starchartPerTickBaseSpace +
+            " getEff=" + game.getEffect("starchartPerTickBaseSpace") +
+            " ptc=" + game.resPool.get("starchart").perTickCached);
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
         if (fn === "satprobe") {
           const s = game.space.getBuilding("sattelite");
           actionLog.push({ tick: tickIndex, action: "resop", args, result: s.val * 100 + s.on });
@@ -986,6 +995,11 @@ function takeSnapshot() {
   const cal = g.calendar;
   const seasonName = (cal.seasons && cal.seasons[cal.season] && cal.seasons[cal.season].name) || null;
   // kitten-level ground truth: jobRef.value and sim kitten jobs can diverge (OBS-1)
+  const space = {
+    programs: Object.assign({}, ...g.space.programs.map((p) => ({ [p.name]: { val: p.val || 0, on: p.on || 0, unlocked: !!p.unlocked } }))),
+    buildings: Object.assign({}, ...g.space.spaceBuildingsMap.map((nm) => { const b = g.space.getBuilding(nm); return { [nm]: { val: b.val || 0, on: b.on || 0, unlocked: !!b.unlocked } }; })),
+    planets: Object.assign({}, ...g.space.planets.map((p) => ({ [p.name]: { reached: !!p.reached, unlocked: !!p.unlocked, routeDays: p.routeDays } }))),
+  };
   const kittenJobs = g.village.sim.kittens.map((k) => k.job || null).sort();
   return {
     tick: g.ticks,
@@ -996,7 +1010,7 @@ function takeSnapshot() {
       cryptoPrice: cal.cryptoPrice, festivalDays: cal.festivalDays || 0,
     },
     kittens: { count: g.village.sim.kittens.length, free: g.village.getFreeKittens(), jobs: kittenJobs },
-    resources, buildings, jobs, crafts, techs, upgrades, policies,
+    resources, buildings, space, jobs, crafts, techs, upgrades, policies,
     religion: {
       faith: g.religion.faith,
       faithRatio: g.religion.faithRatio,
