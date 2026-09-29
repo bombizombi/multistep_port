@@ -1,0 +1,23 @@
+# name: shatter-economy
+# seed: 20260927
+# checkpoints: 0, 50, 120, 200, 260, 320, 400
+# time-05/07/09: TC shatter economy — CFU builds (price ladder), buildCFU undo
+# (full refund), manual shatter with the discrete-integral heat + dark-future
+# price penalties, useheat furnace consumption, unlockAll.
+0 resop seed 20260927
+0 resop setres timeCrystal 5000
+0 resop setres relic 500
+0 resop setres void 100
+0 resop setres gear 100
+0 cfu blastFurnace
+50 undo
+120 cfu temporalBattery
+200 cfu blastFurnace
+200 cfu controlledDelay
+200 cfu temporalPress
+260 resop setheat 500
+260 shatter 3
+320 resop year 40001
+320 shatter 2
+400 shatter 1
+400 resop unlockalltime

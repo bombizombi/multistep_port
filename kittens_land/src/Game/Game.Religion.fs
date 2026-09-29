@@ -423,6 +423,21 @@ let necrocornsNaiveFastForward
     else
         necrocornConsumptionDays calendarDay ctx daysOffset pool rp
 
+/// orig triggerOrderOfTheVoid (L628-633): voidOrder perk converts 10% of
+/// produced faith (× voidResonance), at a quarter of the apocrypha bonus.
+let triggerOrderOfTheVoid
+    (voidOrderResearched: bool)
+    (voidResonance: float)
+    (faithPerTick: float)
+    (ticks: float)
+    (rp: ReligionPool)
+    : ReligionPool =
+    if voidOrderResearched then
+        let convertedFaith = ticks * faithPerTick * 0.1 * (1.0 + voidResonance)
+        { rp with Faith = rp.Faith + convertedFaith * (1.0 + getApocryphaBonus rp / 4.0) }
+    else
+        rp
+
 /// orig necrocornFastForward (L639+): split simulation at the
 /// above-to-below-threshold edge case.
 let necrocornFastForward

@@ -149,7 +149,9 @@ type SnapTuple =
         * (string * (bool * bool)) list * (string * bool) list
         * (string * (bool * bool * bool * int)) list
         * (string * (int * int * bool)) list
-        * (float * bool * (string * (int * int)) list * (string * (int * int)) list)
+        * (float * float * int * bool
+           * (string * (int * int * float * int * bool option)) list
+           * (string * (int * int)) list)
         * ((string * (int * int * bool)) list * string option)
         * int * float
 
@@ -210,6 +212,9 @@ let execute (scenario: Scenario) : ExecResult =
     let mutable voidp = Game.Time.initVoid ()
     let mutable winterCatnipPerTick = 0.0
     let mutable winterPhase = 0
+    // steamworks.jammed (buildings-NN seam): set by factory automation, cleared
+    // onNewYear; gates the per-tick automation action
+    let mutable steamworksJammed = false
     let chronoforgeResearched () =
         match wpool.Upgrades |> Map.tryFind "chronoforge" with
         | Some u -> u.Researched
@@ -579,107 +584,497 @@ let execute (scenario: Scenario) : ExecResult =
                             res) }
 
 
-    let takeSnapshot () =
-        let resources =
+    // --- time-05/07/09: CFU behaviors + shatter/redshift orchestration -------------
+
+    and timeCalcCtx () : Game.Time.TimeCalcContext =
+        { GetEffect = Game.Effects.getEffect cache
+          Years1000On = cpool.Challenges.["1000Years"].On
+          BlazarVal = (Game.Religion.getTU rpool "blazar").Val
+          YearsPerCycle = List.length Game.Calendar.cycleYearColors }
+
+    // calcResourcePerTick("faith") for Order-of-the-Void conversion
+    and faithPerTickNow () : float =
+        Game.Production.calcResourcePerTick (prodCtx ()) pool "faith"
+
+    // orig religion.triggerOrderOfTheVoid — voidOrder perk gate + live reads
+    and triggerOotV (numberOfTicks: float) : unit =
+        let voidOrder =
+            match ppool.Perks |> Map.tryFind "voidOrder" with
+            | Some p -> p.Researched
+            | None -> false
+        let rp' =
+            Game.Religion.triggerOrderOfTheVoid
+                voidOrder (Game.Effects.getEffect cache "voidResonance") (faithPerTickNow ()) numberOfTicks rpool
+        rpool <- rp'
+
+    /// orig calendar.onNewYear (js/calendar.js L1058-1124) — the per-shattered-
+    /// year slice. The per-tick rollover path (gtick tail) covers the fresh
+    /// subset; this is the full sequence shatter needs.
+    and calendarOnNewYear () : unit =
+        // totalYears++ with floor at year
+        let ty = Game.Stats.getStat stpool "totalYears"
+        let ty' = if ty + 1.0 < calendar.Year then calendar.Year else ty + 1.0
+        stpool <- Game.Stats.setStat "totalYears" ty' stpool
+        // darkFuture impedance unlock: year >= 40000 seam (space/dark-future not ported)
+        if calendar.Year >= 40000.0 then
+            let imp = tpool.CFUs.["temporalImpedance"]
+            tpool <- { tpool with CFUs = tpool.CFUs |> Map.add "temporalImpedance" { imp with Unlocked = true } }
+        // steamworks unjam (jammed by factory automation)
+        steamworksJammed <- false
+        if calendar.Year % 1000.0 = 0.0 then
+            let poolY, _ = Game.Resources.addResEvent calendarDay "paragon" 1.0 pool
+            pool <- poolY
+            stpool <- Game.Stats.bumpStat "totalParagon" 1.0 stpool
+            // pactsMilleniumKarmaKittens: karma seam (pactsAvailable 0 at this slice)
+            ()
+        let pyramidVal = float (Game.Religion.getZU rpool "blackPyramid").Val
+        let markerVal = float (Game.Religion.getZU rpool "marker").Val
+        if pyramidVal > 0.0 then
+            let elderRoll = Game.Math.uniformRandomInteger (fun () -> rngDraws <- rngDraws + 1; rand ()) 0.0 1000.0
+            if float elderRoll < 35.0 * pyramidVal * (1.0 + 0.1 * markerVal) then
+                dp <- Game.Diplomacy.unlockElders dp 400.0
+        if dp.Races.["leviathans"].Unlocked then
+            let c = cpool.Challenges.["blackSky"]
+            cpool <- { cpool with Challenges = cpool.Challenges |> Map.add "blackSky" { c with Unlocked = true } }
+        // cycle bookkeeping (yearsPerCycle = 5 colors, cyclesPerEra = 10)
+        let cycleYear' = calendar.CycleYear + 1
+        if cycleYear' >= List.length Game.Calendar.cycleYearColors then
+            calendar <- { calendar with CycleYear = 0 }
+            let cycle' = calendar.Cycle + 1
+            calendar <- { calendar with Cycle = if cycle' >= List.length Game.Calendar.cycleNames then 0 else cycle' }
+        else
+            calendar <- { calendar with CycleYear = cycleYear' }
+        // upgrade({spaceBuilding}) fan-out: space-NN seam (no planets ported)
+        // antimatter yearly production: energyProd/Cons seam is balanced-true,
+        // but antimatterProduction is 0 without space — addRes(0) no-op kept for shape
+        let antimatterYearProd =
+            Game.Effects.getEffect cache "antimatterProduction"
+            * (1.0 + Game.Effects.getEffect cache "antimatterPolicyRatio")
+            * (1.0 + Game.Effects.getEffect cache "pyramidPerYearRatio")
+        let poolA, _ = Game.Resources.addResEvent calendarDay "antimatter" antimatterYearProd pool
+        pool <- poolA
+        let yearFlux =
+            Game.Effects.getEffect cache "temporalFluxProduction"
+            * (1.0 + Game.Effects.getEffect cache "temporalFluxPolicyRatio")
+            * (1.0 + Game.Effects.getEffect cache "pyramidPerYearRatio")
+        let poolF, _ = Game.Resources.addResEvent calendarDay "temporalFlux" yearFlux pool
+        pool <- poolF
+        // aiCore apocalypse msg: aiLevel seam (0 at this slice)
+        ()
+
+    /// time.shatter (time.js L663-737): skip amt years, replaying production at
+    /// shatterTCGain and walking the calendar's onNewYear per year.
+    and shatterCore (amtIn: int) : unit =
+        let amt = if amtIn = 0 then 1 else amtIn
+        let routeSpeed =
+            let rs = Game.Effects.getEffect cache "routeSpeed"
+            if rs = 0.0 then 1.0 else rs // JS falsy `|| 1`
+        let _ = routeSpeed // space ETA seam: no planets unlocked in this slice
+        let shatterTCGain =
+            Game.Effects.getEffect cache "shatterTCGain" * (1.0 + Game.Effects.getEffect cache "rrRatio")
+        let triggersOotV = Game.Effects.getEffect cache "voidResonance" > 0.0
+        let seasonsCount = float (List.length Game.Calendar.seasons)
+        let daysPerYear = Game.Calendar.daysPerSeason * seasonsCount
+        let remainingDaysInFirstYear =
+            Game.Calendar.daysPerSeason * (seasonsCount - float calendar.Season) - calendar.Day
+        calendar <- { calendar with Day = 0.0; Season = 0 }
+        for i in 1..amt do
+            let remDaysInCurrentYear = if i = 1 then remainingDaysInFirstYear else daysPerYear
+            let remTicks = remDaysInCurrentYear * Game.Calendar.ticksPerDay
+            if shatterTCGain > 0.0 then
+                // inflate every resource by a year of production (uncapped),
+                // run the chrono-engineers, then clamp back to the recorded limits
+                let limits =
+                    pool.Order
+                    |> List.choose (fun n ->
+                        match get pool n with
+                        | Some r ->
+                            let lim = max r.Value (if r.MaxValue <> 0.0 then r.MaxValue else System.Double.MaxValue)
+                            // getResourcePerTick(name, true): perTickCached + convertion (0 here)
+                            let pool1, _ =
+                                Game.Resources.addRes calendarDay (r.PerTickCached * remTicks * shatterTCGain) false true n pool
+                            pool <- pool1
+                            Some(n, lim)
+                        | None -> None)
+                if (match wpool.Upgrades |> Map.tryFind "chronoEngineers" with Some u -> u.Researched | None -> false) then
+                    let pool1, wp1, craftsDone =
+                        Game.Managers.craftByEngineers calendarDay cache (traditionResearched ()) getResValue
+                            (getResProductionCached ()) false (remTicks * shatterTCGain) pool wpool
+                    pool <- pool1
+                    wpool <- wp1
+                    if craftsDone > 0.0 then
+                        stpool <- Game.Stats.bumpStat "totalCrafts" craftsDone stpool
+                        stpool <- Game.Stats.bumpStatCurrent "totalCrafts" craftsDone stpool
+                pool <-
+                    { pool with
+                        ByName =
+                            pool.ByName
+                            |> Map.map (fun n res ->
+                                match limits |> List.tryFind (fun (ln, _) -> ln = n) with
+                                | Some(_, lim) -> { res with Value = min res.Value lim }
+                                | None -> res) }
+                // cathPollution FF: pollution sources are a buildings-NN seam
+                // (cathPollution 0, no calciners — stays 0 through the FF math)
+                if triggersOotV then triggerOotV remTicks
+            calendar <- { calendar with Year = calendar.Year + 1.0 }
+            calendarOnNewYear ()
+        // time.flux += amt - 1 + remainingDaysInFirstYear / daysPerYear (L725)
+        tpool <- { tpool with Flux = tpool.Flux + (float (amt - 1) + remainingDaysInFirstYear / daysPerYear) } // JS assoc: += (A + B)
+        // challenges 1000Years unlock + completion check
+        let c1000 = cpool.Challenges.["1000Years"]
+        cpool <- { cpool with Challenges = cpool.Challenges |> Map.add "1000Years" { c1000 with Unlocked = true } }
+        if c1000.Active && calendar.Year >= 1000.0 then
+            cpool <- Game.Challenges.researchChallenge "1000Years" cpool
+            // researchChallenge tail: unlock(unlocks {chronoforge: [temporalPress]})
+            let pressM = tpool.CFUs.["temporalPress"]
+            tpool <- { tpool with CFUs = tpool.CFUs |> Map.add "temporalPress" { pressM with Unlocked = true } }
+            calculateAllTime ()
+        refreshCache () // upgrade({buildings: ["pasture"]}) season-effect fan-out
+        // queue.update(): QUEUE flag off (time-14 seam)
+
+    /// ShatterTCBtnController.doShatterAmt: pay the TC/void price, then
+    /// doShatter — badges, heat split, shatter (testShatter=1 path is time-08).
+    and doShatterManual (amt: int) : bool =
+        // model.enabled = hasResources(getPrices(model, 1)) — the price-for-1
+        // check, NOT the TC unlocked flag (updateVisible is separate)
+        let heatMaxE = Game.Effects.getEffect cache "heatMax"
+        let heatPerShatterE = if cpool.Challenges.["1000Years"].Researched then 5.0 else 10.0
+        let hCurrentE = tpool.Heat
+        let enabled =
+            let shattersBeforeHeat =
+                let sbh = (heatMaxE - hCurrentE) / heatPerShatterE
+                max 0.0 (min (ceil sbh) 1.0)
+            let darkYearsE = calendar.Year - 40000.0 - Game.Effects.getEffect cache "timeImpedance"
+            let shattersBeforeDF = max 0.0 (min (-darkYearsE) 1.0)
+            let resultTotal =
+                let shattersConstant = min shattersBeforeDF shattersBeforeHeat
+                let linHeat = max 0.0 (shattersBeforeDF - shattersConstant)
+                let linDF = max 0.0 (shattersBeforeHeat - shattersConstant)
+                let slopeHeat = 0.01 * heatPerShatterE
+                let yIHeat = 1.0 + (hCurrentE + heatPerShatterE * shattersBeforeHeat - heatMaxE) * 0.01
+                let yIDF = 1.0 + (darkYearsE + shattersBeforeDF) * 0.00001
+                shattersConstant
+                + (slopeHeat * linHeat * (linHeat - 1.0) / 2.0 + yIHeat * linHeat)
+                + (0.00001 * linDF * (linDF - 1.0) / 2.0 + yIDF * linDF)
+            let tc1 = 1.0 * resultTotal * (1.0 + Game.Effects.getEffect cache "shatterCostReduction" + Game.Effects.getEffect cache "shatterCostIncreaseChallenge")
+            (get pool "timeCrystal" |> Option.map (fun r -> r.Value) |> Option.defaultValue 0.0) >= tc1
+        if not enabled then false
+        else
+            // getPricesMultiple: discrete-integral heat + dark-future pricing
+            let heatMax = heatMaxE
+            let heatPerShatter = heatPerShatterE
+            let heatCurrent = hCurrentE
+            let penaltyPerHeat = 0.01
+            let shattersBeforeHeat0 = (heatMax - heatCurrent) / heatPerShatter
+            let shattersBeforeHeat = min (ceil shattersBeforeHeat0) (float amt) |> max 0.0
+            let darkYears = calendar.Year - 40000.0 - Game.Effects.getEffect cache "timeImpedance"
+            let penaltyPerDarkYear = 0.00001
+            let shattersBeforeDF = min (-darkYears) (float amt) |> max 0.0
+            let shattersAfterHeat = float amt - shattersBeforeHeat
+            let shattersAfterDF = float amt - shattersBeforeDF
+            let shattersConstant = min shattersBeforeDF shattersBeforeHeat
+            let shattersLinearHeatOnly = max 0.0 (shattersBeforeDF - shattersConstant)
+            let shattersLinearDFOnly = max 0.0 (shattersBeforeHeat - shattersConstant)
+            let shattersQuadratic = min shattersAfterDF shattersAfterHeat
+            let resultConstant = 1.0 * shattersConstant
+            let slopeHeat = penaltyPerHeat * heatPerShatter
+            let yInterceptHeat = 1.0 + (heatCurrent + heatPerShatter * shattersBeforeHeat - heatMax) * penaltyPerHeat
+            let resultLinearHeatOnly =
+                slopeHeat * shattersLinearHeatOnly * (shattersLinearHeatOnly - 1.0) / 2.0
+                + yInterceptHeat * shattersLinearHeatOnly
+            let slopeDF = penaltyPerDarkYear
+            let yInterceptDF = 1.0 + (darkYears + 1.0 * shattersBeforeDF) * penaltyPerDarkYear
+            let resultLinearDFOnly =
+                slopeDF * shattersLinearDFOnly * (shattersLinearDFOnly - 1.0) / 2.0
+                + yInterceptDF * shattersLinearDFOnly
+            let yInterceptHeat2 = 1.0 + (heatCurrent + heatPerShatter * (float amt - shattersQuadratic) - heatMax) * penaltyPerHeat
+            let yInterceptDF2 = 1.0 + (darkYears + 1.0 * (float amt - shattersQuadratic)) * penaltyPerDarkYear
+            let coefficientA = slopeHeat * slopeDF
+            let coefficientB = slopeHeat * yInterceptDF2 + slopeDF * yInterceptHeat2
+            let coefficientC = yInterceptHeat2 * yInterceptDF2
+            let shattersQuadraticS = shattersQuadratic * (shattersQuadratic - 1.0)
+            let resultQuadratic =
+                coefficientA * shattersQuadraticS * (2.0 * shattersQuadratic - 1.0) / 6.0
+                + coefficientB * shattersQuadraticS / 2.0
+                + coefficientC * shattersQuadratic
+            let resultTotal = resultConstant + resultLinearHeatOnly + resultLinearDFOnly + resultQuadratic
+            let tcPrice = 1.0 * resultTotal * (1.0 + Game.Effects.getEffect cache "shatterCostReduction" + Game.Effects.getEffect cache "shatterCostIncreaseChallenge")
+            let voidPrice = Game.Math.jsRound (0.0 * resultTotal * 1000.0) / 1000.0 // base void price 0
+            let tcRes = (get pool "timeCrystal").Value
+            let voidRes = (get pool "void")
+            let voidOk =
+                match voidRes with
+                | Some v when voidPrice > 0.0 -> v.Value >= voidPrice
+                | _ -> true
+            if tcPrice <= tcRes.Value && voidOk then
+                let pool1, _ = Game.Resources.addResEvent calendarDay "timeCrystal" (-tcPrice) pool
+                pool <- pool1
+                if voidPrice > 0.0 then
+                    let pool2, _ = Game.Resources.addResEvent calendarDay "void" (-voidPrice) pool
+                    pool <- pool2
+                // doShatter body
+                if calendar.Day < 0.0 && amt >= 500 then
+                    // whatYearIsIt badge: +3 void on first unlock (leader color joke
+                    // is a village-leader seam — no leader in this slice)
+                    if not apool.Badges.["whatYearIsIt"].Unlocked then
+                        let poolB, _ = Game.Resources.addResEvent calendarDay "void" 3.0 pool
+                        pool <- poolB
+                        apool <- Game.Achievements.unlockBadge "whatYearIsIt" apool
+                // orbitalLaunch program seam: never launched in this slice → tardis
+                apool <- Game.Achievements.unlockBadge "tardis" apool
+                tpool <- Game.Time.doShatterHeat
+                    { GetEffect = Game.Effects.getEffect cache
+                      Years1000Researched = cpool.Challenges.["1000Years"].Researched }
+                    amt tpool
+                if tpool.TestShatter = 1 then
+                    failwith "shatterInGroupCycles (time-08) not exercised in this slice"
+                else
+                    shatterCore amt
+                true
+            else false
+
+    /// UseHeatBtnController.doShatterAmt: 100 furnace heat per year, no price.
+    and useHeatManual (amtIn: int option) : bool =
+        let furnaceHeat = tpool.CFUs.["blastFurnace"].Heat
+        let amt =
+            match amtIn with
+            | Some a -> a
+            | None -> max 2 (int (floor (furnaceHeat / 100.0)))
+        let price = 100.0 * float amt
+        if furnaceHeat >= price then
+            tpool <- Game.Time.updateCfu tpool "blastFurnace" (fun m -> { m with Heat = m.Heat - price })
+            if tpool.TestShatter = 1 then
+                failwith "shatterInGroupCycles (time-08) not exercised in this slice"
+            else
+                shatterCore amt
+            true
+        else false
+
+    /// time.applyRedshift (time.js L191-232): a full redshift day skip.
+    and applyRedshiftCore (daysOffset: float) (ignoreCalendar: bool) : float =
+        // resPool.update + space.update + updateResources
+        let uctxF =
+            { Cap = capCtx ()
+              GetResourcePerTick =
+                fun n ->
+                    match get pool n with
+                    | Some r when r.Def.CalculatePerTick -> r.PerTickCached
+                    | _ -> 0.0
+              CalendarSeason = calendar.Season
+              PastureOn = 0
+              EnergyLoss = 0.0
+              EnergyChallengeResearched = false
+              EnergyChallengeActive = false }
+        pool <- update uctxF calendarDay pool
+        // game.updateResources — refresh perTickCached through refreshCache's
+        // prodCtx path (updateCaches also rebuilds the effect cache)
+        refreshCache ()
+        // resPool.fastforward: inflate by perTickCached × days × tpd, allowing
+        // paradoxes, skipping the limit check; negative catnip production skips
+        let limits =
             pool.Order
             |> List.choose (fun n ->
                 match get pool n with
-                | Some r -> Some(n, (r.Value, r.MaxValue, r.Unlocked, r.PerTickCached))
-                | None -> None)
-        let seasonName = Game.Calendar.seasons.[calendar.Season].Name
-        let calJson =
-            { year = calendar.Year
-              day = calendar.Day
-              season = seasonName
-              weather = calendar.Weather
-              cycle = calendar.Cycle
-              cycleYear = calendar.CycleYear
-              cryptoPrice = calendar.CryptoPrice
-              festivalDays = calendar.FestivalDays }
-        let buildings =
-            bpool.Order
-            |> List.choose (fun n ->
-                match Game.Buildings.get bpool n with
-                | Some b -> Some(n, (b.Val, b.On, b.Unlocked, b.Unlockable, b.Stage))
-                | None -> None)
-        let jobs =
-            vpool.JobValues
-            |> Map.toList
-            |> List.sortBy fst
-            |> List.map (fun (n, v) -> (n, v, vpool.JobUnlocked.Contains n))
-        let policies =
-            [ for n in spool.PolicyOrder do
-                let pol = spool.Policies.[n]
-                yield (n, (pol.Unlocked, pol.Researched)) ]
-        let crafts =
-            wpool.CraftOrder
-            |> List.choose (fun n ->
-                match Game.Managers.getCraft wpool n with
-                | Some c -> Some(n, c.Unlocked, c.Value, c.Progress)
-                | None -> None)
-        // religion-01/08 + diplomacy-02/03 state (extended-snapshot contract)
-        let religion =
-            [ for n in rpool.RuOrder do
-                let m = rpool.RUs.[n]
-                yield (n, (m.Val, m.On, m.Unlocked, m.Researched))
-              for n in rpool.ZuOrder do
-                let m = rpool.ZUs.[n]
-                yield (n, (m.Val, m.On, m.Unlocked, m.Researched))
-              for n in rpool.TuOrder do
-                let m = rpool.TUs.[n]
-                yield (n, (m.Val, m.On, m.Unlocked, m.Researched)) ]
-        let diplomacy =
-            [ for n in dp.RaceOrder do
-                let r = dp.Races.[n]
-                yield (n, (r.Unlocked, r.EmbassyLevel, r.Energy, r.Duration)) ]
-        let statsSnap = stpool.Values |> Map.toList
-        let statsCurrentSnap = stpool.Current |> Map.toList
-        let achSnap =
-            apool.AchievementOrder
-            |> List.map (fun n ->
-                let a = apool.Achievements.[n]
-                (n, (a.Unlocked, a.StarUnlocked)))
-        let badgeSnap =
-            apool.BadgeOrder |> List.map (fun n -> (n, apool.Badges.[n].Unlocked))
-        let polSnap =
-            [ for n in spool.PolicyOrder do
-                let pol = spool.Policies.[n]
-                yield (n, (pol.Unlocked, pol.Researched)) ]
-        let challengeSnap =
-            [ for n in cpool.Order do
-                let c = cpool.Challenges.[n]
-                yield (n, (c.Unlocked, c.Active, c.Researched, c.On)) ]
-        let pactSnap =
-            [ for n in rpool.PactOrder do
-                let p = rpool.Pacts.[n]
-                yield (n, (p.Val, p.On, p.Unlocked)) ]
-        let cfuSnap = tpool.CfuOrder |> List.map (fun n -> (n, (tpool.CFUs.[n].Val, tpool.CFUs.[n].On)))
-        let vsuSnap = tpool.VsuOrder |> List.map (fun n -> (n, (tpool.VSUs.[n].Val, tpool.VSUs.[n].On)))
-        let timeSnap = (tpool.Flux, tpool.IsAccelerated, cfuSnap, vsuSnap)
-        let voidSnap = (voidp.VuOrder |> List.map (fun n -> (n, (voidp.VUs.[n].Val, voidp.VUs.[n].On, voidp.VUs.[n].Unlocked))), voidp.Faction)
-        let observeSnap = calendar.ObserveRemainingTime
-        let winterSnap = winterCatnipPerTick
-        let techs = spool.TechOrder |> List.filter (fun n -> spool.Techs.[n].Researched) |> List.sort
-        let upgrades = wpool.UpgradeOrder |> List.filter (fun n -> wpool.Upgrades.[n].Researched) |> List.sort
-        // JS Array.sort on [job|null]: null stringifies to "null" and sorts as
-        // a string — "farmer" < "null" < "scholar"/"woodcutter". Mirror exactly.
-        let kittenJobs =
-            vpool.Kittens
-            |> List.map (fun k -> k.Job)
-            |> List.sortBy (fun j -> match j with Some j -> j | None -> "null")
-        let free = Game.Managers.getFreeKittens vpool
-        let effectsSample =
-            [ "catnipPerTickBase"; "catnipDemandRatio"; "maxKittensRatio"; "woodPerTick" ]
-            |> List.map (fun k -> (k, Game.Effects.getEffect cache k))
-        (ticks, resources, rngDraws, calJson, buildings, jobs, crafts, techs, upgrades, policies, kittenJobs, free, effectsSample,
-         religion, diplomacy, rpool.Faith, rpool.FaithRatio, rpool.TranscendenceTier, rpool.Corruption,
-         statsSnap, statsCurrentSnap, achSnap, badgeSnap,
-         challengeSnap, pactSnap, timeSnap, voidSnap, observeSnap, winterSnap)
+                | Some r when r.PerTickCached <> 0.0 && (n <> "catnip" || r.PerTickCached >= 0.0) ->
+                    if r.MaxValue <> 0.0 then
+                        let lim = max r.Value r.MaxValue
+                        let pool1, _ =
+                            Game.Resources.addRes calendarDay (r.PerTickCached * daysOffset * Game.Calendar.ticksPerDay) true true n pool
+                        pool <- pool1
+                        Some(n, lim)
+                    else
+                        let pool1, _ =
+                            Game.Resources.addRes calendarDay (r.PerTickCached * daysOffset * Game.Calendar.ticksPerDay) true true n pool
+                        pool <- pool1
+                        None
+                | _ -> None)
+        // managers' fastforward
+        let numberEvents =
+            if ignoreCalendar then 0.0
+            else
+                let ffCtx : Game.Calendar.FastForwardContext =
+                    { GetEffect = Game.Effects.getEffect cache
+                      Rand = fun () -> rngDraws <- rngDraws + 1; rand ()
+                      IronWill = ironWill
+                      LibraryOn = libraryOn ()
+                      AstronomyResearched = astronomyResearched ()
+                      BlackSkyActive = cpool.Challenges.["blackSky"].Active
+                      Chronomancy =
+                        (match ppool.Perks |> Map.tryFind "chronomancy" with Some p -> p.Researched | None -> false)
+                      Unicornmancy =
+                        (match ppool.Perks |> Map.tryFind "unicornmancy" with Some p -> p.Researched | None -> false)
+                      Astromancy =
+                        (match ppool.Perks |> Map.tryFind "astromancy" with Some p -> p.Researched | None -> false)
+                      Alicornmancy =
+                        (match ppool.Perks |> Map.tryFind "alicornmancy" with Some p -> p.Researched | None -> false)
+                      PacifismActive = cpool.Challenges.["pacifism"].Active
+                      AnimalResearched =
+                        (match spool.Techs |> Map.tryFind "animal" with Some t -> t.Researched | None -> false)
+                      ArcheryResearched =
+                        (match spool.Techs |> Map.tryFind "archery" with Some t -> t.Researched | None -> false)
+                      MiningResearched = miningResearched ()
+                      CelestialMechanics =
+                        (match wpool.Upgrades |> Map.tryFind "celestialMechanics" with Some u -> u.Researched | None -> false)
+                      Prospecting =
+                        (match wpool.Upgrades |> Map.tryFind "prospecting" with Some u -> u.Researched | None -> false)
+                      Seti =
+                        (match wpool.Upgrades |> Map.tryFind "seti" with Some u -> u.Researched | None -> false)
+                      Year1000Active = cpool.Challenges.["1000Years"].Active
+                      AntimatterResearched =
+                        (match spool.Techs |> Map.tryFind "antimatter" with Some t -> t.Researched | None -> false)
+                      EnergyBalanced = true
+                      UnicornsValue = fun () -> getResValue "unicorns"
+                      ZebrasValue = fun () -> getResValue "zebras"
+                      ZebrasMax = fun () -> (get pool "zebras" |> Option.map (fun r -> r.MaxValue) |> Option.defaultValue 0.0)
+                      AddResEvent =
+                        fun resName amount ->
+                            let pool1, _ = Game.Resources.addResEvent calendarDay resName amount pool
+                            pool <- pool1
+                      AddResPerTick =
+                        fun resName amount ->
+                            let pool1, _ = Game.Resources.addResPerTick calendarDay resName amount pool
+                            pool <- pool1
+                      OnAlicornUpgrade =
+                        fun () ->
+                            refreshCache () // upgrade({zigguratUpgrades: [skyPalace; …]})
+                      OnParagon =
+                        fun par ->
+                            let pool1, _ = Game.Resources.addResEvent calendarDay "paragon" par pool
+                            pool <- pool1
+                            stpool <- Game.Stats.bumpStat "totalParagon" par stpool
+                      OnMillenniumKarma = fun _ -> () // karma seam (pactsAvailable 0)
+                      OnYearsAdvanced =
+                        fun years -> stpool <- Game.Stats.bumpStat "totalYears" years stpool
+                      SpaceBeaconAction = fun () -> () // space-NN seam (val=0)
+                      UpdateCaches = fun () -> refreshCache () }
+                let cal', events = Game.Calendar.fastForward ffCtx calendar daysOffset
+                calendar <- cal'
+                events
+        // bld.fastforward: cathPollution (0 seam) + steamworks automation
+        let steamworks = Game.Buildings.get bpool "steamworks"
+        let steamworksOn = match steamworks with Some b -> b.On | None -> 0
+        let factoryAutomation =
+            match wpool.Upgrades |> Map.tryFind "factoryAutomation" with Some u -> u.Researched | None -> false
+        let advancedAutomation =
+            match wpool.Upgrades |> Map.tryFind "advancedAutomation" with Some u -> u.Researched | None -> false
+        if steamworksOn >= 1 && factoryAutomation then
+            let wood = (get pool "wood").Value
+            let minerals = (get pool "minerals").Value
+            let iron = (get pool "iron").Value
+            if wood.MaxValue <> 0.0 && minerals.MaxValue <> 0.0 then
+                let baseAutomationRate = 0.02
+                let automationRate = min (baseAutomationRate * (float steamworksOn + 1.0)) 0.9
+                let automationDelay =
+                    Game.Calendar.daysPerSeason * 4.0 / (if advancedAutomation then 2.0 else 1.0)
+                let numberOfAutomations = floor (daysOffset / automationDelay)
+                let crafter (consumed: string) (crafted: string) (isAllowed: bool) : float =
+                    let cRes = (get pool consumed).Value
+                    let consumableQuantity = cRes.Value
+                    let consumableQuantityThreshold = cRes.MaxValue * (1.0 - baseAutomationRate)
+                    let craftDef = (Game.Managers.getCraft wpool crafted |> Option.get).Def
+                    let price = craftDef.Prices |> List.head |> (fun p -> p.Val)
+                    let mutable consumableQuantity = consumableQuantity
+                    let mutable numberOfCrafts = 0.0
+                    let mutable remainingAutomations = numberOfAutomations
+                    let mutable go = isAllowed
+                    while go && remainingAutomations > 0.0 do
+                        remainingAutomations <- remainingAutomations - 1.0
+                        let perAutomation =
+                            floor (min consumableQuantity cRes.MaxValue * automationRate / price)
+                        if consumableQuantity >= consumableQuantityThreshold && perAutomation > 0.0 then
+                            numberOfCrafts <- numberOfCrafts + perAutomation
+                            consumableQuantity <- consumableQuantity - perAutomation * price
+                        else go <- false
+                    numberOfCrafts
+                let beamCrafts = crafter "wood" "beam" true
+                let slabCrafts = crafter "minerals" "slab" true
+                let pneumaticPress =
+                    match wpool.Upgrades |> Map.tryFind "pneumaticPress" with Some u -> u.Researched | None -> false
+                let plateCrafts = crafter "iron" "plate" pneumaticPress
+                if beamCrafts > 0.0 || slabCrafts > 0.0 || plateCrafts > 0.0 then
+                    // orig order: jam until next year, then plate → slab → beam
+                    steamworksJammed <- true
+                    for crafted, count in [ "plate", plateCrafts; "slab", slabCrafts; "beam", beamCrafts ] do
+                        if count > 0.0 then
+                            let pool1, wp1, okC =
+                                Game.Managers.craft calendarDay cache (traditionResearched ()) crafted count pool wpool
+                            pool <- pool1
+                            wpool <- wp1
+                            if okC then
+                                stpool <- Game.Stats.bumpStat "totalCrafts" 1.0 stpool
+                                stpool <- Game.Stats.bumpStatCurrent "totalCrafts" 1.0 stpool
+        // workshop.fastforward: the per-tick effectsBase block + engineers at
+        // the bulk rate. The scienceMax/cultureMax/faithMax recalcs stay 0
+        // (no compendia/manuscripts in this slice's scenarios — effectsBase seam).
+        if Game.Managers.getFreeEngineers vpool wpool < 0.0 then
+            vpool <- Game.Managers.clearCraftJobs vpool
+            wpool <- { wpool with Crafts = wpool.Crafts |> Map.map (fun _ c -> { c with Value = 0.0 }) }
+        let poolW, wpW, craftsW =
+            Game.Managers.craftByEngineers calendarDay cache (traditionResearched ()) getResValue
+                (getResProductionCached ()) false (daysOffset * Game.Calendar.ticksPerDay) pool wpool
+        pool <- poolW
+        wpool <- wpW
+        if craftsW > 0.0 then
+            stpool <- Game.Stats.bumpStat "totalCrafts" craftsW stpool
+            stpool <- Game.Stats.bumpStatCurrent "totalCrafts" craftsW stpool
+        // village.fastforward: ambassadors + bulk kitten sim
+        actionAmbassadors (daysOffset * Game.Calendar.ticksPerDay)
+        let maxKittens = Game.Managers.calculateMaxKittens cache vpool
+        vpool <- { vpool with MaxKittens = maxKittens }
+        let mutable kpt = 0.01 * (1.0 + Game.Effects.getEffect cache "kittenGrowthRatio")
+        if calendar.FestivalDays > 0 then
+            kpt <- kpt * (2.0 + Game.Effects.getEffect cache "festivalArrivalRatio")
+        let beforeBirths = vpool.Kittens.Length
+        vpool <- Game.Managers.simUpdate maxKittens kpt (int (daysOffset * Game.Calendar.ticksPerDay))
+            (fun () -> rngDraws <- rngDraws + 1; rand ()) vpool
+        if vpool.Kittens.Length > beforeBirths then
+            stpool <- Game.Stats.bumpStat "totalKittens" (float (vpool.Kittens.Length - beforeBirths)) stpool
+        let kittensRes = pool.ByName["kittens"]
+        pool <- { pool with ByName = pool.ByName |> Map.add "kittens" { kittensRes with Value = float vpool.Kittens.Length; MaxValue = float vpool.MaxKittens } }
+        // religion.fastforward: paradox-day adjustment + necrocorns + OotV
+        let paradoxChance = Game.Effects.getEffect cache "temporalParadoxChance"
+        let mutable ffDays = daysOffset
+        if paradoxChance > 0.0 then
+            let daysInParadoxF = 10.0 + Game.Effects.getEffect cache "temporalParadoxDay"
+            let daysBetweenParadox = daysInParadoxF + 100.0 * max 1.0 (1.0 / paradoxChance)
+            let percentTimeInParadox = daysInParadoxF / daysBetweenParadox
+            let daysInParadox = floor (daysOffset * percentTimeInParadox)
+            ffDays <- daysOffset - daysInParadox
+        let rp', pool' =
+            Game.Religion.necrocornFastForward calendarDay (corruptionCtx ()) ffDays
+                (ffDays * Game.Calendar.ticksPerDay) pool rpool
+        rpool <- rp'
+        pool <- pool'
+        triggerOotV (daysOffset * Game.Calendar.ticksPerDay)
+        // space.fastforward: no planets unlocked + entangler on=0 → exact no-op
+        // resPool.enforceLimits
+        pool <-
+            { pool with
+                ByName =
+                    pool.ByName
+                    |> Map.map (fun n res ->
+                        if res.MaxValue <> 0.0 then
+                            match limits |> List.tryFind (fun (ln, _) -> ln = n) with
+                            | Some(_, lim) -> { res with Value = min res.Value lim }
+                            | None -> res
+                        else res) }
+        // chronoheat transfer + furnace automation shatter
+        if tpool.Heat > 0.0 then
+            let perTickHeatTransfer = Game.Effects.getEffect cache "heatPerTick"
+            let heatAttemptTransfer = daysOffset * Game.Calendar.ticksPerDay * perTickHeatTransfer
+            let heatTransfer = min tpool.Heat heatAttemptTransfer
+            let efficiency = 1.0 + Game.Effects.getEffect cache "heatEfficiency"
+            tpool <- Game.Time.updateCfu tpool "blastFurnace" (fun m -> { m with Heat = m.Heat + heatTransfer * efficiency })
+            tpool <- { tpool with Heat = tpool.Heat - heatTransfer }
+            let furnace = tpool.CFUs.["blastFurnace"]
+            if furnace.On <> 0 && furnace.IsAutomationEnabled = Some true && furnace.Heat >= 100.0 then
+                let amt = floor (furnace.Heat / 100.0) |> int
+                tpool <- Game.Time.updateCfu tpool "blastFurnace" (fun m -> { m with Heat = m.Heat - 100.0 * float amt })
+                shatterCore amt
+        numberEvents
 
-    // gtick: the port's game.tick() — updateModel order:
-    // resPool.update → bld.update → village sim (+ kittens sync) → timer
-    // (updateCaches+updateResources every 5 ticks) → calendar.tick
-    let gtick () =
+    /// orig updateModel (game.js L4487-4521): one model pass.
+    and updateModelBody () =
         let uctx =
             { Cap = capCtx ()
               GetResourcePerTick =
@@ -697,6 +1092,41 @@ let execute (scenario: Scenario) : ExecResult =
               EnergyChallengeActive = false }
         pool <- update uctx calendarDay pool
         bpool <- Game.Buildings.update pool bpool
+        // steamworks per-tick automation action (js/buildings.js L1327-1377):
+        // crafts when a consumed resource sits at ≥98% of cap; jams until the
+        // next onNewYear. isAutomationEnabled is forced true with the tech.
+        let factoryAutomationP = (match wpool.Upgrades |> Map.tryFind "factoryAutomation" with Some u -> u.Researched | None -> false)
+        if factoryAutomationP then
+            match Game.Buildings.get bpool "steamworks" with
+            | Some sw when sw.On >= 1 && not steamworksJammed ->
+                let woodR = (get pool "wood").Value
+                let mineralsR = (get pool "minerals").Value
+                if woodR.MaxValue <> 0.0 && mineralsR.MaxValue <> 0.0 then
+                    let baseAutomationRate = 0.02
+                    let automationRate = min (baseAutomationRate * (float sw.On + 1.0)) 0.9
+                    let pneumaticPressP = (match wpool.Upgrades |> Map.tryFind "pneumaticPress" with Some u -> u.Researched | None -> false)
+                    let perTickCrafter (consumed: string) (crafted: string) (isAllowed: bool) : float =
+                        let cRes = (get pool consumed).Value
+                        let consumedQuantity = cRes.Value * automationRate
+                        let price = ((Game.Managers.getCraft wpool crafted |> Option.get).Def).Prices |> List.head |> (fun p -> p.Val)
+                        if isAllowed && cRes.Value >= cRes.MaxValue * (1.0 - baseAutomationRate) then
+                            max 0.0 (floor (consumedQuantity / price))
+                        else 0.0
+                    let beamC = perTickCrafter "wood" "beam" true
+                    let slabC = perTickCrafter "minerals" "slab" true
+                    let plateC = perTickCrafter "iron" "plate" pneumaticPressP
+                    if beamC > 0.0 || slabC > 0.0 || plateC > 0.0 then
+                        steamworksJammed <- true
+                        for crafted, count in [ "plate", plateC; "slab", slabC; "beam", beamC ] do
+                            if count > 0.0 then
+                                let pool1, wp1, okC =
+                                    Game.Managers.craft calendarDay cache (traditionResearched ()) crafted count pool wpool
+                                pool <- pool1
+                                wpool <- wp1
+                                if okC then
+                                    stpool <- Game.Stats.bumpStat "totalCrafts" 1.0 stpool
+                                    stpool <- Game.Stats.bumpStatCurrent "totalCrafts" 1.0 stpool
+            | _ -> ()
         // village sim (village-02/04): births at 0.01 base × growth ratio;
         // starvation seam engages once production can go negative
         let maxKittens = Game.Managers.calculateMaxKittens cache vpool
@@ -809,8 +1239,8 @@ let execute (scenario: Scenario) : ExecResult =
                 match spool.Policies |> Map.tryFind pname with
                 | Some pol -> spool <- { spool with Policies = spool.Policies |> Map.add pname { pol with Unlocked = true } }
                 | None -> ()
-        // religion.update (js/religion.js L305-341): corruption accumulator.
-        // NaN faith guard is moot (no NaN); Order of the Void = perk seam.
+        // religion.update (js/religion.js L305-341): corruption accumulator +
+        // per-tick Order of the Void (L339-341, gated on day >= 0).
         let cctx = corruptionCtx ()
         if getResValue "alicorn" > 0.0 then
             rpool <- { rpool with Corruption = rpool.Corruption + Game.Religion.getCorruptionPerTick cctx None }
@@ -822,15 +1252,140 @@ let execute (scenario: Scenario) : ExecResult =
             pool <- pool'
             if corrupted > 0.0 then
                 refreshCache () // game.upgrade({zigguratUpgrades}) fan-out
+        if calendarDay >= 0 then
+            triggerOotV 1.0
         // challenges.update (js/challenges.js L579-604): ironWill mirror +
         // completion-condition polling (space/aiCore seams — never fire here)
         let iw = cpool.Challenges.["ironWill"]
         if iw.Active <> ironWill then
             cpool <- { cpool with Challenges = cpool.Challenges |> Map.add "ironWill" { iw with Active = ironWill } }
 
-        // time.update (time-02): accelerated burns 1 flux/tick
-        let tpool1, poolT = Game.Time.update tpool pool
-        tpool <- tpool1
+
+    /// orig game.calculateAllEffects → upgrade(all metas): one calculateEffects/
+    /// updateEffects pass per meta (reverse iteration). Only the CFU metas have
+    /// observable side effects at this slice (automation tri-states, testShatter).
+    and calculateAllTime () : unit =
+        refreshCache () // game.upgrade leading updateCaches
+        for name in List.rev tpool.CfuOrder do
+            tpool <- Game.Time.cfuCalculate (timeCalcCtx ()) name tpool
+        refreshCache ()
+
+    let takeSnapshot () =
+        let resources =
+            pool.Order
+            |> List.choose (fun n ->
+                match get pool n with
+                | Some r -> Some(n, (r.Value, r.MaxValue, r.Unlocked, r.PerTickCached))
+                | None -> None)
+        let seasonName = Game.Calendar.seasons.[calendar.Season].Name
+        let calJson =
+            { year = calendar.Year
+              day = calendar.Day
+              season = seasonName
+              weather = calendar.Weather
+              cycle = calendar.Cycle
+              cycleYear = calendar.CycleYear
+              cryptoPrice = calendar.CryptoPrice
+              festivalDays = calendar.FestivalDays }
+        let buildings =
+            bpool.Order
+            |> List.choose (fun n ->
+                match Game.Buildings.get bpool n with
+                | Some b -> Some(n, (b.Val, b.On, b.Unlocked, b.Unlockable, b.Stage))
+                | None -> None)
+        let jobs =
+            vpool.JobValues
+            |> Map.toList
+            |> List.sortBy fst
+            |> List.map (fun (n, v) -> (n, v, vpool.JobUnlocked.Contains n))
+        let policies =
+            [ for n in spool.PolicyOrder do
+                let pol = spool.Policies.[n]
+                yield (n, (pol.Unlocked, pol.Researched)) ]
+        let crafts =
+            wpool.CraftOrder
+            |> List.choose (fun n ->
+                match Game.Managers.getCraft wpool n with
+                | Some c -> Some(n, c.Unlocked, c.Value, c.Progress)
+                | None -> None)
+        // religion-01/08 + diplomacy-02/03 state (extended-snapshot contract)
+        let religion =
+            [ for n in rpool.RuOrder do
+                let m = rpool.RUs.[n]
+                yield (n, (m.Val, m.On, m.Unlocked, m.Researched))
+              for n in rpool.ZuOrder do
+                let m = rpool.ZUs.[n]
+                yield (n, (m.Val, m.On, m.Unlocked, m.Researched))
+              for n in rpool.TuOrder do
+                let m = rpool.TUs.[n]
+                yield (n, (m.Val, m.On, m.Unlocked, m.Researched)) ]
+        let diplomacy =
+            [ for n in dp.RaceOrder do
+                let r = dp.Races.[n]
+                yield (n, (r.Unlocked, r.EmbassyLevel, r.Energy, r.Duration)) ]
+        let statsSnap = stpool.Values |> Map.toList
+        let statsCurrentSnap = stpool.Current |> Map.toList
+        let achSnap =
+            apool.AchievementOrder
+            |> List.map (fun n ->
+                let a = apool.Achievements.[n]
+                (n, (a.Unlocked, a.StarUnlocked)))
+        let badgeSnap =
+            apool.BadgeOrder |> List.map (fun n -> (n, apool.Badges.[n].Unlocked))
+        let polSnap =
+            [ for n in spool.PolicyOrder do
+                let pol = spool.Policies.[n]
+                yield (n, (pol.Unlocked, pol.Researched)) ]
+        let challengeSnap =
+            [ for n in cpool.Order do
+                let c = cpool.Challenges.[n]
+                yield (n, (c.Unlocked, c.Active, c.Researched, c.On)) ]
+        let pactSnap =
+            [ for n in rpool.PactOrder do
+                let p = rpool.Pacts.[n]
+                yield (n, (p.Val, p.On, p.Unlocked)) ]
+        let cfuSnap = tpool.CfuOrder |> List.map (fun n -> (n, (tpool.CFUs.[n].Val, tpool.CFUs.[n].On, tpool.CFUs.[n].Heat, tpool.CFUs.[n].DelayTicks, tpool.CFUs.[n].IsAutomationEnabled)))
+        let vsuSnap = tpool.VsuOrder |> List.map (fun n -> (n, (tpool.VSUs.[n].Val, tpool.VSUs.[n].On)))
+        let timeSnap = (tpool.Flux, tpool.Heat, tpool.TestShatter, tpool.IsAccelerated, cfuSnap, vsuSnap)
+        let voidSnap = (voidp.VuOrder |> List.map (fun n -> (n, (voidp.VUs.[n].Val, voidp.VUs.[n].On, voidp.VUs.[n].Unlocked))), voidp.Faction)
+        let observeSnap = calendar.ObserveRemainingTime
+        let winterSnap = winterCatnipPerTick
+        let techs = spool.TechOrder |> List.filter (fun n -> spool.Techs.[n].Researched) |> List.sort
+        let upgrades = wpool.UpgradeOrder |> List.filter (fun n -> wpool.Upgrades.[n].Researched) |> List.sort
+        // JS Array.sort on [job|null]: null stringifies to "null" and sorts as
+        // a string — "farmer" < "null" < "scholar"/"woodcutter". Mirror exactly.
+        let kittenJobs =
+            vpool.Kittens
+            |> List.map (fun k -> k.Job)
+            |> List.sortBy (fun j -> match j with Some j -> j | None -> "null")
+        let free = Game.Managers.getFreeKittens vpool
+        let effectsSample =
+            [ "catnipPerTickBase"; "catnipDemandRatio"; "maxKittensRatio"; "woodPerTick" ]
+            |> List.map (fun k -> (k, Game.Effects.getEffect cache k))
+        (ticks, resources, rngDraws, calJson, buildings, jobs, crafts, techs, upgrades, policies, kittenJobs, free, effectsSample,
+         religion, diplomacy, rpool.Faith, rpool.FaithRatio, rpool.TranscendenceTier, rpool.Corruption,
+         statsSnap, statsCurrentSnap, achSnap, badgeSnap,
+         challengeSnap, pactSnap, timeSnap, voidSnap, observeSnap, winterSnap)
+
+    // gtick: the port's game.tick() — updateModel order:
+    // resPool.update → bld.update → village sim (+ kittens sync) → timer
+    // (updateCaches+updateResources every 5 ticks) → calendar.tick
+    let gtick () =
+        // orig game.tick (L4464-4473): updateModel — run TWICE on accelerated
+        // even ticks (the Tempus Fugit hack) — then time.update, timers, calendar.
+        updateModelBody ()
+        if tpool.IsAccelerated && ticks % 2 = 0 then updateModelBody ()
+
+
+        // time.update (time-02/03): accelerated flux burn + heat engine +
+        // blastFurnace/timeBoiler actions. calculateRedshift is a bookkeeping
+        // no-op (opts.enableRedshift false; timestamp advance on the fake clock).
+        let tctx : Game.Time.TimeUpdateContext =
+            { GetEffect = Game.Effects.getEffect cache
+              Shatter = fun amt -> shatterCore amt
+              GetTpool = fun () -> tpool
+              SetTpool = fun tp -> tpool <- tp }
+        let poolT = Game.Time.update tctx pool
         pool <- poolT
 
         // timer.update — handlers fire in registration order:
@@ -865,6 +1420,7 @@ let execute (scenario: Scenario) : ExecResult =
                   ZigguratVal = (match Game.Buildings.get bpool "ziggurat" with Some b -> b.Val | None -> 0)
                   LeviathanEnergy = dp.Races.["leviathans"].Energy
                   TotalYears = Game.Stats.getStat stpool "totalYears"
+                  TotalResets = Game.Stats.getStat stpool "totalResets"
                   IronWill = ironWill
                   MineVal = (match Game.Buildings.get bpool "mine" with Some b -> b.Val | None -> 0)
                   WarehouseVal = (match Game.Buildings.get bpool "warehouse" with Some b -> b.Val | None -> 0)
@@ -1019,6 +1575,12 @@ let execute (scenario: Scenario) : ExecResult =
                 let t = spool.Techs.[techName]
                 spool <- { spool with Techs = spool.Techs |> Map.add techName { t with Researched = true; Unlocked = true } }
                 actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "forceupg"; upName ] ->
+                // D014 injection: mark a workshop upgrade researched
+                let u = wpool.Upgrades.[upName]
+                wpool <- { wpool with Upgrades = wpool.Upgrades |> Map.add upName { u with Researched = true; Unlocked = true } }
+                calculateAllTime ()
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
             | [ "forcepolicy"; polName ] ->
                 // D014 injection: mark a policy researched (shark scribes etc.)
                 let pol = spool.Policies.[polName]
@@ -1033,6 +1595,8 @@ let execute (scenario: Scenario) : ExecResult =
                 rpool <- rpool'
                 pool <- pool'
                 actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "day" ] ->
+                actionLog <- (curLogTick, "resop", m.Args, RNum calendar.Day) :: actionLog
             | [ "corruption" ] ->
                 actionLog <- (curLogTick, "resop", m.Args, RNum rpool.Corruption) :: actionLog
             | [ "setchallenge"; name; state ] ->
@@ -1040,9 +1604,16 @@ let execute (scenario: Scenario) : ExecResult =
                 match state with
                 | "active" -> cpool <- Game.Challenges.setActive name true cpool
                 | "inactive" -> cpool <- Game.Challenges.setActive name false cpool
-                | "complete" -> cpool <- Game.Challenges.researchChallenge name cpool
+                | "complete" ->
+                    cpool <- Game.Challenges.researchChallenge name cpool
+                    // researchChallenge tail: unlock(unlocks) + calculateAllEffects
+                    // (1000Years is the only challenge unlocking chronoforge here)
+                    if name = "1000Years" then
+                        let mm = tpool.CFUs.["temporalPress"]
+                        tpool <- { tpool with CFUs = tpool.CFUs |> Map.add "temporalPress" { mm with Unlocked = true } }
+                    calculateAllTime ()
                 | _ -> ()
-                refreshCache () // game.calculateAllEffects on state change
+                calculateAllTime () // the resop injection calls calculateAllEffects for every state
                 actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
             | [ "forcepact"; name ] ->
                 // D014 injection: unlock a pact (pactsAvailable gating)
@@ -1052,6 +1623,39 @@ let execute (scenario: Scenario) : ExecResult =
             | [ "startobserve" ] ->
                 // D014 injection: an astro event fired (observeRemainingTime = 300)
                 calendar <- { calendar with ObserveRemainingTime = 300 }
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "setres"; resName; value ] ->
+                // D014 injection: raw resource state set (mirrors res.value = n)
+                let res = pool.ByName[resName]
+                pool <- { pool with ByName = pool.ByName |> Map.add resName { res with Value = float value } }
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "setcfu"; name; prop; value ] ->
+                // D014 injection: force a CFU meta field
+                let m' = tpool.CFUs.[name]
+                let m'' =
+                    match prop with
+                    | "val" -> { m' with Val = int value }
+                    | "on" -> { m' with On = int value }
+                    | "unlocked" -> { m' with Unlocked = value = "1" }
+                    | "automation" -> { m' with IsAutomationEnabled = Some (value = "1") }
+                    | "automation-null" -> { m' with IsAutomationEnabled = None }
+                    | "delay" -> { m' with DelayTicks = int value }
+                    | "heat" -> { m' with Heat = float value }
+                    | _ -> m'
+                tpool <- { tpool with CFUs = tpool.CFUs |> Map.add name m'' }
+                calculateAllTime () // the resop injection mirrors orig-driver setcfu
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "setheat"; value ] ->
+                // D014 injection: time.heat = n
+                tpool <- { tpool with Heat = float value }
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "redshift"; days ] ->
+                // D014 injection: game.time.applyRedshift(days) with the calendar
+                let events = applyRedshiftCore (float days) false
+                actionLog <- (curLogTick, "resop", m.Args, RNum events) :: actionLog
+            | [ "unlockalltime" ] ->
+                // time.unlockAll dev helper
+                tpool <- Game.Time.unlockAll tpool
                 actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
             | [ "ffcal"; days ] ->
                 // calendar-07 fastForward EV engine (fresh-slice shape)
@@ -1421,7 +2025,7 @@ let execute (scenario: Scenario) : ExecResult =
         | "transcend" ->
             let rp', ok = Game.Religion.transcend rpool
             rpool <- rp'
-            if ok then refreshCache () // game.calculateAllEffects on success
+            if ok then calculateAllTime () // game.calculateAllEffects on success
         | "worship" ->
             // RU purchase via ReligionBtnController -> stackable build loop
             let n = if m.Args.Length >= 2 then int m.Args.[1] else 1
@@ -1603,6 +2207,7 @@ let execute (scenario: Scenario) : ExecResult =
                 let mutable wpoolU = wpool
                 let mutable rpoolU = rpool
                 let mutable dpU = dp
+                let mutable tpoolU = tpool
                 let mutable ok = true
                 for ev in u.Events do
                     match ev.Data with
@@ -1630,11 +2235,19 @@ let execute (scenario: Scenario) : ExecResult =
                         let rp2, okA = Game.Religion.undoAdore worshipBefore epiphanyGained rpoolU
                         rpoolU <- rp2
                         if not okA then ok <- false
+                    | Game.Types.CFUUndo(metaId, endVal) ->
+                        // time.undo buildCFU: full-refund sellInternal + upgrade fan-out
+                        let tp2, p2, sold = Game.Time.sellCFU (Game.Effects.getEffect cache) calendarDay metaId endVal tpoolU poolU
+                        tpoolU <- tp2
+                        poolU <- p2
+                        if sold = 0 then ok <- false
+                        tpoolU <- Game.Time.cfuCalculate (timeCalcCtx ()) metaId tpoolU
                 bpool <- bpoolU
                 spool <- spoolU
                 wpool <- wpoolU
                 pool <- poolU
                 rpool <- rpoolU
+                tpool <- tpoolU
                 dp <- dpU
                 undoChange <- None
                 if not ok then
@@ -1691,6 +2304,49 @@ let execute (scenario: Scenario) : ExecResult =
         | "accelerate" ->
             // AccelerateTimeBtn: toggle; consumes 1 flux/tick while on
             tpool <- { tpool with IsAccelerated = not tpool.IsAccelerated }
+        | "shatter" ->
+            // ShatterTCBtnController.doShatterAmt(model, amt)
+            let amt = int m.Args.[0]
+            let okS = doShatterManual amt
+            if not okS then
+                actionLog <- (m.Tick, "shatter", m.Args, RText "cannot-afford") :: actionLog
+        | "useheat" ->
+            // UseHeatBtnController.doShatterAmt — "all" computes max(2, heat/100)
+            let okU =
+                if m.Args.[0] = "all" then useHeatManual None
+                else useHeatManual (Some (int m.Args.[0]))
+            if not okU then
+                actionLog <- (m.Tick, "useheat", m.Args, RText "not-enough-heat") :: actionLog
+        | "cfu" ->
+            // ChronoforgeBtnController.build(model, 1) + unlock/upgrade fan-outs
+            let name = m.Args.[0]
+            let tp2, pool2, counter = Game.Time.buyCFU (Game.Effects.getEffect cache) calendarDay name 1 tpool pool
+            tpool <- tp2
+            pool <- pool2
+            if counter > 0 then
+                let def = Game.Time.cfuDef name
+                // game.unlock(meta.unlocks)
+                for up in def.UnlocksUpgrades do
+                    match wpool.Upgrades |> Map.tryFind up with
+                    | Some u -> wpool <- { wpool with Upgrades = wpool.Upgrades |> Map.add up { u with Unlocked = true } }
+                    | None -> ()
+                for cfuName in def.UnlocksCFU do
+                    let m' = tpool.CFUs.[cfuName]
+                    tpool <- { tpool with CFUs = tpool.CFUs |> Map.add cfuName { m' with Unlocked = true } }
+                // build(): meta.calculateEffects, then meta.upgrades →
+                // updateEffects(self)/calc via game.upgrade(children)
+                tpool <- Game.Time.cfuCalculate (timeCalcCtx ()) name tpool
+                for child in def.UpgradesCFU do
+                    tpool <- Game.Time.cfuCalculate (timeCalcCtx ()) child tpool
+                // registerUndoChange (ChronoforgeBtnController.build) — TTL 20×5
+                undoChange <-
+                    Some({ Ttl = 100
+                           Events =
+                               [ { ManagerId = "time"
+                                   Data = Game.Types.CFUUndo(name, tpool.CFUs.[name].Val - counter) } ] })
+                refreshCache () // game.upgrade ends with updateCaches
+            else
+                actionLog <- (m.Tick, "cfu", m.Args, RText "cannot-afford-or-locked") :: actionLog
         | other -> actionLog <- (m.Tick, other, m.Args, RNone) :: actionLog
 
     // scenario run loop mirroring orig-driver (D010): tick-0 moves before the
@@ -1836,11 +2492,23 @@ let snapshotJson
         |> List.map (fun (n, (v, on, unl)) ->
             sprintf "\"%s\":{\"val\":%d,\"on\":%d,\"unlocked\":%s}" (esc n) v on (if unl then "true" else "false"))
         |> String.concat ","
-    let (tFlux, tAcc, cfuList, vsuList) = timeSnap
+    let (tFlux, tHeat, tTestShatter, tAcc, cfuList, vsuList) = timeSnap
     let (voidVus, voidFaction) = voidSnap
     let cfuJson =
         cfuList
-        |> List.map (fun (n, (v, on)) -> sprintf "\"%s\":{\"val\":%d,\"on\":%d}" (esc n) v on)
+        |> List.map (fun (n, (v, on, heat, delayTicks, auto)) ->
+            // emit only the fields the orig def declares (undefined dropped by
+            // JSON.stringify there): heat=blastFurnace; delayTicks=controlledDelay;
+            // automation=blastFurnace/controlledDelay/accelerator/press
+            let parts =
+                [ sprintf "\"val\":%d" v; sprintf "\"on\":%d" on ]
+                @ (if n = "blastFurnace" then [ sprintf "\"heat\":%s" (num heat) ] else [])
+                @ (if n = "controlledDelay" then [ sprintf "\"delayTicks\":%d" delayTicks ] else [])
+                @ (if (Game.Catalog.World.cfuDefs |> List.find (fun d -> d.Name = n)).AutomationInit.IsSome then
+                       [ sprintf "\"automation\":%s"
+                           (if auto = Some true then "true" elif auto = Some false then "false" else "null") ]
+                   else [])
+            sprintf "\"%s\":{%s}" (esc n) (String.concat "," parts))
         |> String.concat ","
     let vsuJson =
         vsuList
@@ -1902,7 +2570,7 @@ let snapshotJson
         badgeJson
         challengeJson
         pactJson
-        (sprintf "{\"flux\":%s,\"isAccelerated\":%s,\"cfu\":{%s},\"vsu\":{%s}}" (num tFlux) (if tAcc then "true" else "false") cfuJson vsuJson)
+        (sprintf "{\"flux\":%s,\"heat\":%s,\"testShatter\":%d,\"isAccelerated\":%s,\"cfu\":{%s},\"vsu\":{%s}}" (num tFlux) (num tHeat) tTestShatter (if tAcc then "true" else "false") cfuJson vsuJson)
         (sprintf "{\"vu\":{%s},\"faction\":%s}" voidJson (match voidFaction with Some f -> sprintf "\"%s\"" (esc f) | None -> "null"))
         observeSnap
         (num winterSnap)

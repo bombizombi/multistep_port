@@ -104,8 +104,26 @@ let private calculateEffectsFor (cp: ChallengePool) (getEffect: string -> float)
         // L150-189: no calculateEffects (reward effects only); static table
         Map.empty
     | "1000Years" ->
-        // L189-230: effectDesc only
-        Map.empty
+        // L189-230: calculateEffects active/reward tables (provider ×on still
+        // applies — rewards only materialize once on >= 1)
+        if c.Active then
+            Map.ofList [
+                "shatterCostReduction", 0.0
+                "shatterCostIncreaseChallenge", 0.5
+                "shatterVoidCost", 0.4
+                "temporalPressCap", 0.0
+                "heatEfficiency", 0.0
+                "heatCompression", 0.0
+            ]
+        else
+            Map.ofList [
+                "shatterCostReduction", -0.02
+                "shatterCostIncreaseChallenge", 0.0
+                "shatterVoidCost", 0.0
+                "temporalPressCap", 10.0
+                "heatEfficiency", 0.1
+                "heatCompression", 0.05
+            ]
     | "blackSky" ->
         // L230-261: no effects table
         Map.empty

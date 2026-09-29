@@ -1,0 +1,27 @@
+# name: redshift
+# seed: 20260927
+# checkpoints: 0, 100, 200, 300, 400, 500, 600
+# time-04: applyRedshift — resPool fastforward+enforceLimits, calendar
+# fastForward (EV engine), village bulk sim (births), religion necrocorn FF +
+# OotV seam, steamworks factory automation crafting, chronoheat bulk transfer.
+0 resop seed 20260927
+0 resop setres timeCrystal 100
+0 resop setres relic 500
+0 cfu temporalAccelerator
+50 buy hut
+100 buy hut
+150 resop redshift 5
+200 resop redshift 400
+250 gather 40
+250 buy hut
+300 resop redshift 120
+350 resop setbld steamworks 1
+350 resop forceupg factoryAutomation
+350 resop setres wood 400
+350 resop setres minerals 400
+400 resop redshift 400
+450 resop setcfu blastFurnace automation 1
+450 resop setcfu blastFurnace heat 30
+500 resop setheat 250
+500 resop redshift 10
+600 resop redshift 40

@@ -54,7 +54,19 @@ type StatDef =
     { Name: string; InitialVal: float; StartsUnlocked: bool; HasCalculate: bool }
 
 type StatCurrentDef = { Name: string; HasCalculate: bool }
-type CFUDef = { Name: string; Prices: Price list; Effects: Map<string, float> }
+type CFUDef =
+    { Name: string
+      Prices: Price list
+      Effects: Map<string, float>
+      PriceRatio: float
+      LimitBuild: int option
+      StartsUnlocked: bool
+      HasAction: bool // blastFurnace/timeBoiler .action runs every tick (time-03)
+      UnlocksUpgrades: string list // meta.unlocks.upgrades (workshop: tachyonModerator)
+      UnlocksCFU: string list // meta.unlocks.chronoforge (timeBoiler etc.)
+      UpgradesCFU: string list // meta.upgrades.chronoforge (accelerator→impedance etc.)
+      AutomationInit: bool option } // isAutomationEnabled field: None = absent in orig def
+
 type VSUDef = { Name: string; Prices: Price list; Effects: Map<string, float> }
 type CycleDef = { Name: string; Effects: Map<string, float> }
 
@@ -331,14 +343,14 @@ let statCurrentDefs : StatCurrentDef list =
 
 let cfuDefs : CFUDef list =
     [
-      { Name = "temporalBattery"; Prices = [{ Resource = "timeCrystal"; Val = 5 }]; Effects = Map.ofList ["temporalFluxMax", 750] }
-      { Name = "blastFurnace"; Prices = [{ Resource = "timeCrystal"; Val = 25 }; { Resource = "relic"; Val = 5 }]; Effects = Map.ofList ["heatPerTick", 0.02; "heatMax", 100] }
-      { Name = "timeBoiler"; Prices = [{ Resource = "timeCrystal"; Val = 25000 }]; Effects = Map.ofList ["heatMaxExpansion", 10; "energyConsumption", 1] }
-      { Name = "controlledDelay"; Prices = [{ Resource = "timeCrystal"; Val = 1 }; { Resource = "gear"; Val = 10 }]; Effects = Map.ofList ["energyConsumption", 0.75] }
-      { Name = "temporalAccelerator"; Prices = [{ Resource = "timeCrystal"; Val = 10 }; { Resource = "relic"; Val = 1000 }]; Effects = Map.ofList ["timeRatio", 0.05] }
-      { Name = "temporalImpedance"; Prices = [{ Resource = "timeCrystal"; Val = 100 }; { Resource = "relic"; Val = 250 }]; Effects = Map.ofList ["timeImpedance", 1000] }
-      { Name = "ressourceRetrieval"; Prices = [{ Resource = "timeCrystal"; Val = 1000 }]; Effects = Map.ofList ["shatterTCGain", 0.01] }
-      { Name = "temporalPress"; Prices = [{ Resource = "timeCrystal"; Val = 100 }; { Resource = "void"; Val = 10 }]; Effects = Map.ofList ["shatterYearBoost", 0; "energyConsumption", 5] }
+      { Name = "temporalBattery"; Prices = [{ Resource = "timeCrystal"; Val = 5 }]; Effects = Map.ofList ["temporalFluxMax", 750]; PriceRatio = 1.25; LimitBuild = None; StartsUnlocked = true; HasAction = false; UnlocksUpgrades = []; UnlocksCFU = []; UpgradesCFU = []; AutomationInit = None }
+      { Name = "blastFurnace"; Prices = [{ Resource = "timeCrystal"; Val = 25 }; { Resource = "relic"; Val = 5 }]; Effects = Map.ofList ["heatPerTick", 0.02; "heatMax", 100]; PriceRatio = 1.25; LimitBuild = None; StartsUnlocked = true; HasAction = true; UnlocksUpgrades = ["tachyonModerator"]; UnlocksCFU = ["timeBoiler"]; UpgradesCFU = []; AutomationInit = Some false }
+      { Name = "timeBoiler"; Prices = [{ Resource = "timeCrystal"; Val = 25000 }]; Effects = Map.ofList ["heatMaxExpansion", 10; "energyConsumption", 1]; PriceRatio = 1.25; LimitBuild = None; StartsUnlocked = false; HasAction = true; UnlocksUpgrades = []; UnlocksCFU = []; UpgradesCFU = ["blastFurnace"]; AutomationInit = None }
+      { Name = "controlledDelay"; Prices = [{ Resource = "timeCrystal"; Val = 1 }; { Resource = "gear"; Val = 10 }]; Effects = Map.ofList ["energyConsumption", 0.75]; PriceRatio = 1.0; LimitBuild = Some 25; StartsUnlocked = false; HasAction = false; UnlocksUpgrades = []; UnlocksCFU = []; UpgradesCFU = []; AutomationInit = Some false }
+      { Name = "temporalAccelerator"; Prices = [{ Resource = "timeCrystal"; Val = 10 }; { Resource = "relic"; Val = 1000 }]; Effects = Map.ofList ["timeRatio", 0.05]; PriceRatio = 1.25; LimitBuild = None; StartsUnlocked = true; HasAction = false; UnlocksUpgrades = []; UnlocksCFU = []; UpgradesCFU = ["temporalImpedance"]; AutomationInit = Some false }
+      { Name = "temporalImpedance"; Prices = [{ Resource = "timeCrystal"; Val = 100 }; { Resource = "relic"; Val = 250 }]; Effects = Map.ofList ["timeImpedance", 1000]; PriceRatio = 1.05; LimitBuild = None; StartsUnlocked = false; HasAction = false; UnlocksUpgrades = []; UnlocksCFU = []; UpgradesCFU = []; AutomationInit = None }
+      { Name = "ressourceRetrieval"; Prices = [{ Resource = "timeCrystal"; Val = 1000 }]; Effects = Map.ofList ["shatterTCGain", 0.01]; PriceRatio = 1.3; LimitBuild = Some 100; StartsUnlocked = false; HasAction = false; UnlocksUpgrades = []; UnlocksCFU = []; UpgradesCFU = []; AutomationInit = None }
+      { Name = "temporalPress"; Prices = [{ Resource = "timeCrystal"; Val = 100 }; { Resource = "void"; Val = 10 }]; Effects = Map.ofList ["shatterYearBoost", 0; "energyConsumption", 5]; PriceRatio = 1.1; LimitBuild = None; StartsUnlocked = false; HasAction = false; UnlocksUpgrades = []; UnlocksCFU = []; UpgradesCFU = []; AutomationInit = Some false }
     ]
 
 let vsuDefs : VSUDef list =

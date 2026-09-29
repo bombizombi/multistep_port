@@ -228,3 +228,202 @@ let tick (ctx: CalendarContext) (st: CalendarState) : CalendarState =
 /// Season production modifiers of the current season (calendar-02, used by game-10).
 let seasonModifiers (st: CalendarState) : Map<string, float> =
     seasons.[st.Season].Modifiers
+
+// --- calendar-07: fastForward (full parity) ------------------------------------
+// orig calendar.fastForward (js/calendar.js L840-932): EV-based day skipping.
+// Resource accrual goes through runner callbacks (the pool is owned there);
+// rand() draws: ivory meteor rand(1500) on hit + the crypto walk
+// (loopOrGaussian base + adjustCryptoPrice + possible correction).
+
+type FastForwardContext =
+    { GetEffect: string -> float
+      Rand: unit -> float
+      IronWill: bool
+      LibraryOn: bool
+      AstronomyResearched: bool
+      BlackSkyActive: bool
+      Chronomancy: bool
+      Unicornmancy: bool
+      Astromancy: bool
+      Alicornmancy: bool
+      PacifismActive: bool
+      AnimalResearched: bool
+      ArcheryResearched: bool
+      MiningResearched: bool
+      CelestialMechanics: bool
+      Prospecting: bool
+      Seti: bool
+      Year1000Active: bool
+      AntimatterResearched: bool
+      EnergyBalanced: bool // resPool.energyProd >= energyCons (true at this slice)
+      UnicornsValue: unit -> float // live read (orig resPool.get("unicorns").value)
+      ZebrasValue: unit -> float
+      ZebrasMax: unit -> float
+      AddResEvent: string -> float -> unit
+      AddResPerTick: string -> float -> unit
+      OnAlicornUpgrade: unit -> unit // upgrade({zigguratUpgrades: [skyPalace; …]})
+      OnParagon: float -> unit // pool + totalParagon stat
+      OnMillenniumKarma: float -> unit // pactsMilleniumKarmaKittens seam
+      OnYearsAdvanced: float -> unit // totalYears stat
+      SpaceBeaconAction: unit -> unit // val=0 seam (no-op)
+      UpdateCaches: unit -> unit }
+
+let getAstroEventAutoChance (ctx: FastForwardContext) : float =
+    if ctx.Seti then 1.0
+    else
+        let mutable autoChance = ctx.GetEffect "starAutoSuccessChance"
+        if ctx.Astromancy then autoChance <- autoChance * 2.0
+        autoChance <-
+            if ctx.IronWill then max 0.25 autoChance
+            else max 0.0 autoChance
+        min autoChance 1.0
+
+let fastForward (ctx: FastForwardContext) (st: CalendarState) (days: float) : CalendarState * float =
+    let mutable st = st
+    let timeRatioBonus = 1.0 + ctx.GetEffect "timeRatio" * 0.25
+    let chanceRatio = (if ctx.Chronomancy then 1.1 else 1.0) * timeRatioBonus
+    let unicornChanceRatio = (if ctx.Unicornmancy then 1.1 else 1.0) * timeRatioBonus
+    let mutable totalEvents = 0.0
+
+    // auto observable events
+    if (ctx.LibraryOn || ctx.AstronomyResearched) && not ctx.BlackSkyActive then
+        let mutable eventChance = (0.0025 + ctx.GetEffect "starEventChance") * chanceRatio
+        if ctx.Astromancy then eventChance <- eventChance * 2.0
+        let autoChance = getAstroEventAutoChance ctx
+        let numberEvents = jsRound (days * eventChance * autoChance)
+        if numberEvents > 0.0 && ctx.AstronomyResearched then
+            ctx.AddResEvent "starchart" numberEvents
+        let celestialBonus =
+            if ctx.CelestialMechanics then
+                if ctx.IronWill then 1.6 else 1.2
+            else 1.0
+        let sciBonus = numberEvents * 25.0 * celestialBonus * (1.0 + ctx.GetEffect "scienceRatio")
+        ctx.AddResEvent "science" sciBonus
+        totalEvents <- totalEvents + numberEvents
+
+    // meteors
+    let iwChance = if ctx.IronWill then 40.0 else 0.0
+    let baseChance = 10.0 * chanceRatio
+    if ctx.MiningResearched then
+        let numberEvents = jsRound (days * (baseChance + iwChance) / 10000.0)
+        let mutable mineralsAmt = 50.0 + 25.0 * ctx.GetEffect "mineralsRatio"
+        let minerologyBonus = ctx.GetEffect "academyMeteorBonus"
+        if ctx.IronWill then mineralsAmt <- mineralsAmt + mineralsAmt * 0.1
+        mineralsAmt <- mineralsAmt * (1.0 + ctx.GetEffect "mineralsPolicyRatio" / 3.0)
+        mineralsAmt <- mineralsAmt * (1.0 + minerologyBonus)
+        ctx.AddResEvent "minerals" (numberEvents * mineralsAmt)
+        if ctx.CelestialMechanics then
+            ctx.AddResEvent "science" (numberEvents * 15.0 * (1.0 + ctx.GetEffect "scienceRatio"))
+        if ctx.Prospecting then
+            ctx.AddResEvent "iron" (numberEvents * 5.0 * (1.0 + minerologyBonus))
+        totalEvents <- totalEvents + numberEvents
+
+    // 0.035% unicorns in Iron Will (+ zebra drift)
+    if ctx.IronWill then
+        if ctx.UnicornsValue () < 2.0 && ctx.ArcheryResearched then
+            let numberEvents = jsRound (days * 17.0 * unicornChanceRatio / 100000.0)
+            ctx.AddResEvent "unicorns" numberEvents
+            totalEvents <- totalEvents + numberEvents
+        if ctx.ZebrasValue () > 0.0 && ctx.ZebrasValue () < ctx.ZebrasMax () then
+            let numberEvents = jsRound (days * 500.0 / 100000.0)
+            ctx.AddResEvent "zebras" numberEvents
+            totalEvents <- totalEvents + numberEvents
+
+    // 0.035% unicorns in Pacifism
+    if ctx.PacifismActive && ctx.UnicornsValue () < 2.0 && ctx.AnimalResearched then
+        let numberEvents = jsRound (days * 17.0 * unicornChanceRatio / 100000.0)
+        ctx.AddResEvent "unicorns" numberEvents
+        totalEvents <- totalEvents + numberEvents
+
+    // rifts
+    let numberEvents = jsRound (days * ctx.GetEffect "riftChance" * unicornChanceRatio)
+    ctx.AddResEvent "unicorns" (numberEvents * 500.0)
+    totalEvents <- totalEvents + numberEvents
+
+    // alicorns
+    let aliChance =
+        ctx.GetEffect "alicornChance"
+        * (1.0 + getLimitedDR (ctx.GetEffect "alicornPerTickRatio") 1.2)
+    let aliEvents = jsRound (days * aliChance)
+    if aliEvents >= 1.0 then
+        ctx.AddResEvent "alicorn" aliEvents
+        ctx.OnAlicornUpgrade ()
+    totalEvents <- totalEvents + aliEvents
+
+    // ivory meteors (rand(1500) only on hit)
+    let ivEvents = jsRound (days * ctx.GetEffect "ivoryMeteorChance" * unicornChanceRatio)
+    if ivEvents > 0.0 then
+        let ivoryRoll = uniformRandomInteger ctx.Rand 0.0 1500.0
+        let ivory = 250.0 + float ivoryRoll * (1.0 + ctx.GetEffect "ivoryMeteorRatio")
+        ctx.AddResEvent "ivory" (ivory * ivEvents)
+    totalEvents <- totalEvents + ivEvents
+
+    let yearsOffset = floor (days / (daysPerSeason * float (List.length seasons)))
+
+    // antimatter yearly production
+    if ctx.EnergyBalanced then
+        let yearProd =
+            ctx.GetEffect "antimatterProduction"
+            * (1.0 + ctx.GetEffect "antimatterPolicyRatio")
+            * (1.0 + ctx.GetEffect "pyramidPerYearRatio")
+        ctx.AddResEvent "antimatter" (yearProd * yearsOffset)
+
+    // spaceBeacon.action (val=0 seam) then the mid-FF cache refresh
+    ctx.SpaceBeaconAction ()
+    ctx.UpdateCaches ()
+
+    ctx.AddResPerTick "relic" (ctx.GetEffect "relicPerDay" * days)
+
+    // temporal paradox void EV
+    let temporalParadoxChance = ctx.GetEffect "temporalParadoxChance"
+    if temporalParadoxChance > 0.0 then
+        let daysInParadox = 10.0 + ctx.GetEffect "temporalParadoxDay"
+        let daysBetweenParadox = daysInParadox + 100.0 * max 1.0 (1.0 / temporalParadoxChance)
+        let percentTimeInParadox = daysInParadox / daysBetweenParadox
+        let voidStatistical = (ctx.GetEffect "temporalParadoxVoid" + 1.0) / 2.0
+        ctx.AddResEvent "void" (floor (voidStatistical * days * percentTimeInParadox))
+
+    // crypto walk (antimatter-gated; loopOrGaussian draws + adjustCryptoPrice)
+    if ctx.AntimatterResearched then
+        let cryptoBase () : float =
+            let y = ctx.Rand ()
+            if y < 0.3 then log1p ((y - 0.3) / (0.3 * 40000.0))
+            elif y < 0.6 then 0.0
+            else log1p ((y - 0.6) / (0.4 * 40000.0))
+        let logIncrease =
+            loopOrGaussianApproximation
+                ctx.Rand
+                (days - 1.0) false 1.2499270834635280e-6 1.4427062504448777e-10
+                (log1p (-1.0 / 40000.0))
+                (log1p (1.0 / 40000.0))
+                cryptoBase
+        st <- { st with CryptoPrice = st.CryptoPrice * exp logIncrease }
+        // adjustCryptoPrice (the daily walk) — draws rand(10) + rand()
+        let r10 = uniformRandomInteger ctx.Rand 0.0 10.0
+        let rf = ctx.Rand ()
+        st <- { st with CryptoPrice = st.CryptoPrice + st.CryptoPrice * (1.0 - (r10 % 3.0)) * rf / 40000.0 }
+        if st.CryptoPrice > 1100.0 then
+            let rc = ctx.Rand ()
+            st <- { st with CryptoPrice = st.CryptoPrice * (0.7 + 0.1 * rc) }
+
+    // cap years skipped at 500 in the 1000 Years challenge
+    let mutable yearsOffset = yearsOffset
+    if ctx.Year1000Active && st.Year + yearsOffset > 500.0 then
+        yearsOffset <- max (500.0 - st.Year) 0.0
+
+    // millennium paragon
+    let paragon = floor ((st.Year + yearsOffset) / 1000.0) - floor (st.Year / 1000.0)
+    if paragon > 0.0 then
+        ctx.OnParagon paragon
+    ctx.OnMillenniumKarma paragon
+
+    let oldYear = st.Year
+    st <- { st with Year = st.Year + yearsOffset }
+    ctx.OnYearsAdvanced yearsOffset
+
+    // alicornmancy: one unicorn per 2 crossed years
+    let numTwoYears = floor (st.Year / 2.0) - floor (oldYear / 2.0)
+    if numTwoYears > 0.0 && ctx.Alicornmancy && ctx.PacifismActive && ctx.AnimalResearched && ctx.UnicornsValue () < 2.0 then
+        ctx.AddResEvent "unicorns" (min (2.0 - ctx.UnicornsValue ()) numTwoYears)
+
+    st, totalEvents

@@ -402,12 +402,56 @@ function doAction(move) {
       case "accelerate":
         game.time.isAccelerated = !game.time.isAccelerated;
         return;
+      case "shatter": {
+        // ShatterTCBtnController.doShatterAmt via the controller's fetchModel
+        const amt = Number(args[0]);
+        const controller = new classes.ui.time.ShatterTCBtnController(game);
+        const model = controller.fetchModel({ name: "shatterTC", prices: [{ name: "timeCrystal", val: 1 }] });
+        const tcBefore = game.resPool.get("timeCrystal").value;
+        controller.doShatterAmt(model, amt);
+        if (game.resPool.get("timeCrystal").value === tcBefore && game.time.flux === 0 && amt > 0) {
+          // cannot-afford probes log only when nothing changed and no flux accrued
+          if (!model.enabled) actionLog.push({ tick: tickIndex, action, args, reason: "cannot-afford" });
+        }
+        game.updateCaches();
+        return;
+      }
+      case "useheat": {
+        // UseHeatBtnController.doShatterAmt — "all" = max(2, floor(heat/100))
+        const controller = new classes.ui.time.UseHeatBtnController(game);
+        const model = controller.fetchModel({ name: "useHeat" });
+        const amt = args[0] === "all" ? "all" : Number(args[0]);
+        const heatBefore = game.time.getCFU("blastFurnace").heat;
+        if (amt === "all") {
+          const quantity = Math.max(2, Math.floor(heatBefore / 100));
+          controller.doShatterAmt(model, quantity);
+        } else {
+          controller.doShatterAmt(model, amt);
+        }
+        if (game.time.getCFU("blastFurnace").heat === heatBefore) {
+          actionLog.push({ tick: tickIndex, action, args, reason: "not-enough-heat" });
+        }
+        game.updateCaches();
+        return;
+      }
+      case "cfu": {
+        // ChronoforgeBtnController.build(model, 1) via the stackable fetchModel
+        const controller = new classes.ui.time.ChronoforgeBtnController(game);
+        const model = controller.fetchModel({ id: args[0] });
+        const valBefore = model.metadata.val;
+        controller.build(model, 1);
+        if (model.metadata.val === valBefore) {
+          actionLog.push({ tick: tickIndex, action, args, reason: "cannot-afford-or-locked" });
+        }
+        game.updateCaches();
+        return;
+      }
       case "save": game.save(); return;
       case "load": game.load(); return;
       // resop — test-hook action (D014): direct resPool calls for unit-level
       // verification of the resource pipeline (mirrors orig's own jest practice).
       case "resop": {
-        const [fn, arg1, arg2] = args;
+        const [fn, arg1, arg2, arg3] = args;
         if (fn === "caps") {
           game.resPool.updateMaxValueAll();
           actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
@@ -602,6 +646,14 @@ function doAction(move) {
           actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
           return;
         }
+        if (fn === "forceupg") {
+          // D014 injection: mark a workshop upgrade researched
+          game.workshop.get(arg1).researched = true;
+          game.workshop.get(arg1).unlocked = true;
+          game.calculateAllEffects();
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
         if (fn === "forcepact") {
           const pact = game.religion.getPact(arg1);
           pact.unlocked = true;
@@ -610,6 +662,43 @@ function doAction(move) {
         }
         if (fn === "startobserve") {
           game.calendar.observeRemainingTime = 300;
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "setres") {
+          // D014 injection: raw resource state set
+          game.resPool.get(arg1).value = Number(arg2);
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "setcfu") {
+          // D014 injection: force a CFU meta field
+          const cfu = game.time.getCFU(arg1);
+          if (arg2 === "val") cfu.val = Number(arg3);
+          else if (arg2 === "on") cfu.on = Number(arg3);
+          else if (arg2 === "unlocked") cfu.unlocked = arg3 === "1";
+          else if (arg2 === "automation") cfu.isAutomationEnabled = arg3 === "1";
+          else if (arg2 === "automation-null") cfu.isAutomationEnabled = null;
+          else if (arg2 === "delay") cfu.delayTicks = Number(arg3);
+          else if (arg2 === "heat") cfu.heat = Number(arg3);
+          game.calculateAllEffects();
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "setheat") {
+          // D014 injection: time.heat = n
+          game.time.heat = Number(arg1);
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "redshift") {
+          // D014 injection: game.time.applyRedshift(days) with the calendar
+          const events = game.time.applyRedshift(Number(arg1));
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: events });
+          return;
+        }
+        if (fn === "unlockalltime") {
+          game.time.unlockAll();
           actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
           return;
         }
@@ -630,6 +719,10 @@ function doAction(move) {
           const added = game.resPool.addResEvent("relic", amt);
           game.resPool.get("blackcoin").value = 0;
           actionLog.push({ tick: tickIndex, action: "resop", args, result: added });
+          return;
+        }
+        if (fn === "day") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.calendar.day });
           return;
         }
         if (fn === "corruption") {
@@ -790,8 +883,21 @@ function takeSnapshot() {
     pacts: Object.assign({}, ...g.religion.pactsManager.pacts.map((p) => ({ [p.name]: { val: p.val || 0, on: p.on || 0, unlocked: !!p.unlocked } }))),
     time: {
       flux: g.time.flux || 0,
+      heat: g.time.heat || 0,
+      testShatter: g.time.testShatter || 0,
       isAccelerated: !!g.time.isAccelerated,
-      cfu: Object.assign({}, ...g.time.chronoforgeUpgrades.map((m) => ({ [m.name]: { val: m.val || 0, on: m.on || 0 } }))),
+      // per-CFU: emit only the fields the orig def actually declares
+      // (heat: blastFurnace; delayTicks: controlledDelay; isAutomationEnabled:
+      // blastFurnace/controlledDelay/temporalAccelerator/temporalPress) —
+      // undefined values are dropped by JSON.stringify
+      cfu: Object.assign({}, ...g.time.chronoforgeUpgrades.map((m) => ({
+        [m.name]: Object.assign(
+          { val: m.val || 0, on: m.on || 0 },
+          m.heat !== undefined ? { heat: m.heat || 0 } : {},
+          m.delayTicks !== undefined ? { delayTicks: m.delayTicks || 0 } : {},
+          m.isAutomationEnabled !== undefined ? { automation: m.isAutomationEnabled } : {}
+        ),
+      }))),
       vsu: Object.assign({}, ...g.time.voidspaceUpgrades.map((m) => ({ [m.name]: { val: m.val || 0, on: m.on || 0 } }))),
     },
     void: {

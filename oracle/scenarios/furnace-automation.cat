@@ -1,0 +1,21 @@
+# name: furnace-automation
+# seed: 20260927
+# checkpoints: 0, 100, 200, 300, 305, 400, 500, 600
+# time-03: chronoheat transfer into the blast furnace, furnace automation
+# (100-heat shatters capped at 5/tick), controlledDelay pause ticks, timeBoiler
+# updateEffects (heatMaxExpansion), heat overflow over heatMax.
+0 resop seed 20260927
+0 resop setres timeCrystal 100000
+0 resop setres relic 5000
+0 resop setres gear 100
+0 cfu blastFurnace
+100 cfu timeBoiler
+200 cfu controlledDelay
+300 resop setcfu blastFurnace automation 1
+300 resop setcfu blastFurnace heat 450
+305 resop setcfu blastFurnace heat 250
+400 resop setcfu controlledDelay on 3
+400 resop setcfu blastFurnace heat 800
+500 resop setheat 400
+600 resop setcfu blastFurnace automation 0
+600 resop setcfu blastFurnace heat 300

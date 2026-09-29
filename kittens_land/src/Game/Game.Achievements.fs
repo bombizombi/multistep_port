@@ -22,6 +22,7 @@ type AchContext =
       ZigguratVal: int
       LeviathanEnergy: float
       TotalYears: float
+      TotalResets: float
       IronWill: bool
       MineVal: int
       WarehouseVal: int
@@ -118,7 +119,7 @@ let private evalCondition (ctx: AchContext) (name: string) : bool =
 /// field are never polled by update() — only direct unlockBadge calls hit them.
 let private evalBadgeCondition (ctx: AchContext) (name: string) : bool option =
     match name with
-    | "lotus" -> Some(ctx.TotalYears >= 50.0)
+    | "lotus" -> Some(ctx.TotalResets >= 50.0) // totalResets stat (reset flow seam: 0 here)
     | "useless" -> None // leader seam (condition present, leader null → false)
     | "beta" -> Some false // window.location.href has no "beta"
     | "silentHill" -> Some false // server.motdContent null == "" is false
