@@ -1,0 +1,15 @@
+# name: daily-events
+# seed: 20260927
+# checkpoints: 0, 110, 210, 410, 810
+# calendar-05/06: astro event → observeRemainingTime → observe button (the
+# observeHandler draws: science + starcharts); meteor with mining; rift/alicorn
+# via starChance injections; festival interplay with unicorn IW rolls.
+0 resop addResEvent catnip 100000
+0 resop gtick 100
+100 research astronomy
+110 resop startobserve
+115 observe
+210 resop startobserve
+215 observe
+410 research mining
+810 festival

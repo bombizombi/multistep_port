@@ -1,0 +1,16 @@
+# name: necrocorn-loop
+# seed: 20260927
+# checkpoints: 0, 10, 30, 60, 100, 160
+# religion-03/04/14 end-to-end: alicorns → corruption → necrocorns; pact buys
+# consume necrocorns per day (necrocornPerDay from pactNecrocornConsumption);
+# deficit accrues when dry; payDebt pact clears it.
+0 resop addResEvent alicorn 50
+0 resop addResEvent relic 1000
+0 resop forcepact pactOfDestruction
+10 pact pactOfDestruction
+30 resop corruption
+60 resop necroff 20
+100 resop corruption
+160 resop forcepact payDebt
+161 pact payDebt
+165 resop corruption

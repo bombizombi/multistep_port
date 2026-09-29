@@ -44,7 +44,8 @@ type CalendarState =
       CycleYear: int
       EventChance: float
       FestivalDays: int
-      CryptoPrice: float }   // bcoin random walk (calendar-10)
+      CryptoPrice: float     // bcoin random walk (calendar-10)
+      ObserveRemainingTime: int }
 
 let init : CalendarState =
     { Year = 0.0
@@ -54,6 +55,7 @@ let init : CalendarState =
       Cycle = 0
       CycleYear = 0
       CryptoPrice = 1000.0
+      ObserveRemainingTime = 0
       EventChance = 0.0
       FestivalDays = 0 }
 
@@ -76,7 +78,9 @@ type CalendarContext =
       Rand: unit -> float // the harness PRNG stream
       OnParadox: CalendarState -> CalendarState // paradox hook (resources void accrual)
       OnNewDayRefresh: CalendarState -> CalendarState
-      OnNewDayTail: CalendarState -> CalendarState } // orig onNewDay tail: game.upgrade({policies:["authocracy"]}) — the "policy hack" whose updateCaches refreshes ALL effects daily (calendar.js L730)
+      OnNewDayTail: CalendarState -> CalendarState
+      OnObserveTimeout: CalendarState -> CalendarState
+      OnFlux: float -> unit }  // time.flux bookkeeping (time-01); arg = delta // orig onNewDay tail: game.upgrade({policies:["authocracy"]}) — the "policy hack" whose updateCaches refreshes ALL effects daily (calendar.js L730)
 
 /// Season/weather production modifier (orig getWeatherMod) — catnip only.
 /// `weather` comes from calendar-02 rolls; policy/challenge seams are fresh-false.
@@ -108,14 +112,25 @@ let private roundToCentiday (st: CalendarState) : CalendarState =
 /// flux bookkeeping (time-01) is the one skipped side effect; it touches no
 /// snapshotted state.
 let tick (ctx: CalendarContext) (st: CalendarState) : CalendarState =
+    // observe countdown (orig tick L419-425): at zero, the timeout draws
+    // rand(100) vs autoChance via the context hook
     let mutable st = st
+    if st.ObserveRemainingTime > 0 then
+        st <- { st with ObserveRemainingTime = st.ObserveRemainingTime - 1 }
+        if st.ObserveRemainingTime = 0 then
+            st <- ctx.OnObserveTimeout st
 
     // (observeRemainingTime countdown: observe events are calendar-03, none at fresh)
 
     let previousIntDay = floor st.Day
     st <- { st with Day = st.Day + (1.0 + ctx.TimeAccelerationRatio) / ticksPerDay }
     st <- roundToCentiday st
-    // time.flux bookkeeping skipped (time-01 seam)
+    // time.flux bookkeeping (time-01): paradox counts down, acceleration up
+    let ticksPerYear = ticksPerDay * daysPerSeason * float (List.length seasons)
+    if st.Day < 0.0 then
+        ctx.OnFlux (-1.0 / (1.0 + ctx.TimeAccelerationRatio) / ticksPerYear)
+    else
+        ctx.OnFlux (ctx.TimeAccelerationRatio / ticksPerYear)
 
     if floor st.Day = previousIntDay then st
     else

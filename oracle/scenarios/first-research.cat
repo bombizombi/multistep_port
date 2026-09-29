@@ -5,6 +5,7 @@
 # research agriculture (100 science). KNOWN ISSUE: science production stays 0 despite
 # library+scholars — unlock gate not yet identified (see session report); the research
 # action is expected to fail with cannot-afford for now. Still a valuable long-run fixture.
+0 resop seed 20260927
 0 gather 30
 15 buy field
 50 gather 60

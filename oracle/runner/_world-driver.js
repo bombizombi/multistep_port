@@ -541,6 +541,8 @@ function takeSnapshot() {
   const pacts = game.religion.pactsManager.pacts.map((p) => ({
     name: p.name, prices: clone(p.prices) || [], val: p.val || 0,
     unlocked: !!p.unlocked, researched: !!p.researched, effects: clone(p.effects) || {},
+    special: !!p.special, notAddDeficit: !!p.notAddDeficit,
+    limitBuild: p.limitBuild === undefined ? null : p.limitBuild,
   }));
   const programs = game.space.programs.map((p) => ({
     name: p.name, unlocked: !!p.unlocked, researched: !!p.researched,
@@ -591,10 +593,21 @@ function takeSnapshot() {
     faunaNames: b.faunaNames || null, // null = defaultFaunaNames (len 3)
     faunaPenalty: b.faunaPenalty === undefined ? 1.0 : b.faunaPenalty,
   }));
+  const challenges = game.challenges.challenges.map((c) => ({
+    name: c.name,
+    defaultUnlocked: !!c.defaultUnlocked,
+    effects: clone(c.effects) || {},
+    stackOptions: clone(c.stackOptions) || {},
+    unlocks: unlockShape(c.unlocks) || null,
+    levigyEnergyToUnlock: c.leviEnergyToUnlock === undefined ? null : c.leviEnergyToUnlock,
+  }));
+  const voidUpgrades = game.void.voidUpgrades.map((v) => ({
+    name: v.name, prices: clone(v.prices) || [],
+  }));
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   fs.writeFileSync(outPath, JSON.stringify({
     driver: "orig-driver.js", origCommit: (typeof origCommit === "function" ? origCommit() : "unknown"),
-    races, zu, ru, tu, pacts, programs, planets, spaceBuildings, perks, achievements, badges, stats, statsCurrent, cfu, vsu, cycles, biomes,
+    races, zu, ru, tu, pacts, programs, planets, spaceBuildings, perks, achievements, badges, stats, statsCurrent, cfu, vsu, cycles, biomes, challenges, voidUpgrades,
   }, null, 1));
   console.log("world -> " + outPath + " (races " + races.length + ", badges " + badges.length + ", zu " + zu.length + ", ru " + ru.length + ", tu " + tu.length + ", pacts " + pacts.length + ", programs " + programs.length + ", planets " + planets.length + ", spaceBld " + spaceBuildings.length + ", perks " + perks.length + ", ach " + achievements.length + ", stats " + stats.length + ", cfu " + cfu.length + ", vsu " + vsu.length + ")");
   process.exit(0);

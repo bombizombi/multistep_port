@@ -21,7 +21,14 @@ type AchContext =
       ObservatoryOn: int
       ZigguratVal: int
       LeviathanEnergy: float
-      TotalYears: float }
+      TotalYears: float
+      IronWill: bool
+      MineVal: int
+      WarehouseVal: int
+      PastureVal: int
+      MagnetoVal: int
+      FactoryVal: int
+      SteamworksVal: int }
 
 type AchMeta = { Unlocked: bool; StarUnlocked: bool }
 type BadgeMeta = { Unlocked: bool }
@@ -83,8 +90,12 @@ let private evalCondition (ctx: AchContext) (name: string) : bool =
     | "anachronox" -> res "timeCrystal" > 0.0
     | "deadSpace" -> res "necrocorn" > 0.0
     | "sadnessAbyss" -> res "sorrow" >= 100.0
-    | "ironWill" | "uberkatzhen" | "hundredYearsSolitude" | "soilUptuned"
-    | "atlasUnmeowed" | "meowMeowRevolution" -> false // ironWill seam
+    | "ironWill" -> ctx.IronWill && ctx.KittenCount = 0 && ctx.MineVal > 0
+    | "uberkatzhen" -> ctx.IronWill && ctx.KittenCount = 0 && ctx.WarehouseVal > 0
+    | "hundredYearsSolitude" -> ctx.IronWill && ctx.KittenCount = 0 && ctx.SteamworksVal > 0
+    | "soilUptuned" -> ctx.IronWill && ctx.KittenCount = 0 && ctx.PastureVal >= 45
+    | "atlasUnmeowed" -> ctx.IronWill && ctx.KittenCount = 0 && ctx.MagnetoVal > 0
+    | "meowMeowRevolution" -> ctx.IronWill && ctx.KittenCount = 0 && ctx.FactoryVal > 0
     | "spaceOddity" | "jupiterAscending" -> false // space seam
     | "veryLargeArray" -> ctx.ObservatoryOn >= 100 // && !seti (seti researched gate — seam 0 fresh)
     | "shadowOfTheColossus" -> ctx.ZigguratVal > 0 && ctx.MaxKittens = 1

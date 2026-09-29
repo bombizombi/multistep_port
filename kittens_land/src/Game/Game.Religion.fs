@@ -9,6 +9,12 @@ module Game.Religion
 
 open Game.Types
 
+/// Pact state (pactsManager metas: stackable val/on).
+type PactMeta =
+    { Val: int
+      On: int
+      Unlocked: bool }
+
 /// Live meta state shared by ZU/RU/TU metas (orig mutates the def: val/on).
 /// FrozenEffects carries calculateEffects output that orig writes INTO the def
 /// (solarRevolution sets effects.solarRevolutionRatio at buy time; the value
@@ -26,7 +32,10 @@ type ReligionPool =
       Tcratio: float          // transcendence progress spent
       TranscendenceTier: int
       Corruption: float
-      NecrocornDeficit: float // pactsManager.necrocornDeficit (religion-14 seam; 0 without pacts)
+      NecrocornDeficit: float // pactsManager.necrocornDeficit (religion-14)
+      FractureThreshold: float // pactsManager.fractureNecrocornDeficit (50)
+      Pacts: Map<string, PactMeta>
+      PactOrder: string list
       ActiveHolyGenocide: int
       ZUs: Map<string, ReligionMeta>
       RUs: Map<string, ReligionMeta>
@@ -55,6 +64,12 @@ let init () : ReligionPool =
       TranscendenceTier = 0
       Corruption = 0.0
       NecrocornDeficit = 0.0
+      FractureThreshold = 50.0
+      Pacts =
+        Game.Catalog.World.pactDefs
+        |> List.map (fun d -> (d.Name, { Val = 0; On = 0; Unlocked = false }))
+        |> Map.ofList
+      PactOrder = Game.Catalog.World.pactDefs |> List.map (fun d -> d.Name)
       ActiveHolyGenocide = 0
       ZUs = zus
       RUs = rus
@@ -134,7 +149,13 @@ let resetState (_rp: ReligionPool) : ReligionPool =
         let ruOrder, rus = idx Game.Catalog.World.ruDefs (fun d -> d.Name)
         let tuOrder, tus = idx Game.Catalog.World.tuDefs (fun d -> d.Name)
         { Faith = 0.0; FaithRatio = 0.0; Tcratio = 0.0; TranscendenceTier = 0
-          Corruption = 0.0; NecrocornDeficit = 0.0; ActiveHolyGenocide = 0
+          Corruption = 0.0; NecrocornDeficit = 0.0; FractureThreshold = 50.0
+          Pacts =
+            Game.Catalog.World.pactDefs
+            |> List.map (fun d -> (d.Name, { Val = 0; On = 0; Unlocked = false }))
+            |> Map.ofList
+          PactOrder = Game.Catalog.World.pactDefs |> List.map (fun d -> d.Name)
+          ActiveHolyGenocide = 0
           ZUs = zus; RUs = rus; TUs = tus
           ZuOrder = zuOrder; RuOrder = ruOrder; TuOrder = tuOrder }
     fresh
@@ -162,6 +183,16 @@ let effectsBase : Map<string, float> =
         [ "kittensKarmaPerMinneliaRatio", 0.0001
           "pactNecrocornConsumption", -0.0005 ]
 
+/// Pacts stackable group contribution (effects × on) — merged into the
+/// religion manager group.
+let pactItems (rp: ReligionPool) : (Map<string, float> * (string -> float -> float)) list =
+    Game.Catalog.World.pactDefs
+    |> List.choose (fun def ->
+        let m = rp.Pacts.[def.Name]
+        if m.On > 0 then
+            Some(def.Effects, (fun _ (v: float) -> v * float m.On))
+        else None)
+
 /// Manager group for the global effects cache (religion slot in updateCaches).
 let religionGroup (rp: ReligionPool) : Game.Effects.ManagerGroup =
     let zuEffects (name: string) =
@@ -174,7 +205,8 @@ let religionGroup (rp: ReligionPool) : Game.Effects.ManagerGroup =
       Items =
         metaItems (rp.ZuOrder |> List.choose (fun n -> rp.ZUs |> Map.tryFind n |> Option.map (fun m -> (n, m)))) zuEffects
         @ metaItems (rp.RuOrder |> List.choose (fun n -> rp.RUs |> Map.tryFind n |> Option.map (fun m -> (n, m)))) ruEffects
-        @ metaItems (rp.TuOrder |> List.choose (fun n -> rp.TUs |> Map.tryFind n |> Option.map (fun m -> (n, m)))) tuEffects }
+        @ metaItems (rp.TuOrder |> List.choose (fun n -> rp.TUs |> Map.tryFind n |> Option.map (fun m -> (n, m)))) tuEffects
+        @ pactItems rp }
 
 // --- religion-03: corruption engine (js/religion.js L182-408) ------------------
 
@@ -450,6 +482,99 @@ let undoAdore (worshipBefore: float) (epiphanyGained: float) (rp: ReligionPool) 
         { rp with FaithRatio = rp.FaithRatio - epiphanyGained; Faith = worshipBefore }, true
     else
         rp, false
+
+// --- religion-14: pactsManager (js/religion.js L2572-3004) ---------------------
+
+let getPact (rp: ReligionPool) (name: string) : PactMeta = rp.Pacts.[name]
+
+/// orig countUniqueActivePacts (L2966): MAUSOLEUM_PACTS flag is TRUE in the
+/// harness (localhost); fractured short-circuits the count; special skipped.
+let countUniqueActivePacts (rp: ReligionPool) : int =
+    if rp.Pacts.["fractured"].On > 0 then 0
+    else
+        Game.Catalog.World.pactDefs
+        |> List.filter (fun d -> not d.Special)
+        |> List.sumBy (fun d -> if rp.Pacts.[d.Name].On > 0 then 1 else 0)
+
+let countActivePacts (rp: ReligionPool) : int =
+    if rp.Pacts.["fractured"].On > 0 then 0
+    else
+        Game.Catalog.World.pactDefs
+        |> List.filter (fun d -> not d.Special)
+        |> List.sumBy (fun d -> rp.Pacts.[d.Name].On)
+
+/// orig getDebtPenaltyRatio (L2880-2898)
+let getDebtPenaltyRatio (rp: ReligionPool) (getEffect: string -> float) : float =
+    if rp.Pacts.["fractured"].On > 0 || rp.NecrocornDeficit >= rp.FractureThreshold then 0.0
+    else
+        let lowerBound = getEffect "smallDebtPunishmentExemption"
+        if rp.NecrocornDeficit <= lowerBound then 1.0
+        else 1.0 - (rp.NecrocornDeficit - lowerBound) / (rp.FractureThreshold - lowerBound)
+
+/// orig pact purchase build (L2478-2545): pactsAvailable cap, prices, deficit
+/// +0.5/counter (unless notAddDeficit or positive upfront cost), payDebt
+/// special pays the deficit instead. Returns updated pools.
+let buyPact
+    (calendarDay: int)
+    (getEffect: string -> float)
+    (name: string)
+    (n: int)
+    (pool: ResPool)
+    (rp: ReligionPool)
+    : ReligionPool * ResPool * int =
+    let def = Game.Catalog.World.pactDefs |> List.find (fun d -> d.Name = name)
+    let mutable maxBld = n
+    // pactsAvailable cap: each pact's effects.pactsAvailable is NEGATIVE;
+    // headroom = pactsAvailable / (-this pact's pactsAvailable)
+    let pactAvailableEffect = def.Effects |> Map.tryFind "pactsAvailable" |> Option.defaultValue 0.0
+    if pactAvailableEffect <> 0.0 then
+        maxBld <- min maxBld (int (getEffect "pactsAvailable" / -pactAvailableEffect))
+    let mutable pact = rp.Pacts.[name]
+    let mutable rp = rp
+    let mutable pool = pool
+    let mutable counter = 0
+    let prices0 = def.Prices |> List.map (fun p -> (p.Resource, p.Val))
+    match def.LimitBuild with
+    | Some lb -> maxBld <- min maxBld (int lb - pact.Val)
+    | None -> ()
+    while counter < maxBld && Game.Resources.hasRes pool prices0 0.0 do
+        rp <- { rp with Pacts = rp.Pacts |> Map.add name { pact with Val = pact.Val + 1; On = pact.On + 1 } }
+        pact <- rp.Pacts.[name]
+        pool <- Game.Resources.payPrices calendarDay pool prices0
+        counter <- counter + 1
+    if counter > 0 then
+        if not def.NotAddDeficit then
+            rp <- { rp with NecrocornDeficit = rp.NecrocornDeficit + 0.5 * float counter }
+        if name = "payDebt" then
+            // payDebt calculateEffects: clears the deficit & retires the pact
+            rp <-
+                { rp with
+                    NecrocornDeficit = 0.0
+                    Pacts = rp.Pacts |> Map.add "payDebt" { rp.Pacts.["payDebt"] with On = 0; Val = 0; Unlocked = false } }
+    rp, pool, counter
+
+/// orig onNewDay slice for pacts (calendar calls pactsManager
+/// necrocornConsumptionDays(1) + payDebt.onNewDay + deficit punishment).
+let pactsOnNewDay
+    (ctx: CorruptionContext)
+    (pool: ResPool)
+    (rp: ReligionPool)
+    : ReligionPool * ResPool =
+    let rp1, pool1 = necrocornConsumptionDays 0 ctx 1.0 pool rp
+    // payDebt pact: unlocked + price refresh while deficit > 0
+    let pd = rp1.Pacts.["payDebt"]
+    let rp2 =
+        { rp1 with
+            Pacts =
+                rp1.Pacts
+                |> Map.add "payDebt" { pd with Unlocked = rp1.NecrocornDeficit > 0.0 } }
+    // deficit >= fracture threshold → punishment (fractured pact flips on;
+    // the kitten skill wipe is a village seam)
+    let rp3 =
+        if rp2.NecrocornDeficit >= rp2.FractureThreshold then
+            { rp2 with Pacts = rp2.Pacts |> Map.add "fractured" { rp2.Pacts.["fractured"] with On = 1; Val = 1 } }
+        else rp2
+    rp3, pool1
 
 // --- purchases (core.js BuildingStackableBtnController build loop) -------------
 

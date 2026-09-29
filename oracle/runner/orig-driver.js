@@ -105,7 +105,7 @@ class FakeDate extends RealDate {
 global.Date = FakeDate;
 
 // jsdom DOM
-const dom = new JSDOM("<!doctype html><html><body><div id='gameContainerId'></div></body></html>", {
+const dom = new JSDOM("<!doctype html><html><body><div id='gameContainerId'></div><div id='observeButton'></div></body></html>", {
   url: "https://oracle.local/",
   pretendToBeVisual: false,
 });
@@ -130,7 +130,8 @@ global.dojo = {
   declare: dojo.declare,
   destroy: function () {},
   empty: function () {},
-  byId: function () {},
+  create: function () { return { connect: function () {} }; }, // observe-button UI (D014: headless stub)
+  byId: function () { return {}; },
   forEach: function (array, predicate) { for (const i in array) predicate(array[i]); },
   clone: function (mixin) {
     if (mixin instanceof Array) return mixin.map((elem) => global.dojo.clone(elem));
@@ -385,7 +386,22 @@ function doAction(move) {
         game.updateResources();
         return;
       case "refine": game.bld.refineCatnip(); return;
-      case "observe": return;
+      case "observe":
+        // the observe button: handler only while an event is pending
+        if (game.calendar.observeRemainingTime > 0) game.calendar.observeHandler();
+        return;
+      case "pact": {
+        // PactsBtnController.build via the controller's fetchModel
+        const n = args.length >= 2 ? Number(args[1]) : 1;
+        const controller = new com.nuclearunicorn.game.ui.PactsBtnController(game);
+        const model = controller.fetchModel({ id: args[0] });
+        controller.build(model, n);
+        game.updateCaches();
+        return;
+      }
+      case "accelerate":
+        game.time.isAccelerated = !game.time.isAccelerated;
+        return;
       case "save": game.save(); return;
       case "load": game.load(); return;
       // resop — test-hook action (D014): direct resPool calls for unit-level
@@ -577,6 +593,45 @@ function doAction(move) {
           actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
           return;
         }
+        if (fn === "setchallenge") {
+          const chall = game.challenges.getChallenge(arg1);
+          if (arg2 === "active") { chall.active = true; chall.unlocked = true; }
+          else if (arg2 === "inactive") { chall.active = false; }
+          else if (arg2 === "complete") { chall.researched = true; chall.on += 1; chall.active = false; }
+          game.calculateAllEffects();
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "forcepact") {
+          const pact = game.religion.getPact(arg1);
+          pact.unlocked = true;
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "startobserve") {
+          game.calendar.observeRemainingTime = 300;
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "ffcal") {
+          game.calendar.fastforward(Number(arg1));
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "buybcoin") {
+          const amt = game.resPool.get("relic").value / game.calendar.getCryptoPrice();
+          const added = game.resPool.addResEvent("blackcoin", amt);
+          game.resPool.get("relic").value = 0;
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: added });
+          return;
+        }
+        if (fn === "sellbcoin") {
+          const amt = game.resPool.get("blackcoin").value * game.calendar.getCryptoPrice();
+          const added = game.resPool.addResEvent("relic", amt);
+          game.resPool.get("blackcoin").value = 0;
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: added });
+          return;
+        }
         if (fn === "corruption") {
           actionLog.push({ tick: tickIndex, action: "resop", args, result: game.religion.corruption });
           return;
@@ -731,6 +786,20 @@ function takeSnapshot() {
     diplomacy: {
       races: Object.assign({}, ...g.diplomacy.races.map((r) => ({ [r.name]: { unlocked: !!r.unlocked, embassyLevel: r.embassyLevel || 0, energy: r.energy || 0, duration: r.duration || 0 } }))),
     },
+    challenges: Object.assign({}, ...g.challenges.challenges.map((c) => ({ [c.name]: { unlocked: !!c.unlocked, active: !!c.active, researched: !!c.researched, on: c.on || 0 } }))),
+    pacts: Object.assign({}, ...g.religion.pactsManager.pacts.map((p) => ({ [p.name]: { val: p.val || 0, on: p.on || 0, unlocked: !!p.unlocked } }))),
+    time: {
+      flux: g.time.flux || 0,
+      isAccelerated: !!g.time.isAccelerated,
+      cfu: Object.assign({}, ...g.time.chronoforgeUpgrades.map((m) => ({ [m.name]: { val: m.val || 0, on: m.on || 0 } }))),
+      vsu: Object.assign({}, ...g.time.voidspaceUpgrades.map((m) => ({ [m.name]: { val: m.val || 0, on: m.on || 0 } }))),
+    },
+    void: {
+      vu: Object.assign({}, ...g.void.voidUpgrades.map((m) => ({ [m.name]: { val: m.val || 0, on: m.on || 0, unlocked: !!m.unlocked } }))),
+      faction: g.void.faction || null,
+    },
+    observeRemainingTime: g.calendar.observeRemainingTime || 0,
+    winterCatnipPerTick: g.winterCatnipPerTick || 0,
     stats: { total: statsTotal, current: statsCurrent },
     achievements,
     badges,

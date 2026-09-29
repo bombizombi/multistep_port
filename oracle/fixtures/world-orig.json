@@ -1576,7 +1576,10 @@
     "necrocornPerDay": 0,
     "pactDeficitRecoveryRatio": 0.003,
     "pactGlobalResourceRatio": 0.0005
-   }
+   },
+   "special": false,
+   "notAddDeficit": false,
+   "limitBuild": null
   },
   {
    "name": "pactOfDestruction",
@@ -1594,7 +1597,10 @@
     "necrocornPerDay": 0,
     "pactDeficitRecoveryRatio": -0.0001,
     "pactGlobalProductionRatio": 0.0005
-   }
+   },
+   "special": false,
+   "notAddDeficit": false,
+   "limitBuild": null
   },
   {
    "name": "pactOfExtermination",
@@ -1611,7 +1617,10 @@
     "pactsAvailable": -1,
     "necrocornPerDay": 0,
     "pactFaithRatio": 0.001
-   }
+   },
+   "special": false,
+   "notAddDeficit": false,
+   "limitBuild": null
   },
   {
    "name": "pactOfPurity",
@@ -1630,7 +1639,10 @@
     "pactDeficitRecoveryRatio": 0.005,
     "pactBlackLibraryBoost": 0.0005,
     "pactSpaceCompendiumRatio": 0.001
-   }
+   },
+   "special": false,
+   "notAddDeficit": false,
+   "limitBuild": null
   },
   {
    "name": "pactOfArcane",
@@ -1648,7 +1660,10 @@
     "necrocornPerDay": 0,
     "pactcraftRatio": 0.001,
     "pactUniversalKnowHow": 0.1
-   }
+   },
+   "special": false,
+   "notAddDeficit": false,
+   "limitBuild": null
   },
   {
    "name": "pactOfChronicler",
@@ -1667,7 +1682,10 @@
     "pactPerYearRatio": 0.003,
     "umbraBoostRatio": 0.1,
     "pacttimeRatio": 0.1
-   }
+   },
+   "special": false,
+   "notAddDeficit": false,
+   "limitBuild": null
   },
   {
    "name": "payDebt",
@@ -1682,7 +1700,10 @@
    "researched": false,
    "effects": {
     "pactsAvailable": 0
-   }
+   },
+   "special": true,
+   "notAddDeficit": true,
+   "limitBuild": 1
   },
   {
    "name": "fractured",
@@ -1700,7 +1721,10 @@
     "pyramidGlobalProductionRatio": -0.5,
     "pyramidFaithRatio": -0.5,
     "pactsAvailable": 0
-   }
+   },
+   "special": true,
+   "notAddDeficit": false,
+   "limitBuild": 1
   }
  ],
  "programs": [
@@ -4843,6 +4867,234 @@
    "name": "redmoon",
    "faunaNames": null,
    "faunaPenalty": 1
+  }
+ ],
+ "challenges": [
+  {
+   "name": "ironWill",
+   "defaultUnlocked": true,
+   "effects": {},
+   "stackOptions": {},
+   "unlocks": null,
+   "levigyEnergyToUnlock": null
+  },
+  {
+   "name": "winterIsComing",
+   "defaultUnlocked": true,
+   "effects": {
+    "springCatnipRatio": 0.05,
+    "summerSolarFarmRatio": 0.05,
+    "coldChance": 0,
+    "coldHarshness": 0
+   },
+   "stackOptions": {
+    "springCatnipRatio": {
+     "LDRLimit": 2
+    },
+    "summerSolarFarmRatio": {
+     "LDRLimit": 2
+    },
+    "coldChance": {
+     "LDRLimit": 0.825
+    },
+    "coldHarshness": {
+     "LDRLimit": 1
+    }
+   },
+   "unlocks": null,
+   "levigyEnergyToUnlock": null
+  },
+  {
+   "name": "anarchy",
+   "defaultUnlocked": true,
+   "effects": {
+    "masterSkillMultiplier": 0.2,
+    "kittenLaziness": 0
+   },
+   "stackOptions": {
+    "masterSkillMultiplier": {
+     "LDRLimit": 4
+    },
+    "kittenLaziness": {
+     "LDRLimit": 0.25,
+     "noStack": true
+    }
+   },
+   "unlocks": null,
+   "levigyEnergyToUnlock": null
+  },
+  {
+   "name": "energy",
+   "defaultUnlocked": false,
+   "effects": {
+    "energyConsumptionRatio": -0.02,
+    "energyConsumptionIncrease": 0
+   },
+   "stackOptions": {
+    "energyConsumptionRatio": {
+     "LDRLimit": 1
+    }
+   },
+   "unlocks": null,
+   "levigyEnergyToUnlock": null
+  },
+  {
+   "name": "atheism",
+   "defaultUnlocked": false,
+   "effects": {
+    "faithSolarRevolutionBoost": 0.1,
+    "cultureMaxChallenge": 0,
+    "scienceMaxChallenge": 0,
+    "manpowerMaxChallenge": 0,
+    "challengeHappiness": 0
+   },
+   "stackOptions": {
+    "faithSolarRevolutionBoost": {
+     "LDRLimit": 4
+    }
+   },
+   "unlocks": null,
+   "levigyEnergyToUnlock": null
+  },
+  {
+   "name": "1000Years",
+   "defaultUnlocked": false,
+   "effects": {
+    "shatterCostReduction": -0.02,
+    "shatterCostIncreaseChallenge": 0,
+    "shatterVoidCost": 0,
+    "temporalPressCap": 0,
+    "heatEfficiency": 0.1,
+    "heatCompression": 0.05
+   },
+   "stackOptions": {
+    "shatterCostReduction": {
+     "LDRLimit": 1
+    },
+    "heatEfficiency": {
+     "capMagnitude": 3
+    }
+   },
+   "unlocks": {
+    "buildings": [],
+    "tabs": [],
+    "jobs": [],
+    "tech": [],
+    "policies": [],
+    "upgrades": [],
+    "zebraUpgrades": [],
+    "religion": [],
+    "crafts": [],
+    "perks": [],
+    "stages": []
+   },
+   "levigyEnergyToUnlock": null
+  },
+  {
+   "name": "blackSky",
+   "defaultUnlocked": false,
+   "effects": {
+    "corruptionBoostRatioChallenge": 0.1,
+    "bskSattelitePenalty": 0
+   },
+   "stackOptions": {
+    "corruptionBoostRatioChallenge": {
+     "LDRLimit": 2
+    },
+    "bskSattelitePenalty": {
+     "LDRLimit": 30
+    }
+   },
+   "unlocks": null,
+   "levigyEnergyToUnlock": null
+  },
+  {
+   "name": "pacifism",
+   "defaultUnlocked": false,
+   "effects": {
+    "alicornPerTickRatio": 0.1,
+    "tradeKnowledge": 1,
+    "weaponEfficency": 0,
+    "policyFakeBought": 0,
+    "embassyFakeBought": 0,
+    "steamworksFakeBought": 0,
+    "tradeKnowledgeRatio": 0
+   },
+   "stackOptions": {
+    "tradeKnowledgeRatio": {
+     "noStack": true
+    },
+    "weaponEfficency": {
+     "capMagnitude": 1
+    }
+   },
+   "unlocks": null,
+   "levigyEnergyToUnlock": null
+  },
+  {
+   "name": "unicornTears",
+   "defaultUnlocked": false,
+   "effects": {
+    "bonfireTearsPriceRatioChallenge": 0,
+    "scienceTearsPricesChallenge": 0,
+    "workshopTearsPricesChallenge": 0,
+    "cathPollutionPerTearOvercapped": 0,
+    "unicornsMax": 0,
+    "tearsMax": 0,
+    "alicornMax": 0,
+    "zigguratIvoryPriceRatio": -0.003
+   },
+   "stackOptions": {
+    "bonfireTearsPriceRatioChallenge": {
+     "noStack": true,
+     "LDRLimit": 2.5
+    },
+    "scienceTearsPricesChallenge": {
+     "LDRLimit": 75
+    },
+    "workshopTearsPricesChallenge": {
+     "LDRLimit": 1
+    },
+    "cathPollutionPerTearOvercapped": {
+     "noStack": true
+    },
+    "unicornsMax": {
+     "noStack": true
+    },
+    "tearsMax": {
+     "noStack": true
+    },
+    "alicornMax": {
+     "noStack": true
+    },
+    "zigguratIvoryPriceRatio": {
+     "LDRLimit": 0.075
+    }
+   },
+   "unlocks": null,
+   "levigyEnergyToUnlock": 25
+  },
+  {
+   "name": "postApocalypse",
+   "defaultUnlocked": false,
+   "effects": {
+    "arrivalSlowdown": 0,
+    "cryochamberSupport": 1
+   },
+   "stackOptions": {},
+   "unlocks": null,
+   "levigyEnergyToUnlock": null
+  }
+ ],
+ "voidUpgrades": [
+  {
+   "name": "spaceCathedral",
+   "prices": [
+    {
+     "name": "relic",
+     "val": 1
+    }
+   ]
   }
  ]
 }

@@ -1,0 +1,21 @@
+# name: challenges-pacts
+# seed: 20260927
+# checkpoints: 0, 210, 410, 620, 1010
+# challenges-01..04 + religion-14: winterIsComing active (coldChance effect →
+# weather roll + eternal-winter getCurSeason seam inactive), anarchy reward
+# table via completions, pact purchase → necrocornPerDay consumption → deficit
+# accrual, payDebt refresh, blackcoin market.
+0 resop addResEvent relic 100
+0 resop addResEvent culture 10000
+0 resop addResEvent gold 50000
+0 resop addResEvent manpower 50000
+0 resop addResEvent minerals 500000
+0 resop addResEvent science 50000
+0 resop setchallenge winterIsComing active
+100 resop setchallenge winterIsComing complete
+200 resop setchallenge anarchy active
+400 resop setchallenge anarchy inactive
+600 resop forcepact pactOfCleansing
+610 pact pactOfCleansing
+1000 resop buybcoin
+1010 resop sellbcoin

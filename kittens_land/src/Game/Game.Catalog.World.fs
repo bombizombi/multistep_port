@@ -31,7 +31,9 @@ type TUDef =
     { Name: string; Prices: Price list; Effects: Map<string, float>
       PriceRatio: float option; Unlocks: UnlockList option; Upgrades: UnlockList option }
 
-type PactDef = { Name: string; Prices: Price list; Effects: Map<string, float> }
+type PactDef =
+    { Name: string; Prices: Price list; Effects: Map<string, float>
+      Special: bool; NotAddDeficit: bool; LimitBuild: float option }
 
 type ProgramDef = { Name: string; Prices: Price list }
 type PlanetDef = { Name: string; Buildings: string list }
@@ -59,6 +61,14 @@ type CycleDef = { Name: string; Effects: Map<string, float> }
 /// village map biomes — RNG skeleton data only (village-14/15 slice): the
 /// fauna roll consumes 1-3 draws per biome per tick and MUST mirror orig.
 type BiomeDef = { Name: string; FaunaNames: string list; FaunaPenalty: float }
+
+type StackOptions = { NoStack: bool; LDRLimit: float option; CapMagnitude: float option }
+
+type ChallengeDef =
+    { Name: string; StartsUnlocked: bool; Effects: Map<string, float>
+      StackOptions: Map<string, StackOptions>; Unlocks: UnlockList option }
+
+type VoidUpgradeDef = { Name: string; Prices: Price list }
 
 let raceDefs : RaceDef list =
     [
@@ -118,14 +128,14 @@ let tuDefs : TUDef list =
 
 let pactDefs : PactDef list =
     [
-      { Name = "pactOfCleansing"; Prices = [{ Resource = "relic"; Val = 100 }]; Effects = Map.ofList ["pactsAvailable", -1; "necrocornPerDay", 0; "pactDeficitRecoveryRatio", 0.003; "pactGlobalResourceRatio", 0.0005] }
-      { Name = "pactOfDestruction"; Prices = [{ Resource = "relic"; Val = 100 }]; Effects = Map.ofList ["pactsAvailable", -1; "necrocornPerDay", 0; "pactDeficitRecoveryRatio", -0.0001; "pactGlobalProductionRatio", 0.0005] }
-      { Name = "pactOfExtermination"; Prices = [{ Resource = "relic"; Val = 100 }]; Effects = Map.ofList ["pactsAvailable", -1; "necrocornPerDay", 0; "pactFaithRatio", 0.001] }
-      { Name = "pactOfPurity"; Prices = [{ Resource = "relic"; Val = 100 }]; Effects = Map.ofList ["pactsAvailable", -1; "necrocornPerDay", 0; "pactDeficitRecoveryRatio", 0.005; "pactBlackLibraryBoost", 0.0005; "pactSpaceCompendiumRatio", 0.001] }
-      { Name = "pactOfArcane"; Prices = [{ Resource = "relic"; Val = 100 }]; Effects = Map.ofList ["pactsAvailable", -1; "necrocornPerDay", 0; "pactcraftRatio", 0.001; "pactUniversalKnowHow", 0.1] }
-      { Name = "pactOfChronicler"; Prices = [{ Resource = "relic"; Val = 100 }]; Effects = Map.ofList ["pactsAvailable", -1; "necrocornPerDay", 0; "pactPerYearRatio", 0.003; "umbraBoostRatio", 0.1; "pacttimeRatio", 0.1] }
-      { Name = "payDebt"; Prices = [{ Resource = "necrocorn"; Val = 0 }]; Effects = Map.ofList ["pactsAvailable", 0] }
-      { Name = "fractured"; Prices = [{ Resource = "catnip"; Val = 1 }]; Effects = Map.ofList ["pyramidGlobalResourceRatio", -0.5; "pyramidGlobalProductionRatio", -0.5; "pyramidFaithRatio", -0.5; "pactsAvailable", 0] }
+      { Name = "pactOfCleansing"; Prices = [{ Resource = "relic"; Val = 100 }]; Effects = Map.ofList ["pactsAvailable", -1; "necrocornPerDay", 0; "pactDeficitRecoveryRatio", 0.003; "pactGlobalResourceRatio", 0.0005]; Special = false; NotAddDeficit = false; LimitBuild = None }
+      { Name = "pactOfDestruction"; Prices = [{ Resource = "relic"; Val = 100 }]; Effects = Map.ofList ["pactsAvailable", -1; "necrocornPerDay", 0; "pactDeficitRecoveryRatio", -0.0001; "pactGlobalProductionRatio", 0.0005]; Special = false; NotAddDeficit = false; LimitBuild = None }
+      { Name = "pactOfExtermination"; Prices = [{ Resource = "relic"; Val = 100 }]; Effects = Map.ofList ["pactsAvailable", -1; "necrocornPerDay", 0; "pactFaithRatio", 0.001]; Special = false; NotAddDeficit = false; LimitBuild = None }
+      { Name = "pactOfPurity"; Prices = [{ Resource = "relic"; Val = 100 }]; Effects = Map.ofList ["pactsAvailable", -1; "necrocornPerDay", 0; "pactDeficitRecoveryRatio", 0.005; "pactBlackLibraryBoost", 0.0005; "pactSpaceCompendiumRatio", 0.001]; Special = false; NotAddDeficit = false; LimitBuild = None }
+      { Name = "pactOfArcane"; Prices = [{ Resource = "relic"; Val = 100 }]; Effects = Map.ofList ["pactsAvailable", -1; "necrocornPerDay", 0; "pactcraftRatio", 0.001; "pactUniversalKnowHow", 0.1]; Special = false; NotAddDeficit = false; LimitBuild = None }
+      { Name = "pactOfChronicler"; Prices = [{ Resource = "relic"; Val = 100 }]; Effects = Map.ofList ["pactsAvailable", -1; "necrocornPerDay", 0; "pactPerYearRatio", 0.003; "umbraBoostRatio", 0.1; "pacttimeRatio", 0.1]; Special = false; NotAddDeficit = false; LimitBuild = None }
+      { Name = "payDebt"; Prices = [{ Resource = "necrocorn"; Val = 0 }]; Effects = Map.ofList ["pactsAvailable", 0]; Special = true; NotAddDeficit = true; LimitBuild = Some 1 }
+      { Name = "fractured"; Prices = [{ Resource = "catnip"; Val = 1 }]; Effects = Map.ofList ["pyramidGlobalResourceRatio", -0.5; "pyramidGlobalProductionRatio", -0.5; "pyramidFaithRatio", -0.5; "pactsAvailable", 0]; Special = true; NotAddDeficit = false; LimitBuild = Some 1 }
     ]
 
 let programDefs : ProgramDef list =
@@ -370,4 +380,23 @@ let biomeDefs : BiomeDef list =
       { Name = "swamp"; FaunaNames = ["bog toad"; "swamp serpent"; "poison spore"]; FaunaPenalty = 1 }
       { Name = "cath"; FaunaNames = []; FaunaPenalty = 1 }
       { Name = "redmoon"; FaunaNames = []; FaunaPenalty = 1 }
+    ]
+
+let challengeDefs : ChallengeDef list =
+    [
+      { Name = "ironWill"; StartsUnlocked = true; Effects = Map.empty; StackOptions = Map.empty; Unlocks = None }
+      { Name = "winterIsComing"; StartsUnlocked = true; Effects = Map.ofList ["springCatnipRatio", 0.05; "summerSolarFarmRatio", 0.05; "coldChance", 0; "coldHarshness", 0]; StackOptions = Map.ofList ["springCatnipRatio", ({ NoStack = false; LDRLimit = Some 2; CapMagnitude = None }); "summerSolarFarmRatio", ({ NoStack = false; LDRLimit = Some 2; CapMagnitude = None }); "coldChance", ({ NoStack = false; LDRLimit = Some 0.825; CapMagnitude = None }); "coldHarshness", ({ NoStack = false; LDRLimit = Some 1; CapMagnitude = None })]; Unlocks = None }
+      { Name = "anarchy"; StartsUnlocked = true; Effects = Map.ofList ["masterSkillMultiplier", 0.2; "kittenLaziness", 0]; StackOptions = Map.ofList ["masterSkillMultiplier", ({ NoStack = false; LDRLimit = Some 4; CapMagnitude = None }); "kittenLaziness", ({ NoStack = true; LDRLimit = Some 0.25; CapMagnitude = None })]; Unlocks = None }
+      { Name = "energy"; StartsUnlocked = false; Effects = Map.ofList ["energyConsumptionRatio", -0.02; "energyConsumptionIncrease", 0]; StackOptions = Map.ofList ["energyConsumptionRatio", ({ NoStack = false; LDRLimit = Some 1; CapMagnitude = None })]; Unlocks = None }
+      { Name = "atheism"; StartsUnlocked = false; Effects = Map.ofList ["faithSolarRevolutionBoost", 0.1; "cultureMaxChallenge", 0; "scienceMaxChallenge", 0; "manpowerMaxChallenge", 0; "challengeHappiness", 0]; StackOptions = Map.ofList ["faithSolarRevolutionBoost", ({ NoStack = false; LDRLimit = Some 4; CapMagnitude = None })]; Unlocks = None }
+      { Name = "1000Years"; StartsUnlocked = false; Effects = Map.ofList ["shatterCostReduction", -0.02; "shatterCostIncreaseChallenge", 0; "shatterVoidCost", 0; "temporalPressCap", 0; "heatEfficiency", 0.1; "heatCompression", 0.05]; StackOptions = Map.ofList ["shatterCostReduction", ({ NoStack = false; LDRLimit = Some 1; CapMagnitude = None }); "heatEfficiency", ({ NoStack = false; LDRLimit = None; CapMagnitude = Some 3 })]; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
+      { Name = "blackSky"; StartsUnlocked = false; Effects = Map.ofList ["corruptionBoostRatioChallenge", 0.1; "bskSattelitePenalty", 0]; StackOptions = Map.ofList ["corruptionBoostRatioChallenge", ({ NoStack = false; LDRLimit = Some 2; CapMagnitude = None }); "bskSattelitePenalty", ({ NoStack = false; LDRLimit = Some 30; CapMagnitude = None })]; Unlocks = None }
+      { Name = "pacifism"; StartsUnlocked = false; Effects = Map.ofList ["alicornPerTickRatio", 0.1; "tradeKnowledge", 1; "weaponEfficency", 0; "policyFakeBought", 0; "embassyFakeBought", 0; "steamworksFakeBought", 0; "tradeKnowledgeRatio", 0]; StackOptions = Map.ofList ["tradeKnowledgeRatio", ({ NoStack = true; LDRLimit = None; CapMagnitude = None }); "weaponEfficency", ({ NoStack = false; LDRLimit = None; CapMagnitude = Some 1 })]; Unlocks = None }
+      { Name = "unicornTears"; StartsUnlocked = false; Effects = Map.ofList ["bonfireTearsPriceRatioChallenge", 0; "scienceTearsPricesChallenge", 0; "workshopTearsPricesChallenge", 0; "cathPollutionPerTearOvercapped", 0; "unicornsMax", 0; "tearsMax", 0; "alicornMax", 0; "zigguratIvoryPriceRatio", -0.003]; StackOptions = Map.ofList ["bonfireTearsPriceRatioChallenge", ({ NoStack = true; LDRLimit = Some 2.5; CapMagnitude = None }); "scienceTearsPricesChallenge", ({ NoStack = false; LDRLimit = Some 75; CapMagnitude = None }); "workshopTearsPricesChallenge", ({ NoStack = false; LDRLimit = Some 1; CapMagnitude = None }); "cathPollutionPerTearOvercapped", ({ NoStack = true; LDRLimit = None; CapMagnitude = None }); "unicornsMax", ({ NoStack = true; LDRLimit = None; CapMagnitude = None }); "tearsMax", ({ NoStack = true; LDRLimit = None; CapMagnitude = None }); "alicornMax", ({ NoStack = true; LDRLimit = None; CapMagnitude = None }); "zigguratIvoryPriceRatio", ({ NoStack = false; LDRLimit = Some 0.075; CapMagnitude = None })]; Unlocks = None }
+      { Name = "postApocalypse"; StartsUnlocked = false; Effects = Map.ofList ["arrivalSlowdown", 0; "cryochamberSupport", 1]; StackOptions = Map.empty; Unlocks = None }
+    ]
+
+let voidUpgradeDefs : VoidUpgradeDef list =
+    [
+      { Name = "spaceCathedral"; Prices = [{ Resource = "relic"; Val = 1 }] }
     ]

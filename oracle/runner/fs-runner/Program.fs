@@ -147,6 +147,11 @@ type SnapTuple =
         * RelSnap list * RaceSnap list * float * float * int * float
         * (string * float) list * (string * float) list
         * (string * (bool * bool)) list * (string * bool) list
+        * (string * (bool * bool * bool * int)) list
+        * (string * (int * int * bool)) list
+        * (float * bool * (string * (int * int)) list * (string * (int * int)) list)
+        * ((string * (int * int * bool)) list * string option)
+        * int * float
 
 type ExecResult =
     { Snapshots: SnapTuple list
@@ -197,6 +202,18 @@ let execute (scenario: Scenario) : ExecResult =
     let mutable achPhase = 0
     // village map fauna slots (RNG skeleton; orig biome.fauna arrays)
     let mutable mapFauna = Game.Catalog.World.biomeDefs |> List.map (fun _ -> false)
+    // challenges-01 + time-01/02 + void-01 pools; game-20 winter catnip cache
+    let mutable cpool = Game.Challenges.init ()
+    // game.js L2343: the game starts in Iron Will; housing flips it off
+    let mutable ironWill = true
+    let mutable tpool = Game.Time.init ()
+    let mutable voidp = Game.Time.initVoid ()
+    let mutable winterCatnipPerTick = 0.0
+    let mutable winterPhase = 0
+    let chronoforgeResearched () =
+        match wpool.Upgrades |> Map.tryFind "chronoforge" with
+        | Some u -> u.Researched
+        | None -> false
     // village resourceProduction cache (orig: 10-tick timer + lazy first read +
     // instant refresh on job assignment); None = stale (forces lazy recompute)
     let mutable prodCache: Map<string, float> option = None
@@ -264,6 +281,16 @@ let execute (scenario: Scenario) : ExecResult =
             (match spool.Policies |> Map.tryFind "feedingFrenzy" with
              | Some p -> p.Researched
              | None -> false) }
+    let astronomyResearched () =
+        match spool.Techs |> Map.tryFind "astronomy" with
+        | Some t -> t.Researched
+        | None -> false
+    let miningResearched () =
+        match spool.Techs |> Map.tryFind "mining" with
+        | Some t -> t.Researched
+        | None -> false
+    let libraryOn () =
+        (match Game.Buildings.get bpool "library" with Some b -> b.On | None -> 0) > 0
     let dctx () : Game.Diplomacy.DiplomacyContext =
         { GetEffect = Game.Effects.getEffect cache
           GetResValue = getResValue
@@ -274,6 +301,36 @@ let execute (scenario: Scenario) : ExecResult =
           IronWill = false }
     let registerUndo (events: Game.Types.UndoEvent list) : unit =
         undoChange <- Some({ Ttl = 100; Events = events }) // DEFAULT_TTL 20 x tps 5
+    /// orig observeHandler (calendar.js L249-286): science + starcharts
+    let doObserveHandler () : unit =
+        calendar <- { calendar with ObserveRemainingTime = 0 }
+        stpool <- Game.Stats.bumpStat "eventsObserved" 1.0 stpool
+        let celestialBonus =
+            (match wpool.Upgrades |> Map.tryFind "celestialMechanics" with
+             | Some u when u.Researched -> 1.2 // ironWill 1.6 seam
+             | _ -> 1.0)
+        let setiSilent =
+            (match wpool.Upgrades |> Map.tryFind "seti" with
+             | Some u -> u.Researched
+             | None -> false)
+        let mutable sciBonus = 25.0 * celestialBonus * (1.0 + Game.Effects.getEffect cache "scienceRatio")
+        if astronomyResearched () then
+            let eventChance = (0.0025 + Game.Effects.getEffect cache "starEventChance") * 1.0
+            let starcharts =
+                if eventChance <= 1.0 then 1.0
+                else
+                    floor eventChance
+                    + (let extra = rngDraws <- rngDraws + 1; rand ()
+                       if extra < (eventChance - floor eventChance) * 10000.0 then 1.0 else 0.0)
+            sciBonus <- sciBonus * starcharts
+            let pool1, _ = Game.Resources.addResEvent calendarDay "science" sciBonus pool
+            let pool2, _ = Game.Resources.addResEvent calendarDay "starchart" starcharts pool1
+            pool <- pool2
+        else
+            let pool1, gained = Game.Resources.addResEvent calendarDay "science" sciBonus pool
+            pool <- pool1
+            let _ = gained
+            ()
     let capCtx () : CapContext =
         { GetEffect = Game.Effects.getEffect cache
           ParagonStorageRatio =
@@ -313,14 +370,15 @@ let execute (scenario: Scenario) : ExecResult =
                 | _ -> None) }
     let scienceGroup () = emptyGroup () // techs carry no static effects in this version
 
+    let challengesGroup () = Game.Challenges.challengesGroup cpool (Game.Effects.getEffect cache)
+    let cfuGroup () = Game.Time.timeGroup tpool (chronoforgeResearched ())
     let allGroups () =
-        [ workshopGroup (); religionGroup (); bldGroup (); challengesGroup (); prestigeGroup (); spaceGroup (); timeGroup (); villageGroup (); scienceGroup () ]
+        [ workshopGroup (); religionGroup (); bldGroup (); challengesGroup (); prestigeGroup (); spaceGroup (); cfuGroup (); timeGroup (); villageGroup (); scienceGroup () ]
 
     // calCtx -> refreshCache -> prodCtx -> calCtx is a genuine tie-the-knot
     // cycle (the daily refresh recomputes production with the live calendar)
     let rec calCtx () : Game.Calendar.CalendarContext =
         { Game.Calendar.CalendarContext.GetEffect = Game.Effects.getEffect cache
-          TimeAccelerationRatio = 0.0
           DarkFuture = false
           ChronomancyResearched = false
           UnicornmancyResearched = false
@@ -335,21 +393,126 @@ let execute (scenario: Scenario) : ExecResult =
           // orig mutates the calendar in place before the onNewDay refresh;
           // commit the rolled-over state first so production sees the new season
           OnNewDayRefresh = fun st -> calendar <- st; refreshCache (); st
+          // observeTimeout (calendar.js L288-297): rand(100) vs autoChance(0)
+          OnObserveTimeout =
+            fun st ->
+                let roll = Game.Math.uniformRandomInteger (fun () -> rngDraws <- rngDraws + 1; rand ()) 0.0 100.0
+                if float roll <= 0.0 then
+                    doObserveHandler ()
+                st
+          TimeAccelerationRatio = (if tpool.IsAccelerated then 0.5 else 0.0)
+          OnFlux = fun delta -> tpool <- { tpool with Flux = tpool.Flux + delta }
           // orig onNewDay tail: diplomacy.onNewDay (scribes + leviathans) then
           // adjustCryptoPrice (antimatter-gated 2-draw walk) — calendar.js L725-728
           OnNewDayTail =
-            fun st ->
-                // calendar-05/06 daily RNG skeleton (L560-731 fresh slice): 5
-                // rolls ALWAYS consume draws (gates come after the roll):
-                // meteor base, unicorn pacifism, unicorn ironWill, rift,
-                // alicorn. Astro roll gated off (no library). Effects land on
-                // researched seams (0 at fresh) — draws are the contract.
+            fun stIn ->
+                let mutable st = stIn
                 let drand () = rngDraws <- rngDraws + 1; rand ()
-                let _meteorBase = Game.Math.uniformRandomInteger drand 0.0 10000.0
-                let _uni1 = Game.Math.uniformRandomInteger drand 0.0 100000.0
-                let _uni2 = Game.Math.uniformRandomInteger drand 0.0 100000.0
-                let _rift = Game.Math.uniformRandomInteger drand 0.0 10000.0
-                let _ali = Game.Math.uniformRandomInteger drand 0.0 100000.0
+                // calendar-05: void during paradox (getVoidQuantity = 1 draw);
+                // relic accrual (relicPerDay effect 0 — no draw)
+                if st.Day < 0.0 then
+                    let voidQty = Game.Resources.getVoidQuantity (capCtx ()) drand pool
+                    let pool1, _ = Game.Resources.addResEvent calendarDay "void" voidQty pool
+                    pool <- pool1
+                else
+                    let relicPerDay = Game.Effects.getEffect cache "relicPerDay"
+                    let pool1, _ = Game.Resources.addResPerTick calendarDay "relic" relicPerDay pool
+                    pool <- pool1
+                // calendar-05: pacts daily (necrocornConsumptionDays(1) +
+                // payDebt refresh + fracture punishment)
+                let rpool1, pool2 = Game.Religion.pactsOnNewDay (corruptionCtx ()) pool rpool
+                rpool <- rpool1
+                pool <- pool2
+                // calendar-05: astro event roll (gate: library.on or astronomy)
+                if libraryOn () || astronomyResearched () then
+                    let chanceRatio = 1.0 // chronomancy perk + timeRatio seams
+                    let eventChance = (0.0025 + Game.Effects.getEffect cache "starEventChance") * chanceRatio
+                    let roll = Game.Math.uniformRandomInteger drand 0.0 10000.0
+                    if float roll < eventChance * 10000.0 then
+                        if st.ObserveRemainingTime > 0 then
+                            // observeTimeout: rand(100) vs autoChance (0 fresh)
+                            let autoRoll = Game.Math.uniformRandomInteger drand 0.0 100.0
+                            if float autoRoll <= 0.0 then
+                                calendar <- { calendar with ObserveRemainingTime = 0 }
+                                st <- { st with ObserveRemainingTime = 0 }
+                                doObserveHandler ()
+                        else
+                            st <- { st with ObserveRemainingTime = if false then 600 else 300 }
+                            calendar <- { calendar with ObserveRemainingTime = 300 }
+                // calendar-06: meteor (roll always; effect gated on mining)
+                let meteorRoll = Game.Math.uniformRandomInteger drand 0.0 10000.0
+                let iwChance = if ironWill then 40.0 else 0.0
+                if float meteorRoll < (10.0 * 1.0 + iwChance) && miningResearched () then
+                    let mineralsAmt = 50.0 + 25.0 * Game.Effects.getEffect cache "mineralsRatio"
+                    let pool3, _ = Game.Resources.addResEvent calendarDay "minerals" mineralsAmt pool
+                    pool <- pool3
+                // calendar-06: unicorn rolls — the ROLLS sit inside their gates
+                // (pacifism / ironWill), so they draw only when a gate is open
+                if Game.Challenges.isActive cpool "pacifism" then
+                    let uniRoll1 = Game.Math.uniformRandomInteger drand 0.0 100000.0
+                    let unicorns = getResValue "unicorns"
+                    if float uniRoll1 <= 17.0 && unicorns < 2.0 && (match spool.Techs |> Map.tryFind "animal" with Some t -> t.Researched | None -> false) then
+                        let pool3, _ = Game.Resources.addResEvent calendarDay "unicorns" 1.0 pool
+                        pool <- pool3
+                if ironWill then
+                    let uniRoll2 = Game.Math.uniformRandomInteger drand 0.0 100000.0
+                    let unicorns = getResValue "unicorns"
+                    if float uniRoll2 <= 17.0 && unicorns < 2.0 && (match spool.Techs |> Map.tryFind "archery" with Some t -> t.Researched | None -> false) then
+                        let pool3, _ = Game.Resources.addResEvent calendarDay "unicorns" 1.0 pool
+                        pool <- pool3
+                    // zebra emissary (IW): first zebra free, then 0.5%/day
+                    let zebrasV = getResValue "zebras"
+                    let zebrasMax = (get pool "zebras" |> Option.map (fun r -> r.MaxValue) |> Option.defaultValue 0.0)
+                    if zebrasV = 0.0 then
+                        if (match spool.Techs |> Map.tryFind "archery" with Some t -> t.Researched | None -> false) then
+                            let pool3, _ = Game.Resources.addResEvent calendarDay "zebras" 1.0 pool
+                            pool <- pool3
+                    elif zebrasV < zebrasMax then
+                        let zRoll = Game.Math.uniformRandomInteger drand 0.0 100000.0
+                        if float zRoll <= 500.0 then
+                            let pool3, _ = Game.Resources.addResEvent calendarDay "zebras" 1.0 pool
+                            pool <- pool3
+                else
+                    // non-IW: hunters depart down to the zTreshold (no draws)
+                    let zebrasV = getResValue "zebras"
+                    if zebrasV > 0.0 then
+                        let res = pool.ByName["zebras"]
+                        pool <- { pool with ByName = pool.ByName |> Map.add "zebras" { res with Value = 0.0 } }
+                // calendar-06: rift (unicorns)
+                let riftRoll = Game.Math.uniformRandomInteger drand 0.0 10000.0
+                let riftChance = Game.Effects.getEffect cache "riftChance"
+                if float riftRoll < riftChance * 10000.0 then
+                    let unicornBonus = 500.0 * (1.0 + Game.Effects.getEffect cache "unicornsRatioReligion" * 0.1)
+                    let pool3, _ = Game.Resources.addResEvent calendarDay "unicorns" unicornBonus pool
+                    pool <- pool3
+                // calendar-06: alicorn
+                let aliRoll = Game.Math.uniformRandomInteger drand 0.0 100000.0
+                let aliChance =
+                    Game.Effects.getEffect cache "alicornChance"
+                    * (1.0 + Game.Math.getLimitedDR (Game.Effects.getEffect cache "alicornPerTickRatio") 1.2)
+                if float aliRoll < aliChance * 100000.0 then
+                    let pool3, gained = Game.Resources.addResEvent calendarDay "alicorn" 1.0 pool
+                    pool <- pool3
+                    if gained > 0.0 then
+                        refreshCache () // upgrade fan-out (skyPalace etc.)
+                // calendar-06: ivory meteors (rand(1500) ONLY on hit)
+                let ivMeteorRoll = Game.Math.uniformRandomInteger drand 0.0 10000.0
+                let meteorChance = Game.Effects.getEffect cache "ivoryMeteorChance"
+                if float ivMeteorRoll < meteorChance * 10000.0 then
+                    let ivoryRoll = Game.Math.uniformRandomInteger drand 0.0 1500.0
+                    let ivory = 250.0 + float ivoryRoll * (1.0 + Game.Effects.getEffect cache "ivoryMeteorRatio")
+                    let pool3, _ = Game.Resources.addResEvent calendarDay "ivory" ivory pool
+                    pool <- pool3
+                // calendar-06: unicornTears overcap enforcement (challenge-gated)
+                if Game.Challenges.isActive cpool "unicornTears" then
+                    for resName, maxEffect in ["unicorns", "unicornsMax"; "tears", "tearsMax"; "alicorn", "alicornMax"] do
+                        let maxValue = Game.Effects.getEffect cache maxEffect
+                        let value = getResValue resName
+                        if value > maxValue && maxValue > 0.0 then
+                            let lost = if resName = "tears" then value - maxValue else ceil (value - maxValue)
+                            let pool3, _ = Game.Resources.addResEvent calendarDay resName (-lost) pool
+                            pool <- pool3
+                // calendar-07 tail: diplomacy.onNewDay + crypto walk
                 let antimatter =
                     match spool.Techs |> Map.tryFind "antimatter" with
                     | Some t -> t.Researched
@@ -482,6 +645,20 @@ let execute (scenario: Scenario) : ExecResult =
             [ for n in spool.PolicyOrder do
                 let pol = spool.Policies.[n]
                 yield (n, (pol.Unlocked, pol.Researched)) ]
+        let challengeSnap =
+            [ for n in cpool.Order do
+                let c = cpool.Challenges.[n]
+                yield (n, (c.Unlocked, c.Active, c.Researched, c.On)) ]
+        let pactSnap =
+            [ for n in rpool.PactOrder do
+                let p = rpool.Pacts.[n]
+                yield (n, (p.Val, p.On, p.Unlocked)) ]
+        let cfuSnap = tpool.CfuOrder |> List.map (fun n -> (n, (tpool.CFUs.[n].Val, tpool.CFUs.[n].On)))
+        let vsuSnap = tpool.VsuOrder |> List.map (fun n -> (n, (tpool.VSUs.[n].Val, tpool.VSUs.[n].On)))
+        let timeSnap = (tpool.Flux, tpool.IsAccelerated, cfuSnap, vsuSnap)
+        let voidSnap = (voidp.VuOrder |> List.map (fun n -> (n, (voidp.VUs.[n].Val, voidp.VUs.[n].On, voidp.VUs.[n].Unlocked))), voidp.Faction)
+        let observeSnap = calendar.ObserveRemainingTime
+        let winterSnap = winterCatnipPerTick
         let techs = spool.TechOrder |> List.filter (fun n -> spool.Techs.[n].Researched) |> List.sort
         let upgrades = wpool.UpgradeOrder |> List.filter (fun n -> wpool.Upgrades.[n].Researched) |> List.sort
         // JS Array.sort on [job|null]: null stringifies to "null" and sorts as
@@ -496,7 +673,8 @@ let execute (scenario: Scenario) : ExecResult =
             |> List.map (fun k -> (k, Game.Effects.getEffect cache k))
         (ticks, resources, rngDraws, calJson, buildings, jobs, crafts, techs, upgrades, policies, kittenJobs, free, effectsSample,
          religion, diplomacy, rpool.Faith, rpool.FaithRatio, rpool.TranscendenceTier, rpool.Corruption,
-         statsSnap, statsCurrentSnap, achSnap, badgeSnap)
+         statsSnap, statsCurrentSnap, achSnap, badgeSnap,
+         challengeSnap, pactSnap, timeSnap, voidSnap, observeSnap, winterSnap)
 
     // gtick: the port's game.tick() — updateModel order:
     // resPool.update → bld.update → village sim (+ kittens sync) → timer
@@ -644,9 +822,20 @@ let execute (scenario: Scenario) : ExecResult =
             pool <- pool'
             if corrupted > 0.0 then
                 refreshCache () // game.upgrade({zigguratUpgrades}) fan-out
+        // challenges.update (js/challenges.js L579-604): ironWill mirror +
+        // completion-condition polling (space/aiCore seams — never fire here)
+        let iw = cpool.Challenges.["ironWill"]
+        if iw.Active <> ironWill then
+            cpool <- { cpool with Challenges = cpool.Challenges |> Map.add "ironWill" { iw with Active = ironWill } }
+
+        // time.update (time-02): accelerated burns 1 flux/tick
+        let tpool1, poolT = Game.Time.update tpool pool
+        tpool <- tpool1
+        pool <- poolT
 
         // timer.update — handlers fire in registration order:
-        //   village.updateResourceProduction (10) → updateCaches (5) → ach (50)
+        //   village.updateResourceProduction (10) → updateCaches (5)
+        //   → winter catnip (25) → ach (50)
         prodPhase <- prodPhase - 1
         if prodPhase <= 0 then
             prodPhase <- 10
@@ -675,16 +864,56 @@ let execute (scenario: Scenario) : ExecResult =
                   ObservatoryOn = (match Game.Buildings.get bpool "observatory" with Some b -> b.On | None -> 0)
                   ZigguratVal = (match Game.Buildings.get bpool "ziggurat" with Some b -> b.Val | None -> 0)
                   LeviathanEnergy = dp.Races.["leviathans"].Energy
-                  TotalYears = Game.Stats.getStat stpool "totalYears" }
+                  TotalYears = Game.Stats.getStat stpool "totalYears"
+                  IronWill = ironWill
+                  MineVal = (match Game.Buildings.get bpool "mine" with Some b -> b.Val | None -> 0)
+                  WarehouseVal = (match Game.Buildings.get bpool "warehouse" with Some b -> b.Val | None -> 0)
+                  PastureVal = (match Game.Buildings.get bpool "pasture" with Some b -> b.Val | None -> 0)
+                  MagnetoVal = (match Game.Buildings.get bpool "magneto" with Some b -> b.Val | None -> 0)
+                  FactoryVal = (match Game.Buildings.get bpool "factory" with Some b -> b.Val | None -> 0)
+                  SteamworksVal = (match Game.Buildings.get bpool "steamworks" with Some b -> b.Val | None -> 0) }
             let apool', _ = Game.Achievements.update actx (fun () -> rngDraws <- rngDraws + 1; rand ()) apool
             apool <- apool'
+        // winter catnip estimate (freq 25; game.js L2657): catnip perTick with
+        // the winter modifier table (season index 3)
+        winterPhase <- winterPhase - 1
+        if winterPhase <= 0 then
+            winterPhase <- 25
+            // orig passes a pseudo-season that calcResourcePerTick never reads
+            // (getWeatherMod uses getCurSeason) — the estimate is the plain
+            // current-season computation
+            let pctxWinter = prodCtx ()
+            winterCatnipPerTick <- Game.Production.calcResourcePerTick pctxWinter pool "catnip" 
         // (policy recalc 25 / achievements 50 / winter catnip 25 / time queue 10 /
         //  server events: seams)
 
         let yearBeforeTick = calendar.Year
         calendar <- Game.Calendar.tick (calCtx ()) calendar
         if calendar.Year > yearBeforeTick then
-            stpool <- Game.Stats.bumpStat "totalYears" (calendar.Year - yearBeforeTick) stpool
+            let years = calendar.Year - yearBeforeTick
+            stpool <- Game.Stats.bumpStat "totalYears" years stpool
+            // calendar-09 onNewYear slice: millennium paragon
+            if calendar.Year % 1000.0 = 0.0 then
+                let poolY, _ = Game.Resources.addResEvent calendarDay "paragon" 1.0 pool
+                pool <- poolY
+                stpool <- Game.Stats.bumpStat "totalParagon" 1.0 stpool
+                // pactsMilleniumKarmaKittens: karma seam (pactsAvailable 0 at fresh)
+                ()
+            // elder visit roll — only draws when a black pyramid stands
+            let pyramidVal = float (Game.Religion.getZU rpool "blackPyramid").Val
+            if pyramidVal > 0.0 then
+                let markerVal = float (Game.Religion.getZU rpool "marker").Val
+                let elderRoll = Game.Math.uniformRandomInteger (fun () -> rngDraws <- rngDraws + 1; rand ()) 0.0 1000.0
+                if float elderRoll < 35.0 * pyramidVal * years * (1.0 + 0.1 * markerVal) then
+                    dp <- Game.Diplomacy.unlockElders dp 400.0
+            if dp.Races.["leviathans"].Unlocked then
+                let c = cpool.Challenges.["blackSky"]
+                cpool <- { cpool with Challenges = cpool.Challenges |> Map.add "blackSky" { c with Unlocked = true } }
+            // temporalFlux year production (effect 0 at fresh — addRes 0)
+            let yearFlux = Game.Effects.getEffect cache "temporalFluxProduction"
+            let poolY2, _ = Game.Resources.addResEvent calendarDay "temporalFlux" (yearFlux * years) pool
+            pool <- poolY2
+            refreshCache () // upgrade({policies: [authocracy + 2 relation policies]})
         ticks <- ticks + 1
         curLogTick <- ticks
 
@@ -806,6 +1035,117 @@ let execute (scenario: Scenario) : ExecResult =
                 actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
             | [ "corruption" ] ->
                 actionLog <- (curLogTick, "resop", m.Args, RNum rpool.Corruption) :: actionLog
+            | [ "setchallenge"; name; state ] ->
+                // D014 injection: controller-path enable/disable/complete
+                match state with
+                | "active" -> cpool <- Game.Challenges.setActive name true cpool
+                | "inactive" -> cpool <- Game.Challenges.setActive name false cpool
+                | "complete" -> cpool <- Game.Challenges.researchChallenge name cpool
+                | _ -> ()
+                refreshCache () // game.calculateAllEffects on state change
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "forcepact"; name ] ->
+                // D014 injection: unlock a pact (pactsAvailable gating)
+                let p = rpool.Pacts.[name]
+                rpool <- { rpool with Pacts = rpool.Pacts |> Map.add name { p with Unlocked = true } }
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "startobserve" ] ->
+                // D014 injection: an astro event fired (observeRemainingTime = 300)
+                calendar <- { calendar with ObserveRemainingTime = 300 }
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "ffcal"; days ] ->
+                // calendar-07 fastForward EV engine (fresh-slice shape)
+                let days = float days
+                // astro events EV (library/astronomy gate)
+                if libraryOn () || astronomyResearched () then
+                    let eventChance = (0.0025 + Game.Effects.getEffect cache "starEventChance")
+                    let numberEvents = Game.Math.jsRound (days * eventChance)
+                    if numberEvents > 0.0 && astronomyResearched () then
+                        let pool1, _ = Game.Resources.addResEvent calendarDay "starchart" numberEvents pool
+                        pool <- pool1
+                    let pool2, _ = Game.Resources.addResEvent calendarDay "science" (numberEvents * 25.0) pool
+                    pool <- pool2
+                // meteors EV
+                if miningResearched () then
+                    let numberEvents = Game.Math.jsRound (days * 10.0 / 10000.0)
+                    let mineralsAmt = 50.0 + 25.0 * Game.Effects.getEffect cache "mineralsRatio"
+                    let pool1, _ = Game.Resources.addResEvent calendarDay "minerals" (numberEvents * mineralsAmt) pool
+                    pool <- pool1
+                // rift EV
+                let riftEvents = Game.Math.jsRound (days * Game.Effects.getEffect cache "riftChance")
+                let poolR, _ = Game.Resources.addResEvent calendarDay "unicorns" (riftEvents * 500.0) pool
+                pool <- poolR
+                // alicorn EV
+                let aliChance =
+                    Game.Effects.getEffect cache "alicornChance"
+                    * (1.0 + Game.Math.getLimitedDR (Game.Effects.getEffect cache "alicornPerTickRatio") 1.2)
+                let aliEvents = Game.Math.jsRound (days * aliChance)
+                if aliEvents >= 1.0 then
+                    let poolA, _ = Game.Resources.addResEvent calendarDay "alicorn" aliEvents pool
+                    pool <- poolA
+                    refreshCache ()
+                // ivory EV (rand(1500) once when events occur)
+                let ivEvents = Game.Math.jsRound (days * Game.Effects.getEffect cache "ivoryMeteorChance")
+                if ivEvents > 0.0 then
+                    let ivoryRoll = Game.Math.uniformRandomInteger (fun () -> rngDraws <- rngDraws + 1; rand ()) 0.0 1500.0
+                    let ivory = 250.0 + float ivoryRoll
+                    let poolI, _ = Game.Resources.addResEvent calendarDay "ivory" (ivory * ivEvents) pool
+                    pool <- poolI
+                // relic accrual
+                let poolRel, _ = Game.Resources.addResPerTick calendarDay "relic" (Game.Effects.getEffect cache "relicPerDay" * days) pool
+                pool <- poolRel
+                // crypto EV (antimatter-gated logIncrease approximation)
+                let antimatter =
+                    match spool.Techs |> Map.tryFind "antimatter" with
+                    | Some t -> t.Researched
+                    | None -> false
+                if antimatter then
+                    // loopOrGaussianApproximation(days-1, mean 1.2499e-6, var 1.44e-10, ...):
+                    // fresh slice delegates to the same loop the math module ports
+                    let cryptoBase () : float =
+                        let y = (rngDraws <- rngDraws + 1; rand ())
+                        if y < 0.3 then Game.Math.log1p ((y - 0.3) / (0.3 * 40000.0))
+                        elif y < 0.6 then 0.0
+                        else Game.Math.log1p ((y - 0.6) / (0.4 * 40000.0))
+                    let logIncrease =
+                        Game.Math.loopOrGaussianApproximation
+                            (fun () -> rngDraws <- rngDraws + 1; rand ())
+                            (days - 1.0) false 1.2499270834635280e-6 1.4427062504448777e-10
+                            (Game.Math.log1p (-1.0 / 40000.0))
+                            (Game.Math.log1p (1.0 / 40000.0))
+                            cryptoBase
+                    calendar <- { calendar with CryptoPrice = calendar.CryptoPrice * exp logIncrease }
+                // years + millennium paragon
+                let yearsOffset = floor (days / 400.0)
+                let paragon = floor ((calendar.Year + yearsOffset) / 1000.0) - floor (calendar.Year / 1000.0)
+                if paragon > 0.0 then
+                    let poolP, _ = Game.Resources.addResEvent calendarDay "paragon" paragon pool
+                    pool <- poolP
+                    stpool <- Game.Stats.bumpStat "totalParagon" paragon stpool
+                calendar <- { calendar with Year = calendar.Year + yearsOffset }
+                stpool <- Game.Stats.bumpStat "totalYears" yearsOffset stpool
+                refreshCache () // orig fastForward ends with updateCaches
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "buybcoin" ] ->
+                // diplomacy.buyBcoin: relics → blackcoin. getCryptoPrice reads
+                // server.bcoinPrice (63918) while opts.hodl is on (settings.js
+                // default TRUE)
+                let relics = getResValue "relic"
+                let amt = relics / 63918.0
+                let pool1, added = Game.Resources.addResEvent calendarDay "blackcoin" amt pool
+                pool <- pool1
+                let res = pool.ByName["relic"]
+                pool <- { pool with ByName = pool.ByName |> Map.add "relic" { res with Value = 0.0 } }
+                actionLog <- (curLogTick, "resop", m.Args, RNum added) :: actionLog
+            | [ "sellbcoin" ] ->
+                // diplomacy.sellBcoin: blackcoin → relics at the hodl price
+                let bcoins = getResValue "blackcoin"
+                let amt = bcoins * 63918.0
+                let pool1, added = Game.Resources.addResEvent calendarDay "relic" amt pool
+                pool <- pool1
+                let res = pool.ByName["blackcoin"]
+                pool <- { pool with ByName = pool.ByName |> Map.add "blackcoin" { res with Value = 0.0 } }
+                actionLog <- (curLogTick, "resop", m.Args, RNum added) :: actionLog
             | [ "forceru"; ruName ] ->
                 // D014 injection: force-own an RU (see orig-driver comment)
                 let meta = rpool.RUs.[ruName]
@@ -916,6 +1256,7 @@ let execute (scenario: Scenario) : ExecResult =
                 // orig buildings.js build wrapper L3350-3360: stats + undo
                 stpool <- Game.Stats.bumpStat "buildingsConstructed" (float built) stpool
                 registerUndo [ { ManagerId = "bld"; Data = Game.Types.BuildUndo(bldName, built) } ]
+                if bpool.ByName[bldName].Def.BreaksIronWill then ironWill <- false
             if built <> n then
                 // orig driver logs partial/failed buys; model.enabled IS the
                 // hasResources check (updateEnabled), same value as affordBefore
@@ -1054,7 +1395,7 @@ let execute (scenario: Scenario) : ExecResult =
               { GetEffect = Game.Effects.getEffect cache
                 Rand = fun () -> rngDraws <- rngDraws + 1; rand ()
                 Zebras = (match get pool "zebras" with Some z -> z.Value | None -> 0.0)
-                IronWill = false // ironWill seam (game-06 karma block)
+                IronWill = ironWill
                 GoldOreResearched =
                   (match wpool.Upgrades |> Map.tryFind "goldOre" with
                    | Some u -> u.Researched
@@ -1334,7 +1675,22 @@ let execute (scenario: Scenario) : ExecResult =
             refreshCache ()
         | "save"
         | "load" -> actionLog <- (m.Tick, m.Action, m.Args, RNone) :: actionLog
-        | "observe" -> ()
+        | "observe" ->
+            // the observe button: handler only while an event is pending
+            if calendar.ObserveRemainingTime > 0 then
+                doObserveHandler ()
+        | "pact" ->
+            // PactsBtnController.build path (religion-14)
+            let pactName = m.Args.[0]
+            let n = if m.Args.Length >= 2 then int m.Args.[1] else 1
+            let rp', pool', bought = Game.Religion.buyPact calendarDay (Game.Effects.getEffect cache) pactName n pool rpool
+            rpool <- rp'
+            pool <- pool'
+            if bought > 0 then
+                refreshCache () // game.upgrade({policies: [feedingFrenzy], pacts: [payDebt]})
+        | "accelerate" ->
+            // AccelerateTimeBtn: toggle; consumes 1 flux/tick while on
+            tpool <- { tpool with IsAccelerated = not tpool.IsAccelerated }
         | other -> actionLog <- (m.Tick, other, m.Args, RNone) :: actionLog
 
     // scenario run loop mirroring orig-driver (D010): tick-0 moves before the
@@ -1409,7 +1765,7 @@ let dumpCatalog () =
 // Snapshot JSON
 
 let snapshotJson
-    ((tick, resources, rngDraws, cal, buildings, jobs, crafts, techs, upgrades, policies, kittenJobs, free, effectsSample, religion, diplomacy, faith, faithRatio, tier, rpoolCorruption, statsSnap, statsCurrentSnap, achSnap, badgeSnap): SnapTuple)
+    ((tick, resources, rngDraws, cal, buildings, jobs, crafts, techs, upgrades, policies, kittenJobs, free, effectsSample, religion, diplomacy, faith, faithRatio, tier, rpoolCorruption, statsSnap, statsCurrentSnap, achSnap, badgeSnap, challengeSnap, pactSnap, timeSnap, voidSnap, observeSnap, winterSnap): SnapTuple)
     : string =
     let resItems =
         resources
@@ -1469,6 +1825,31 @@ let snapshotJson
         badgeSnap
         |> List.map (fun (n, unl) -> sprintf "\"%s\":%s" (esc n) (if unl then "true" else "false"))
         |> String.concat ","
+    let challengeJson =
+        challengeSnap
+        |> List.map (fun (n, (unl, act, res, on)) ->
+            sprintf "\"%s\":{\"unlocked\":%s,\"active\":%s,\"researched\":%s,\"on\":%d}"
+                (esc n) (if unl then "true" else "false") (if act then "true" else "false") (if res then "true" else "false") on)
+        |> String.concat ","
+    let pactJson =
+        pactSnap
+        |> List.map (fun (n, (v, on, unl)) ->
+            sprintf "\"%s\":{\"val\":%d,\"on\":%d,\"unlocked\":%s}" (esc n) v on (if unl then "true" else "false"))
+        |> String.concat ","
+    let (tFlux, tAcc, cfuList, vsuList) = timeSnap
+    let (voidVus, voidFaction) = voidSnap
+    let cfuJson =
+        cfuList
+        |> List.map (fun (n, (v, on)) -> sprintf "\"%s\":{\"val\":%d,\"on\":%d}" (esc n) v on)
+        |> String.concat ","
+    let vsuJson =
+        vsuList
+        |> List.map (fun (n, (v, on)) -> sprintf "\"%s\":{\"val\":%d,\"on\":%d}" (esc n) v on)
+        |> String.concat ","
+    let voidJson =
+        voidVus
+        |> List.map (fun (n, (v, on, unl)) -> sprintf "\"%s\":{\"val\":%d,\"on\":%d,\"unlocked\":%s}" (esc n) v on (if unl then "true" else "false"))
+        |> String.concat ","
     let polJson =
         policies
         |> List.map (fun (n, (unl, res)) ->
@@ -1490,7 +1871,7 @@ let snapshotJson
         |> List.map (fun (k, v) -> sprintf "\"%s\":%s" (esc k) (num v))
         |> String.concat ","
     sprintf
-        "{\"tick\":%d,\"rngDraws\":%d,\"calendar\":{\"year\":%s,\"day\":%s,\"season\":\"%s\",\"weather\":%s,\"cycle\":%d,\"cycleYear\":%d,\"cryptoPrice\":%s,\"festivalDays\":%d},\"kittens\":%s,\"resources\":{%s},\"buildings\":{%s},\"jobs\":{%s},\"crafts\":{%s},\"techs\":[%s],\"upgrades\":[%s],\"policies\":{%s},\"religion\":{\"faith\":%s,\"faithRatio\":%s,\"tier\":%d,\"corruption\":%s,\"metas\":{%s}},\"diplomacy\":{\"races\":{%s}},\"stats\":{\"total\":{%s},\"current\":{%s}},\"achievements\":{%s},\"badges\":{%s},\"effects\":{%s}}"
+        "{\"tick\":%d,\"rngDraws\":%d,\"calendar\":{\"year\":%s,\"day\":%s,\"season\":\"%s\",\"weather\":%s,\"cycle\":%d,\"cycleYear\":%d,\"cryptoPrice\":%s,\"festivalDays\":%d},\"kittens\":%s,\"resources\":{%s},\"buildings\":{%s},\"jobs\":{%s},\"crafts\":{%s},\"techs\":[%s],\"upgrades\":[%s],\"policies\":{%s},\"religion\":{\"faith\":%s,\"faithRatio\":%s,\"tier\":%d,\"corruption\":%s,\"metas\":{%s}},\"diplomacy\":{\"races\":{%s}},\"stats\":{\"total\":{%s},\"current\":{%s}},\"achievements\":{%s},\"badges\":{%s},\"challenges\":{%s},\"pacts\":{%s},\"time\":%s,\"void\":%s,\"observeRemainingTime\":%d,\"winterCatnipPerTick\":%s,\"effects\":{%s}}"
         tick
         rngDraws
         (num cal.year)
@@ -1519,6 +1900,12 @@ let snapshotJson
         statsCurrentJson
         achJson
         badgeJson
+        challengeJson
+        pactJson
+        (sprintf "{\"flux\":%s,\"isAccelerated\":%s,\"cfu\":{%s},\"vsu\":{%s}}" (num tFlux) (if tAcc then "true" else "false") cfuJson vsuJson)
+        (sprintf "{\"vu\":{%s},\"faction\":%s}" voidJson (match voidFaction with Some f -> sprintf "\"%s\"" (esc f) | None -> "null"))
+        observeSnap
+        (num winterSnap)
         effectsJson
 
 let resKindJson (rk: ResKind) : string =

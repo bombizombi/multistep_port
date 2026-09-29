@@ -1,0 +1,11 @@
+# name: flux-void
+# seed: 20260927
+# checkpoints: 0, 5, 10, 20
+# time-01/02 + void-01 + game-20: temporal flux gain (accelerate burns 1/tick),
+# void upgrade meta, winter catnip estimate ticking every 25.
+0 research calendar
+0 resop addResEvent temporalFlux 50
+5 accelerate
+10 accelerate
+15 resop gtick 5
+20 resop gtick 5
