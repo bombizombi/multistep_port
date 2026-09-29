@@ -1,11 +1,11 @@
 
 import { Record } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Types.js";
 import { list_type, tuple_type, lambda_type, record_type, class_type, float64_type, string_type } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
-import { change, FSharpMap__get_Item, add, containsKey, toList, ofList, tryFind, empty as empty_1 } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Map.js";
+import { change, FSharpMap__get_Item, add, containsKey, ofList, toList, tryFind, empty as empty_1 } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Map.js";
 import { stringHash, disposeSafe, getEnumerator, comparePrimitives } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
 import { append, map } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
-import { defaultArg } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Option.js";
 import { List_distinct } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Seq2.js";
+import { defaultArg } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Option.js";
 import { getLimitedDR } from "./Game.Math.fs.js";
 
 export class EffectsCache extends Record {
@@ -33,7 +33,8 @@ export function getEffect(cache, name) {
         return 0;
     }
     else {
-        return matchValue;
+        const v = matchValue;
+        return v;
     }
 }
 
@@ -69,35 +70,40 @@ export function ManagerGroup_$reflection() {
 }
 
 function aggregateGroup(g) {
-    let names, enumerator;
-    let existing = ofList(map((n) => [n, defaultArg(tryFind(n, g.Base), 0)], (names = map((tuple) => tuple[0], toList(g.Base)), ((enumerator = getEnumerator(g.Items), (() => {
-        try {
-            while (enumerator["System.Collections.IEnumerator.MoveNext"]()) {
-                const forLoopVar = enumerator["System.Collections.Generic.IEnumerator`1.get_Current"]();
-                names = append(names, map((tuple_1) => tuple_1[0], toList(forLoopVar[0])));
-            }
+    let registry;
+    let names = map((tuple) => tuple[0], toList(g.Base));
+    const enumerator = getEnumerator(g.Items);
+    try {
+        while (enumerator["System.Collections.IEnumerator.MoveNext"]()) {
+            const effects = enumerator["System.Collections.Generic.IEnumerator`1.get_Current"]()[0];
+            names = append(names, map((tuple_1) => tuple_1[0], toList(effects)));
         }
-        finally {
-            disposeSafe(enumerator);
-        }
-    })()), List_distinct(names, {
+    }
+    finally {
+        disposeSafe(enumerator);
+    }
+    registry = List_distinct(names, {
         Equals: (x, y) => (x === y),
         GetHashCode: (x) => (stringHash(x) | 0),
-    })))), {
+    });
+    let existing = ofList(map((n) => [n, defaultArg(tryFind(n, g.Base), 0)], registry), {
         Compare: (x_1, y_1) => (comparePrimitives(x_1, y_1) | 0),
     });
     const enumerator_1 = getEnumerator(g.Items);
     try {
         while (enumerator_1["System.Collections.IEnumerator.MoveNext"]()) {
             const forLoopVar_1 = enumerator_1["System.Collections.Generic.IEnumerator`1.get_Current"]();
-            const enumerator_2 = getEnumerator(forLoopVar_1[0]);
+            const provider = forLoopVar_1[1];
+            const effects_1 = forLoopVar_1[0];
+            const enumerator_2 = getEnumerator(effects_1);
             try {
                 while (enumerator_2["System.Collections.IEnumerator.MoveNext"]()) {
                     let table_4;
                     const activePatternResult = enumerator_2["System.Collections.Generic.IEnumerator`1.get_Current"]();
                     const name = activePatternResult[0];
+                    const effectValue = activePatternResult[1];
                     if (containsKey(name, existing)) {
-                        const contribution = forLoopVar_1[1](name)(activePatternResult[1]);
+                        const contribution = provider(name)(effectValue);
                         if (contribution !== 0) {
                             existing = ((table_4 = existing, add(name, FSharpMap__get_Item(existing, name) + contribution, table_4)));
                         }
@@ -126,12 +132,15 @@ export function updateCaches(cache, groups) {
     const enumerator = getEnumerator(groups);
     try {
         while (enumerator["System.Collections.IEnumerator.MoveNext"]()) {
-            const enumerator_1 = getEnumerator(aggregateGroup(enumerator["System.Collections.Generic.IEnumerator`1.get_Current"]()));
+            const g = enumerator["System.Collections.Generic.IEnumerator`1.get_Current"]();
+            const existing = aggregateGroup(g);
+            const enumerator_1 = getEnumerator(existing);
             try {
                 while (enumerator_1["System.Collections.IEnumerator.MoveNext"]()) {
                     const activePatternResult = enumerator_1["System.Collections.Generic.IEnumerator`1.get_Current"]();
                     const name = activePatternResult[0];
-                    let effect_1 = activePatternResult[1];
+                    const effect = activePatternResult[1];
+                    let effect_1 = effect;
                     if (hasLimitedDR(name) && (effect_1 !== 0)) {
                         effect_1 = getLimitedDR(effect_1, 1);
                     }
@@ -140,7 +149,8 @@ export function updateCaches(cache, groups) {
                             return effect_1;
                         }
                         else {
-                            return _arg + effect_1;
+                            const prev = _arg;
+                            return prev + effect_1;
                         }
                     }, globalEffects);
                 }

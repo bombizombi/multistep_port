@@ -31,7 +31,10 @@ export function get$(pool, name) {
  * orig resPool.reset(): fresh pool from the same catalog.
  */
 export function reset(pool) {
-    return init(map((tupledArg) => tupledArg[1].Def, toList(pool.ByName)));
+    return init(map((tupledArg) => {
+        const s = tupledArg[1];
+        return s.Def;
+    }, toList(pool.ByName)));
 }
 
 /**
@@ -47,7 +50,14 @@ export function addRes(calendarDay, addedValue, allowDuringParadoxes, preventLim
         const res = FSharpMap__get_Item(pool.ByName, name);
         const prevValue = res.Value;
         const v1 = min(prevValue + addedValue, 1.7976931348623157E+308);
-        const v2 = preventLimitCheck ? v1 : min(v1, max(prevValue, (res.MaxValue !== 0) ? res.MaxValue : 1.7976931348623157E+308));
+        let v2;
+        if (preventLimitCheck) {
+            v2 = v1;
+        }
+        else {
+            const limit = max(prevValue, (res.MaxValue !== 0) ? res.MaxValue : 1.7976931348623157E+308);
+            v2 = min(v1, limit);
+        }
         const v3 = (name === "void") ? Math.floor(v2) : v2;
         const v4 = (Number.isNaN(v3) ? true : (v3 < 1E-10)) ? 0 : v3;
         let patternInput;
@@ -59,7 +69,11 @@ export function addRes(calendarDay, addedValue, allowDuringParadoxes, preventLim
             patternInput = [v4, pool.KarmaKittens];
         }
         const v5 = patternInput[0];
-        return [new ResPool(pool.Order, add(name, new ResourceState(res.Def, v5, res.Unlocked, res.MaxValue, res.PerTickCached), pool.ByName), patternInput[1], pool.EnergyProd, pool.EnergyWinterProd, pool.EnergyCons), (v5 === (prevValue + addedValue)) ? addedValue : (v5 - prevValue)];
+        const karmaKittens = patternInput[1] | 0;
+        const updated = new ResourceState(res.Def, v5, res.Unlocked, res.MaxValue, res.PerTickCached);
+        const pool$0027 = new ResPool(pool.Order, add(name, updated, pool.ByName), karmaKittens, pool.EnergyProd, pool.EnergyWinterProd, pool.EnergyCons);
+        const delta = (v5 === (prevValue + addedValue)) ? addedValue : (v5 - prevValue);
+        return [pool$0027, delta];
     }
 }
 
@@ -82,14 +96,17 @@ export function getAmtDependsOnStock(calendarDay, fromSpec, amt, pool) {
         return [pool, 0];
     }
     else {
+        const amtBeginning = amt;
         let amt$0027 = amt;
         const enumerator = getEnumerator(fromSpec);
         try {
             while (enumerator["System.Collections.IEnumerator.MoveNext"]()) {
                 const forLoopVar = enumerator["System.Collections.Generic.IEnumerator`1.get_Current"]();
+                const resName = forLoopVar[0];
                 const perUnit = forLoopVar[1];
-                const resAvailable = FSharpMap__get_Item(pool.ByName, forLoopVar[0]).Value;
-                if (resAvailable < (perUnit * amt$0027)) {
+                const resAvailable = FSharpMap__get_Item(pool.ByName, resName).Value;
+                const resNeeded = perUnit * amt$0027;
+                if (resAvailable < resNeeded) {
                     const amtAvailable = resAvailable / perUnit;
                     amt$0027 = min(amt$0027, amtAvailable);
                 }
@@ -103,14 +120,16 @@ export function getAmtDependsOnStock(calendarDay, fromSpec, amt, pool) {
         try {
             while (enumerator_1["System.Collections.IEnumerator.MoveNext"]()) {
                 const forLoopVar_1 = enumerator_1["System.Collections.Generic.IEnumerator`1.get_Current"]();
-                const patternInput = addResPerTick(calendarDay, forLoopVar_1[0], -forLoopVar_1[1] * amt$0027, pool$0027);
-                pool$0027 = patternInput[0];
+                const resName_1 = forLoopVar_1[0];
+                const perUnit_1 = forLoopVar_1[1];
+                const p = addResPerTick(calendarDay, resName_1, -perUnit_1 * amt$0027, pool$0027)[0];
+                pool$0027 = p;
             }
         }
         finally {
             disposeSafe(enumerator_1);
         }
-        return [pool$0027, amt$0027 / amt];
+        return [pool$0027, amt$0027 / amtBeginning];
     }
 }
 
@@ -210,7 +229,7 @@ export function addBarnWarehouseRatio(ctx, effects) {
  * orig updateMaxValue(res) — sorrow/zebras specials + challenge branch.
  */
 export function updateMaxValue(ctx, res) {
-    let secondArg, matchValue;
+    let matchValue, baseValue;
     if (res.Def.Name === "sorrow") {
         const mv = 17 + ctx.GetEffect("blsLimit");
         return new ResourceState(res.Def, min(res.Value, mv), res.Unlocked, mv, res.PerTickCached);
@@ -222,7 +241,15 @@ export function updateMaxValue(ctx, res) {
         }
         const maxValue2 = min(addResMaxRatios(ctx, res, maxValue), 1.7976931348623157E+308);
         const challengeEffect = ctx.GetEffect(res.Def.Name + "MaxChallenge");
-        return new ResourceState(res.Def, res.Value, res.Unlocked, max((challengeEffect !== 0) ? ((secondArg = jsOr0((matchValue = tryFind(res.Def.Name + "Max", baseEffects), (matchValue == null) ? ((maxValue2 - 1) - Number.NaN) : ((maxValue2 - 1) - matchValue))), maxValue2 + getLimitedDR(addResMaxRatios(ctx, res, challengeEffect), secondArg))) : maxValue2, 0), res.PerTickCached);
+        let maxValue3;
+        if (challengeEffect !== 0) {
+            const secondArg = jsOr0((matchValue = tryFind(res.Def.Name + "Max", baseEffects), (matchValue == null) ? ((maxValue2 - 1) - Number.NaN) : ((baseValue = matchValue, (maxValue2 - 1) - baseValue))));
+            maxValue3 = (maxValue2 + getLimitedDR(addResMaxRatios(ctx, res, challengeEffect), secondArg));
+        }
+        else {
+            maxValue3 = maxValue2;
+        }
+        return new ResourceState(res.Def, res.Value, res.Unlocked, max(maxValue3, 0), res.PerTickCached);
     }
 }
 
@@ -232,7 +259,8 @@ export function updateMaxValueByName(ctx, resName, pool) {
         return pool;
     }
     else {
-        return new ResPool(pool.Order, add(resName, updateMaxValue(ctx, matchValue), pool.ByName), pool.KarmaKittens, pool.EnergyProd, pool.EnergyWinterProd, pool.EnergyCons);
+        const res = matchValue;
+        return new ResPool(pool.Order, add(resName, updateMaxValue(ctx, res), pool.ByName), pool.KarmaKittens, pool.EnergyProd, pool.EnergyWinterProd, pool.EnergyCons);
     }
 }
 
@@ -293,16 +321,20 @@ export function update(uctx, calendarDay, pool) {
         while (enumerator["System.Collections.IEnumerator.MoveNext"]()) {
             let ByName;
             const name = enumerator["System.Collections.Generic.IEnumerator`1.get_Current"]();
-            const res1 = updateMaxValue(uctx.Cap, FSharpMap__get_Item(pool$0027.ByName, name));
+            const res = FSharpMap__get_Item(pool$0027.ByName, name);
+            const res1 = updateMaxValue(uctx.Cap, res);
             if (name === "sorrow") {
                 pool$0027 = ((ByName = add(name, res1, pool$0027.ByName), new ResPool(pool$0027.Order, ByName, pool$0027.KarmaKittens, pool$0027.EnergyProd, pool$0027.EnergyWinterProd, pool$0027.EnergyCons)));
             }
             else {
+                const unlocked$0027 = (!res1.Unlocked && (res1.Value > 0)) ? true : ((((res1.Value === 0) && res1.Unlocked) && (((name === "zebras") ? true : (name === "paragon")) ? true : (name === "elderBox"))) ? false : res1.Unlocked);
+                const res2 = new ResourceState(res1.Def, res1.Value, unlocked$0027, res1.MaxValue, res1.PerTickCached);
                 let pool1;
-                const ByName_1 = add(name, new ResourceState(res1.Def, res1.Value, (!res1.Unlocked && (res1.Value > 0)) ? true : ((((res1.Value === 0) && res1.Unlocked) && (((name === "zebras") ? true : (name === "paragon")) ? true : (name === "elderBox"))) ? false : res1.Unlocked), res1.MaxValue, res1.PerTickCached), pool$0027.ByName);
+                const ByName_1 = add(name, res2, pool$0027.ByName);
                 pool1 = (new ResPool(pool$0027.Order, ByName_1, pool$0027.KarmaKittens, pool$0027.EnergyProd, pool$0027.EnergyWinterProd, pool$0027.EnergyCons));
-                const patternInput = addResPerTick(calendarDay, name, uctx.GetResourcePerTick(name), pool1);
-                pool$0027 = patternInput[0];
+                const perTick = uctx.GetResourcePerTick(name);
+                const pool2 = addResPerTick(calendarDay, name, perTick, pool1)[0];
+                pool$0027 = pool2;
             }
         }
     }
@@ -315,7 +347,8 @@ export function update(uctx, calendarDay, pool) {
     const energyWinterProd0 = energyProd;
     const energyConsRatio = ((1 + uctx.Cap.GetEffect("energyConsumptionRatio")) + uctx.Cap.GetEffect("energyConsumptionIncrease")) * (uctx.EnergyChallengeActive ? 2 : 1);
     const energyCons = uctx.Cap.GetEffect("energyConsumption") * energyConsRatio;
-    return new ResPool(poolK.Order, poolK.ByName, poolK.KarmaKittens, energyProd, (uctx.CalendarSeason !== 3) ? (energyWinterProd0 - ((uctx.PastureOn * uctx.EnergyLoss) * energyProdRatio)) : energyWinterProd0, energyCons);
+    const energyWinterProd = (uctx.CalendarSeason !== 3) ? (energyWinterProd0 - ((uctx.PastureOn * uctx.EnergyLoss) * energyProdRatio)) : energyWinterProd0;
+    return new ResPool(poolK.Order, poolK.ByName, poolK.KarmaKittens, energyProd, energyWinterProd, energyCons);
 }
 
 export function getEnergyProductionRatio(ctx) {
@@ -364,8 +397,8 @@ export function fastforward(ticksPerDay, daysOffset, calendarDay, pool) {
                 if (res.MaxValue !== 0) {
                     limits = add(name, max(res.Value, res.MaxValue), limits);
                 }
-                const patternInput = addRes(calendarDay, (res.PerTickCached * daysOffset) * ticksPerDay, true, true, name, pool$0027);
-                pool$0027 = patternInput[0];
+                const p = addRes(calendarDay, (res.PerTickCached * daysOffset) * ticksPerDay, true, true, name, pool$0027)[0];
+                pool$0027 = p;
             }
         }
     }
@@ -386,7 +419,8 @@ export function enforceLimits(limits, pool) {
                 return res;
             }
             else {
-                return new ResourceState(res.Def, min(res.Value, matchValue), res.Unlocked, res.MaxValue, res.PerTickCached);
+                const limit = matchValue;
+                return new ResourceState(res.Def, min(res.Value, limit), res.Unlocked, res.MaxValue, res.PerTickCached);
             }
         }
         else {
@@ -435,12 +469,15 @@ export function resConsHackForResTable(calendarDay, getConvertion, getRptWithCon
 export function hasRes(pool, prices, amt) {
     const amt$0027 = (amt === 0) ? 1 : amt;
     return forAll((tupledArg) => {
-        const matchValue = get$(pool, tupledArg[0]);
+        const name = tupledArg[0];
+        const val$0027 = tupledArg[1];
+        const matchValue = get$(pool, name);
         if (matchValue == null) {
             return true;
         }
         else {
-            return !(matchValue.Value < (tupledArg[1] * amt$0027));
+            const res = matchValue;
+            return !(res.Value < (val$0027 * amt$0027));
         }
     }, prices);
 }
@@ -506,8 +543,10 @@ export function payPrices(calendarDay, pool, prices) {
     try {
         while (enumerator["System.Collections.IEnumerator.MoveNext"]()) {
             const forLoopVar = enumerator["System.Collections.Generic.IEnumerator`1.get_Current"]();
-            const patternInput = addResEvent(calendarDay, forLoopVar[0], -forLoopVar[1], pool$0027);
-            pool$0027 = patternInput[0];
+            const val$0027 = forLoopVar[1];
+            const name = forLoopVar[0];
+            const p = addResEvent(calendarDay, name, -val$0027, pool$0027)[0];
+            pool$0027 = p;
         }
     }
     finally {
@@ -574,13 +613,15 @@ export function load(saved, pool) {
         while (enumerator["System.Collections.IEnumerator.MoveNext"]()) {
             let ByName;
             const forLoopVar = enumerator["System.Collections.Generic.IEnumerator`1.get_Current"]();
+            const value = forLoopVar[1];
+            const unlocked = forLoopVar[2];
             const name = forLoopVar[0];
             const matchValue = get$(pool$0027, name);
             if (matchValue == null) {
             }
             else {
                 const res = matchValue;
-                pool$0027 = ((ByName = add(name, new ResourceState(res.Def, forLoopVar[1], forLoopVar[2], res.MaxValue, res.PerTickCached), pool$0027.ByName), new ResPool(pool$0027.Order, ByName, pool$0027.KarmaKittens, pool$0027.EnergyProd, pool$0027.EnergyWinterProd, pool$0027.EnergyCons)));
+                pool$0027 = ((ByName = add(name, new ResourceState(res.Def, value, unlocked, res.MaxValue, res.PerTickCached), pool$0027.ByName), new ResPool(pool$0027.Order, ByName, pool$0027.KarmaKittens, pool$0027.EnergyProd, pool$0027.EnergyWinterProd, pool$0027.EnergyCons)));
             }
         }
     }

@@ -3,6 +3,7 @@
 # checkpoints: 0, 400, 600, 1200, 1800, 2250, 2300, 2400
 # Hunting bring-up: hunter job -> manpower (0.06/tick) -> one huntAll at t2300
 # (1 squad = 100 manpower). Exercises the RNG loot path (binomial/geometric rolls).
+0 resop seed 20260927
 0 gather 30
 15 buy field
 50 gather 60

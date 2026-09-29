@@ -59,8 +59,10 @@ export function getLimitedDR(effect, limit) {
         }
     }
     else {
+        const diminishedPortion = absEffect - maxUndiminished;
         const delta = 0.25 * limit;
-        const totalEffect = maxUndiminished + ((1 - (delta / ((absEffect - maxUndiminished) + delta))) * delta);
+        const diminishedEffect = (1 - (delta / (diminishedPortion + delta))) * delta;
+        const totalEffect = maxUndiminished + diminishedEffect;
         if (effect < 0) {
             return -totalEffect;
         }

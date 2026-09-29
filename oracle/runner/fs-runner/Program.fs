@@ -150,11 +150,12 @@ type SnapTuple =
         * (string * (bool * bool * bool * bool * int)) list
         * (string * (int * int * bool)) list
         * ((string * float) list * int * int)
+        * (string * string * string * float * int * int * int * int * float * string option * int) list
         * (float * float * int * bool
            * (string * (int * int * float * int * bool option)) list
            * (string * (int * int)) list)
         * ((string * (int * int * bool)) list * string option)
-        * int * float
+        * int * float * float
 
 type ExecResult =
     { Snapshots: SnapTuple list
@@ -292,6 +293,13 @@ let execute (scenario: Scenario) : ExecResult =
 
     let getResValue (name: string) : float =
         (get pool name |> Option.map (fun r -> r.Value) |> Option.defaultValue 0.0)
+    let crctx () : Game.Managers.CraftRatioContext =
+        { IronWill = ironWill
+          LeaderTrait = Game.Managers.leaderTrait vpool
+          BurnedParagonRatio = Game.Prestige.getBurnedParagonRatio (getResValue "burnedParagon")
+          MonarchyResearched = (match spool.Policies |> Map.tryFind "monarchy" with Some p -> p.Researched | None -> false)
+          BldVal = fun n -> (Game.Buildings.get bpool n |> Option.map (fun b -> b.Val) |> Option.defaultValue 0) }
+
     let traditionResearched () =
         match spool.Policies |> Map.tryFind "tradition" with
         | Some p -> p.Researched
@@ -742,7 +750,7 @@ let execute (scenario: Scenario) : ExecResult =
                         | None -> None)
                 if (match wpool.Upgrades |> Map.tryFind "chronoEngineers" with Some u -> u.Researched | None -> false) then
                     let pool1, wp1, craftsDone =
-                        Game.Managers.craftByEngineers calendarDay cache (traditionResearched ()) getResValue
+                        Game.Managers.craftByEngineers calendarDay cache (traditionResearched ()) (crctx ()) getResValue
                             (getResProductionCached ()) false (remTicks * shatterTCGain) pool wpool
                     pool <- pool1
                     wpool <- wp1
@@ -853,7 +861,7 @@ let execute (scenario: Scenario) : ExecResult =
                     | None -> None)
             if (match wpool.Upgrades |> Map.tryFind "chronoEngineers" with Some u -> u.Researched | None -> false) then
                 let pool1, wp1, craftsDone =
-                    Game.Managers.craftByEngineers calendarDay cache (traditionResearched ()) getResValue
+                    Game.Managers.craftByEngineers calendarDay cache (traditionResearched ()) (crctx ()) getResValue
                         (getResProductionCached ()) false (ticks * gain) pool wpool
                 pool <- pool1
                 wpool <- wp1
@@ -1315,7 +1323,7 @@ let execute (scenario: Scenario) : ExecResult =
                     for crafted, count in [ "plate", plateCrafts; "slab", slabCrafts; "beam", beamCrafts ] do
                         if count > 0.0 then
                             let pool1, wp1, okC =
-                                Game.Managers.craft calendarDay cache (traditionResearched ()) crafted count pool wpool
+                                Game.Managers.craft calendarDay cache (traditionResearched ()) (crctx ()) crafted count pool wpool
                             pool <- pool1
                             wpool <- wp1
                             if okC then
@@ -1328,7 +1336,7 @@ let execute (scenario: Scenario) : ExecResult =
             vpool <- Game.Managers.clearCraftJobs vpool
             wpool <- { wpool with Crafts = wpool.Crafts |> Map.map (fun _ c -> { c with Value = 0.0 }) }
         let poolW, wpW, craftsW =
-            Game.Managers.craftByEngineers calendarDay cache (traditionResearched ()) getResValue
+            Game.Managers.craftByEngineers calendarDay cache (traditionResearched ()) (crctx ()) getResValue
                 (getResProductionCached ()) false (daysOffset * Game.Calendar.ticksPerDay) pool wpool
         pool <- poolW
         wpool <- wpW
@@ -1474,7 +1482,7 @@ let execute (scenario: Scenario) : ExecResult =
                         for crafted, count in [ "plate", plateC; "slab", slabC; "beam", beamC ] do
                             if count > 0.0 then
                                 let pool1, wp1, okC =
-                                    Game.Managers.craft calendarDay cache (traditionResearched ()) crafted count pool wpool
+                                    Game.Managers.craft calendarDay cache (traditionResearched ()) (crctx ()) crafted count pool wpool
                                 pool <- pool1
                                 wpool <- wp1
                                 if okC then
@@ -1517,6 +1525,18 @@ let execute (scenario: Scenario) : ExecResult =
         let growthRate = if starving then 0.0 else kittensPerTick
         let beforeBirths = vpool.Kittens.Length
         vpool <- Game.Managers.simUpdate maxKittens growthRate 1 (fun () -> rngDraws <- rngDraws + 1; rand ()) vpool
+        // sim.update skill half (village-10/12)
+        let skillCtx : Game.Managers.SkillContext =
+          { AnarchyActive = Game.Challenges.isActive cpool "anarchy"
+            InternetResearched = (match wpool.Upgrades |> Map.tryFind "internet" with Some u -> u.Researched | None -> false)
+            NeuralNetworksResearched = (match wpool.Upgrades |> Map.tryFind "neuralNetworks" with Some u -> u.Researched | None -> false)
+            SkillXPEffect = Game.Effects.getEffect cache "skillXP"
+            MaxKittensRatioLDR = Game.Effects.getEffect cache "maxKittensRatio"
+            Day = calendarDay
+            GetJobValue = fun n -> vpool.JobValues |> Map.tryFind n |> Option.defaultValue 0
+            GetJobUnlocked = fun n -> vpool.JobUnlocked.Contains n
+            Times = 1 }
+        vpool <- Game.Managers.learnSkills skillCtx vpool
         if vpool.Kittens.Length > beforeBirths then
             // orig sim.addKitten: stats.getStat("totalKittens").val++
             stpool <- Game.Stats.bumpStat "totalKittens" (float (vpool.Kittens.Length - beforeBirths)) stpool
@@ -1565,7 +1585,7 @@ let execute (scenario: Scenario) : ExecResult =
             vpool <- Game.Managers.clearCraftJobs vpool
             wpool <- { wpool with Crafts = wpool.Crafts |> Map.map (fun _ c -> { c with Value = 0.0 }) }
         let pool', wpool', craftsDone =
-            Game.Managers.craftByEngineers calendarDay cache (traditionResearched ()) getResValue
+            Game.Managers.craftByEngineers calendarDay cache (traditionResearched ()) (crctx ()) getResValue
                 (getResProductionCached ()) false 1.0 pool wpool
         pool <- pool'
         wpool <- wpool'
@@ -1717,6 +1737,10 @@ let execute (scenario: Scenario) : ExecResult =
             [ for n in cpool.Order do
                 let c = cpool.Challenges.[n]
                 yield (n, (c.Unlocked, c.Pending, c.Active, c.Researched, c.On)) ]
+        let kittenSnap =
+            vpool.Kittens
+            |> List.map (fun k ->
+                (k.Name, k.Surname, k.Trait, k.Age, k.Color, k.Variety, k.Rarity, k.Rank, k.Exp, k.Job, k.Seed))
         let reservesSnap =
             (reserveResources |> Map.toList |> List.sortBy fst,
              reserveKittens.Length, reserveCryochambers)
@@ -1745,7 +1769,7 @@ let execute (scenario: Scenario) : ExecResult =
         (ticks, resources, rngDraws, calJson, buildings, jobs, crafts, techs, upgrades, policies, kittenJobs, free, effectsSample,
          religion, diplomacy, rpool.Faith, rpool.FaithRatio, rpool.TranscendenceTier, rpool.Corruption,
          statsSnap, statsCurrentSnap, achSnap, badgeSnap,
-         challengeSnap, pactSnap, reservesSnap, timeSnap, voidSnap, observeSnap, winterSnap)
+         challengeSnap, pactSnap, reservesSnap, kittenSnap, timeSnap, voidSnap, observeSnap, winterSnap, vpool.Happiness)
 
     // gtick: the port's game.tick() — updateModel order:
     // resPool.update → bld.update → village sim (+ kittens sync) → timer
@@ -2039,6 +2063,42 @@ let execute (scenario: Scenario) : ExecResult =
                 // D014 injection: time.heat = n
                 tpool <- { tpool with Heat = float value }
                 actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "esprobe" ] ->
+                actionLog <- (curLogTick, "resop", m.Args, RNum (getResProductionCached () |> Map.tryFind "ESwood" |> Option.defaultValue 0.0)) :: actionLog
+            | [ "addkitten" ] ->
+                let vp' = Game.Managers.addKitten (fun () -> rngDraws <- rngDraws + 1; rand ()) vpool
+                vpool <- vp'
+                let kittensRes = pool.ByName["kittens"]
+                pool <- { pool with ByName = pool.ByName |> Map.add "kittens" { kittensRes with Value = float vpool.Kittens.Length; MaxValue = float vpool.MaxKittens } }
+                stpool <- Game.Stats.bumpStat "totalKittens" 1.0 stpool
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "skillprobe" ] ->
+                for k in vpool.Kittens do
+                    printfn "SKILLPROBE %s" (System.Text.Json.JsonSerializer.Serialize(
+                        k.Skills |> Map.toList |> List.map (fun (a, b) -> {| s = a; v = b |})))
+                printfn "SKILLPROBE-END"
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "leader"; idx ] ->
+                // village.makeLeader(sim.kittens[idx]); -1 clears
+                let i = int idx
+                let seed =
+                    if i >= 0 && i < vpool.Kittens.Length then Some vpool.Kittens.[i].Seed else None
+                let theocracyBlocks = false // policy seam
+                vpool <- Game.Managers.makeLeader (Game.Challenges.isActive cpool "anarchy") theocracyBlocks seed vpool
+                refreshCache () // trait effects re-read via leaderTrait
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | "promote" :: idxRest ->
+                let i = int (List.head idxRest)
+                let rank = if idxRest.Length >= 2 then Some (int idxRest.[1]) else None
+                // orig promote(undefined kitten) returns 0 quietly
+                if i >= 0 && i < vpool.Kittens.Length then
+                    let seed = vpool.Kittens.[i].Seed
+                    let vp2, p2, code = Game.Managers.promote (Game.Challenges.isActive cpool "anarchy") rank seed vpool pool
+                    vpool <- vp2
+                    pool <- p2
+                    refreshCache ()
+                    actionLog <- (curLogTick, "resop", m.Args, RNum (float code)) :: actionLog
+                else actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
             | [ "reserves"; isIW ] ->
                 // reserveMan.calculateReserves(isIronWillPending)
                 calculateReserves (isIW = "1")
@@ -2306,13 +2366,13 @@ let execute (scenario: Scenario) : ExecResult =
             // orig craft registers the undo with prices at the PRE-buy ladder
             let craftDef = wpool.Crafts.[craftName]
             let prices = Game.Managers.getCraftPrice cache (traditionResearched ()) craftDef.Def |> List.map (fun p -> (p.Resource, p.Val * ceil amt))
-            let pool', wpool', ok = Game.Managers.craft calendarDay cache (traditionResearched ()) craftName amt pool wpool
+            let pool', wpool', ok = Game.Managers.craft calendarDay cache (traditionResearched ()) (crctx ()) craftName amt pool wpool
             pool <- pool'
             wpool <- wpool'
             if ok then
                 stpool <- Game.Stats.bumpStat "totalCrafts" 1.0 stpool
                 stpool <- Game.Stats.bumpStatCurrent "totalCrafts" 1.0 stpool
-                let gained = (1.0 + Game.Managers.getResCraftRatio cache craftName) * ceil amt
+                let gained = (1.0 + Game.Managers.getResCraftRatio cache (crctx ()) craftName) * ceil amt
                 registerUndo [ { ManagerId = "workshop"; Data = Game.Types.CraftUndo(craftName, gained, prices) } ]
             refreshCache () // orig game.craft → workshop.craft + updateResources (unconditional)
         | "assign" ->
@@ -2389,7 +2449,7 @@ let execute (scenario: Scenario) : ExecResult =
             // seam: isEnriched 50-cost variant, fresh-false)
             let prices = [ ("catnip", 100.0) ]
             if Game.Resources.hasRes pool prices 0.0 then
-                let craftRatio = Game.Managers.getResCraftRatio cache "wood"
+                let craftRatio = Game.Managers.getResCraftRatio cache (crctx ()) "wood"
                 let poolPaid = Game.Resources.payPrices calendarDay pool prices
                 let poolGained, _ = Game.Resources.addResEvent calendarDay "wood" (1.0 + craftRatio) poolPaid
                 pool <- poolGained
@@ -2397,12 +2457,15 @@ let execute (scenario: Scenario) : ExecResult =
         | "refine" ->
             let prices = [ ("catnip", 100.0) ]
             if Game.Resources.hasRes pool prices 0.0 then
-                let craftRatio = Game.Managers.getResCraftRatio cache "wood"
+                let craftRatio = Game.Managers.getResCraftRatio cache (crctx ()) "wood"
                 let poolPaid = Game.Resources.payPrices calendarDay pool prices
                 let poolGained, _ = Game.Resources.addResEvent calendarDay "wood" (1.0 + craftRatio) poolPaid
                 pool <- poolGained
                 refreshCache ()
-        | "hunt" ->
+        | "hunt"
+        | "huntall"
+        | "hunthalf"
+        | "huntfifth" ->
             let hctx : Game.Village.HuntContext =
               { GetEffect = Game.Effects.getEffect cache
                 Rand = fun () -> rngDraws <- rngDraws + 1; rand ()
@@ -2412,9 +2475,20 @@ let execute (scenario: Scenario) : ExecResult =
                   (match wpool.Upgrades |> Map.tryFind "goldOre" with
                    | Some u -> u.Researched
                    | None -> false)
-                AlicornmancyResearched = false // prestige seam
-                UnicornPastureVal = 0 }
-            pool <- Game.Village.huntAll hctx pool
+                AlicornmancyResearched =
+                  (match ppool.Perks |> Map.tryFind "alicornmancy" with Some p -> p.Researched | None -> false)
+                UnicornPastureVal = 0
+                LeaderManagerBonus =
+                  (match Game.Managers.leaderTrait vpool with
+                   | Some "manager" ->
+                       0.5 * (1.0 + Game.Prestige.getBurnedParagonRatio (getResValue "burnedParagon"))
+                           * (if (match spool.Policies |> Map.tryFind "monarchy" with Some p -> p.Researched | None -> false) then 1.95 else 1.0)
+                   | _ -> 0.0) }
+            match m.Action with
+            | "huntall" -> pool <- Game.Village.huntFraction hctx 1.0 pool
+            | "hunthalf" -> pool <- Game.Village.huntFraction hctx 2.0 pool
+            | "huntfifth" -> pool <- Game.Village.huntFraction hctx 5.0 pool
+            | _ -> pool <- Game.Village.huntAll hctx pool
         | "praise" ->
             // orig religion.praise (js/religion.js L1536): worship += faith.value
             // * (1 + apocrypha); faith.value = 0.0001 + undo registration.
@@ -2693,7 +2767,7 @@ let execute (scenario: Scenario) : ExecResult =
         | "craftall" ->
             // orig game.craftAll minus the wood winter-confirm branch (headless:
             // workshop.craftAll + updateResources — same end state)
-            let pool', wpool', ok = Game.Managers.craftAll calendarDay cache (traditionResearched ()) getResValue m.Args.[0] pool wpool
+            let pool', wpool', ok = Game.Managers.craftAll calendarDay cache (traditionResearched ()) (crctx ()) getResValue m.Args.[0] pool wpool
             pool <- pool'
             wpool <- wpool'
             if ok then
@@ -2870,7 +2944,7 @@ let dumpCatalog () =
 // Snapshot JSON
 
 let snapshotJson
-    ((tick, resources, rngDraws, cal, buildings, jobs, crafts, techs, upgrades, policies, kittenJobs, free, effectsSample, religion, diplomacy, faith, faithRatio, tier, rpoolCorruption, statsSnap, statsCurrentSnap, achSnap, badgeSnap, challengeSnap, pactSnap, reservesSnap, timeSnap, voidSnap, observeSnap, winterSnap): SnapTuple)
+    ((tick, resources, rngDraws, cal, buildings, jobs, crafts, techs, upgrades, policies, kittenJobs, free, effectsSample, religion, diplomacy, faith, faithRatio, tier, rpoolCorruption, statsSnap, statsCurrentSnap, achSnap, badgeSnap, challengeSnap, pactSnap, reservesSnap, kittenSnap, timeSnap, voidSnap, observeSnap, winterSnap, happiness: float): SnapTuple)
     : string =
     let resItems =
         resources
@@ -2945,6 +3019,13 @@ let snapshotJson
     let ((resResL, resKittensN, resCryoN)) = reservesSnap
     let reservesJson =
         "{\"resources\":{" + (resResL |> List.map (fun (n, v) -> sprintf "\"%s\":%s" (esc n) (num v)) |> String.concat ",") + "},\"kittenCount\":" + string resKittensN + ",\"cryochambers\":" + string resCryoN + "}"
+    let kittenJson =
+        kittenSnap
+        |> List.map (fun (nm, sur, tr, age, col, var, rar, rank, exp, job, seed) ->
+            let jobJson = match job with Some j -> sprintf "\"%s\"" (esc j) | None -> "null"
+            sprintf "{\"name\":\"%s\",\"surname\":\"%s\",\"trait\":\"%s\",\"age\":%s,\"color\":%d,\"variety\":%d,\"rarity\":%d,\"rank\":%d,\"exp\":%s,\"job\":%s,\"seed\":%d}"
+                (esc nm) (esc sur) (esc tr) (num age) col var rar rank (num exp) jobJson seed)
+        |> String.concat ","
     let (voidVus, voidFaction) = voidSnap
     let cfuJson =
         cfuList
@@ -2991,7 +3072,7 @@ let snapshotJson
         |> List.map (fun (k, v) -> sprintf "\"%s\":%s" (esc k) (num v))
         |> String.concat ","
     sprintf
-        "{\"tick\":%d,\"rngDraws\":%d,\"calendar\":{\"year\":%s,\"day\":%s,\"season\":\"%s\",\"weather\":%s,\"cycle\":%d,\"cycleYear\":%d,\"cryptoPrice\":%s,\"festivalDays\":%d},\"kittens\":%s,\"resources\":{%s},\"buildings\":{%s},\"jobs\":{%s},\"crafts\":{%s},\"techs\":[%s],\"upgrades\":[%s],\"policies\":{%s},\"religion\":{\"faith\":%s,\"faithRatio\":%s,\"tier\":%d,\"corruption\":%s,\"metas\":{%s}},\"diplomacy\":{\"races\":{%s}},\"stats\":{\"total\":{%s},\"current\":{%s}},\"achievements\":{%s},\"badges\":{%s},\"challenges\":{%s},\"pacts\":{%s},\"reserves\":%s,\"time\":%s,\"void\":%s,\"observeRemainingTime\":%d,\"winterCatnipPerTick\":%s,\"effects\":{%s}}"
+        "{\"tick\":%d,\"rngDraws\":%d,\"calendar\":{\"year\":%s,\"day\":%s,\"season\":\"%s\",\"weather\":%s,\"cycle\":%d,\"cycleYear\":%d,\"cryptoPrice\":%s,\"festivalDays\":%d},\"kittens\":%s,\"resources\":{%s},\"buildings\":{%s},\"jobs\":{%s},\"crafts\":{%s},\"techs\":[%s],\"upgrades\":[%s],\"policies\":{%s},\"religion\":{\"faith\":%s,\"faithRatio\":%s,\"tier\":%d,\"corruption\":%s,\"metas\":{%s}},\"diplomacy\":{\"races\":{%s}},\"stats\":{\"total\":{%s},\"current\":{%s}},\"achievements\":{%s},\"badges\":{%s},\"challenges\":{%s},\"pacts\":{%s},\"reserves\":%s,\"kittenIds\":[%s],\"time\":%s,\"void\":%s,\"observeRemainingTime\":%d,\"winterCatnipPerTick\":%s,\"happiness\":%s,\"effects\":{%s}}"
         tick
         rngDraws
         (num cal.year)
@@ -3023,10 +3104,12 @@ let snapshotJson
         challengeJson
         pactJson
         reservesJson
+        kittenJson
         (sprintf "{\"flux\":%s,\"heat\":%s,\"testShatter\":%d,\"isAccelerated\":%s,\"cfu\":{%s},\"vsu\":{%s}}" (num tFlux) (num tHeat) tTestShatter (if tAcc then "true" else "false") cfuJson vsuJson)
         (sprintf "{\"vu\":{%s},\"faction\":%s}" voidJson (match voidFaction with Some f -> sprintf "\"%s\"" (esc f) | None -> "null"))
         observeSnap
         (num winterSnap)
+        (num happiness)
         effectsJson
 
 let resKindJson (rk: ResKind) : string =

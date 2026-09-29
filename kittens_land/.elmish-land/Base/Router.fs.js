@@ -1,6 +1,6 @@
 
 import { split, trimEnd, isNullOrWhiteSpace, substring, join } from "../App/fable_modules/fable-library-js.5.17.0/String.js";
-import { ofArray, singleton, collect, head, empty, tail, isEmpty, reverse, map } from "../App/fable_modules/fable-library-js.5.17.0/List.js";
+import { ofArray, singleton, collect, empty, head, tail, isEmpty, reverse, map } from "../App/fable_modules/fable-library-js.5.17.0/List.js";
 import { defaultOf } from "../App/fable_modules/fable-library-js.5.17.0/Util.js";
 import { item, equalsWith } from "../App/fable_modules/fable-library-js.5.17.0/Array.js";
 import { tryParse } from "../App/fable_modules/fable-library-js.5.17.0/Int32.js";
@@ -31,29 +31,39 @@ export function RouterModule_String_$007CSuffix$007C(suffix, str) {
 }
 
 export function RouterModule_encodeQueryString(queryStringPairs) {
-    const _arg = join("&", map((tupledArg) => join("=", [encodeURIComponent(tupledArg[0]), encodeURIComponent(tupledArg[1])]), queryStringPairs));
+    const _arg = join("&", map((tupledArg) => {
+        const key = tupledArg[0];
+        const value = tupledArg[1];
+        return join("=", [encodeURIComponent(key), encodeURIComponent(value)]);
+    }, queryStringPairs));
     if (_arg === "") {
         return "";
     }
     else {
-        return "?" + _arg;
+        const pairs = _arg;
+        return "?" + pairs;
     }
 }
 
 export function RouterModule_encodeQueryStringInts(queryStringIntPairs) {
-    const _arg = join("&", map((tupledArg) => join("=", [encodeURIComponent(tupledArg[0]), tupledArg[1]]), queryStringIntPairs));
+    const _arg = join("&", map((tupledArg) => {
+        const key = tupledArg[0];
+        const value = tupledArg[1] | 0;
+        return join("=", [encodeURIComponent(key), value]);
+    }, queryStringIntPairs));
     if (_arg === "") {
         return "";
     }
     else {
-        return "?" + _arg;
+        const pairs = _arg;
+        return "?" + pairs;
     }
 }
 
 function RouterModule_normalizeRoute(routeMode) {
     if (routeMode === 1) {
         return (_arg) => {
-            let path_2;
+            let path_2, path_3;
             const activePatternResult = RouterModule_String_$007CPrefix$007C("/", _arg);
             if (activePatternResult != null) {
                 const path = activePatternResult;
@@ -67,16 +77,16 @@ function RouterModule_normalizeRoute(routeMode) {
                 }
                 else {
                     const activePatternResult_2 = RouterModule_String_$007CPrefix$007C("#", _arg);
-                    return (activePatternResult_2 != null) ? ((path_2 = activePatternResult_2, "#/" + substring(path_2, 1, path_2.length - 1))) : ("#/" + _arg);
+                    return (activePatternResult_2 != null) ? ((path_2 = activePatternResult_2, "#/" + substring(path_2, 1, path_2.length - 1))) : ((path_3 = _arg, "#/" + path_3));
                 }
             }
         };
     }
     else {
         return (_arg_1) => {
-            let path_4;
+            let path_4, path_5;
             const activePatternResult_3 = RouterModule_String_$007CPrefix$007C("/", _arg_1);
-            return (activePatternResult_3 != null) ? ((path_4 = activePatternResult_3, path_4)) : ("/" + _arg_1);
+            return (activePatternResult_3 != null) ? ((path_4 = activePatternResult_3, path_4)) : ((path_5 = _arg_1, "/" + path_5));
         };
     }
 }
@@ -99,10 +109,12 @@ export function RouterModule_trySeparateLast(xs) {
     const matchValue = reverse(xs);
     if (!isEmpty(matchValue)) {
         if (isEmpty(tail(matchValue))) {
-            return [empty(), head(matchValue)];
+            const single = head(matchValue);
+            return [empty(), single];
         }
         else {
-            return [reverse(tail(matchValue)), head(matchValue)];
+            const list_1 = matchValue;
+            return [reverse(tail(list_1)), head(list_1)];
         }
     }
     else {
@@ -207,7 +219,8 @@ export function Route_$007CInt$007C_$007C(input) {
         outArg = (v | 0);
     })), outArg];
     if (matchValue[0]) {
-        return matchValue[1];
+        const value = matchValue[1] | 0;
+        return value;
     }
     else {
         return undefined;
@@ -221,7 +234,8 @@ export function Route_$007CInt64$007C_$007C(input) {
         outArg = v;
     })), outArg];
     if (matchValue[0]) {
-        return matchValue[1];
+        const value = matchValue[1];
+        return value;
     }
     else {
         return undefined;
@@ -235,7 +249,8 @@ export function Route_$007CGuid$007C_$007C(input) {
         outArg = v;
     })), outArg];
     if (matchValue[0]) {
-        return matchValue[1];
+        const value = matchValue[1];
+        return value;
     }
     else {
         return undefined;
@@ -249,7 +264,8 @@ export function Route_$007CNumber$007C_$007C(input) {
         outArg = v;
     })), outArg];
     if (matchValue[0]) {
-        return matchValue[1];
+        const value = matchValue[1];
+        return value;
     }
     else {
         return undefined;
@@ -263,7 +279,8 @@ export function Route_$007CDecimal$007C_$007C(input) {
         outArg = v;
     })), outArg];
     if (matchValue[0]) {
-        return matchValue[1];
+        const value = matchValue[1];
+        return value;
     }
     else {
         return undefined;

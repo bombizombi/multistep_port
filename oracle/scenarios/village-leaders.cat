@@ -1,0 +1,27 @@
+# name: village-leaders
+# seed: 20260927
+# checkpoints: 0, 20, 40, 60, 80, 100, 120
+# village-06/07/10/11/12/13: kitten identity in the snapshot (exact age/color/
+# variety/rarity rolls), manager/engineer leader bonuses, bulk hunts with the
+# hunt-fraction ladder, promote internals (gold/exp gates), skill learning.
+0 resop seed 20260927
+0 gather 30
+0 hunt 1
+10 buy hut
+20 gather 30
+20 huntall
+30 gather 30
+30 huntall
+40 resop leader 0
+40 huntfifth
+50 gather 30
+50 huntfifth
+60 resop setres manpower 20000
+60 huntfifth
+70 resop setres gold 10000
+70 resop promote 0
+70 resop promote 0 3
+80 resop leader -1
+80 huntfifth
+100 huntall
+120 huntfifth

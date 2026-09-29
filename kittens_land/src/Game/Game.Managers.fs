@@ -83,8 +83,57 @@ let getZebraUpgrade (wp: WorkshopPool) (name: string) : UpgradeState option = wp
 
 /// orig getResCraftRatio(res): workshop craftRatio effects × (1 + skill bonus).
 /// Skill/leader seams are fresh (0); effect read is live.
-let getResCraftRatio (cache: Game.Effects.EffectsCache) (resName: string) : float =
-    Game.Effects.getEffect cache (resName + "CraftRatio")
+/// Leader craft bonus (orig getEffectLeader): engineer +0.05, metallurgist
+/// +0.1 (tag), chemist +0.075 (tag); all × (1 + burnedParagonRatio) × monarchy.
+let getEffectLeaderCraft (leaderTrait: string option) (trait: string) (burnedParagonRatio: float) (monarchyResearched: bool) : float =
+    match leaderTrait with
+    | Some t when t = trait ->
+        let leaderRatio = if monarchyResearched then 1.95 else 1.0
+        let baseB =
+            match trait with
+            | "engineer" -> 0.05
+            | "metallurgist" -> 0.1
+            | "chemist" -> 0.075
+            | _ -> 0.0
+        baseB * (1.0 + burnedParagonRatio) * leaderRatio
+    | _ -> 0.0
+
+/// orig game.getCraftRatio(tag) + getResCraftRatio (game.js L4412-4448): wood
+/// takes the refine special (early return — craftRatio never applies to wood).
+/// Inputs for the craft-ratio computation (bld values for blueprint/kerosene).
+type CraftRatioContext =
+    { IronWill: bool
+      LeaderTrait: string option
+      BurnedParagonRatio: float
+      MonarchyResearched: bool
+      BldVal: string -> int }
+
+let resourceTag (resName: string) : string =
+    match Game.Catalog.Resources.resourceDefs |> List.tryFind (fun r -> r.Name = resName) with
+    | Some d -> d.Tag |> Option.defaultValue ""
+    | None -> ""
+
+let getResCraftRatio (cache: Game.Effects.EffectsCache) (ctx: CraftRatioContext) (resName: string) : float =
+    let eff = Game.Effects.getEffect cache
+    if resName = "wood" then
+        let policyRefineRatio = eff "refinePolicyRatio"
+        let refineRatio = policyRefineRatio + (1.0 + policyRefineRatio) * eff "refineRatio"
+        if ctx.IronWill then
+            (1.0 + refineRatio) * (1.0 + eff "woodRatio" + eff "woodPolicyRatio" / 3.0) - 1.0
+        else refineRatio
+    else
+        let tag = resourceTag resName
+        let mutable ratio =
+            eff "craftRatio"
+            + getEffectLeaderCraft ctx.LeaderTrait "engineer" ctx.BurnedParagonRatio ctx.MonarchyResearched
+            + getEffectLeaderCraft ctx.LeaderTrait tag ctx.BurnedParagonRatio ctx.MonarchyResearched
+        if resName = "blueprint" then
+            ratio <- ratio + float (ctx.BldVal "library" + ctx.BldVal "academy" + ctx.BldVal "observatory" + ctx.BldVal "biolab") * eff "cadBlueprintCraftRatio"
+        if resName = "kerosene" then
+            ratio <- ratio * (1.0 + float (ctx.BldVal "factory") * 0.75 * eff "factoryRefineRatio")
+        ratio <- ratio + eff (resName + "CraftRatio")
+        ratio <- ratio * (1.0 + eff (resName + "GlobalCraftRatio"))
+        ratio
 
 /// orig getCraftPrice (js/workshop.js L2634-2654): manuscript takes the tradition
 /// policy override; ship scales starchart by the satnav LDR (sattelite.on seam 0);
@@ -105,11 +154,11 @@ let getCraftPrice (cache: Game.Effects.EffectsCache) (traditionResearched: bool)
 /// orig workshop.craft (js/workshop.js L2656-2701): ceil amt, craftRatio bonus,
 /// negative-amt guard, resource check on the SCALED prices, pay, addResEvent.
 /// Returns pool, workshop, success. (stats totalCrafts + undo are UI seams.)
-let craft (calendarDay: int) (cache: Game.Effects.EffectsCache) (traditionResearched: bool) (resName: string) (amt: float) (pool: ResPool) (wp: WorkshopPool) : ResPool * WorkshopPool * bool =
+let craft (calendarDay: int) (cache: Game.Effects.EffectsCache) (traditionResearched: bool) (crCtx: CraftRatioContext) (resName: string) (amt: float) (pool: ResPool) (wp: WorkshopPool) : ResPool * WorkshopPool * bool =
     match wp.Crafts |> Map.tryFind resName with
     | None -> pool, wp, false
     | Some craftDef ->
-        let craftRatio = getResCraftRatio cache resName
+        let craftRatio = getResCraftRatio cache crCtx resName
         let amt = ceil amt
         let craftAmt = amt * (1.0 + craftRatio)
         // prevent undo giving free res
@@ -148,10 +197,10 @@ let getCraftAllCount (cache: Game.Effects.EffectsCache) (traditionResearched: bo
         floor (getCraftAllCountInternal getResValue prices)
 
 /// orig craftAll (L2807): craft the floor maximum with bypassResourceCheck.
-let craftAll (calendarDay: int) (cache: Game.Effects.EffectsCache) (traditionResearched: bool) (getResValue: string -> float) (craftName: string) (pool: ResPool) (wp: WorkshopPool) : ResPool * WorkshopPool * bool =
+let craftAll (calendarDay: int) (cache: Game.Effects.EffectsCache) (traditionResearched: bool) (crCtx: CraftRatioContext) (getResValue: string -> float) (craftName: string) (pool: ResPool) (wp: WorkshopPool) : ResPool * WorkshopPool * bool =
     let minAmt = getCraftAllCount cache traditionResearched getResValue wp craftName
     if 0.0 < minAmt && minAmt < System.Double.MaxValue then
-        let pool', wp', ok = craft calendarDay cache traditionResearched craftName minAmt pool wp
+        let pool', wp', ok = craft calendarDay cache traditionResearched crCtx craftName minAmt pool wp
         pool', wp', ok
     else
         pool, wp, false
@@ -210,7 +259,7 @@ let workshopEffectsBase (cache: Game.Effects.EffectsCache) (getResValue: string 
 /// `times` = ticks elapsed (1 per tick from update). The isStorageLimited
 /// craftable branch reads the PRE-tick craft states (orig reads the live meta
 /// objects, which the loop mutates one craft at a time).
-let craftByEngineers (calendarDay: int) (cache: Game.Effects.EffectsCache) (traditionResearched: bool) (getResValue: string -> float) (prodCache: Map<string, float>) (neuralNetworksResearched: bool) (times: float) (pool: ResPool) (wp: WorkshopPool) : ResPool * WorkshopPool * float =
+let craftByEngineers (calendarDay: int) (cache: Game.Effects.EffectsCache) (traditionResearched: bool) (crCtx: CraftRatioContext) (getResValue: string -> float) (prodCache: Map<string, float>) (neuralNetworksResearched: bool) (times: float) (pool: ResPool) (wp: WorkshopPool) : ResPool * WorkshopPool * float =
     let mutable pool = pool
     let mutable crafts = wp.Crafts
     let mutable craftsDone = 0.0
@@ -234,7 +283,7 @@ let craftByEngineers (calendarDay: int) (cache: Game.Effects.EffectsCache) (trad
                 let currentProgress = min currentProgress (getCraftAllCountInternal getResValue priceList)
                 let units = floor currentProgress
                 if not isLimited then
-                    let pool', _wpIgnored, ok = craft calendarDay cache traditionResearched name units pool { wp with Crafts = crafts }
+                    let pool', _wpIgnored, ok = craft calendarDay cache traditionResearched crCtx name units pool { wp with Crafts = crafts }
                     if ok then
                         pool <- pool'
                         craftsDone <- craftsDone + units
@@ -396,6 +445,10 @@ type Kitten =
       Seed: int
       Trait: string
       Age: float
+      Color: int
+      Variety: int
+      Rarity: int
+      IsLeader: bool
       Skills: Map<string, float>
       EngineerSpeciality: string option }
 
@@ -406,7 +459,9 @@ type VillagePool =
       JobValues: Map<string, int> // jobRef.value counters (diverge from kitten jobs, OBS-2)
       JobUnlocked: Set<string>
       Happiness: float
-      DeathTimeout: int }
+      DeathTimeout: int
+      LeaderSeed: int option // orig stores the kitten object; fs keys by seed
+      Traits: string list } // village.traits — newest-first unshift on arrivals
 
 let initVillage (jobDefs: Game.Catalog.Village.JobDef list) : VillagePool =
     { Kittens = []
@@ -419,7 +474,9 @@ let initVillage (jobDefs: Game.Catalog.Village.JobDef list) : VillagePool =
         |> List.map (fun j -> j.Name)
         |> Set.ofList
       Happiness = 1.0
-      DeathTimeout = 0 }
+      DeathTimeout = 0
+      LeaderSeed = None
+      Traits = [] }
 
 /// orig calculateSimMaxKittens: maxKittens effect (huts ×val etc. via cache).
 let calculateMaxKittens (cache: Game.Effects.EffectsCache) (pool: VillagePool) : int =
@@ -439,22 +496,100 @@ let private kittenLcg (seed: int) : int -> int =
         state <- state * 16807.0 % 2147483647.0
         int (floor ((state - 1.0) / 2147483646.0 * float ratio))
 
+/// orig Kitten._generateAttributes (village.js L1483-1515) draw-for-draw on the
+/// kitten's private Lehmer LCG: name, surname, trait, age 5+rand(10) with the
+/// rand(100)<30 growth roll, then the color/variety/rarity tables.
 let private makeKitten (seed: int) : Kitten =
     let rand = kittenLcg seed
     let name = Game.Catalog.Village.names.[rand Game.Catalog.Village.names.Length]
     let surname = Game.Catalog.Village.surnames.[rand Game.Catalog.Village.surnames.Length]
     let trait = Game.Catalog.Village.traitDefs.[rand Game.Catalog.Village.traitDefs.Length].Name
-    // orig: age = 1 + LCG roll (age grows yearly); the +rand(30) growth roll
-    // applies when rand(100) < 30
-    let mutable age = 1.0 + float (rand 100) / 100.0
-    let age' =
-        if rand 100 < 30 then age + float (rand 30) else age
-    age <- age'
-    { Name = name; Surname = surname; Job = None; Rank = 0; Exp = 0.0; Seed = seed; Trait = trait; Age = age; Skills = Map.empty; EngineerSpeciality = None }
+    let mutable age = 5.0 + float (rand 10)
+    if rand 100 < 30 then age <- age + float (rand 30)
+    // 10% chance of one of 6 primary colors; colored cats roll 5 rare varieties
+    let mutable color = 0
+    let mutable variety = 0
+    if rand 100 <= 10 then
+        color <- rand 6 + 1
+        if rand 100 <= 10 then variety <- rand 4 + 1
+    // 5% rarity 1-2, plus 10% extra on top
+    let mutable rarity = 0
+    if rand 100 <= 5 then
+        rarity <- rand 2 + 1
+        if rand 100 <= 10 then rarity <- rarity + 1
+    { Name = name; Surname = surname; Job = None; Rank = 0; Exp = 0.0; Seed = seed
+      Trait = trait; Age = age; Color = color; Variety = variety; Rarity = rarity
+      IsLeader = false; Skills = Map.empty; EngineerSpeciality = None }
 
 let addKitten (rand: unit -> float) (pool: VillagePool) : VillagePool =
     let seed = generateKittenSeed rand
-    { pool with Kittens = pool.Kittens @ [ makeKitten seed ] }
+    let kitten = makeKitten seed
+    // orig addKitten: village.traits.unshift(trait) when new
+    let traits =
+        if pool.Traits |> List.contains kitten.Trait then pool.Traits
+        else kitten.Trait :: pool.Traits
+    { pool with Kittens = pool.Kittens @ [ kitten ]; Traits = traits }
+
+/// Everything the skill-learning half of sim.update reads.
+type SkillContext =
+    { AnarchyActive: bool
+      InternetResearched: bool
+      NeuralNetworksResearched: bool
+      SkillXPEffect: float
+      MaxKittensRatioLDR: float
+      Day: int
+      GetJobValue: string -> int
+      GetJobUnlocked: string -> bool
+      Times: int }
+
+/// orig sim.update skill half (L3285-3338): frequency applies only at
+/// times=1; each working kitten learns its job skill (+exp) and either spreads
+/// to other unlocked jobs (neuralNetworks) or forgets them.
+let learnSkills (ctx: SkillContext) (pool: VillagePool) : VillagePool =
+    let kittens = pool.Kittens
+    let hgSkillModifier =
+        if pool.Kittens.Length <= pool.MaxKittens then
+            1.0 / (1.0 + Game.Math.getLimitedDR ctx.MaxKittensRatioLDR 1.0)
+        else 1.0
+    let baseSkillXP =
+        if ctx.InternetResearched then
+            max (float pool.Kittens.Length * hgSkillModifier / 10000.0) 0.01
+        else 0.01
+    let skillXP = (baseSkillXP + ctx.SkillXPEffect) * float ctx.Times
+    let skillsCap = 20001.0
+    let updated =
+        kittens
+        |> List.map (fun kitten ->
+            let mutable kitten = kitten
+            // legacy hacks (exp migration from skills / rank default / trait roll)
+            // do not fire for port kittens (exp starts 0, rank present, trait set)
+            match kitten.Job with
+            | Some job when ctx.Day >= 0 && not ctx.AnarchyActive ->
+                let jobSkill = kitten.Skills |> Map.tryFind job |> Option.defaultValue 0.0
+                let mutable skills = kitten.Skills
+                // engineers without a speciality do not learn
+                if not (job = "engineer" && kitten.EngineerSpeciality = None) then
+                    if jobSkill < skillsCap then
+                        skills <- skills |> Map.add job (min (jobSkill + skillXP) skillsCap)
+                    kitten <- { kitten with Exp = kitten.Exp + skillXP }
+                if ctx.NeuralNetworksResearched then
+                    for jobName in Game.Catalog.Village.jobDefs |> List.map (fun j -> j.Name) do
+                        if ctx.GetJobUnlocked jobName && ctx.GetJobValue jobName > 0 then
+                            let s = skills |> Map.tryFind jobName |> Option.defaultValue 0.0
+                            if s <> skillsCap then
+                                skills <- skills |> Map.add jobName (min (s + float ctx.Times * 0.001 * float (ctx.GetJobValue jobName)) skillsCap)
+                else
+                    skills <-
+                        skills
+                        |> Map.map (fun sk v ->
+                            if sk <> job && v > 0.0 then
+                                let decay = min (float ctx.Times * 0.001) v
+                                v - decay
+                            else v)
+                kitten <- { kitten with Skills = skills }
+                kitten
+            | _ -> kitten)
+    { pool with Kittens = updated }
 
 /// orig sim.update(kittensPerTick, times): births from progress accumulation.
 let simUpdate (maxKittens: int) (kittensPerTick: float) (times: int) (rand: unit -> float) (pool: VillagePool) : VillagePool =
@@ -469,23 +604,9 @@ let simUpdate (maxKittens: int) (kittensPerTick: float) (times: int) (rand: unit
                     pool <- addKitten rand pool
             if pool.Kittens.Length >= maxKittens then
                 pool <- { pool with NextKittenProgress = 0.0 }
-    // skill XP (orig L3315-3360): baseSkillXP = max(kittens × hgMod / 10000, 0.01)
-    // (internet seam: not researched); frequency = 1 for kittens < 100 → every tick
-    let baseSkillXP = max (float pool.Kittens.Length / 10000.0) 0.01
-    let skillXP = (baseSkillXP + 0.0) * float times // + skillXP effect seam (0)
-    { pool with
-        Kittens =
-            pool.Kittens
-            |> List.map (fun k ->
-                match k.Job with
-                | Some job ->
-                    let cur = k.Skills |> Map.tryFind job |> Option.defaultValue 0.0
-                    if cur = 0.0 then
-                        // orig: first XP tick sets skills[job] = skillXP (not += from 0)
-                        { k with Skills = k.Skills |> Map.add job skillXP }
-                    else
-                        { k with Skills = k.Skills |> Map.add job (cur + skillXP) }
-                | None -> k) }
+    // skill learning lives in learnSkills (village-10/12) — the runner calls
+    // it after simUpdate with the full context (exp, NN spread, engineer gate)
+    { pool with Kittens = pool.Kittens }
 
 /// orig village.assignJob (manager level): amt capped by free kittens and the
 /// job limit (manager default 100000 here); the counter bumps by the capped amt
@@ -514,7 +635,14 @@ let killKittens (amount: int) (vpool: VillagePool) : VillagePool * string list =
         match k.EngineerSpeciality with
         | Some sp -> deadSpecialities <- sp :: deadSpecialities
         | None -> ()
-    { vpool with Kittens = survivors; JobValues = jobValues }, deadSpecialities
+    let leaderDead =
+        match vpool.LeaderSeed with
+        | Some ls -> survivors |> List.forall (fun k -> k.Seed <> ls)
+        | None -> false
+    { vpool with
+        Kittens = survivors
+        JobValues = jobValues
+        LeaderSeed = if leaderDead then None else vpool.LeaderSeed }, deadSpecialities
 
 /// orig village.update starvation branch (L430-462): kittens > 0 and catnip
 /// value + perTick < 0 -> kill min(1, |resDiff| rounded), deathTimeout = tps*5;
@@ -545,6 +673,116 @@ let starvationStep
             vpool
     else
         vpool
+
+// --- village-06: leaders -------------------------------------------------------
+
+/// orig makeLeader(kitten) (L750-769). The theocracy gate is a policy seam
+/// (not researched at this slice). anarchy clears the leader.
+let makeLeader (anarchyActive: bool) (theocracyBlocks: bool) (seed: int option) (vpool: VillagePool) : VillagePool =
+    let cleared =
+        { vpool with
+            Kittens =
+                vpool.Kittens
+                |> List.map (fun k -> if k.IsLeader then { k with IsLeader = false } else k) }
+    if anarchyActive || seed = None || theocracyBlocks then
+        { cleared with LeaderSeed = None }
+    else
+        match seed with
+        | None -> cleared
+        | Some s ->
+            let kittens =
+                cleared.Kittens
+                |> List.map (fun k -> if k.Seed = s then { k with IsLeader = true } else k)
+            { cleared with Kittens = kittens; LeaderSeed = Some s }
+
+/// orig getLeaderBonus(rank) (L776-781): rank 0 → 1.0, else (rank+1)/1.4,
+/// authocracy doubles it.
+let getLeaderBonus (authocracyResearched: bool) (rank: int) : float =
+    let bonus = if rank = 0 then 1.0 else (float rank + 1.0) / 1.4
+    if authocracyResearched then bonus * 2.0 else bonus
+
+/// The leader's current trait (from the leader seed).
+let leaderTrait (vpool: VillagePool) : string option =
+    match vpool.LeaderSeed with
+    | None -> None
+    | Some s -> vpool.Kittens |> List.tryFind (fun k -> k.Seed = s) |> Option.map (fun k -> k.Trait)
+
+/// orig getRankExp(rank) (L224-226): 500 × 1.75^rank.
+let getRankExp (rank: int) : float = 500.0 * (1.75 ** float rank)
+
+// --- village-10: skill curves --------------------------------------------------
+
+/// orig getValueModifierPerSkill (L1292-1324): anarchy zeroes it; the top tier
+/// scales by (1 + masterSkillMultiplier); everything × (1 + skillMultiplier).
+let getValueModifierPerSkill (anarchyActive: bool) (masterSkillMultiplier: float) (skillMultiplier: float) (value: float) : float =
+    if anarchyActive then 0.0
+    else
+        let bonus =
+            if value < 100.0 then 0.0
+            elif value < 500.0 then 0.0125
+            elif value < 1200.0 then 0.025
+            elif value < 2500.0 then 0.045
+            elif value < 5000.0 then 0.075
+            elif value < 9000.0 then 0.125
+            else 0.1875 * (1.0 + masterSkillMultiplier)
+        bonus * (1.0 + skillMultiplier)
+
+/// orig getSkillExpRange (L1326-1341).
+let getSkillExpRange (value: float) : float * float =
+    if value < 100.0 then (0.0, 100.0)
+    elif value < 500.0 then (100.0, 500.0)
+    elif value < 2500.0 then (500.0, 2500.0)
+    elif value < 5000.0 then (2500.0, 5000.0)
+    elif value < 9000.0 then (5000.0, 9000.0)
+    elif value < 20000.0 then (9000.0, 20000.0)
+    else (20000.0, value)
+
+// --- village-13: promote internals ---------------------------------------------
+
+/// expToPromote (L3706-3714): sum of getRankExp over the rank span.
+let expToPromote (rankBase: int) (rankFinal: int) (expNeeded: float) : bool * float =
+    let mutable total = 0.0
+    for i in 0 .. (rankFinal - rankBase - 1) do
+        total <- total + getRankExp (rankBase + i)
+    if total > expNeeded then (false, 0.0) else (true, total)
+
+/// goldToPromote (L3716-3726): 25 × rank per step.
+let goldToPromote (rankBase: int) (rankFinal: int) (goldNeeded: float) : bool * float =
+    let mutable total = 0.0
+    for i in 0 .. (rankFinal - rankBase - 1) do
+        total <- total + 25.0 * float (rankBase + i + 1)
+    if total > goldNeeded then (false, 0.0) else (true, total)
+
+/// sim.promote (L3655-3704): returns 1 promoted / 0 ineligible / -1 no gold /
+/// -2 no exp. Mutates the kitten list (rank, exp) and the gold pool.
+let rec promote (anarchyActive: bool) (rankTarget: int option) (seed: int) (vpool: VillagePool) (pool: ResPool) : VillagePool * ResPool * int =
+    if anarchyActive then vpool, pool, 0
+    else
+        match vpool.Kittens |> List.tryFind (fun k -> k.Seed = seed) with
+        | None -> vpool, pool, 0
+        | Some kitten ->
+            let kittenRank = kitten.Rank
+            let rankFinal, rankDiff =
+                match rankTarget with
+                | None -> kittenRank + 1, 1
+                | Some r -> r, r - kittenRank
+            if rankDiff <= 0 then vpool, pool, 0
+            else
+                let (expOk, expCost) = expToPromote kittenRank rankFinal kitten.Exp
+                let gold = Game.Resources.get pool "gold" |> Option.map (fun r -> r.Value) |> Option.defaultValue 0.0
+                let (goldOk, goldCost) = goldToPromote kittenRank rankFinal gold
+                if expOk && goldOk then
+                    let kittens =
+                        vpool.Kittens
+                        |> List.map (fun k ->
+                            if k.Seed = seed then { k with Rank = rankFinal; Exp = k.Exp - expCost } else k)
+                    let pool1, _ = Game.Resources.addResEvent 0 "gold" (-goldCost) pool
+                    { vpool with Kittens = kittens }, pool1, 1
+                elif rankDiff > 1 then
+                    promote anarchyActive None seed vpool pool
+                elif expOk && not goldOk then
+                    vpool, pool, -1
+                else vpool, pool, -2
 
 /// orig sim.sortKittensByExp (village.js L3395-3400): rank asc then exp asc
 /// (JS stable sort → F# stable List.sortWith). Used by cryochamber reserves.
@@ -602,6 +840,12 @@ let getResProduction
     // happiness + happinessKittenProductionRatio seam (0 at fresh)
     let happiness = vpool.Happiness
     let eff = Game.Effects.getEffect cache
+    let anarchyActive = eff "kittenLaziness" > 0.0 || false // anarchy via challengesGroup effect
+    let authocracyResearched = false // policy seam (fresh)
+    let leaderRank =
+        match vpool.LeaderSeed with
+        | Some ls -> vpool.Kittens |> List.tryFind (fun k -> k.Seed = ls) |> Option.map (fun k -> k.Rank)
+        | None -> None
 
     for k in vpool.Kittens do
         match k.Job with
@@ -614,25 +858,26 @@ let getResProduction
                     match jobDef.CalculatedModifiers with
                     | Some m -> m
                     | None -> jobDef.Modifiers
-                // orig getValueModifierPerSkill (L1292) × (1 + skillMultiplier seam 0)
+                // orig getValueModifierPerSkill (L1292): anarchy zero, top tier
+                // × (1 + masterSkillMultiplier), all × (1 + skillMultiplier)
                 let skill = k.Skills |> Map.tryFind jobName |> Option.defaultValue 0.0
-                let skillBonus =
-                    if skill < 100.0 then 0.0
-                    elif skill < 500.0 then 0.0125
-                    elif skill < 1200.0 then 0.025
-                    elif skill < 2500.0 then 0.045
-                    elif skill < 5000.0 then 0.075
-                    elif skill < 9000.0 then 0.125
-                    else 0.1875
-                let skillMod = skillBonus * (1.0 + 0.0)
+                let skillMod =
+                    getValueModifierPerSkill
+                        anarchyActive (eff "masterSkillMultiplier") (eff "skillMultiplier") skill
                 // rank multiplier: 1 + <job>BoostPerRank × rank (effect 0 at fresh)
                 let rankMultiplier = 1.0 + eff (jobName + "BoostPerRank") * float k.Rank
                 for KeyValue(resName, baseMod) in modifiers do
                     let mutable diff = baseMod + baseMod * skillMod
                     diff <- diff * rankMultiplier
                     if diff > 0.0 then
-                        // leader seams: no leaders in this slice (isLeader false,
-                        // village.leader null → no boostFromLeader fold)
+                        // leader folds (L671-679): the leader's own job gets the
+                        // full bonus; other kittens fold (bonus-1)×boostFromLeader
+                        if k.IsLeader then
+                            diff <- diff * getLeaderBonus authocracyResearched k.Rank
+                        else
+                            match leaderRank with
+                            | Some lr -> diff <- diff * (1.0 + (getLeaderBonus authocracyResearched lr - 1.0) * eff "boostFromLeader")
+                            | None -> ()
                         diff <- diff * happiness
                     res <- res |> Map.change resName (function Some prev -> Some(prev + diff) | None -> Some diff)
 
@@ -653,6 +898,13 @@ let getResProduction
                             if rankDiff > 0.0 then
                                 diff <- diff - diff * rankDiff * 0.15
                             diff <- diff + diff * skillMod
+                            if diff > 0.0 then
+                                if k.IsLeader then
+                                    diff <- diff * getLeaderBonus authocracyResearched k.Rank
+                                else
+                                    match leaderRank with
+                                    | Some lr -> diff <- diff * (1.0 + (getLeaderBonus authocracyResearched lr - 1.0) * eff "boostFromLeader")
+                                    | None -> ()
                             if diff > 0.0 then
                                 diff <- diff * happiness
                             let key = "ES" + speciality

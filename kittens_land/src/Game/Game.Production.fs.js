@@ -63,7 +63,13 @@ export function fixFloatPointNumber(number) {
 export function calcResourcePerTick(ctx, pool, resName) {
     let def;
     const matchValue = get$(pool, resName);
-    def = ((matchValue == null) ? (new ResourceDef(resName, "", false, undefined, false, true, false, false, false, undefined, false, false, false, false, RefundableRule.Default)) : matchValue.Def);
+    if (matchValue == null) {
+        def = (new ResourceDef(resName, "", false, undefined, false, true, undefined, false, false, undefined, false, false, false, false, RefundableRule.Default));
+    }
+    else {
+        const r = matchValue;
+        def = r.Def;
+    }
     const eff = (name) => getEffect(ctx.Cache, name);
     let perTick = eff(resName + "PerTickBase");
     const spaceRatio = 1 + eff("spaceRatio");
@@ -72,7 +78,8 @@ export function calcResourcePerTick(ctx, pool, resName) {
     const perTickBaseSpace = eff(resName + "PerTickBaseSpace") * spaceRatio;
     perTick = (perTick + perTickBaseSpace);
     perTick = (perTick * getWeatherMod(ctx.CalendarCtx, ctx.Calendar, resName));
-    const resProduction = ctx.VillageResProduction(resName) * ctx.HGScalingBonus;
+    const resProduction0 = ctx.VillageResProduction(resName);
+    const resProduction = resProduction0 * ctx.HGScalingBonus;
     perTick = (perTick + resProduction);
     const workshopResRatio = eff(resName + "JobRatio");
     perTick = (perTick + (resProduction * workshopResRatio));
@@ -108,7 +115,8 @@ export function calcResourcePerTick(ctx, pool, resName) {
         perTick = (perTick * (1 + eff("productionRatio")));
         paragonSpaceProductionRatio = (paragonSpaceProductionRatio + (paragonSpaceProductionRatio * eff("productionRatio")));
     }
-    perTick = (perTick * (1 + (ctx.SolarRevolutionRatio * (1 + 0))));
+    const solarPollution = 0;
+    perTick = (perTick * (1 + (ctx.SolarRevolutionRatio * (1 + solarPollution))));
     if (!ctx.DisableCMBR && (resName !== "coal")) {
         perTick = (perTick * (1 + ctx.CMBRBonus));
     }
@@ -125,7 +133,13 @@ export function calcResourcePerTick(ctx, pool, resName) {
     }
     let sorrowValue;
     const matchValue_2 = get$(pool, "sorrow");
-    sorrowValue = ((matchValue_2 == null) ? 0 : matchValue_2.Value);
+    if (matchValue_2 == null) {
+        sorrowValue = 0;
+    }
+    else {
+        const s = matchValue_2;
+        sorrowValue = s.Value;
+    }
     perTick = (perTick * (1 + (sorrowValue * eff("blsProductionBonus"))));
     perTick = (perTick * (1 + eff("pyramidGlobalProductionRatio")));
     if (resName === "faith") {

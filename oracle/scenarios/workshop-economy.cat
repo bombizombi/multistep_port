@@ -5,6 +5,7 @@
 # crafting (0.85/3000 per engineer-tick -> auto-craft ~3530 ticks after a
 # stable assignment). Factory val injected (D014). Twenty fields + gathers
 # keep two engineers alive through winters.
+0 resop seed 20260927
 0 gather 30
 15 buy field
 50 gather 50

@@ -16,12 +16,14 @@ type HuntContext =
       IronWill: bool
       GoldOreResearched: bool
       AlicornmancyResearched: bool
-      UnicornPastureVal: int }
+      UnicornPastureVal: int
+      LeaderManagerBonus: float } // getEffectLeader("manager", 0)
 
-/// orig getHuntUnicornChance (village.js L1121).
+/// orig getHuntUnicornChance (village.js L1121-1130): 0.25 with alicornmancy +
+/// no pasture, else flat 0.05.
 let getHuntUnicornChance (ctx: HuntContext) : float =
     if ctx.AlicornmancyResearched && ctx.UnicornPastureVal = 0 then 0.25
-    else 0.005 + 0.005 * ctx.GetEffect "hunterRatio"
+    else 0.05
 
 /// orig gainHuntRes(squads) — roll order IS the contract:
 /// unicorns (binomial) → bloodstone gate (zebras ≥ 10) → gold (ironWill +
@@ -54,7 +56,7 @@ let rec gainHuntRes (ctx: HuntContext) (squads: float) (pool: ResPool) : ResPool
         else
             pool
 
-    let hunterRatio = ctx.GetEffect "hunterRatio" // + leader manager seam (0 at fresh)
+    let hunterRatio = ctx.GetEffect "hunterRatio" + ctx.LeaderManagerBonus
 
     let pool =
         if ctx.IronWill && ctx.GoldOreResearched then

@@ -79,14 +79,22 @@ export function Command_navigate(route) {
 
 export function Command_map(f, mapLayout, command) {
     switch (command.tag) {
-        case 1:
-            return new Command$3(/* Batch */ 1, [map((command_1) => Command_map(f, mapLayout, command_1), command.fields[0])]);
-        case 2:
-            return new Command$3(/* Cmd */ 2, [Cmd_map(f, command.fields[0])]);
-        case 3:
-            return new Command$3(/* SharedMsg */ 3, [command.fields[0]]);
-        case 4:
-            return new Command$3(/* LayoutMsg */ 4, [mapLayout(command.fields[0])]);
+        case 1: {
+            const cmds = command.fields[0];
+            return new Command$3(/* Batch */ 1, [map((command_1) => Command_map(f, mapLayout, command_1), cmds)]);
+        }
+        case 2: {
+            const cmd = command.fields[0];
+            return new Command$3(/* Cmd */ 2, [Cmd_map(f, cmd)]);
+        }
+        case 3: {
+            const msg = command.fields[0];
+            return new Command$3(/* SharedMsg */ 3, [msg]);
+        }
+        case 4: {
+            const msg_1 = command.fields[0];
+            return new Command$3(/* LayoutMsg */ 4, [mapLayout(msg_1)]);
+        }
         default:
             return Command$3.None;
     }

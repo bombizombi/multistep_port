@@ -3,6 +3,7 @@
 # checkpoints: 0, 105, 110, 200, 215, 400
 # village-08: holdFestival → 100 festival days; happiness +30%, kitten birth
 # rate doubled (birth timing), festival countdown in onNewDay.
+0 resop seed 20260927
 0 gather 30
 15 buy field
 50 gather 60

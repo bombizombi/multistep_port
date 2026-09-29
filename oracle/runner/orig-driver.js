@@ -279,6 +279,9 @@ function doAction(move) {
         return;
       }
       case "hunt": game.huntAll({ preventDefault: function () {} }); return; // orig reads event.preventDefault
+      case "huntall": game.village.huntAll({ preventDefault: function () {} }); return;
+      case "hunthalf": game.village.huntHalf({ preventDefault: function () {} }); return;
+      case "huntfifth": game.village.huntFifth({ preventDefault: function () {} }); return;
       case "praise": game.religion.praise(); return;
       case "adore": game.religion.resetFaith(1.01, true); return; // confirm auto-OK'd
       case "transcend": game.religion.transcend(); return; // confirm auto-OK'd
@@ -710,6 +713,39 @@ function doAction(move) {
           actionLog.push({ tick: tickIndex, action: "resop", args, result: events });
           return;
         }
+        if (fn === "esprobe") {
+          const prod = game.village.getResProduction();
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: prod["ESwood"] || 0 });
+          return;
+        }
+        if (fn === "addkitten") {
+          game.village.sim.addKitten();
+          game.village.updateTraits();
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "skillprobe") {
+          const ks = game.village.sim.kittens.map((k) => ({ s: k.skills, e: k.exp }));
+          console.log("SKILLPROBE", JSON.stringify(ks));
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "leader") {
+          // village.makeLeader(sim.kittens[idx]); -1 removes the leader
+          const idx = Number(arg1);
+          game.village.makeLeader(idx >= 0 ? game.village.sim.kittens[idx] : undefined);
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "promote") {
+          // sim.promote(kitten, rank?) — result code 1/0/-1/-2
+          const idx = Number(arg1);
+          const rank = args.length >= 3 ? Number(args[2]) : undefined;
+          const code = game.village.sim.promote(game.village.sim.kittens[idx], rank);
+          game.updateCaches();
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: code });
+          return;
+        }
         if (fn === "reserves") {
           // reserveMan.calculateReserves(isIronWillPending) + log cryochambers
           game.challenges.reserves.calculateReserves(arg1 === "1");
@@ -945,8 +981,14 @@ function takeSnapshot() {
       vu: Object.assign({}, ...g.void.voidUpgrades.map((m) => ({ [m.name]: { val: m.val || 0, on: m.on || 0, unlocked: !!m.unlocked } }))),
       faction: g.void.faction || null,
     },
+    kittenIds: g.village.sim.kittens.map((k) => ({
+      name: k.name, surname: k.surname, trait: k.trait.name, age: k.age,
+      color: k.color || 0, variety: k.variety || 0, rarity: k.rarity || 0,
+      rank: k.rank || 0, exp: k.exp || 0, job: k.job || null, seed: k.seed === undefined ? null : k.seed,
+    })),
     observeRemainingTime: g.calendar.observeRemainingTime || 0,
     winterCatnipPerTick: g.winterCatnipPerTick || 0,
+    happiness: g.village.happiness || 0,
     stats: { total: statsTotal, current: statsCurrent },
     achievements,
     badges,

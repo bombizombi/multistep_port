@@ -63,7 +63,8 @@ function RouteModule_parseGuid(x) {
         outArg = v;
     })), outArg];
     if (matchValue[0]) {
-        return matchValue[1];
+        const x$0027 = matchValue[1];
+        return x$0027;
     }
     else {
         return undefined;
@@ -77,7 +78,8 @@ function RouteModule_parseInt(x) {
         outArg = (v | 0);
     })), outArg];
     if (matchValue[0]) {
-        return matchValue[1];
+        const x$0027 = matchValue[1] | 0;
+        return x$0027;
     }
     else {
         return undefined;
@@ -91,7 +93,8 @@ function RouteModule_parseInt64(x) {
         outArg = v;
     })), outArg];
     if (matchValue[0]) {
-        return matchValue[1];
+        const x$0027 = matchValue[1];
+        return x$0027;
     }
     else {
         return undefined;
@@ -105,7 +108,8 @@ function RouteModule_parseBool(x) {
         outArg = v;
     })), outArg];
     if (matchValue[0]) {
-        return matchValue[1];
+        const x$0027 = matchValue[1];
+        return x$0027;
     }
     else {
         return undefined;
@@ -119,7 +123,8 @@ function RouteModule_parseFloat(x) {
         outArg = v;
     })), outArg];
     if (matchValue[0]) {
-        return matchValue[1];
+        const x$0027 = matchValue[1];
+        return x$0027;
     }
     else {
         return undefined;
@@ -133,7 +138,8 @@ function RouteModule_parseDecimal(x) {
         outArg = v;
     })), outArg];
     if (matchValue[0]) {
-        return matchValue[1];
+        const x$0027 = matchValue[1];
+        return x$0027;
     }
     else {
         return undefined;
@@ -170,8 +176,10 @@ function RouteModule_eq(x, y) {
 
 function RouteModule_containsQuery(name, parser, query) {
     return exists((tupledArg) => {
-        if (RouteModule_eq(tupledArg[0], name)) {
-            return parser(tupledArg[1]) != null;
+        const name$0027 = tupledArg[0];
+        const value = tupledArg[1];
+        if (RouteModule_eq(name$0027, name)) {
+            return parser(value) != null;
         }
         else {
             return false;
@@ -181,10 +189,13 @@ function RouteModule_containsQuery(name, parser, query) {
 
 function RouteModule_tryGetQuery(name, parser, query) {
     return tryPick((tupledArg) => {
-        const matchValue = parser(tupledArg[1]);
+        let value$0027;
+        const name$0027 = tupledArg[0];
+        const value = tupledArg[1];
+        const matchValue = parser(value);
         let matchResult, value$0027_1;
         if (matchValue != null) {
-            if ((value_1(matchValue), RouteModule_eq(tupledArg[0], name))) {
+            if ((value$0027 = value_1(matchValue), RouteModule_eq(name$0027, name))) {
                 matchResult = 0;
                 value$0027_1 = value_1(matchValue);
             }
@@ -215,7 +226,19 @@ function RouteModule_getQuery(name, parser, query) {
 }
 
 export function RouteModule_parse(xs) {
-    const xs_4 = isEmpty(xs) ? singleton("?") : (!last(xs).startsWith("?") ? append(xs, singleton("?")) : xs);
+    let xs_1;
+    let xs_4;
+    if (isEmpty(xs)) {
+        xs_4 = singleton("?");
+    }
+    else if ((xs_1 = xs, !last(xs_1).startsWith("?"))) {
+        const xs_2 = xs;
+        xs_4 = append(xs_2, singleton("?"));
+    }
+    else {
+        const xs_3 = xs;
+        xs_4 = xs_3;
+    }
     let matchResult;
     if (!isEmpty(xs_4)) {
         if (RouteModule_$007CQuery$007C_$007C(head(xs_4)) != null) {
@@ -237,7 +260,8 @@ export function RouteModule_parse(xs) {
         case 0:
             return new Route(/* Home */ 0, [undefined]);
         default: {
-            toConsole(printf("Route not found: \'%A\'"))(xs_4);
+            const other = xs_4;
+            toConsole(printf("Route not found: \'%A\'"))(other);
             return Route.NotFound;
         }
     }

@@ -41,7 +41,7 @@ export class ResourceDef extends Record {
 }
 
 export function ResourceDef_$reflection() {
-    return record_type("Game.Types.ResourceDef", [], ResourceDef, () => [["Name", string_type], ["Category", string_type], ["Visible", bool_type], ["Color", option_type(string_type)], ["Craftable", bool_type], ["CalculatePerTick", bool_type], ["Persists", bool_type], ["AiCanDestroy", bool_type], ["Transient", bool_type], ["Tag", option_type(string_type)], ["IsNotRefundable", bool_type], ["CalculatePerDay", bool_type], ["CalculatePerTickAndDay", bool_type], ["CalculateOnYear", bool_type], ["RefundableRule", RefundableRule_$reflection()]]);
+    return record_type("Game.Types.ResourceDef", [], ResourceDef, () => [["Name", string_type], ["Category", string_type], ["Visible", bool_type], ["Color", option_type(string_type)], ["Craftable", bool_type], ["CalculatePerTick", bool_type], ["Persists", option_type(bool_type)], ["AiCanDestroy", bool_type], ["Transient", bool_type], ["Tag", option_type(string_type)], ["IsNotRefundable", bool_type], ["CalculatePerDay", bool_type], ["CalculatePerTickAndDay", bool_type], ["CalculateOnYear", bool_type], ["RefundableRule", RefundableRule_$reflection()]]);
 }
 
 /**
@@ -98,7 +98,7 @@ export function Price_$reflection() {
 }
 
 export class UnlockList extends Record {
-    constructor(Buildings, Tabs, Jobs, Tech, Policies, Upgrades, Stages) {
+    constructor(Buildings, Tabs, Jobs, Tech, Policies, Upgrades, ZebraUpgrades, Religion, Crafts, Perks, Stages) {
         super();
         this.Buildings = Buildings;
         this.Tabs = Tabs;
@@ -106,12 +106,16 @@ export class UnlockList extends Record {
         this.Tech = Tech;
         this.Policies = Policies;
         this.Upgrades = Upgrades;
+        this.ZebraUpgrades = ZebraUpgrades;
+        this.Religion = Religion;
+        this.Crafts = Crafts;
+        this.Perks = Perks;
         this.Stages = Stages;
     }
 }
 
 export function UnlockList_$reflection() {
-    return record_type("Game.Types.UnlockList", [], UnlockList, () => [["Buildings", list_type(string_type)], ["Tabs", list_type(string_type)], ["Jobs", list_type(string_type)], ["Tech", list_type(string_type)], ["Policies", list_type(string_type)], ["Upgrades", list_type(string_type)], ["Stages", list_type(string_type)]]);
+    return record_type("Game.Types.UnlockList", [], UnlockList, () => [["Buildings", list_type(string_type)], ["Tabs", list_type(string_type)], ["Jobs", list_type(string_type)], ["Tech", list_type(string_type)], ["Policies", list_type(string_type)], ["Upgrades", list_type(string_type)], ["ZebraUpgrades", list_type(string_type)], ["Religion", list_type(string_type)], ["Crafts", list_type(string_type)], ["Perks", list_type(string_type)], ["Stages", list_type(string_type)]]);
 }
 
 export class StageDef extends Record {
@@ -157,29 +161,32 @@ export function BuildingDef_$reflection() {
 }
 
 export class TechDef extends Record {
-    constructor(Name, Prices, Unlocks) {
+    constructor(Name, Prices, Unlocks, Upgrades) {
         super();
         this.Name = Name;
         this.Prices = Prices;
         this.Unlocks = Unlocks;
+        this.Upgrades = Upgrades;
     }
 }
 
 export function TechDef_$reflection() {
-    return record_type("Game.Types.TechDef", [], TechDef, () => [["Name", string_type], ["Prices", list_type(Price_$reflection())], ["Unlocks", option_type(UnlockList_$reflection())]]);
+    return record_type("Game.Types.TechDef", [], TechDef, () => [["Name", string_type], ["Prices", list_type(Price_$reflection())], ["Unlocks", option_type(UnlockList_$reflection())], ["Upgrades", option_type(UnlockList_$reflection())]]);
 }
 
 export class PolicyDef extends Record {
-    constructor(Name, Prices, Unlocks) {
+    constructor(Name, Prices, IsRelation, RelationGate, Unlocks) {
         super();
         this.Name = Name;
         this.Prices = Prices;
+        this.IsRelation = IsRelation;
+        this.RelationGate = RelationGate;
         this.Unlocks = Unlocks;
     }
 }
 
 export function PolicyDef_$reflection() {
-    return record_type("Game.Types.PolicyDef", [], PolicyDef, () => [["Name", string_type], ["Prices", list_type(Price_$reflection())], ["Unlocks", option_type(UnlockList_$reflection())]]);
+    return record_type("Game.Types.PolicyDef", [], PolicyDef, () => [["Name", string_type], ["Prices", list_type(Price_$reflection())], ["IsRelation", bool_type], ["RelationGate", option_type(tuple_type(string_type, int32_type))], ["Unlocks", option_type(UnlockList_$reflection())]]);
 }
 
 export class UpgradeDef extends Record {
@@ -196,18 +203,19 @@ export function UpgradeDef_$reflection() {
 }
 
 export class CraftDef extends Record {
-    constructor(Name, Prices, Tier, IgnoreBonuses, StartsUnlocked) {
+    constructor(Name, Prices, Tier, IgnoreBonuses, ProgressHandicap, StartsUnlocked) {
         super();
         this.Name = Name;
         this.Prices = Prices;
         this.Tier = Tier;
         this.IgnoreBonuses = IgnoreBonuses;
+        this.ProgressHandicap = ProgressHandicap;
         this.StartsUnlocked = StartsUnlocked;
     }
 }
 
 export function CraftDef_$reflection() {
-    return record_type("Game.Types.CraftDef", [], CraftDef, () => [["Name", string_type], ["Prices", list_type(Price_$reflection())], ["Tier", option_type(float64_type)], ["IgnoreBonuses", bool_type], ["StartsUnlocked", bool_type]]);
+    return record_type("Game.Types.CraftDef", [], CraftDef, () => [["Name", string_type], ["Prices", list_type(Price_$reflection())], ["Tier", option_type(float64_type)], ["IgnoreBonuses", bool_type], ["ProgressHandicap", float64_type], ["StartsUnlocked", bool_type]]);
 }
 
 /**
@@ -272,16 +280,79 @@ export function UpgradeState_$reflection() {
 }
 
 export class CraftState extends Record {
-    constructor(Def, Unlocked, Value) {
+    constructor(Def, Unlocked, Value, Progress, IsLimited, IsLimitedAmt) {
         super();
         this.Def = Def;
         this.Unlocked = Unlocked;
         this.Value = Value;
+        this.Progress = Progress;
+        this.IsLimited = IsLimited;
+        this.IsLimitedAmt = IsLimitedAmt;
     }
 }
 
 export function CraftState_$reflection() {
-    return record_type("Game.Types.CraftState", [], CraftState, () => [["Def", CraftDef_$reflection()], ["Unlocked", bool_type], ["Value", float64_type]]);
+    return record_type("Game.Types.CraftState", [], CraftState, () => [["Def", CraftDef_$reflection()], ["Unlocked", bool_type], ["Value", float64_type], ["Progress", float64_type], ["IsLimited", bool_type], ["IsLimitedAmt", bool_type]]);
+}
+
+/**
+ * Zebra upgrade (workshop-10): research meta bought with bloodstone/science.
+ */
+export class ZebraUpgradeDef extends Record {
+    constructor(Name, Prices, Effects, Unlocks, Upgrades) {
+        super();
+        this.Name = Name;
+        this.Prices = Prices;
+        this.Effects = Effects;
+        this.Unlocks = Unlocks;
+        this.Upgrades = Upgrades;
+    }
+}
+
+export function ZebraUpgradeDef_$reflection() {
+    return record_type("Game.Types.ZebraUpgradeDef", [], ZebraUpgradeDef, () => [["Name", string_type], ["Prices", list_type(Price_$reflection())], ["Effects", class_type("Microsoft.FSharp.Collections.FSharpMap`2", [string_type, float64_type])], ["Unlocks", option_type(UnlockList_$reflection())], ["Upgrades", option_type(UnlockList_$reflection())]]);
+}
+
+/**
+ * Manager-specific undo payloads (orig: opaque `data` objects per manager).
+ */
+export class UndoData extends Union {
+    constructor(tag, fields) {
+        super();
+        this.tag = tag;
+        this.fields = fields;
+    }
+    cases() {
+        return ["BuildUndo", "CFUUndo", "VSUUndo", "CraftUndo", "TradeUndo", "PraiseUndo", "AdoreUndo"];
+    }
+}
+
+export function UndoData_$reflection() {
+    return union_type("Game.Types.UndoData", [], UndoData, () => [[["building", string_type], ["count", int32_type]], [["metaId", string_type], ["val_", int32_type]], [["metaId", string_type], ["val_", int32_type]], [["craft", string_type], ["gained", float64_type], ["spent", list_type(tuple_type(string_type, float64_type))]], [["trades", float64_type], ["spent", list_type(tuple_type(string_type, float64_type))], ["gained", list_type(tuple_type(string_type, float64_type))]], [["faithSpent", float64_type], ["worshipGained", float64_type]], [["worshipBefore", float64_type], ["epiphanyGained", float64_type]]]);
+}
+
+export class UndoEvent extends Record {
+    constructor(ManagerId, Data) {
+        super();
+        this.ManagerId = ManagerId;
+        this.Data = Data;
+    }
+}
+
+export function UndoEvent_$reflection() {
+    return record_type("Game.Types.UndoEvent", [], UndoEvent, () => [["ManagerId", string_type], ["Data", UndoData_$reflection()]]);
+}
+
+export class UndoChange extends Record {
+    constructor(Ttl, Events) {
+        super();
+        this.Ttl = (Ttl | 0);
+        this.Events = Events;
+    }
+}
+
+export function UndoChange_$reflection() {
+    return record_type("Game.Types.UndoChange", [], UndoChange, () => [["Ttl", int32_type], ["Events", list_type(UndoEvent_$reflection())]]);
 }
 
 export function mkResearch(def) {

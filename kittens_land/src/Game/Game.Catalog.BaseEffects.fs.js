@@ -22,7 +22,8 @@ export function getEffect(name) {
         return 0;
     }
     else {
-        return matchValue;
+        const v = matchValue;
+        return v;
     }
 }
 

@@ -3,6 +3,7 @@
 # checkpoints: 0, 100, 200, 300, 400, 500, 600, 700, 800, 900
 # Early-game bring-up scenario: gather, fields, wood crafting, first hut, kitten, job assign.
 # Costs: field 10 catnip (x1.12^val), wood 100 catnip/unit, hut 5 wood.
+0 resop seed 20260927
 0 gather 30
 15 buy field
 50 gather 50
