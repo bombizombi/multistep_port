@@ -527,149 +527,149 @@ let policyDefs : PolicyDef list =
 
 let upgradeDefs : UpgradeDef list =
     [
-      { Name = "mineralHoes"; Prices = [{ Resource = "minerals"; Val = 275 }; { Resource = "science"; Val = 100 }]; Effects = Map.ofList ["catnipJobRatio", 0.5] }
-      { Name = "ironHoes"; Prices = [{ Resource = "iron"; Val = 25 }; { Resource = "science"; Val = 200 }]; Effects = Map.ofList ["catnipJobRatio", 0.3] }
-      { Name = "mineralAxes"; Prices = [{ Resource = "minerals"; Val = 500 }; { Resource = "science"; Val = 100 }]; Effects = Map.ofList ["woodJobRatio", 0.7] }
-      { Name = "ironAxes"; Prices = [{ Resource = "iron"; Val = 50 }; { Resource = "science"; Val = 200 }]; Effects = Map.ofList ["woodJobRatio", 0.5] }
-      { Name = "steelAxe"; Prices = [{ Resource = "science"; Val = 20000 }; { Resource = "steel"; Val = 75 }]; Effects = Map.ofList ["woodJobRatio", 0.5] }
-      { Name = "reinforcedSaw"; Prices = [{ Resource = "iron"; Val = 1000 }; { Resource = "science"; Val = 2500 }]; Effects = Map.ofList ["lumberMillRatio", 0.2] }
-      { Name = "steelSaw"; Prices = [{ Resource = "science"; Val = 52000 }; { Resource = "steel"; Val = 750 }]; Effects = Map.ofList ["lumberMillRatio", 0.2] }
-      { Name = "titaniumSaw"; Prices = [{ Resource = "titanium"; Val = 500 }; { Resource = "science"; Val = 70000 }]; Effects = Map.ofList ["lumberMillRatio", 0.15] }
-      { Name = "alloySaw"; Prices = [{ Resource = "science"; Val = 85000 }; { Resource = "alloy"; Val = 75 }]; Effects = Map.ofList ["lumberMillRatio", 0.15] }
-      { Name = "titaniumAxe"; Prices = [{ Resource = "titanium"; Val = 10 }; { Resource = "science"; Val = 38000 }]; Effects = Map.ofList ["woodJobRatio", 0.5] }
-      { Name = "alloyAxe"; Prices = [{ Resource = "science"; Val = 70000 }; { Resource = "alloy"; Val = 25 }]; Effects = Map.ofList ["woodJobRatio", 0.5] }
-      { Name = "unobtainiumAxe"; Prices = [{ Resource = "unobtainium"; Val = 75 }; { Resource = "science"; Val = 125000 }]; Effects = Map.ofList ["woodJobRatio", 0.5] }
-      { Name = "unobtainiumSaw"; Prices = [{ Resource = "unobtainium"; Val = 125 }; { Resource = "science"; Val = 145000 }]; Effects = Map.ofList ["lumberMillRatio", 0.25] }
-      { Name = "stoneBarns"; Prices = [{ Resource = "wood"; Val = 1000 }; { Resource = "minerals"; Val = 750 }; { Resource = "iron"; Val = 50 }; { Resource = "science"; Val = 500 }]; Effects = Map.ofList ["barnRatio", 0.75] }
-      { Name = "reinforcedBarns"; Prices = [{ Resource = "iron"; Val = 100 }; { Resource = "science"; Val = 800 }; { Resource = "beam"; Val = 25 }; { Resource = "slab"; Val = 10 }]; Effects = Map.ofList ["barnRatio", 0.8] }
-      { Name = "reinforcedWarehouses"; Prices = [{ Resource = "science"; Val = 15000 }; { Resource = "plate"; Val = 50 }; { Resource = "steel"; Val = 50 }; { Resource = "scaffold"; Val = 25 }]; Effects = Map.ofList ["warehouseRatio", 0.25] }
-      { Name = "titaniumBarns"; Prices = [{ Resource = "titanium"; Val = 25 }; { Resource = "science"; Val = 60000 }; { Resource = "steel"; Val = 200 }; { Resource = "scaffold"; Val = 250 }]; Effects = Map.ofList ["barnRatio", 1] }
-      { Name = "alloyBarns"; Prices = [{ Resource = "science"; Val = 75000 }; { Resource = "plate"; Val = 750 }; { Resource = "alloy"; Val = 20 }]; Effects = Map.ofList ["barnRatio", 1] }
-      { Name = "concreteBarns"; Prices = [{ Resource = "titanium"; Val = 2000 }; { Resource = "science"; Val = 100000 }; { Resource = "concrate"; Val = 45 }]; Effects = Map.ofList ["barnRatio", 0.75] }
-      { Name = "titaniumWarehouses"; Prices = [{ Resource = "titanium"; Val = 50 }; { Resource = "science"; Val = 70000 }; { Resource = "steel"; Val = 500 }; { Resource = "scaffold"; Val = 500 }]; Effects = Map.ofList ["warehouseRatio", 0.5] }
-      { Name = "alloyWarehouses"; Prices = [{ Resource = "titanium"; Val = 750 }; { Resource = "science"; Val = 90000 }; { Resource = "alloy"; Val = 50 }]; Effects = Map.ofList ["warehouseRatio", 0.45] }
-      { Name = "concreteWarehouses"; Prices = [{ Resource = "titanium"; Val = 1250 }; { Resource = "science"; Val = 100000 }; { Resource = "concrate"; Val = 35 }]; Effects = Map.ofList ["warehouseRatio", 0.35] }
-      { Name = "storageBunkers"; Prices = [{ Resource = "unobtainium"; Val = 500 }; { Resource = "science"; Val = 25000 }; { Resource = "concrate"; Val = 1250 }]; Effects = Map.ofList ["warehouseRatio", 0.2] }
-      { Name = "energyRifts"; Prices = [{ Resource = "titanium"; Val = 7500 }; { Resource = "uranium"; Val = 250 }; { Resource = "science"; Val = 200000 }]; Effects = Map.empty }
-      { Name = "stasisChambers"; Prices = [{ Resource = "uranium"; Val = 2000 }; { Resource = "science"; Val = 235000 }; { Resource = "timeCrystal"; Val = 1 }; { Resource = "alloy"; Val = 200 }]; Effects = Map.ofList ["acceleratorRatio", 0.95] }
-      { Name = "voidEnergy"; Prices = [{ Resource = "uranium"; Val = 2500 }; { Resource = "science"; Val = 275000 }; { Resource = "timeCrystal"; Val = 2 }; { Resource = "alloy"; Val = 250 }]; Effects = Map.ofList ["acceleratorRatio", 0.75] }
-      { Name = "darkEnergy"; Prices = [{ Resource = "science"; Val = 350000 }; { Resource = "timeCrystal"; Val = 3 }; { Resource = "eludium"; Val = 75 }]; Effects = Map.ofList ["acceleratorRatio", 2.5] }
-      { Name = "chronoforge"; Prices = [{ Resource = "science"; Val = 500000 }; { Resource = "timeCrystal"; Val = 10 }; { Resource = "relic"; Val = 5 }]; Effects = Map.empty }
-      { Name = "tachyonModerator"; Prices = [{ Resource = "science"; Val = 16000 }; { Resource = "gear"; Val = 500 }; { Resource = "titanium"; Val = 250 }]; Effects = Map.empty }
-      { Name = "tachyonAccelerators"; Prices = [{ Resource = "science"; Val = 500000 }; { Resource = "timeCrystal"; Val = 10 }; { Resource = "eludium"; Val = 125 }]; Effects = Map.ofList ["acceleratorRatio", 5] }
-      { Name = "fluxCondensator"; Prices = [{ Resource = "unobtainium"; Val = 5000 }; { Resource = "timeCrystal"; Val = 5 }; { Resource = "alloy"; Val = 250 }]; Effects = Map.empty }
-      { Name = "lhc"; Prices = [{ Resource = "unobtainium"; Val = 100 }; { Resource = "science"; Val = 250000 }; { Resource = "alloy"; Val = 150 }]; Effects = Map.empty }
-      { Name = "photovoltaic"; Prices = [{ Resource = "titanium"; Val = 5000 }; { Resource = "science"; Val = 75000 }]; Effects = Map.ofList ["solarFarmRatio", 0.5] }
-      { Name = "thinFilm"; Prices = [{ Resource = "uranium"; Val = 1000 }; { Resource = "unobtainium"; Val = 200 }; { Resource = "science"; Val = 125000 }]; Effects = Map.ofList ["solarFarmSeasonRatio", 1] }
-      { Name = "qdot"; Prices = [{ Resource = "science"; Val = 175000 }; { Resource = "eludium"; Val = 200 }; { Resource = "thorium"; Val = 1000 }]; Effects = Map.ofList ["solarFarmSeasonRatio", 1] }
-      { Name = "solarSatellites"; Prices = [{ Resource = "science"; Val = 225000 }; { Resource = "alloy"; Val = 750 }]; Effects = Map.empty }
-      { Name = "cargoShips"; Prices = [{ Resource = "science"; Val = 55000 }; { Resource = "blueprint"; Val = 15 }]; Effects = Map.ofList ["harborRatio", 0.01] }
-      { Name = "barges"; Prices = [{ Resource = "titanium"; Val = 1500 }; { Resource = "science"; Val = 100000 }; { Resource = "blueprint"; Val = 30 }]; Effects = Map.ofList ["harborCoalRatio", 0.5] }
-      { Name = "reactorVessel"; Prices = [{ Resource = "titanium"; Val = 5000 }; { Resource = "uranium"; Val = 125 }; { Resource = "science"; Val = 135000 }]; Effects = Map.ofList ["shipLimit", 0.05] }
-      { Name = "ironwood"; Prices = [{ Resource = "wood"; Val = 15000 }; { Resource = "iron"; Val = 3000 }; { Resource = "science"; Val = 30000 }]; Effects = Map.ofList ["hutPriceRatio", -0.5] }
-      { Name = "concreteHuts"; Prices = [{ Resource = "titanium"; Val = 3000 }; { Resource = "science"; Val = 125000 }; { Resource = "concrate"; Val = 45 }]; Effects = Map.ofList ["hutPriceRatio", -0.3] }
-      { Name = "unobtainiumHuts"; Prices = [{ Resource = "titanium"; Val = 15000 }; { Resource = "unobtainium"; Val = 350 }; { Resource = "science"; Val = 200000 }]; Effects = Map.ofList ["hutPriceRatio", -0.25] }
-      { Name = "eludiumHuts"; Prices = [{ Resource = "science"; Val = 275000 }; { Resource = "eludium"; Val = 125 }]; Effects = Map.ofList ["hutPriceRatio", -0.1] }
-      { Name = "silos"; Prices = [{ Resource = "science"; Val = 50000 }; { Resource = "steel"; Val = 125 }; { Resource = "blueprint"; Val = 5 }]; Effects = Map.empty }
-      { Name = "refrigeration"; Prices = [{ Resource = "titanium"; Val = 2500 }; { Resource = "science"; Val = 125000 }; { Resource = "blueprint"; Val = 15 }]; Effects = Map.ofList ["catnipMaxRatio", 0.75] }
-      { Name = "compositeBow"; Prices = [{ Resource = "wood"; Val = 200 }; { Resource = "iron"; Val = 100 }; { Resource = "science"; Val = 500 }]; Effects = Map.ofList ["manpowerJobRatio", 0.5; "manpowerMax", 0; "explorerAtk", 5] }
-      { Name = "crossbow"; Prices = [{ Resource = "iron"; Val = 1500 }; { Resource = "science"; Val = 12000 }]; Effects = Map.ofList ["manpowerJobRatio", 0.25; "explorerAtk", 10] }
-      { Name = "railgun"; Prices = [{ Resource = "titanium"; Val = 5000 }; { Resource = "science"; Val = 150000 }; { Resource = "blueprint"; Val = 25 }]; Effects = Map.ofList ["manpowerJobRatio", 0.25; "explorerAtk", 20] }
-      { Name = "bolas"; Prices = [{ Resource = "wood"; Val = 50 }; { Resource = "minerals"; Val = 250 }; { Resource = "science"; Val = 1000 }]; Effects = Map.ofList ["hunterRatio", 1; "explorerAtk", 2; "manpowerMax", 0] }
-      { Name = "huntingArmor"; Prices = [{ Resource = "iron"; Val = 750 }; { Resource = "science"; Val = 2000 }]; Effects = Map.ofList ["hunterRatio", 2; "explorerDef", 2; "manpowerMax", 0] }
-      { Name = "steelArmor"; Prices = [{ Resource = "science"; Val = 10000 }; { Resource = "steel"; Val = 50 }]; Effects = Map.ofList ["hunterRatio", 0.5; "explorerDef", 5] }
-      { Name = "alloyArmor"; Prices = [{ Resource = "science"; Val = 50000 }; { Resource = "alloy"; Val = 25 }]; Effects = Map.ofList ["hunterRatio", 0.5; "explorerDef", 10] }
-      { Name = "nanosuits"; Prices = [{ Resource = "science"; Val = 185000 }; { Resource = "alloy"; Val = 250 }]; Effects = Map.ofList ["hunterRatio", 0.5; "explorerDef", 20] }
-      { Name = "caravanserai"; Prices = [{ Resource = "gold"; Val = 250 }; { Resource = "science"; Val = 25000 }; { Resource = "ivory"; Val = 10000 }]; Effects = Map.empty }
-      { Name = "freightfulExchange"; Prices = [{ Resource = "science"; Val = 450000 }; { Resource = "eludium"; Val = 100 }; { Resource = "titanium"; Val = 1000 }; { Resource = "tanker"; Val = 5000 }]; Effects = Map.empty }
-      { Name = "transportSuperposition"; Prices = [{ Resource = "science"; Val = 500000 }; { Resource = "eludium"; Val = 1500 }; { Resource = "thorium"; Val = 25000 }; { Resource = "tanker"; Val = 500000 }]; Effects = Map.empty }
-      { Name = "advancedRefinement"; Prices = [{ Resource = "catnip"; Val = 5000 }; { Resource = "science"; Val = 500 }]; Effects = Map.empty }
-      { Name = "prospecting"; Prices = [{ Resource = "minerals"; Val = 1000 }; { Resource = "science"; Val = 1000 }]; Effects = Map.empty }
-      { Name = "goldOre"; Prices = [{ Resource = "minerals"; Val = 800 }; { Resource = "iron"; Val = 100 }; { Resource = "science"; Val = 1000 }]; Effects = Map.empty }
-      { Name = "geodesy"; Prices = [{ Resource = "titanium"; Val = 250 }; { Resource = "science"; Val = 90000 }; { Resource = "starchart"; Val = 500 }]; Effects = Map.empty }
-      { Name = "register"; Prices = [{ Resource = "gold"; Val = 10 }; { Resource = "science"; Val = 500 }]; Effects = Map.empty }
-      { Name = "strenghtenBuild"; Prices = [{ Resource = "science"; Val = 100000 }; { Resource = "concrate"; Val = 50 }]; Effects = Map.ofList ["barnRatio", 0.05; "warehouseRatio", 0.05] }
-      { Name = "miningDrill"; Prices = [{ Resource = "titanium"; Val = 1750 }; { Resource = "science"; Val = 100000 }; { Resource = "steel"; Val = 750 }]; Effects = Map.empty }
-      { Name = "unobtainiumDrill"; Prices = [{ Resource = "unobtainium"; Val = 250 }; { Resource = "science"; Val = 250000 }; { Resource = "alloy"; Val = 1250 }]; Effects = Map.empty }
-      { Name = "coalFurnace"; Prices = [{ Resource = "minerals"; Val = 5000 }; { Resource = "iron"; Val = 2000 }; { Resource = "science"; Val = 5000 }; { Resource = "beam"; Val = 35 }]; Effects = Map.empty }
-      { Name = "deepMining"; Prices = [{ Resource = "iron"; Val = 1200 }; { Resource = "science"; Val = 5000 }; { Resource = "beam"; Val = 50 }]; Effects = Map.empty }
-      { Name = "pyrolysis"; Prices = [{ Resource = "science"; Val = 35000 }; { Resource = "compedium"; Val = 5 }]; Effects = Map.ofList ["coalSuperRatio", 0.2] }
-      { Name = "electrolyticSmelting"; Prices = [{ Resource = "titanium"; Val = 2000 }; { Resource = "science"; Val = 100000 }]; Effects = Map.ofList ["smelterRatio", 0.95] }
-      { Name = "oxidation"; Prices = [{ Resource = "science"; Val = 100000 }; { Resource = "steel"; Val = 5000 }]; Effects = Map.ofList ["calcinerRatio", 0.95] }
-      { Name = "steelPlants"; Prices = [{ Resource = "titanium"; Val = 3500 }; { Resource = "science"; Val = 140000 }; { Resource = "gear"; Val = 750 }]; Effects = Map.ofList ["calcinerSteelRatio", 0.1] }
-      { Name = "automatedPlants"; Prices = [{ Resource = "science"; Val = 200000 }; { Resource = "alloy"; Val = 750 }]; Effects = Map.ofList ["calcinerSteelCraftRatio", 0.25] }
-      { Name = "nuclearPlants"; Prices = [{ Resource = "uranium"; Val = 10000 }; { Resource = "science"; Val = 250000 }]; Effects = Map.ofList ["calcinerSteelReactorBonus", 0.02] }
-      { Name = "rotaryKiln"; Prices = [{ Resource = "titanium"; Val = 5000 }; { Resource = "science"; Val = 145000 }; { Resource = "gear"; Val = 500 }]; Effects = Map.ofList ["calcinerRatio", 0.75] }
-      { Name = "fluidizedReactors"; Prices = [{ Resource = "science"; Val = 175000 }; { Resource = "alloy"; Val = 200 }]; Effects = Map.ofList ["calcinerRatio", 1] }
-      { Name = "nuclearSmelters"; Prices = [{ Resource = "uranium"; Val = 250 }; { Resource = "science"; Val = 165000 }]; Effects = Map.empty }
-      { Name = "orbitalGeodesy"; Prices = [{ Resource = "oil"; Val = 35000 }; { Resource = "science"; Val = 150000 }; { Resource = "alloy"; Val = 1000 }]; Effects = Map.empty }
-      { Name = "printingPress"; Prices = [{ Resource = "science"; Val = 7500 }; { Resource = "gear"; Val = 45 }]; Effects = Map.empty }
-      { Name = "offsetPress"; Prices = [{ Resource = "oil"; Val = 15000 }; { Resource = "science"; Val = 100000 }; { Resource = "gear"; Val = 250 }]; Effects = Map.empty }
-      { Name = "photolithography"; Prices = [{ Resource = "oil"; Val = 50000 }; { Resource = "uranium"; Val = 250 }; { Resource = "science"; Val = 250000 }; { Resource = "alloy"; Val = 1250 }]; Effects = Map.empty }
-      { Name = "uplink"; Prices = [{ Resource = "science"; Val = 75000 }; { Resource = "alloy"; Val = 1750 }]; Effects = Map.ofList ["uplinkDCRatio", 0.01; "uplinkLabRatio", 0.01] }
-      { Name = "starlink"; Prices = [{ Resource = "oil"; Val = 25000 }; { Resource = "science"; Val = 175000 }; { Resource = "alloy"; Val = 5000 }]; Effects = Map.ofList ["uplinkLabRatio", 0.01] }
-      { Name = "cryocomputing"; Prices = [{ Resource = "science"; Val = 125000 }; { Resource = "eludium"; Val = 15 }]; Effects = Map.empty }
-      { Name = "machineLearning"; Prices = [{ Resource = "antimatter"; Val = 125 }; { Resource = "science"; Val = 175000 }; { Resource = "eludium"; Val = 25 }]; Effects = Map.ofList ["dataCenterAIRatio", 0.1] }
-      { Name = "factoryAutomation"; Prices = [{ Resource = "science"; Val = 10000 }; { Resource = "gear"; Val = 25 }]; Effects = Map.empty }
-      { Name = "advancedAutomation"; Prices = [{ Resource = "science"; Val = 100000 }; { Resource = "gear"; Val = 75 }; { Resource = "blueprint"; Val = 25 }]; Effects = Map.empty }
-      { Name = "pneumaticPress"; Prices = [{ Resource = "science"; Val = 20000 }; { Resource = "gear"; Val = 30 }; { Resource = "blueprint"; Val = 5 }]; Effects = Map.empty }
-      { Name = "combustionEngine"; Prices = [{ Resource = "science"; Val = 20000 }; { Resource = "gear"; Val = 25 }; { Resource = "blueprint"; Val = 5 }]; Effects = Map.ofList ["coalRatioGlobalReduction", 0.2] }
-      { Name = "fuelInjectors"; Prices = [{ Resource = "oil"; Val = 20000 }; { Resource = "science"; Val = 100000 }; { Resource = "gear"; Val = 250 }]; Effects = Map.ofList ["coalRatioGlobalReduction", 0.2] }
-      { Name = "factoryLogistics"; Prices = [{ Resource = "titanium"; Val = 2000 }; { Resource = "science"; Val = 100000 }; { Resource = "gear"; Val = 250 }]; Effects = Map.empty }
-      { Name = "carbonSequestration"; Prices = [{ Resource = "titanium"; Val = 1250 }; { Resource = "science"; Val = 75000 }; { Resource = "gear"; Val = 125 }; { Resource = "steel"; Val = 4000 }; { Resource = "alloy"; Val = 1000 }]; Effects = Map.empty }
-      { Name = "factoryOptimization"; Prices = [{ Resource = "titanium"; Val = 1250 }; { Resource = "science"; Val = 75000 }; { Resource = "gear"; Val = 125 }]; Effects = Map.ofList ["t1CraftRatio", 10; "t2CraftRatio", 2; "queueCap", 1] }
-      { Name = "factoryRobotics"; Prices = [{ Resource = "titanium"; Val = 2500 }; { Resource = "science"; Val = 100000 }; { Resource = "gear"; Val = 250 }]; Effects = Map.ofList ["t1CraftRatio", 10; "t2CraftRatio", 5; "t3CraftRatio", 2; "queueCap", 2] }
-      { Name = "spaceEngineers"; Prices = [{ Resource = "science"; Val = 225000 }; { Resource = "alloy"; Val = 500 }]; Effects = Map.ofList ["t1CraftRatio", 10; "t2CraftRatio", 5; "t3CraftRatio", 2; "t4CraftRatio", 2; "queueCap", 2] }
-      { Name = "aiEngineers"; Prices = [{ Resource = "antimatter"; Val = 500 }; { Resource = "science"; Val = 35000 }; { Resource = "eludium"; Val = 50 }]; Effects = Map.ofList ["t1CraftRatio", 10; "t2CraftRatio", 5; "t3CraftRatio", 5; "t4CraftRatio", 2; "t5CraftRatio", 2; "queueCap", 3] }
-      { Name = "chronoEngineers"; Prices = [{ Resource = "science"; Val = 500000 }; { Resource = "timeCrystal"; Val = 5 }; { Resource = "eludium"; Val = 100 }]; Effects = Map.ofList ["t1CraftRatio", 10; "t2CraftRatio", 5; "t3CraftRatio", 2; "t4CraftRatio", 2; "t5CraftRatio", 2; "queueCap", 3] }
-      { Name = "spaceManufacturing"; Prices = [{ Resource = "titanium"; Val = 125000 }; { Resource = "science"; Val = 250000 }]; Effects = Map.empty }
-      { Name = "celestialMechanics"; Prices = [{ Resource = "science"; Val = 250 }]; Effects = Map.empty }
-      { Name = "astrolabe"; Prices = [{ Resource = "titanium"; Val = 5 }; { Resource = "science"; Val = 25000 }; { Resource = "starchart"; Val = 75 }]; Effects = Map.empty }
-      { Name = "titaniumMirrors"; Prices = [{ Resource = "titanium"; Val = 15 }; { Resource = "science"; Val = 20000 }; { Resource = "starchart"; Val = 20 }]; Effects = Map.ofList ["libraryRatio", 0.02] }
-      { Name = "unobtainiumReflectors"; Prices = [{ Resource = "unobtainium"; Val = 75 }; { Resource = "science"; Val = 250000 }; { Resource = "starchart"; Val = 750 }]; Effects = Map.ofList ["libraryRatio", 0.02] }
-      { Name = "eludiumReflectors"; Prices = [{ Resource = "science"; Val = 250000 }; { Resource = "eludium"; Val = 15 }]; Effects = Map.ofList ["libraryRatio", 0.02] }
-      { Name = "hydroPlantTurbines"; Prices = [{ Resource = "unobtainium"; Val = 125 }; { Resource = "science"; Val = 250000 }]; Effects = Map.ofList ["hydroPlantRatio", 0.15] }
-      { Name = "amBases"; Prices = [{ Resource = "antimatter"; Val = 250 }; { Resource = "eludium"; Val = 15 }]; Effects = Map.empty }
-      { Name = "aiBases"; Prices = [{ Resource = "antimatter"; Val = 7500 }; { Resource = "science"; Val = 750000 }]; Effects = Map.empty }
-      { Name = "amFission"; Prices = [{ Resource = "antimatter"; Val = 175 }; { Resource = "science"; Val = 525000 }; { Resource = "thorium"; Val = 7500 }]; Effects = Map.ofList ["eludiumAutomationBonus", 0.25] }
-      { Name = "amReactors"; Prices = [{ Resource = "antimatter"; Val = 750 }; { Resource = "eludium"; Val = 35 }]; Effects = Map.ofList ["spaceScienceRatio", 0.95] }
-      { Name = "amReactorsMK2"; Prices = [{ Resource = "antimatter"; Val = 1750 }; { Resource = "eludium"; Val = 70 }]; Effects = Map.ofList ["spaceScienceRatio", 1.5] }
-      { Name = "voidReactors"; Prices = [{ Resource = "antimatter"; Val = 2500 }; { Resource = "void"; Val = 250 }]; Effects = Map.ofList ["spaceScienceRatio", 4] }
-      { Name = "relicStation"; Prices = [{ Resource = "antimatter"; Val = 5000 }; { Resource = "eludium"; Val = 100 }]; Effects = Map.ofList ["beaconRelicsPerDay", 0.01] }
-      { Name = "amDrive"; Prices = [{ Resource = "antimatter"; Val = 125 }; { Resource = "science"; Val = 450000 }]; Effects = Map.ofList ["routeSpeed", 25] }
-      { Name = "pumpjack"; Prices = [{ Resource = "titanium"; Val = 250 }; { Resource = "science"; Val = 100000 }; { Resource = "gear"; Val = 125 }]; Effects = Map.ofList ["oilWellRatio", 0.45] }
-      { Name = "petri"; Prices = [{ Resource = "plastic"; Val = 250 }; { Resource = "science"; Val = 65000 }]; Effects = Map.empty }
-      { Name = "biofuel"; Prices = [{ Resource = "titanium"; Val = 1250 }; { Resource = "science"; Val = 150000 }]; Effects = Map.empty }
-      { Name = "unicornSelection"; Prices = [{ Resource = "titanium"; Val = 1500 }; { Resource = "science"; Val = 175000 }]; Effects = Map.ofList ["unicornsGlobalRatio", 0.25; "unicornsMaxRatio", 0] }
-      { Name = "alicornStable"; Prices = [{ Resource = "wood"; Val = 3000 }; { Resource = "gold"; Val = 100 }; { Resource = "alicorn"; Val = 20 }]; Effects = Map.ofList ["alicornMax", 0] }
-      { Name = "gmo"; Prices = [{ Resource = "catnip"; Val = 1000000 }; { Resource = "titanium"; Val = 1500 }; { Resource = "science"; Val = 175000 }]; Effects = Map.ofList ["biofuelRatio", 0.6] }
-      { Name = "cadSystems"; Prices = [{ Resource = "titanium"; Val = 750 }; { Resource = "science"; Val = 125000 }]; Effects = Map.ofList ["cadBlueprintCraftRatio", 0.01] }
-      { Name = "seti"; Prices = [{ Resource = "titanium"; Val = 250 }; { Resource = "science"; Val = 125000 }]; Effects = Map.empty }
-      { Name = "logistics"; Prices = [{ Resource = "science"; Val = 100000 }; { Resource = "gear"; Val = 100 }; { Resource = "scaffold"; Val = 1000 }]; Effects = Map.ofList ["skillMultiplier", 0.15] }
-      { Name = "augumentation"; Prices = [{ Resource = "titanium"; Val = 5000 }; { Resource = "uranium"; Val = 50 }; { Resource = "science"; Val = 150000 }]; Effects = Map.ofList ["skillMultiplier", 1] }
-      { Name = "internet"; Prices = [{ Resource = "titanium"; Val = 5000 }; { Resource = "uranium"; Val = 50 }; { Resource = "science"; Val = 150000 }]; Effects = Map.empty }
-      { Name = "neuralNetworks"; Prices = [{ Resource = "titanium"; Val = 7500 }; { Resource = "science"; Val = 200000 }]; Effects = Map.empty }
-      { Name = "assistance"; Prices = [{ Resource = "science"; Val = 100000 }; { Resource = "steel"; Val = 10000 }; { Resource = "gear"; Val = 250 }]; Effects = Map.ofList ["catnipDemandWorkerRatioGlobal", -0.25] }
-      { Name = "enrichedUranium"; Prices = [{ Resource = "titanium"; Val = 7500 }; { Resource = "uranium"; Val = 150 }; { Resource = "science"; Val = 175000 }]; Effects = Map.ofList ["uraniumRatio", 0.25] }
-      { Name = "coldFusion"; Prices = [{ Resource = "science"; Val = 200000 }; { Resource = "eludium"; Val = 25 }]; Effects = Map.ofList ["reactorEnergyRatio", 0.25] }
-      { Name = "thoriumReactors"; Prices = [{ Resource = "science"; Val = 400000 }; { Resource = "thorium"; Val = 10000 }]; Effects = Map.ofList ["reactorThoriumPerTick", -0.05; "reactorEnergyRatio", 0.25] }
-      { Name = "enrichedThorium"; Prices = [{ Resource = "science"; Val = 500000 }; { Resource = "thorium"; Val = 12500 }]; Effects = Map.ofList ["reactorThoriumPerTick", 0.0125] }
-      { Name = "hubbleTelescope"; Prices = [{ Resource = "oil"; Val = 50000 }; { Resource = "science"; Val = 250000 }; { Resource = "alloy"; Val = 1250 }]; Effects = Map.ofList ["starchartGlobalRatio", 0.3] }
-      { Name = "satnav"; Prices = [{ Resource = "science"; Val = 200000 }; { Resource = "alloy"; Val = 750 }]; Effects = Map.ofList ["satnavRatio", 0.0125] }
-      { Name = "satelliteRadio"; Prices = [{ Resource = "science"; Val = 225000 }; { Resource = "alloy"; Val = 5000 }]; Effects = Map.ofList ["broadcastTowerRatio", 0.005] }
-      { Name = "astrophysicists"; Prices = [{ Resource = "unobtainium"; Val = 350 }; { Resource = "science"; Val = 250000 }]; Effects = Map.empty }
-      { Name = "mWReactor"; Prices = [{ Resource = "science"; Val = 150000 }; { Resource = "eludium"; Val = 50 }]; Effects = Map.ofList ["lunarOutpostRatio", 0.75] }
-      { Name = "eludiumCracker"; Prices = [{ Resource = "science"; Val = 275000 }; { Resource = "eludium"; Val = 250 }]; Effects = Map.ofList ["crackerRatio", 1] }
-      { Name = "thoriumEngine"; Prices = [{ Resource = "science"; Val = 400000 }; { Resource = "gear"; Val = 40000 }; { Resource = "alloy"; Val = 2000 }; { Resource = "ship"; Val = 10000 }; { Resource = "thorium"; Val = 100000 }]; Effects = Map.ofList ["routeSpeed", 50] }
-      { Name = "spiceNavigation"; Prices = [{ Resource = "science"; Val = 350000 }; { Resource = "starchart"; Val = 500000 }]; Effects = Map.empty }
-      { Name = "longRangeSpaceships"; Prices = [{ Resource = "science"; Val = 440000 }; { Resource = "gear"; Val = 90000 }; { Resource = "alloy"; Val = 3500 }; { Resource = "tanker"; Val = 500 }]; Effects = Map.empty }
-      { Name = "oilRefinery"; Prices = [{ Resource = "titanium"; Val = 1250 }; { Resource = "science"; Val = 125000 }; { Resource = "gear"; Val = 500 }]; Effects = Map.ofList ["oilWellRatio", 0.35] }
-      { Name = "oilDistillation"; Prices = [{ Resource = "titanium"; Val = 5000 }; { Resource = "science"; Val = 175000 }]; Effects = Map.ofList ["oilWellRatio", 0.75] }
-      { Name = "factoryProcessing"; Prices = [{ Resource = "titanium"; Val = 7500 }; { Resource = "science"; Val = 195000 }; { Resource = "concrate"; Val = 125 }]; Effects = Map.ofList ["factoryRefineRatio", 0.05] }
-      { Name = "voidAspiration"; Prices = [{ Resource = "antimatter"; Val = 2000 }; { Resource = "timeCrystal"; Val = 15 }]; Effects = Map.empty }
-      { Name = "distorsion"; Prices = [{ Resource = "antimatter"; Val = 2000 }; { Resource = "science"; Val = 300000 }; { Resource = "timeCrystal"; Val = 25 }; { Resource = "void"; Val = 1000 }]; Effects = Map.ofList ["temporalParadoxDayBonus", 2] }
-      { Name = "turnSmoothly"; Prices = [{ Resource = "unobtainium"; Val = 100000 }; { Resource = "temporalFlux"; Val = 6500 }; { Resource = "timeCrystal"; Val = 25 }; { Resource = "void"; Val = 750 }]; Effects = Map.ofList ["temporalFluxProductionChronosphere", 1] }
-      { Name = "invisibleBlackHand"; Prices = [{ Resource = "temporalFlux"; Val = 4096 }; { Resource = "timeCrystal"; Val = 128 }; { Resource = "void"; Val = 32 }; { Resource = "blackcoin"; Val = 64 }]; Effects = Map.empty }
+      { Name = "mineralHoes"; Prices = [{ Resource = "minerals"; Val = 275 }; { Resource = "science"; Val = 100 }]; Effects = Map.ofList ["catnipJobRatio", 0.5]; StartsUnlocked = true }
+      { Name = "ironHoes"; Prices = [{ Resource = "iron"; Val = 25 }; { Resource = "science"; Val = 200 }]; Effects = Map.ofList ["catnipJobRatio", 0.3]; StartsUnlocked = true }
+      { Name = "mineralAxes"; Prices = [{ Resource = "minerals"; Val = 500 }; { Resource = "science"; Val = 100 }]; Effects = Map.ofList ["woodJobRatio", 0.7]; StartsUnlocked = true }
+      { Name = "ironAxes"; Prices = [{ Resource = "iron"; Val = 50 }; { Resource = "science"; Val = 200 }]; Effects = Map.ofList ["woodJobRatio", 0.5]; StartsUnlocked = true }
+      { Name = "steelAxe"; Prices = [{ Resource = "science"; Val = 20000 }; { Resource = "steel"; Val = 75 }]; Effects = Map.ofList ["woodJobRatio", 0.5]; StartsUnlocked = false }
+      { Name = "reinforcedSaw"; Prices = [{ Resource = "iron"; Val = 1000 }; { Resource = "science"; Val = 2500 }]; Effects = Map.ofList ["lumberMillRatio", 0.2]; StartsUnlocked = false }
+      { Name = "steelSaw"; Prices = [{ Resource = "science"; Val = 52000 }; { Resource = "steel"; Val = 750 }]; Effects = Map.ofList ["lumberMillRatio", 0.2]; StartsUnlocked = false }
+      { Name = "titaniumSaw"; Prices = [{ Resource = "titanium"; Val = 500 }; { Resource = "science"; Val = 70000 }]; Effects = Map.ofList ["lumberMillRatio", 0.15]; StartsUnlocked = false }
+      { Name = "alloySaw"; Prices = [{ Resource = "science"; Val = 85000 }; { Resource = "alloy"; Val = 75 }]; Effects = Map.ofList ["lumberMillRatio", 0.15]; StartsUnlocked = false }
+      { Name = "titaniumAxe"; Prices = [{ Resource = "titanium"; Val = 10 }; { Resource = "science"; Val = 38000 }]; Effects = Map.ofList ["woodJobRatio", 0.5]; StartsUnlocked = false }
+      { Name = "alloyAxe"; Prices = [{ Resource = "science"; Val = 70000 }; { Resource = "alloy"; Val = 25 }]; Effects = Map.ofList ["woodJobRatio", 0.5]; StartsUnlocked = false }
+      { Name = "unobtainiumAxe"; Prices = [{ Resource = "unobtainium"; Val = 75 }; { Resource = "science"; Val = 125000 }]; Effects = Map.ofList ["woodJobRatio", 0.5]; StartsUnlocked = false }
+      { Name = "unobtainiumSaw"; Prices = [{ Resource = "unobtainium"; Val = 125 }; { Resource = "science"; Val = 145000 }]; Effects = Map.ofList ["lumberMillRatio", 0.25]; StartsUnlocked = false }
+      { Name = "stoneBarns"; Prices = [{ Resource = "wood"; Val = 1000 }; { Resource = "minerals"; Val = 750 }; { Resource = "iron"; Val = 50 }; { Resource = "science"; Val = 500 }]; Effects = Map.ofList ["barnRatio", 0.75]; StartsUnlocked = true }
+      { Name = "reinforcedBarns"; Prices = [{ Resource = "iron"; Val = 100 }; { Resource = "science"; Val = 800 }; { Resource = "beam"; Val = 25 }; { Resource = "slab"; Val = 10 }]; Effects = Map.ofList ["barnRatio", 0.8]; StartsUnlocked = true }
+      { Name = "reinforcedWarehouses"; Prices = [{ Resource = "science"; Val = 15000 }; { Resource = "plate"; Val = 50 }; { Resource = "steel"; Val = 50 }; { Resource = "scaffold"; Val = 25 }]; Effects = Map.ofList ["warehouseRatio", 0.25]; StartsUnlocked = false }
+      { Name = "titaniumBarns"; Prices = [{ Resource = "titanium"; Val = 25 }; { Resource = "science"; Val = 60000 }; { Resource = "steel"; Val = 200 }; { Resource = "scaffold"; Val = 250 }]; Effects = Map.ofList ["barnRatio", 1]; StartsUnlocked = false }
+      { Name = "alloyBarns"; Prices = [{ Resource = "science"; Val = 75000 }; { Resource = "plate"; Val = 750 }; { Resource = "alloy"; Val = 20 }]; Effects = Map.ofList ["barnRatio", 1]; StartsUnlocked = false }
+      { Name = "concreteBarns"; Prices = [{ Resource = "titanium"; Val = 2000 }; { Resource = "science"; Val = 100000 }; { Resource = "concrate"; Val = 45 }]; Effects = Map.ofList ["barnRatio", 0.75]; StartsUnlocked = false }
+      { Name = "titaniumWarehouses"; Prices = [{ Resource = "titanium"; Val = 50 }; { Resource = "science"; Val = 70000 }; { Resource = "steel"; Val = 500 }; { Resource = "scaffold"; Val = 500 }]; Effects = Map.ofList ["warehouseRatio", 0.5]; StartsUnlocked = false }
+      { Name = "alloyWarehouses"; Prices = [{ Resource = "titanium"; Val = 750 }; { Resource = "science"; Val = 90000 }; { Resource = "alloy"; Val = 50 }]; Effects = Map.ofList ["warehouseRatio", 0.45]; StartsUnlocked = false }
+      { Name = "concreteWarehouses"; Prices = [{ Resource = "titanium"; Val = 1250 }; { Resource = "science"; Val = 100000 }; { Resource = "concrate"; Val = 35 }]; Effects = Map.ofList ["warehouseRatio", 0.35]; StartsUnlocked = false }
+      { Name = "storageBunkers"; Prices = [{ Resource = "unobtainium"; Val = 500 }; { Resource = "science"; Val = 25000 }; { Resource = "concrate"; Val = 1250 }]; Effects = Map.ofList ["warehouseRatio", 0.2]; StartsUnlocked = false }
+      { Name = "energyRifts"; Prices = [{ Resource = "titanium"; Val = 7500 }; { Resource = "uranium"; Val = 250 }; { Resource = "science"; Val = 200000 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "stasisChambers"; Prices = [{ Resource = "uranium"; Val = 2000 }; { Resource = "science"; Val = 235000 }; { Resource = "timeCrystal"; Val = 1 }; { Resource = "alloy"; Val = 200 }]; Effects = Map.ofList ["acceleratorRatio", 0.95]; StartsUnlocked = false }
+      { Name = "voidEnergy"; Prices = [{ Resource = "uranium"; Val = 2500 }; { Resource = "science"; Val = 275000 }; { Resource = "timeCrystal"; Val = 2 }; { Resource = "alloy"; Val = 250 }]; Effects = Map.ofList ["acceleratorRatio", 0.75]; StartsUnlocked = false }
+      { Name = "darkEnergy"; Prices = [{ Resource = "science"; Val = 350000 }; { Resource = "timeCrystal"; Val = 3 }; { Resource = "eludium"; Val = 75 }]; Effects = Map.ofList ["acceleratorRatio", 2.5]; StartsUnlocked = false }
+      { Name = "chronoforge"; Prices = [{ Resource = "science"; Val = 500000 }; { Resource = "timeCrystal"; Val = 10 }; { Resource = "relic"; Val = 5 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "tachyonModerator"; Prices = [{ Resource = "science"; Val = 16000 }; { Resource = "gear"; Val = 500 }; { Resource = "titanium"; Val = 250 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "tachyonAccelerators"; Prices = [{ Resource = "science"; Val = 500000 }; { Resource = "timeCrystal"; Val = 10 }; { Resource = "eludium"; Val = 125 }]; Effects = Map.ofList ["acceleratorRatio", 5]; StartsUnlocked = false }
+      { Name = "fluxCondensator"; Prices = [{ Resource = "unobtainium"; Val = 5000 }; { Resource = "timeCrystal"; Val = 5 }; { Resource = "alloy"; Val = 250 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "lhc"; Prices = [{ Resource = "unobtainium"; Val = 100 }; { Resource = "science"; Val = 250000 }; { Resource = "alloy"; Val = 150 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "photovoltaic"; Prices = [{ Resource = "titanium"; Val = 5000 }; { Resource = "science"; Val = 75000 }]; Effects = Map.ofList ["solarFarmRatio", 0.5]; StartsUnlocked = false }
+      { Name = "thinFilm"; Prices = [{ Resource = "uranium"; Val = 1000 }; { Resource = "unobtainium"; Val = 200 }; { Resource = "science"; Val = 125000 }]; Effects = Map.ofList ["solarFarmSeasonRatio", 1]; StartsUnlocked = false }
+      { Name = "qdot"; Prices = [{ Resource = "science"; Val = 175000 }; { Resource = "eludium"; Val = 200 }; { Resource = "thorium"; Val = 1000 }]; Effects = Map.ofList ["solarFarmSeasonRatio", 1]; StartsUnlocked = false }
+      { Name = "solarSatellites"; Prices = [{ Resource = "science"; Val = 225000 }; { Resource = "alloy"; Val = 750 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "cargoShips"; Prices = [{ Resource = "science"; Val = 55000 }; { Resource = "blueprint"; Val = 15 }]; Effects = Map.ofList ["harborRatio", 0.01]; StartsUnlocked = false }
+      { Name = "barges"; Prices = [{ Resource = "titanium"; Val = 1500 }; { Resource = "science"; Val = 100000 }; { Resource = "blueprint"; Val = 30 }]; Effects = Map.ofList ["harborCoalRatio", 0.5]; StartsUnlocked = false }
+      { Name = "reactorVessel"; Prices = [{ Resource = "titanium"; Val = 5000 }; { Resource = "uranium"; Val = 125 }; { Resource = "science"; Val = 135000 }]; Effects = Map.ofList ["shipLimit", 0.05]; StartsUnlocked = false }
+      { Name = "ironwood"; Prices = [{ Resource = "wood"; Val = 15000 }; { Resource = "iron"; Val = 3000 }; { Resource = "science"; Val = 30000 }]; Effects = Map.ofList ["hutPriceRatio", -0.5]; StartsUnlocked = false }
+      { Name = "concreteHuts"; Prices = [{ Resource = "titanium"; Val = 3000 }; { Resource = "science"; Val = 125000 }; { Resource = "concrate"; Val = 45 }]; Effects = Map.ofList ["hutPriceRatio", -0.3]; StartsUnlocked = false }
+      { Name = "unobtainiumHuts"; Prices = [{ Resource = "titanium"; Val = 15000 }; { Resource = "unobtainium"; Val = 350 }; { Resource = "science"; Val = 200000 }]; Effects = Map.ofList ["hutPriceRatio", -0.25]; StartsUnlocked = false }
+      { Name = "eludiumHuts"; Prices = [{ Resource = "science"; Val = 275000 }; { Resource = "eludium"; Val = 125 }]; Effects = Map.ofList ["hutPriceRatio", -0.1]; StartsUnlocked = false }
+      { Name = "silos"; Prices = [{ Resource = "science"; Val = 50000 }; { Resource = "steel"; Val = 125 }; { Resource = "blueprint"; Val = 5 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "refrigeration"; Prices = [{ Resource = "titanium"; Val = 2500 }; { Resource = "science"; Val = 125000 }; { Resource = "blueprint"; Val = 15 }]; Effects = Map.ofList ["catnipMaxRatio", 0.75]; StartsUnlocked = false }
+      { Name = "compositeBow"; Prices = [{ Resource = "wood"; Val = 200 }; { Resource = "iron"; Val = 100 }; { Resource = "science"; Val = 500 }]; Effects = Map.ofList ["manpowerJobRatio", 0.5; "manpowerMax", 0; "explorerAtk", 5]; StartsUnlocked = false }
+      { Name = "crossbow"; Prices = [{ Resource = "iron"; Val = 1500 }; { Resource = "science"; Val = 12000 }]; Effects = Map.ofList ["manpowerJobRatio", 0.25; "explorerAtk", 10]; StartsUnlocked = false }
+      { Name = "railgun"; Prices = [{ Resource = "titanium"; Val = 5000 }; { Resource = "science"; Val = 150000 }; { Resource = "blueprint"; Val = 25 }]; Effects = Map.ofList ["manpowerJobRatio", 0.25; "explorerAtk", 20]; StartsUnlocked = false }
+      { Name = "bolas"; Prices = [{ Resource = "wood"; Val = 50 }; { Resource = "minerals"; Val = 250 }; { Resource = "science"; Val = 1000 }]; Effects = Map.ofList ["hunterRatio", 1; "explorerAtk", 2; "manpowerMax", 0]; StartsUnlocked = false }
+      { Name = "huntingArmor"; Prices = [{ Resource = "iron"; Val = 750 }; { Resource = "science"; Val = 2000 }]; Effects = Map.ofList ["hunterRatio", 2; "explorerDef", 2; "manpowerMax", 0]; StartsUnlocked = false }
+      { Name = "steelArmor"; Prices = [{ Resource = "science"; Val = 10000 }; { Resource = "steel"; Val = 50 }]; Effects = Map.ofList ["hunterRatio", 0.5; "explorerDef", 5]; StartsUnlocked = false }
+      { Name = "alloyArmor"; Prices = [{ Resource = "science"; Val = 50000 }; { Resource = "alloy"; Val = 25 }]; Effects = Map.ofList ["hunterRatio", 0.5; "explorerDef", 10]; StartsUnlocked = false }
+      { Name = "nanosuits"; Prices = [{ Resource = "science"; Val = 185000 }; { Resource = "alloy"; Val = 250 }]; Effects = Map.ofList ["hunterRatio", 0.5; "explorerDef", 20]; StartsUnlocked = false }
+      { Name = "caravanserai"; Prices = [{ Resource = "gold"; Val = 250 }; { Resource = "science"; Val = 25000 }; { Resource = "ivory"; Val = 10000 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "freightfulExchange"; Prices = [{ Resource = "science"; Val = 450000 }; { Resource = "eludium"; Val = 100 }; { Resource = "titanium"; Val = 1000 }; { Resource = "tanker"; Val = 5000 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "transportSuperposition"; Prices = [{ Resource = "science"; Val = 500000 }; { Resource = "eludium"; Val = 1500 }; { Resource = "thorium"; Val = 25000 }; { Resource = "tanker"; Val = 500000 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "advancedRefinement"; Prices = [{ Resource = "catnip"; Val = 5000 }; { Resource = "science"; Val = 500 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "prospecting"; Prices = [{ Resource = "minerals"; Val = 1000 }; { Resource = "science"; Val = 1000 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "goldOre"; Prices = [{ Resource = "minerals"; Val = 800 }; { Resource = "iron"; Val = 100 }; { Resource = "science"; Val = 1000 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "geodesy"; Prices = [{ Resource = "titanium"; Val = 250 }; { Resource = "science"; Val = 90000 }; { Resource = "starchart"; Val = 500 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "register"; Prices = [{ Resource = "gold"; Val = 10 }; { Resource = "science"; Val = 500 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "strenghtenBuild"; Prices = [{ Resource = "science"; Val = 100000 }; { Resource = "concrate"; Val = 50 }]; Effects = Map.ofList ["barnRatio", 0.05; "warehouseRatio", 0.05]; StartsUnlocked = false }
+      { Name = "miningDrill"; Prices = [{ Resource = "titanium"; Val = 1750 }; { Resource = "science"; Val = 100000 }; { Resource = "steel"; Val = 750 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "unobtainiumDrill"; Prices = [{ Resource = "unobtainium"; Val = 250 }; { Resource = "science"; Val = 250000 }; { Resource = "alloy"; Val = 1250 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "coalFurnace"; Prices = [{ Resource = "minerals"; Val = 5000 }; { Resource = "iron"; Val = 2000 }; { Resource = "science"; Val = 5000 }; { Resource = "beam"; Val = 35 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "deepMining"; Prices = [{ Resource = "iron"; Val = 1200 }; { Resource = "science"; Val = 5000 }; { Resource = "beam"; Val = 50 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "pyrolysis"; Prices = [{ Resource = "science"; Val = 35000 }; { Resource = "compedium"; Val = 5 }]; Effects = Map.ofList ["coalSuperRatio", 0.2]; StartsUnlocked = false }
+      { Name = "electrolyticSmelting"; Prices = [{ Resource = "titanium"; Val = 2000 }; { Resource = "science"; Val = 100000 }]; Effects = Map.ofList ["smelterRatio", 0.95]; StartsUnlocked = false }
+      { Name = "oxidation"; Prices = [{ Resource = "science"; Val = 100000 }; { Resource = "steel"; Val = 5000 }]; Effects = Map.ofList ["calcinerRatio", 0.95]; StartsUnlocked = false }
+      { Name = "steelPlants"; Prices = [{ Resource = "titanium"; Val = 3500 }; { Resource = "science"; Val = 140000 }; { Resource = "gear"; Val = 750 }]; Effects = Map.ofList ["calcinerSteelRatio", 0.1]; StartsUnlocked = false }
+      { Name = "automatedPlants"; Prices = [{ Resource = "science"; Val = 200000 }; { Resource = "alloy"; Val = 750 }]; Effects = Map.ofList ["calcinerSteelCraftRatio", 0.25]; StartsUnlocked = false }
+      { Name = "nuclearPlants"; Prices = [{ Resource = "uranium"; Val = 10000 }; { Resource = "science"; Val = 250000 }]; Effects = Map.ofList ["calcinerSteelReactorBonus", 0.02]; StartsUnlocked = false }
+      { Name = "rotaryKiln"; Prices = [{ Resource = "titanium"; Val = 5000 }; { Resource = "science"; Val = 145000 }; { Resource = "gear"; Val = 500 }]; Effects = Map.ofList ["calcinerRatio", 0.75]; StartsUnlocked = false }
+      { Name = "fluidizedReactors"; Prices = [{ Resource = "science"; Val = 175000 }; { Resource = "alloy"; Val = 200 }]; Effects = Map.ofList ["calcinerRatio", 1]; StartsUnlocked = false }
+      { Name = "nuclearSmelters"; Prices = [{ Resource = "uranium"; Val = 250 }; { Resource = "science"; Val = 165000 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "orbitalGeodesy"; Prices = [{ Resource = "oil"; Val = 35000 }; { Resource = "science"; Val = 150000 }; { Resource = "alloy"; Val = 1000 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "printingPress"; Prices = [{ Resource = "science"; Val = 7500 }; { Resource = "gear"; Val = 45 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "offsetPress"; Prices = [{ Resource = "oil"; Val = 15000 }; { Resource = "science"; Val = 100000 }; { Resource = "gear"; Val = 250 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "photolithography"; Prices = [{ Resource = "oil"; Val = 50000 }; { Resource = "uranium"; Val = 250 }; { Resource = "science"; Val = 250000 }; { Resource = "alloy"; Val = 1250 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "uplink"; Prices = [{ Resource = "science"; Val = 75000 }; { Resource = "alloy"; Val = 1750 }]; Effects = Map.ofList ["uplinkDCRatio", 0.01; "uplinkLabRatio", 0.01]; StartsUnlocked = false }
+      { Name = "starlink"; Prices = [{ Resource = "oil"; Val = 25000 }; { Resource = "science"; Val = 175000 }; { Resource = "alloy"; Val = 5000 }]; Effects = Map.ofList ["uplinkLabRatio", 0.01]; StartsUnlocked = false }
+      { Name = "cryocomputing"; Prices = [{ Resource = "science"; Val = 125000 }; { Resource = "eludium"; Val = 15 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "machineLearning"; Prices = [{ Resource = "antimatter"; Val = 125 }; { Resource = "science"; Val = 175000 }; { Resource = "eludium"; Val = 25 }]; Effects = Map.ofList ["dataCenterAIRatio", 0.1]; StartsUnlocked = false }
+      { Name = "factoryAutomation"; Prices = [{ Resource = "science"; Val = 10000 }; { Resource = "gear"; Val = 25 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "advancedAutomation"; Prices = [{ Resource = "science"; Val = 100000 }; { Resource = "gear"; Val = 75 }; { Resource = "blueprint"; Val = 25 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "pneumaticPress"; Prices = [{ Resource = "science"; Val = 20000 }; { Resource = "gear"; Val = 30 }; { Resource = "blueprint"; Val = 5 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "combustionEngine"; Prices = [{ Resource = "science"; Val = 20000 }; { Resource = "gear"; Val = 25 }; { Resource = "blueprint"; Val = 5 }]; Effects = Map.ofList ["coalRatioGlobalReduction", 0.2]; StartsUnlocked = false }
+      { Name = "fuelInjectors"; Prices = [{ Resource = "oil"; Val = 20000 }; { Resource = "science"; Val = 100000 }; { Resource = "gear"; Val = 250 }]; Effects = Map.ofList ["coalRatioGlobalReduction", 0.2]; StartsUnlocked = false }
+      { Name = "factoryLogistics"; Prices = [{ Resource = "titanium"; Val = 2000 }; { Resource = "science"; Val = 100000 }; { Resource = "gear"; Val = 250 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "carbonSequestration"; Prices = [{ Resource = "titanium"; Val = 1250 }; { Resource = "science"; Val = 75000 }; { Resource = "gear"; Val = 125 }; { Resource = "steel"; Val = 4000 }; { Resource = "alloy"; Val = 1000 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "factoryOptimization"; Prices = [{ Resource = "titanium"; Val = 1250 }; { Resource = "science"; Val = 75000 }; { Resource = "gear"; Val = 125 }]; Effects = Map.ofList ["t1CraftRatio", 10; "t2CraftRatio", 2; "queueCap", 1]; StartsUnlocked = false }
+      { Name = "factoryRobotics"; Prices = [{ Resource = "titanium"; Val = 2500 }; { Resource = "science"; Val = 100000 }; { Resource = "gear"; Val = 250 }]; Effects = Map.ofList ["t1CraftRatio", 10; "t2CraftRatio", 5; "t3CraftRatio", 2; "queueCap", 2]; StartsUnlocked = false }
+      { Name = "spaceEngineers"; Prices = [{ Resource = "science"; Val = 225000 }; { Resource = "alloy"; Val = 500 }]; Effects = Map.ofList ["t1CraftRatio", 10; "t2CraftRatio", 5; "t3CraftRatio", 2; "t4CraftRatio", 2; "queueCap", 2]; StartsUnlocked = false }
+      { Name = "aiEngineers"; Prices = [{ Resource = "antimatter"; Val = 500 }; { Resource = "science"; Val = 35000 }; { Resource = "eludium"; Val = 50 }]; Effects = Map.ofList ["t1CraftRatio", 10; "t2CraftRatio", 5; "t3CraftRatio", 5; "t4CraftRatio", 2; "t5CraftRatio", 2; "queueCap", 3]; StartsUnlocked = false }
+      { Name = "chronoEngineers"; Prices = [{ Resource = "science"; Val = 500000 }; { Resource = "timeCrystal"; Val = 5 }; { Resource = "eludium"; Val = 100 }]; Effects = Map.ofList ["t1CraftRatio", 10; "t2CraftRatio", 5; "t3CraftRatio", 2; "t4CraftRatio", 2; "t5CraftRatio", 2; "queueCap", 3]; StartsUnlocked = false }
+      { Name = "spaceManufacturing"; Prices = [{ Resource = "titanium"; Val = 125000 }; { Resource = "science"; Val = 250000 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "celestialMechanics"; Prices = [{ Resource = "science"; Val = 250 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "astrolabe"; Prices = [{ Resource = "titanium"; Val = 5 }; { Resource = "science"; Val = 25000 }; { Resource = "starchart"; Val = 75 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "titaniumMirrors"; Prices = [{ Resource = "titanium"; Val = 15 }; { Resource = "science"; Val = 20000 }; { Resource = "starchart"; Val = 20 }]; Effects = Map.ofList ["libraryRatio", 0.02]; StartsUnlocked = false }
+      { Name = "unobtainiumReflectors"; Prices = [{ Resource = "unobtainium"; Val = 75 }; { Resource = "science"; Val = 250000 }; { Resource = "starchart"; Val = 750 }]; Effects = Map.ofList ["libraryRatio", 0.02]; StartsUnlocked = false }
+      { Name = "eludiumReflectors"; Prices = [{ Resource = "science"; Val = 250000 }; { Resource = "eludium"; Val = 15 }]; Effects = Map.ofList ["libraryRatio", 0.02]; StartsUnlocked = false }
+      { Name = "hydroPlantTurbines"; Prices = [{ Resource = "unobtainium"; Val = 125 }; { Resource = "science"; Val = 250000 }]; Effects = Map.ofList ["hydroPlantRatio", 0.15]; StartsUnlocked = false }
+      { Name = "amBases"; Prices = [{ Resource = "antimatter"; Val = 250 }; { Resource = "eludium"; Val = 15 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "aiBases"; Prices = [{ Resource = "antimatter"; Val = 7500 }; { Resource = "science"; Val = 750000 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "amFission"; Prices = [{ Resource = "antimatter"; Val = 175 }; { Resource = "science"; Val = 525000 }; { Resource = "thorium"; Val = 7500 }]; Effects = Map.ofList ["eludiumAutomationBonus", 0.25]; StartsUnlocked = false }
+      { Name = "amReactors"; Prices = [{ Resource = "antimatter"; Val = 750 }; { Resource = "eludium"; Val = 35 }]; Effects = Map.ofList ["spaceScienceRatio", 0.95]; StartsUnlocked = false }
+      { Name = "amReactorsMK2"; Prices = [{ Resource = "antimatter"; Val = 1750 }; { Resource = "eludium"; Val = 70 }]; Effects = Map.ofList ["spaceScienceRatio", 1.5]; StartsUnlocked = false }
+      { Name = "voidReactors"; Prices = [{ Resource = "antimatter"; Val = 2500 }; { Resource = "void"; Val = 250 }]; Effects = Map.ofList ["spaceScienceRatio", 4]; StartsUnlocked = false }
+      { Name = "relicStation"; Prices = [{ Resource = "antimatter"; Val = 5000 }; { Resource = "eludium"; Val = 100 }]; Effects = Map.ofList ["beaconRelicsPerDay", 0.01]; StartsUnlocked = false }
+      { Name = "amDrive"; Prices = [{ Resource = "antimatter"; Val = 125 }; { Resource = "science"; Val = 450000 }]; Effects = Map.ofList ["routeSpeed", 25]; StartsUnlocked = false }
+      { Name = "pumpjack"; Prices = [{ Resource = "titanium"; Val = 250 }; { Resource = "science"; Val = 100000 }; { Resource = "gear"; Val = 125 }]; Effects = Map.ofList ["oilWellRatio", 0.45]; StartsUnlocked = false }
+      { Name = "petri"; Prices = [{ Resource = "plastic"; Val = 250 }; { Resource = "science"; Val = 65000 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "biofuel"; Prices = [{ Resource = "titanium"; Val = 1250 }; { Resource = "science"; Val = 150000 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "unicornSelection"; Prices = [{ Resource = "titanium"; Val = 1500 }; { Resource = "science"; Val = 175000 }]; Effects = Map.ofList ["unicornsGlobalRatio", 0.25; "unicornsMaxRatio", 0]; StartsUnlocked = false }
+      { Name = "alicornStable"; Prices = [{ Resource = "wood"; Val = 3000 }; { Resource = "gold"; Val = 100 }; { Resource = "alicorn"; Val = 20 }]; Effects = Map.ofList ["alicornMax", 0]; StartsUnlocked = false }
+      { Name = "gmo"; Prices = [{ Resource = "catnip"; Val = 1000000 }; { Resource = "titanium"; Val = 1500 }; { Resource = "science"; Val = 175000 }]; Effects = Map.ofList ["biofuelRatio", 0.6]; StartsUnlocked = false }
+      { Name = "cadSystems"; Prices = [{ Resource = "titanium"; Val = 750 }; { Resource = "science"; Val = 125000 }]; Effects = Map.ofList ["cadBlueprintCraftRatio", 0.01]; StartsUnlocked = false }
+      { Name = "seti"; Prices = [{ Resource = "titanium"; Val = 250 }; { Resource = "science"; Val = 125000 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "logistics"; Prices = [{ Resource = "science"; Val = 100000 }; { Resource = "gear"; Val = 100 }; { Resource = "scaffold"; Val = 1000 }]; Effects = Map.ofList ["skillMultiplier", 0.15]; StartsUnlocked = false }
+      { Name = "augumentation"; Prices = [{ Resource = "titanium"; Val = 5000 }; { Resource = "uranium"; Val = 50 }; { Resource = "science"; Val = 150000 }]; Effects = Map.ofList ["skillMultiplier", 1]; StartsUnlocked = false }
+      { Name = "internet"; Prices = [{ Resource = "titanium"; Val = 5000 }; { Resource = "uranium"; Val = 50 }; { Resource = "science"; Val = 150000 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "neuralNetworks"; Prices = [{ Resource = "titanium"; Val = 7500 }; { Resource = "science"; Val = 200000 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "assistance"; Prices = [{ Resource = "science"; Val = 100000 }; { Resource = "steel"; Val = 10000 }; { Resource = "gear"; Val = 250 }]; Effects = Map.ofList ["catnipDemandWorkerRatioGlobal", -0.25]; StartsUnlocked = false }
+      { Name = "enrichedUranium"; Prices = [{ Resource = "titanium"; Val = 7500 }; { Resource = "uranium"; Val = 150 }; { Resource = "science"; Val = 175000 }]; Effects = Map.ofList ["uraniumRatio", 0.25]; StartsUnlocked = false }
+      { Name = "coldFusion"; Prices = [{ Resource = "science"; Val = 200000 }; { Resource = "eludium"; Val = 25 }]; Effects = Map.ofList ["reactorEnergyRatio", 0.25]; StartsUnlocked = false }
+      { Name = "thoriumReactors"; Prices = [{ Resource = "science"; Val = 400000 }; { Resource = "thorium"; Val = 10000 }]; Effects = Map.ofList ["reactorThoriumPerTick", -0.05; "reactorEnergyRatio", 0.25]; StartsUnlocked = false }
+      { Name = "enrichedThorium"; Prices = [{ Resource = "science"; Val = 500000 }; { Resource = "thorium"; Val = 12500 }]; Effects = Map.ofList ["reactorThoriumPerTick", 0.0125]; StartsUnlocked = false }
+      { Name = "hubbleTelescope"; Prices = [{ Resource = "oil"; Val = 50000 }; { Resource = "science"; Val = 250000 }; { Resource = "alloy"; Val = 1250 }]; Effects = Map.ofList ["starchartGlobalRatio", 0.3]; StartsUnlocked = false }
+      { Name = "satnav"; Prices = [{ Resource = "science"; Val = 200000 }; { Resource = "alloy"; Val = 750 }]; Effects = Map.ofList ["satnavRatio", 0.0125]; StartsUnlocked = false }
+      { Name = "satelliteRadio"; Prices = [{ Resource = "science"; Val = 225000 }; { Resource = "alloy"; Val = 5000 }]; Effects = Map.ofList ["broadcastTowerRatio", 0.005]; StartsUnlocked = false }
+      { Name = "astrophysicists"; Prices = [{ Resource = "unobtainium"; Val = 350 }; { Resource = "science"; Val = 250000 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "mWReactor"; Prices = [{ Resource = "science"; Val = 150000 }; { Resource = "eludium"; Val = 50 }]; Effects = Map.ofList ["lunarOutpostRatio", 0.75]; StartsUnlocked = false }
+      { Name = "eludiumCracker"; Prices = [{ Resource = "science"; Val = 275000 }; { Resource = "eludium"; Val = 250 }]; Effects = Map.ofList ["crackerRatio", 1]; StartsUnlocked = false }
+      { Name = "thoriumEngine"; Prices = [{ Resource = "science"; Val = 400000 }; { Resource = "gear"; Val = 40000 }; { Resource = "alloy"; Val = 2000 }; { Resource = "ship"; Val = 10000 }; { Resource = "thorium"; Val = 100000 }]; Effects = Map.ofList ["routeSpeed", 50]; StartsUnlocked = false }
+      { Name = "spiceNavigation"; Prices = [{ Resource = "science"; Val = 350000 }; { Resource = "starchart"; Val = 500000 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "longRangeSpaceships"; Prices = [{ Resource = "science"; Val = 440000 }; { Resource = "gear"; Val = 90000 }; { Resource = "alloy"; Val = 3500 }; { Resource = "tanker"; Val = 500 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "oilRefinery"; Prices = [{ Resource = "titanium"; Val = 1250 }; { Resource = "science"; Val = 125000 }; { Resource = "gear"; Val = 500 }]; Effects = Map.ofList ["oilWellRatio", 0.35]; StartsUnlocked = false }
+      { Name = "oilDistillation"; Prices = [{ Resource = "titanium"; Val = 5000 }; { Resource = "science"; Val = 175000 }]; Effects = Map.ofList ["oilWellRatio", 0.75]; StartsUnlocked = false }
+      { Name = "factoryProcessing"; Prices = [{ Resource = "titanium"; Val = 7500 }; { Resource = "science"; Val = 195000 }; { Resource = "concrate"; Val = 125 }]; Effects = Map.ofList ["factoryRefineRatio", 0.05]; StartsUnlocked = false }
+      { Name = "voidAspiration"; Prices = [{ Resource = "antimatter"; Val = 2000 }; { Resource = "timeCrystal"; Val = 15 }]; Effects = Map.empty; StartsUnlocked = false }
+      { Name = "distorsion"; Prices = [{ Resource = "antimatter"; Val = 2000 }; { Resource = "science"; Val = 300000 }; { Resource = "timeCrystal"; Val = 25 }; { Resource = "void"; Val = 1000 }]; Effects = Map.ofList ["temporalParadoxDayBonus", 2]; StartsUnlocked = false }
+      { Name = "turnSmoothly"; Prices = [{ Resource = "unobtainium"; Val = 100000 }; { Resource = "temporalFlux"; Val = 6500 }; { Resource = "timeCrystal"; Val = 25 }; { Resource = "void"; Val = 750 }]; Effects = Map.ofList ["temporalFluxProductionChronosphere", 1]; StartsUnlocked = false }
+      { Name = "invisibleBlackHand"; Prices = [{ Resource = "temporalFlux"; Val = 4096 }; { Resource = "timeCrystal"; Val = 128 }; { Resource = "void"; Val = 32 }; { Resource = "blackcoin"; Val = 64 }]; Effects = Map.empty; StartsUnlocked = false }
     ]
 
 let craftDefs : CraftDef list =

@@ -148,3 +148,7 @@ let geometricRandom (rand: unit -> float) (p: float) : float =
         while u = 0.0 do
             u <- rand ()
         ceil (log u / log1p (-p))
+
+/// orig Kitten.precisionRound(number, 1): the e-notation round-trip reduces to
+/// jsRound(x*10)/10 in the normal range (string round-trip is exact there).
+let jsRoundX1 (x: float) : float = jsRound (x * 10.0) / 10.0

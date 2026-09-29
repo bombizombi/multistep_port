@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <Compile Include="../../../kittens_land/src/Game/Game.Types.fs"/>
+        <Compile Include="../../../kittens_land/src/Game/Game.LzString.fs"/>
         <Compile Include="../../../kittens_land/src/Game/Game.Math.fs"/>
         <Compile Include="../../../kittens_land/src/Game/Game.Calendar.fs"/>
         <Compile Include="../../../kittens_land/src/Game/Game.Catalog.BaseEffects.fs"/>

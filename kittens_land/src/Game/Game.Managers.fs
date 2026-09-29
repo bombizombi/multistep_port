@@ -13,8 +13,14 @@ type SciencePool =
       Policies: Map<string, PolicyState> }
 
 let initScience (techs: TechDef list) (policies: PolicyDef list) : SciencePool =
+    // science.resetState: calendar starts unlocked
     { TechOrder = techs |> List.map (fun t -> t.Name)
-      Techs = techs |> List.map (fun t -> (t.Name, mkResearch t)) |> Map.ofList
+      Techs =
+        techs
+        |> List.map (fun t ->
+            (t.Name,
+             { (mkResearch t) with Unlocked = t.Name = "calendar" }))
+        |> Map.ofList
       PolicyOrder = policies |> List.map (fun p -> p.Name)
       Policies = policies |> List.map (fun p -> (p.Name, mkPolicy p)) |> Map.ofList }
 
@@ -75,7 +81,7 @@ let initWorkshop (upgrades: UpgradeDef list) (crafts: CraftDef list) : WorkshopP
       ZebraOrder = Game.Catalog.Defs.zebraUpgradeDefs |> List.map (fun u -> u.Name)
       ZebraUpgrades =
         Game.Catalog.Defs.zebraUpgradeDefs
-        |> List.map (fun u -> (u.Name, { Def = { Name = u.Name; Prices = u.Prices; Effects = u.Effects }; Unlocked = false; Researched = false }))
+        |> List.map (fun u -> (u.Name, { Def = { Name = u.Name; Prices = u.Prices; Effects = u.Effects; StartsUnlocked = false }; Unlocked = false; Researched = false }))
         |> Map.ofList }
 
 let getCraft (wp: WorkshopPool) (name: string) : CraftState option = wp.Crafts |> Map.tryFind name
@@ -949,3 +955,10 @@ let clearCraftJobs (vpool: VillagePool) : VillagePool =
         Kittens =
             vpool.Kittens
             |> List.map (fun k -> if k.EngineerSpeciality <> None then { k with EngineerSpeciality = None } else k) }
+
+/// orig Kitten._mergeSSN (SAVE_PACKET_OFFSET 100): pack 7 small ints base-100.
+let mergeSSN (values: int list) : int =
+    let mutable result = 0
+    for v in List.rev values do
+        result <- result * 100 + v
+    result

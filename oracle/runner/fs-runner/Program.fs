@@ -217,6 +217,10 @@ let execute (scenario: Scenario) : ExecResult =
     // steamworks.jammed (buildings-NN seam): set by factory automation, cleared
     // onNewYear; gates the per-tick automation action
     let mutable steamworksJammed = false
+    // LCstorage["com.nuclearunicorn.kittengame.savedata"] equivalent (game-13)
+    let mutable lcStorageSave = ""
+    // console.filters["craft"].unlocked — set by the first craft msg (core.js L537)
+    let mutable craftFilterUnlocked = false
     // classes.reserveMan (challenges-10): reserveResources / reserveKittens /
     // reserveCryochambers — populated by applyPending's reset path
     let mutable reserveResources: Map<string, float> = Map.empty
@@ -1590,6 +1594,7 @@ let execute (scenario: Scenario) : ExecResult =
         pool <- pool'
         wpool <- wpool'
         if craftsDone > 0.0 then
+            craftFilterUnlocked <- true
             // orig craft() bumps stats on every successful craft incl. engineer ones
             stpool <- Game.Stats.bumpStat "totalCrafts" craftsDone stpool
             stpool <- Game.Stats.bumpStatCurrent "totalCrafts" craftsDone stpool
@@ -1666,6 +1671,479 @@ let execute (scenario: Scenario) : ExecResult =
         for name in List.rev tpool.CfuOrder do
             tpool <- Game.Time.cfuCalculate (timeCalcCtx ()) name tpool
         refreshCache ()
+
+
+    // --- game-13: save/load core ------------------------------------------------
+    // LCstorage["com.nuclearunicorn.kittengame.savedata"] equivalent + the
+    // telemetry guid (32 seeded draws at boot, mirroring generateGuid).
+    let mutable telemetryGuid = ""
+    do
+        // orig boot: two harness draws precede the telemetry guid
+        rand () |> ignore
+        rand () |> ignore
+        // orig boot: telemetry.generateGuid before any scenario move
+        let pattern = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
+        let mutable g = ""
+        for c in pattern do
+            g <-
+                if c = 'x' then
+                    let d = int (rand () * 16.0)
+                    g + "0123456789abcdef".[d].ToString()
+                elif c = 'y' then
+                    let d = int (rand () * 4.0) + 8
+                    g + "0123456789abcdef".[d].ToString()
+                else g + c.ToString()
+        telemetryGuid <- g
+
+    let jsonStr (s: string) : string =
+        let mutable out = System.Text.StringBuilder("\"")
+        for ch in s do
+            if ch = '"' then out.Append "\\\"" |> ignore
+            elif ch = '\\' then out.Append "\\\\" |> ignore
+            elif ch = '\n' then out.Append "\\n" |> ignore
+            elif ch = '\r' then out.Append "\\r" |> ignore
+            elif ch = '\t' then out.Append "\\t" |> ignore
+            else out.Append ch |> ignore
+        out.Append("\"").ToString()
+
+    let mutable saveDataBuilder: (unit -> string) option = None
+
+    /// game-13 _saveDataToString: JSON.stringify(saveData, JSONreplacer) with
+    /// orig key insertion order (undefined keys dropped). No LZ at <5mb.
+    let buildSaveString () : string =
+        let sb = System.Text.StringBuilder()
+        let inline key (k: string) = (sb.Append("\"").Append(k).Append("\":") |> ignore) |> ignore
+        let inline raw (v: string) = sb.Append v |> ignore
+        let inline str (v: string) = sb.Append(jsonStr v) |> ignore |> ignore
+        let inline numv (v: float) = sb.Append(num v) |> ignore |> ignore
+        let inline intv (v: int) = sb.Append(string v) |> ignore |> ignore
+        let inline boolv (v: bool) = sb.Append(if v then "true" else "false") |> ignore |> ignore
+        let inline sep (first: bool ref) =
+            if not !first then sb.Append "," |> ignore
+            first := false
+        let inline objStart () = sb.Append "{" |> ignore
+        let inline objEnd () = sb.Append "}" |> ignore
+        let inline arrStart () = sb.Append "[" |> ignore
+        let inline arrEnd () = sb.Append "]" |> ignore
+
+        objStart ()
+        key "saveVersion"; intv 15; sb.Append "," |> ignore
+        // server.save: motdContent undefined at this slice → dropped
+        key "server"; objStart (); key "bcoinPrice"; numv 63918.0; objEnd (); sb.Append "," |> ignore
+
+        // resPool.save
+        key "resources"; arrStart ()
+        let firstR = ref true
+        for n in pool.Order do
+            sep firstR
+            objStart ()
+            key "name"; str n; sb.Append "," |> ignore
+            let r = pool.ByName[n]
+            key "value"; numv r.Value; sb.Append "," |> ignore
+            key "unlocked"; boolv r.Unlocked; sb.Append "," |> ignore
+            key "isHidden"; boolv false
+            if n = "wood" then sb.Append "," |> ignore; key "isHiddenFromCrafting"; boolv false
+            objEnd ()
+        arrEnd (); sb.Append "," |> ignore
+        key "res"; objStart (); key "isLocked"; boolv false; objEnd (); sb.Append "," |> ignore
+
+        // village.save
+        key "village"; objStart ()
+        key "kittens"; arrStart ()
+        let jobNames = Game.Catalog.Village.jobDefs |> List.map (fun j -> j.Name)
+        let firstK = ref true
+        for k in vpool.Kittens do
+            sep firstK
+            // saveCompressed: build the field list, drop falsy/undefined keys
+            let fields = System.Collections.Generic.List<string>()
+            let skillsVals = jobNames |> List.map (fun j -> k.Skills |> Map.tryFind j |> Option.defaultValue 0.0 |> Game.Math.jsRoundX1)
+            let mn = List.min skillsVals
+            let mx = List.max skillsVals
+            if mn = mx then
+                if mx <> 0.0 then fields.Add("\"skills\":" + num mx)
+            else
+                fields.Add("\"skills\":[" + (skillsVals |> List.map num |> String.concat ",") + "]")
+            if k.Exp <> 0.0 then fields.Add("\"exp\":" + num (Game.Math.jsRoundX1 k.Exp))
+            match k.Job with
+            | Some j -> fields.Add("\"job\":" + string (jobNames |> List.findIndex (fun x -> x = j)))
+            | None -> ()
+            match k.EngineerSpeciality with
+            | Some sp -> fields.Add("\"engineerSpeciality\":" + jsonStr sp)
+            | None -> ()
+            if k.Rank <> 0 then fields.Add("\"rank\":" + string k.Rank)
+            if k.IsLeader then fields.Add("\"isLeader\":true")
+            if k.Seed <> 0 then fields.Add("\"seed\":" + string k.Seed)
+            let nameIdx = Game.Catalog.Village.names |> List.tryFindIndex (fun x -> x = k.Name)
+            let surnameIdx = Game.Catalog.Village.surnames |> List.tryFindIndex (fun x -> x = k.Surname)
+            let traitIdx = Game.Catalog.Village.traitDefs |> List.indexed |> List.tryFind (fun (_, td) -> td.Name = k.Trait) |> Option.map fst |> Option.defaultValue 0
+            let ssn = Game.Managers.mergeSSN [ (nameIdx |> Option.defaultValue 0); (surnameIdx |> Option.defaultValue 0); int k.Age; traitIdx; k.Color; k.Variety; k.Rarity ]
+            fields.Add("\"ssn\":" + string ssn)
+            (if nameIdx.IsNone then fields.Add("\"name\":" + jsonStr k.Name))
+            (if surnameIdx.IsNone then fields.Add("\"surname\":" + jsonStr k.Surname))
+            objStart ()
+            raw (fields |> String.concat ",")
+            objEnd ()
+        arrEnd (); sb.Append "," |> ignore
+        key "maxKittens"; intv vpool.MaxKittens; sb.Append "," |> ignore
+        key "jobs"; arrStart ()
+        let firstJ = ref true
+        for jd in Game.Catalog.Village.jobDefs do
+            sep firstJ
+            objStart ()
+            key "name"; str jd.Name; sb.Append "," |> ignore
+            key "unlocked"; boolv (vpool.JobUnlocked.Contains jd.Name); sb.Append "," |> ignore
+            key "value"; intv (vpool.JobValues |> Map.tryFind jd.Name |> Option.defaultValue 0)
+            objEnd ()
+        arrEnd (); sb.Append "," |> ignore
+        key "biomes"; arrStart ()
+        let biomeUnlocked = [ "village", true; "plains", true; "hills", false; "forest", true; "boneForest", false; "rainForest", false; "mountain", false; "volcano", false; "desert", false; "bloodDesert", false; "swamp", false; "cath", true; "redmoon", false ]
+        let firstB = ref true
+        for bn, bu in biomeUnlocked do
+            sep firstB
+            objStart (); key "name"; str bn; sb.Append "," |> ignore; key "unlocked"; boolv bu; objEnd ()
+        arrEnd (); sb.Append "," |> ignore
+        key "hadKittenHunters"; boolv false; sb.Append "," |> ignore
+        key "nextKittenProgress"; numv vpool.NextKittenProgress; sb.Append "," |> ignore
+        key "map"; objStart (); key "hqLevel"; intv 0; sb.Append "," |> ignore; key "energy"; numv 70.0; sb.Append "," |> ignore; key "explorersLevel"; intv 0; objEnd (); sb.Append "," |> ignore
+        key "loadouts"; arrStart (); arrEnd ()
+        objEnd (); sb.Append "," |> ignore
+
+        // calendar.save
+        key "calendar"; objStart ()
+        key "year"; numv calendar.Year; sb.Append "," |> ignore
+        key "day"; numv calendar.Day; sb.Append "," |> ignore
+        key "season"; intv calendar.Season; sb.Append "," |> ignore
+        (match calendar.Weather with
+         | Some w0 -> key "weather"; str w0; sb.Append "," |> ignore
+         | None -> ())
+        key "festivalDays"; intv calendar.FestivalDays; sb.Append "," |> ignore
+        key "cycle"; intv calendar.Cycle; sb.Append "," |> ignore
+        key "cycleYear"; intv calendar.CycleYear; sb.Append "," |> ignore
+        key "futureSeasonTemporalParadox"; intv (-1); sb.Append "," |> ignore
+        key "cryptoPrice"; numv calendar.CryptoPrice
+        objEnd (); sb.Append "," |> ignore
+
+        // console.save: static filter table
+        key "console"; objStart (); key "filters"; objStart ()
+        let filters = [ "astronomicalEvent"; "hunt"; "trade"; "craft"; "workshopAutomation"; "meteor"; "ivoryMeteor"; "unicornRift"; "unicornSacrifice"; "alicornRift"; "alicornSacrifice"; "alicornCorruption"; "tcShatter"; "tcRefine"; "faith"; "elders"; "blackcoin"; "festival"; "undo"; "explore"; "combat" ]
+        let firstF = ref true
+        for f0 in filters do
+            sep firstF
+            key f0; objStart (); key "unlocked"; boolv (f0 = "craft" && craftFilterUnlocked); sb.Append "," |> ignore; key "enabled"; boolv true; objEnd ()
+        objEnd (); objEnd (); sb.Append "," |> ignore
+
+        key "telemetry"; objStart (); key "guid"; str telemetryGuid; objEnd (); sb.Append "," |> ignore
+
+        // challenges.save
+        key "challenges"; objStart (); key "challenges"; arrStart ()
+        let firstC = ref true
+        for n in cpool.Order do
+            sep firstC
+            let c = cpool.Challenges.[n]
+            objStart ()
+            key "name"; str n; sb.Append "," |> ignore
+            key "researched"; boolv c.Researched; sb.Append "," |> ignore
+            key "on"; intv c.On; sb.Append "," |> ignore
+            key "unlocked"; boolv c.Unlocked; sb.Append "," |> ignore
+            key "active"; boolv c.Active
+            objEnd ()
+        arrEnd (); sb.Append "," |> ignore
+        key "reserves"; objStart ()
+        key "reserveKittens"; arrStart (); arrEnd (); sb.Append "," |> ignore
+        key "reserveResources"; objStart (); objEnd (); sb.Append "," |> ignore
+        key "reserveCryochambers"; intv reserveCryochambers
+        objEnd ()
+        objEnd (); sb.Append "," |> ignore
+
+        // workshop.save
+        key "workshop"; objStart ()
+        key "hideResearched"; boolv false; sb.Append "," |> ignore
+        key "upgrades"; arrStart ()
+        let firstU = ref true
+        for n in wpool.UpgradeOrder do
+            sep firstU
+            let u = wpool.Upgrades.[n]
+            objStart (); key "name"; str n; sb.Append "," |> ignore; key "unlocked"; boolv u.Unlocked; sb.Append "," |> ignore; key "researched"; boolv u.Researched; objEnd ()
+        arrEnd (); sb.Append "," |> ignore
+        key "crafts"; arrStart ()
+        let firstCr = ref true
+        for n in wpool.CraftOrder do
+            sep firstCr
+            let c = wpool.Crafts.[n]
+            objStart (); key "name"; str n; sb.Append "," |> ignore; key "unlocked"; boolv c.Unlocked; sb.Append "," |> ignore; key "value"; numv c.Value; sb.Append "," |> ignore; key "progress"; numv c.Progress; objEnd ()
+        arrEnd (); sb.Append "," |> ignore
+        key "zebraUpgrades"; arrStart ()
+        let firstZ = ref true
+        for n in wpool.ZebraOrder do
+            sep firstZ
+            let u = wpool.ZebraUpgrades.[n]
+            objStart (); key "name"; str n; sb.Append "," |> ignore; key "unlocked"; boolv u.Unlocked; sb.Append "," |> ignore; key "researched"; boolv u.Researched; objEnd ()
+        arrEnd ()
+        objEnd (); sb.Append "," |> ignore
+
+        // diplomacy.save
+        key "diplomacy"; objStart (); key "races"; arrStart ()
+        let firstD = ref true
+        for n in dp.RaceOrder do
+            sep firstD
+            let r = dp.Races.[n]
+            objStart ()
+            key "name"; str n; sb.Append "," |> ignore
+            key "embassyLevel"; intv r.EmbassyLevel; sb.Append "," |> ignore
+            key "unlocked"; boolv r.Unlocked; sb.Append "," |> ignore
+            key "collapsed"; boolv false; sb.Append "," |> ignore
+            key "energy"; numv r.Energy; sb.Append "," |> ignore
+            key "duration"; numv r.Duration; sb.Append "," |> ignore
+            key "pinned"; boolv false
+            objEnd ()
+        arrEnd (); objEnd (); sb.Append "," |> ignore
+
+        // buildings.save: val/on dropped at 0, unlocked/jammed dropped at false
+        key "buildings"; arrStart ()
+        let firstBld = ref true
+        for n in bpool.Order do
+            sep firstBld
+            let b = bpool.ByName[n]
+            objStart ()
+            key "name"; str n
+            if b.Unlocked then sb.Append "," |> ignore; key "unlocked"; boolv true
+            if b.Val <> 0 then sb.Append "," |> ignore; key "val"; intv b.Val
+            if b.On <> 0 then sb.Append "," |> ignore; key "on"; intv b.On
+            if b.Def.Stages.Length > 0 then sb.Append "," |> ignore; key "stage"; intv b.Stage
+            objEnd ()
+        arrEnd (); sb.Append "," |> ignore
+        key "bldData"; objStart (); key "groupBuildings"; boolv false; sb.Append "," |> ignore; key "twoRows"; boolv false; objEnd (); sb.Append "," |> ignore
+        key "cathPollution"; numv 0.0; sb.Append "," |> ignore
+
+        // science.save
+        key "science"; objStart ()
+        key "hideResearched"; boolv false; sb.Append "," |> ignore
+        key "policyToggleResearched"; boolv false; sb.Append "," |> ignore
+        key "policyToggleBlocked"; boolv false; sb.Append "," |> ignore
+        key "techs"; arrStart ()
+        let firstT = ref true
+        for n in spool.TechOrder do
+            sep firstT
+            let tc = spool.Techs.[n]
+            objStart (); key "name"; str n; sb.Append "," |> ignore; key "unlocked"; boolv tc.Unlocked; sb.Append "," |> ignore; key "researched"; boolv tc.Researched; objEnd ()
+        arrEnd (); sb.Append "," |> ignore
+        key "policies"; arrStart ()
+        let firstP = ref true
+        for n in spool.PolicyOrder do
+            sep firstP
+            let p = spool.Policies.[n]
+            objStart (); key "name"; str n; sb.Append "," |> ignore; key "unlocked"; boolv p.Unlocked; sb.Append "," |> ignore; key "blocked"; boolv false; sb.Append "," |> ignore; key "researched"; boolv p.Researched; objEnd ()
+        arrEnd ()
+        objEnd (); sb.Append "," |> ignore
+
+        // achievements.save
+        key "achievements"; arrStart ()
+        let firstA = ref true
+        for n in apool.AchievementOrder do
+            sep firstA
+            let a = apool.Achievements.[n]
+            objStart (); key "name"; str n; sb.Append "," |> ignore; key "unlocked"; boolv a.Unlocked; sb.Append "," |> ignore; key "starUnlocked"; boolv a.StarUnlocked; objEnd ()
+        arrEnd (); sb.Append "," |> ignore
+        key "ach"; objStart (); key "badgesUnlocked"; boolv (apool.BadgeOrder |> List.exists (fun n -> apool.Badges.[n].Unlocked)); sb.Append "," |> ignore; key "badges"; arrStart ()
+        let firstBd = ref true
+        for n in apool.BadgeOrder do
+            sep firstBd
+            objStart (); key "name"; str n; sb.Append "," |> ignore; key "unlocked"; boolv apool.Badges.[n].Unlocked; objEnd ()
+        arrEnd (); objEnd (); sb.Append "," |> ignore
+
+        // religion.save
+        key "religion"; objStart ()
+        key "faith"; numv rpool.Faith; sb.Append "," |> ignore
+        key "corruption"; numv rpool.Corruption; sb.Append "," |> ignore
+        key "faithRatio"; numv rpool.FaithRatio; sb.Append "," |> ignore
+        key "transcendenceTier"; intv rpool.TranscendenceTier; sb.Append "," |> ignore
+        key "activeHolyGenocide"; intv rpool.ActiveHolyGenocide; sb.Append "," |> ignore
+        key "necrocornDeficit"; numv rpool.NecrocornDeficit; sb.Append "," |> ignore
+        key "tcratio"; numv (Game.Religion.getTranscendTotalPrice rpool.TranscendenceTier); sb.Append "," |> ignore
+        key "zu"; arrStart ()
+        let firstZu = ref true
+        for n in rpool.ZuOrder do
+            sep firstZu
+            let m = rpool.ZUs.[n]
+            objStart (); key "name"; str n; sb.Append "," |> ignore; key "val"; intv m.Val; sb.Append "," |> ignore; key "on"; intv m.On; sb.Append "," |> ignore; key "unlocked"; boolv m.Unlocked; objEnd ()
+        arrEnd (); sb.Append "," |> ignore
+        key "ru"; arrStart ()
+        let firstRu = ref true
+        for n in rpool.RuOrder do
+            sep firstRu
+            let m = rpool.RUs.[n]
+            objStart (); key "name"; str n; sb.Append "," |> ignore; key "val"; intv m.Val; sb.Append "," |> ignore; key "on"; intv m.On; objEnd ()
+        arrEnd (); sb.Append "," |> ignore
+        key "tu"; arrStart ()
+        let firstTu = ref true
+        for n in rpool.TuOrder do
+            sep firstTu
+            let m = rpool.TUs.[n]
+            objStart (); key "name"; str n; sb.Append "," |> ignore; key "val"; intv m.Val; sb.Append "," |> ignore; key "on"; intv m.On; sb.Append "," |> ignore; key "unlocked"; boolv m.Unlocked; objEnd ()
+        arrEnd (); sb.Append "," |> ignore
+        key "pact"; arrStart ()
+        let firstPa = ref true
+        for n in rpool.PactOrder do
+            sep firstPa
+            let m = rpool.Pacts.[n]
+            objStart (); key "name"; str n; sb.Append "," |> ignore; key "val"; intv m.Val; sb.Append "," |> ignore; key "on"; intv m.On; sb.Append "," |> ignore; key "unlocked"; boolv m.Unlocked; objEnd ()
+        arrEnd ()
+        objEnd (); sb.Append "," |> ignore
+
+        // space.save (space-NN statics at this slice — metas match orig defaults)
+        key "space"; objStart ()
+        key "hideResearched"; boolv false; sb.Append "," |> ignore
+        key "programs"; arrStart ()
+        let programs = [ "orbitalLaunch", true; "moonMission", false; "duneMission", false; "piscineMission", false; "heliosMission", false; "terminusMission", false; "kairoMission", false; "rorschachMission", false; "yarnMission", false; "umbraMission", false; "charonMission", false; "centaurusSystemMission", false; "furthestRingMission", false ]
+        let firstSp = ref true
+        for pn, pu in programs do
+            sep firstSp
+            objStart (); key "name"; str pn; sb.Append "," |> ignore; key "val"; intv 0; sb.Append "," |> ignore; key "on"; intv 0; sb.Append "," |> ignore; key "unlocked"; boolv pu; objEnd ()
+        arrEnd (); sb.Append "," |> ignore
+        key "planets"; arrStart ()
+        let planets = [
+            "cath", [ "spaceElevator"; "sattelite"; "spaceStation" ], 0
+            "moon", [ "moonOutpost"; "moonBase" ], 30
+            "dune", [ "planetCracker"; "hydrofracturer"; "spiceRefinery" ], 356
+            "piscine", [ "researchVessel"; "orbitalArray" ], 256
+            "helios", [ "sunlifter"; "containmentChamber"; "heatsink"; "sunforge" ], 1200
+            "terminus", [ "cryostation" ], 2500
+            "kairo", [ "spaceBeacon" ], 5000
+            "yarn", [ "terraformingStation"; "hydroponics" ], 3800
+            "umbra", [ "hrHarvester"; "navigationRelay"; "spaceShuttle" ], 7500
+            "charon", [ "entangler" ], 25000
+            "centaurusSystem", [ "tectonic"; "moltenCore" ], 120000
+            "furthestRing", [], 725000000
+        ]
+        let firstPl = ref true
+        for pn, blds, rd in planets do
+            sep firstPl
+            objStart ()
+            key "name"; str pn; sb.Append "," |> ignore
+            key "buildings"; arrStart ()
+            let firstPb = ref true
+            for bn in blds do
+                sep firstPb
+                objStart (); key "name"; str bn; sb.Append "," |> ignore; key "val"; intv 0; sb.Append "," |> ignore; key "on"; intv 0; sb.Append "," |> ignore; key "unlocked"; boolv false; objEnd ()
+            arrEnd (); sb.Append "," |> ignore
+            key "reached"; boolv false; sb.Append "," |> ignore
+            key "unlocked"; boolv false; sb.Append "," |> ignore
+            key "routeDays"; numv (float rd)
+            objEnd ()
+        arrEnd ()
+        objEnd (); sb.Append "," |> ignore
+
+        // time.save (timestamp = the fake clock at the CURRENT tick)
+        key "time"; objStart ()
+        key "timestamp"; numv (1759000000000.0 + float curLogTick * 1000.0); sb.Append "," |> ignore
+        key "flux"; numv tpool.Flux; sb.Append "," |> ignore
+        key "heat"; numv tpool.Heat; sb.Append "," |> ignore
+        key "testShatter"; intv tpool.TestShatter; sb.Append "," |> ignore
+        key "isAccelerated"; boolv tpool.IsAccelerated; sb.Append "," |> ignore
+        key "cfu"; arrStart ()
+        let firstCfu = ref true
+        for n in tpool.CfuOrder do
+            sep firstCfu
+            let m = tpool.CFUs.[n]
+            objStart ()
+            key "name"; str n; sb.Append "," |> ignore
+            key "val"; intv m.Val; sb.Append "," |> ignore
+            key "on"; intv m.On
+            if n = "blastFurnace" then sb.Append "," |> ignore; key "heat"; numv m.Heat
+            if n = "controlledDelay" then sb.Append "," |> ignore; key "delayTicks"; intv m.DelayTicks
+            sb.Append "," |> ignore
+            key "unlocked"; boolv m.Unlocked
+            if (Game.Catalog.World.cfuDefs |> List.find (fun d -> d.Name = n)).AutomationInit.IsSome && m.IsAutomationEnabled <> None then
+                sb.Append "," |> ignore
+                key "isAutomationEnabled"
+                boolv (m.IsAutomationEnabled = Some true)
+            objEnd ()
+        arrEnd (); sb.Append "," |> ignore
+        key "vsu"; arrStart ()
+        let firstVsu = ref true
+        for n in tpool.VsuOrder do
+            sep firstVsu
+            let m = tpool.VSUs.[n]
+            objStart ()
+            key "name"; str n; sb.Append "," |> ignore
+            key "val"; intv m.Val; sb.Append "," |> ignore
+            key "on"; intv m.On
+            if m.Unlocked then sb.Append "," |> ignore; key "unlocked"; boolv true
+            objEnd ()
+        arrEnd (); sb.Append "," |> ignore
+        key "queueItems"; arrStart (); arrEnd (); sb.Append "," |> ignore
+        key "queueSources"; objStart ()
+        let qs = [ "buildings", true; "tech", false; "upgrades", false; "policies", false; "embassies", false; "religion", false; "zebraUpgrades", false; "spaceMission", false; "spaceBuilding", false; "zigguratUpgrades", false; "transcendenceUpgrades", false; "chronoforge", false; "voidSpace", false ]
+        let firstQs = ref true
+        for q0, qv in qs do
+            sep firstQs
+            key q0; boolv qv
+        objEnd ()
+        objEnd (); sb.Append "," |> ignore
+
+        // prestige.save
+        key "prestige"; objStart (); key "perks"; arrStart ()
+        let firstPk = ref true
+        for n in ppool.PerkOrder do
+            sep firstPk
+            let p = ppool.Perks.[n]
+            objStart (); key "name"; str n; sb.Append "," |> ignore; key "unlocked"; boolv p.Unlocked; sb.Append "," |> ignore; key "researched"; boolv p.Researched; objEnd ()
+        arrEnd (); sb.Append "," |> ignore
+        key "hideResearched"; boolv false
+        objEnd (); sb.Append "," |> ignore
+
+        // stats.save
+        key "stats"; arrStart ()
+        let firstSt = ref true
+        for n in Game.Catalog.World.statDefs |> List.map (fun d -> d.Name) do
+            sep firstSt
+            objStart (); key "name"; str n; sb.Append "," |> ignore; key "val"; numv (Game.Stats.getStat stpool n); objEnd ()
+        arrEnd (); sb.Append "," |> ignore
+        key "statsCurrent"; arrStart ()
+        let firstStc = ref true
+        for n in Game.Catalog.World.statCurrentDefs |> List.map (fun d -> d.Name) do
+            sep firstStc
+            objStart (); key "name"; str n; sb.Append "," |> ignore; key "val"; numv (Game.Stats.getStatCurrentSimple stpool n); objEnd ()
+        arrEnd (); sb.Append "," |> ignore
+        key "void"; objStart (); key "vu"; arrStart ()
+        let firstVu = ref true
+        for n in voidp.VuOrder do
+            sep firstVu
+            objStart (); key "name"; str n; objEnd ()
+        arrEnd ()
+        (match voidp.Faction with Some f0 -> sb.Append "," |> ignore; key "faction"; str f0 | None -> ())
+        objEnd (); sb.Append "," |> ignore
+
+        // game.save tail
+        key "game"; objStart ()
+        key "isCMBREnabled"; boolv false; sb.Append "," |> ignore
+        key "colorScheme"; str ""; sb.Append "," |> ignore
+        key "karmaKittens"; intv pool.KarmaKittens; sb.Append "," |> ignore
+        key "karmaZebras"; intv 0; sb.Append "," |> ignore
+        key "ironWill"; boolv ironWill; sb.Append "," |> ignore
+        key "deadKittens"; numv (Game.Stats.getStat stpool "kittensDead"); sb.Append "," |> ignore
+        key "cheatMode"; boolv false; sb.Append "," |> ignore
+        key "startedWithoutChronospheres"; boolv true; sb.Append "," |> ignore
+        key "opts"; objStart ()
+        let opts = [
+            "notation", "\"si\""; "batchSize", "10"; "useWorkers", "true"; "forceHighPrecision", "false";
+            "usePerSecondValues", "true"; "usePercentageResourceValues", "false"; "showNonApplicableButtons", "false";
+            "usePercentageConsumptionValues", "false"; "highlightUnavailable", "true"; "hideSell", "false";
+            "hideDowngrade", "false"; "hideBGImage", "false"; "tooltipsInRightColumn", "false"; "noConfirm", "false";
+            "IWSmelter", "true"; "disableTelemetry", "false"; "enableRedshift", "false"; "disablePollution", "false";
+            "enableRedshiftGflops", "false"; "useLegacyTwoInRowLayout", "false"; "useSwipeNavigation", "false";
+            "ksEnabled", "false"; "forceLZ", "false"; "compressSaveFile", "false"; "hodl", "true"; "disableCMBR", "false"
+        ]
+        let firstO = ref true
+        for on, ov in opts do
+            sep firstO
+            key on; raw ov
+        objEnd ()
+        objEnd ()
+        objEnd ()
+        sb.ToString()
+
+    saveDataBuilder <- Some buildSaveString
 
     let takeSnapshot () =
         let resources =
@@ -2063,6 +2541,24 @@ let execute (scenario: Scenario) : ExecResult =
                 // D014 injection: time.heat = n
                 tpool <- { tpool with Heat = float value }
                 actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "lzprobe" ] ->
+                let sample = "kittens game save probe: {\"saveVersion\":15,\"catnip\":54.61999999999768,\"кітки\":\"太陽\"} 0123456789 aaaabbbbbb"
+                let utf16 = Game.LzString.compressToUTF16 sample
+                let b64 = Game.LzString.compressToBase64 sample
+                let sha (s: string) =
+                    use sha256 = System.Security.Cryptography.SHA256.Create()
+                    System.BitConverter.ToString(sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes s)).Replace("-", "").ToLowerInvariant()
+                System.Console.WriteLine("LZPROBE utf16len=" + string utf16.Length + " utf16sha=" + sha utf16)
+                System.Console.WriteLine("LZPROBE b64len=" + string b64.Length + " b64sha=" + sha b64)
+                System.Console.WriteLine("LZPROBE roundtrip=" + (if (Game.LzString.decompressFromUTF16 utf16) = Some sample then "true" else "false"))
+                actionLog <- (curLogTick, "resop", m.Args, RNum (float utf16.Length)) :: actionLog
+            | [ "savedump" ] ->
+                let sha (s: string) =
+                    use sha256 = System.Security.Cryptography.SHA256.Create()
+                    System.BitConverter.ToString(sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes s)).Replace("-", "").ToLowerInvariant()
+                System.Console.WriteLine("SAVEDUMP len=" + string lcStorageSave.Length + " sha=" + sha lcStorageSave)
+                System.Console.WriteLine("SAVEBLOB " + lcStorageSave)
+                actionLog <- (curLogTick, "resop", m.Args, RNum (float lcStorageSave.Length)) :: actionLog
             | [ "esprobe" ] ->
                 actionLog <- (curLogTick, "resop", m.Args, RNum (getResProductionCached () |> Map.tryFind "ESwood" |> Option.defaultValue 0.0)) :: actionLog
             | [ "addkitten" ] ->
@@ -2370,6 +2866,7 @@ let execute (scenario: Scenario) : ExecResult =
             pool <- pool'
             wpool <- wpool'
             if ok then
+                craftFilterUnlocked <- true
                 stpool <- Game.Stats.bumpStat "totalCrafts" 1.0 stpool
                 stpool <- Game.Stats.bumpStatCurrent "totalCrafts" 1.0 stpool
                 let gained = (1.0 + Game.Managers.getResCraftRatio cache (crctx ()) craftName) * ceil amt
@@ -2774,8 +3271,10 @@ let execute (scenario: Scenario) : ExecResult =
                 stpool <- Game.Stats.bumpStat "totalCrafts" 1.0 stpool
                 stpool <- Game.Stats.bumpStatCurrent "totalCrafts" 1.0 stpool
             refreshCache ()
-        | "save"
-        | "load" -> actionLog <- (m.Tick, m.Action, m.Args, RNone) :: actionLog
+        | "save" ->
+            lcStorageSave <- buildSaveString ()
+            actionLog <- (m.Tick, "save", m.Args, RNone) :: actionLog
+        | "load" -> actionLog <- (m.Tick, "load", m.Args, RNone) :: actionLog
         | "observe" ->
             // the observe button: handler only while an event is pending
             if calendar.ObserveRemainingTime > 0 then

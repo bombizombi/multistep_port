@@ -713,6 +713,25 @@ function doAction(move) {
           actionLog.push({ tick: tickIndex, action: "resop", args, result: events });
           return;
         }
+        if (fn === "lzprobe") {
+          const sample = "kittens game save probe: {\"saveVersion\":15,\"catnip\":54.61999999999768,\"кітки\":\"太陽\"} 0123456789 aaaabbbbbb";
+          const utf16 = LZString.compressToUTF16(sample);
+          const b64 = LZString.compressToBase64(sample);
+          console.log("LZPROBE utf16len=" + utf16.length + " utf16sha=" + require("crypto").createHash("sha256").update(utf16).digest("hex"));
+          console.log("LZPROBE b64len=" + b64.length + " b64sha=" + require("crypto").createHash("sha256").update(b64).digest("hex"));
+          console.log("LZPROBE roundtrip=" + (LZString.decompressFromUTF16(utf16) === sample));
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: utf16.length });
+          return;
+        }
+        if (fn === "savedump") {
+          const blob = LCstorage["com.nuclearunicorn.kittengame.savedata"];
+          const crypto = require("crypto");
+          const sha = crypto.createHash("sha256").update(blob || "").digest("hex");
+          console.log("SAVEDUMP len=" + (blob || "").length + " sha=" + sha);
+          console.log("SAVEBLOB " + (blob || ""));
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: (blob || "").length });
+          return;
+        }
         if (fn === "esprobe") {
           const prod = game.village.getResProduction();
           actionLog.push({ tick: tickIndex, action: "resop", args, result: prod["ESwood"] || 0 });

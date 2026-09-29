@@ -66,3 +66,6 @@ let bumpStatCurrent (name: string) (delta: float) (sp: StatsPool) : StatsPool =
 
 let resetStatsCurrent (sp: StatsPool) : StatsPool =
     { sp with Current = sp.Current |> Map.map (fun _ _ -> 0.0) }
+/// Plain current-stat read for the save builder (no context recalc).
+let getStatCurrentSimple (sp: StatsPool) (name: string) : float =
+    sp.Current |> Map.tryFind name |> Option.defaultValue 0.0

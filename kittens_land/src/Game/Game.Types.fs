@@ -108,7 +108,8 @@ type PolicyDef =
 type UpgradeDef =
     { Name: string
       Prices: Price list
-      Effects: Map<string, float> }
+      Effects: Map<string, float>
+      StartsUnlocked: bool }
 
 type CraftDef =
     { Name: string
@@ -184,4 +185,4 @@ type UndoChange =
 // intended type at every construction site.
 let mkResearch (def: TechDef) : ResearchState = { Def = def; Unlocked = false; Researched = false }
 let mkPolicy (def: PolicyDef) : PolicyState = { Def = def; Unlocked = false; Researched = false }
-let mkUpgrade (def: UpgradeDef) : UpgradeState = { Def = def; Unlocked = false; Researched = false }
+let mkUpgrade (def: UpgradeDef) : UpgradeState = { Def = def; Unlocked = def.StartsUnlocked; Researched = false }
