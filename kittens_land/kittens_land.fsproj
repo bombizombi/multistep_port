@@ -18,6 +18,8 @@
         <Compile Include="src/Game/Game.Catalog.World.fs"/>
         <Compile Include="src/Game/Game.Effects.fs"/>
         <Compile Include="src/Game/Game.Resources.fs"/><Compile Include="src/Game/Game.Challenges.fs"/>
+        <Compile Include="src/Game/Game.Catalog.Space.fs"/>
+        <Compile Include="src/Game/Game.Space.fs"/>
   
         <Compile Include="src/Game/Game.Buildings.fs"/>
         <Compile Include="src/Game/Game.Managers.fs"/>

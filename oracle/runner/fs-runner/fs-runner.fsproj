@@ -18,6 +18,8 @@
         <Compile Include="../../../kittens_land/src/Game/Game.Catalog.World.fs"/>
         <Compile Include="../../../kittens_land/src/Game/Game.Effects.fs"/>
         <Compile Include="../../../kittens_land/src/Game/Game.Resources.fs"/>
+        <Compile Include="../../../kittens_land/src/Game/Game.Catalog.Space.fs"/>
+        <Compile Include="../../../kittens_land/src/Game/Game.Space.fs"/>
         <Compile Include="../../../kittens_land/src/Game/Game.Challenges.fs"/>
         <Compile Include="../../../kittens_land/src/Game/Game.Buildings.fs"/>
         <Compile Include="../../../kittens_land/src/Game/Game.Managers.fs"/>

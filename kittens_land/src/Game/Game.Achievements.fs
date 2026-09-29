@@ -23,6 +23,9 @@ type AchContext =
       LeviathanEnergy: float
       TotalYears: float
       TotalResets: float
+      JupiterAscending: bool
+      ParagonValue: float
+      MoonMissionOn: bool
       IronWill: bool
       MineVal: int
       WarehouseVal: int
@@ -97,7 +100,7 @@ let private evalCondition (ctx: AchContext) (name: string) : bool =
     | "soilUptuned" -> ctx.IronWill && ctx.KittenCount = 0 && ctx.PastureVal >= 45
     | "atlasUnmeowed" -> ctx.IronWill && ctx.KittenCount = 0 && ctx.MagnetoVal > 0
     | "meowMeowRevolution" -> ctx.IronWill && ctx.KittenCount = 0 && ctx.FactoryVal > 0
-    | "spaceOddity" | "jupiterAscending" -> false // space seam
+    | "spaceOddity" -> ctx.IronWill && ctx.MoonMissionOn
     | "veryLargeArray" -> ctx.ObservatoryOn >= 100 // && !seti (seti researched gate — seam 0 fresh)
     | "shadowOfTheColossus" -> ctx.ZigguratVal > 0 && ctx.MaxKittens = 1
     | "sunGod" -> ctx.Faith >= 696342.0
@@ -110,6 +113,7 @@ let private evalCondition (ctx: AchContext) (name: string) : bool =
     | "utopiaProject" -> ctx.Happiness >= 1.5 && float ctx.KittenCount > 35.0
     | "deathStranding" -> false // space seam
     | "cathammer" -> ctx.TotalYears >= 40000.0 // stats.totalYears >= darkFutureBeginning
+    | "jupiterAscending" -> ctx.JupiterAscending
     | "eternalBacchanalia" -> ctx.FestivalDays >= 100.0 * 100.0 * 1.0
     | "challenger" -> false // challenge completions seam
     | "betterSafeThanSorry" -> false // badge condition (fullyHidden)
@@ -147,6 +151,8 @@ let update (ctx: AchContext) (rand: unit -> float) (ap: AchPool) : AchPool * flo
             // variants of the base ones — ironWill/paragon/startedWithout...)
             let starHit =
                 match def.Name with
+                | "spaceOddity" -> ctx.IronWill && ctx.MoonMissionOn && ctx.ParagonValue < 10.0 // startedWithoutChronospheres fresh
+                | "jupiterAscending" -> ctx.JupiterAscending // startedWithoutChronospheres=true fresh
                 | "cathammer" -> ctx.TrueYear >= 40000.0
                 | _ -> false
             if starHit then ap <- unlockStarAchievement def.Name ap

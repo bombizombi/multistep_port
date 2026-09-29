@@ -1,0 +1,1259 @@
+{
+ "programs": [
+  {
+   "name": "orbitalLaunch",
+   "prices": [
+    {
+     "name": "oil",
+     "val": 15000
+    },
+    {
+     "name": "manpower",
+     "val": 5000
+    },
+    {
+     "name": "science",
+     "val": 100000
+    },
+    {
+     "name": "starchart",
+     "val": 250
+    }
+   ],
+   "unlocks": {
+    "planet": [
+     "cath"
+    ],
+    "spaceMission": [
+     "moonMission"
+    ]
+   },
+   "requiredTech": null,
+   "maxLevel": null
+  },
+  {
+   "name": "moonMission",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 5000
+    },
+    {
+     "name": "oil",
+     "val": 45000
+    },
+    {
+     "name": "science",
+     "val": 125000
+    },
+    {
+     "name": "starchart",
+     "val": 500
+    }
+   ],
+   "unlocks": {
+    "planet": [
+     "moon"
+    ],
+    "spaceMission": [
+     "duneMission",
+     "piscineMission"
+    ]
+   },
+   "requiredTech": null,
+   "maxLevel": null
+  },
+  {
+   "name": "duneMission",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 7000
+    },
+    {
+     "name": "science",
+     "val": 175000
+    },
+    {
+     "name": "starchart",
+     "val": 1000
+    },
+    {
+     "name": "kerosene",
+     "val": 75
+    }
+   ],
+   "unlocks": {
+    "planet": [
+     "dune"
+    ],
+    "spaceMission": [
+     "heliosMission"
+    ],
+    "policies": [
+     "technocracy",
+     "theocracy",
+     "expansionism"
+    ]
+   },
+   "requiredTech": null,
+   "maxLevel": null
+  },
+  {
+   "name": "piscineMission",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 9000
+    },
+    {
+     "name": "science",
+     "val": 200000
+    },
+    {
+     "name": "starchart",
+     "val": 1500
+    },
+    {
+     "name": "kerosene",
+     "val": 250
+    }
+   ],
+   "unlocks": {
+    "planet": [
+     "piscine"
+    ],
+    "spaceMission": [
+     "terminusMission"
+    ]
+   },
+   "requiredTech": null,
+   "maxLevel": null
+  },
+  {
+   "name": "heliosMission",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 15000
+    },
+    {
+     "name": "science",
+     "val": 250000
+    },
+    {
+     "name": "starchart",
+     "val": 3000
+    },
+    {
+     "name": "kerosene",
+     "val": 1250
+    }
+   ],
+   "unlocks": {
+    "planet": [
+     "helios"
+    ],
+    "spaceMission": [
+     "yarnMission"
+    ]
+   },
+   "requiredTech": null,
+   "maxLevel": null
+  },
+  {
+   "name": "terminusMission",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 12000
+    },
+    {
+     "name": "science",
+     "val": 225000
+    },
+    {
+     "name": "starchart",
+     "val": 2500
+    },
+    {
+     "name": "kerosene",
+     "val": 750
+    }
+   ],
+   "unlocks": {
+    "planet": [
+     "terminus"
+    ],
+    "spaceMission": [
+     "heliosMission",
+     "kairoMission"
+    ]
+   },
+   "requiredTech": null,
+   "maxLevel": null
+  },
+  {
+   "name": "kairoMission",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 20000
+    },
+    {
+     "name": "science",
+     "val": 300000
+    },
+    {
+     "name": "starchart",
+     "val": 5000
+    },
+    {
+     "name": "kerosene",
+     "val": 7500
+    }
+   ],
+   "unlocks": {
+    "planet": [
+     "kairo"
+    ],
+    "spaceMission": [
+     "rorschachMission"
+    ]
+   },
+   "requiredTech": null,
+   "maxLevel": null
+  },
+  {
+   "name": "rorschachMission",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 80000
+    },
+    {
+     "name": "science",
+     "val": 500000
+    },
+    {
+     "name": "starchart",
+     "val": 15000
+    },
+    {
+     "name": "kerosene",
+     "val": 25000
+    }
+   ],
+   "unlocks": {
+    "spaceMission": [
+     "centaurusSystemMission"
+    ]
+   },
+   "requiredTech": null,
+   "maxLevel": null
+  },
+  {
+   "name": "yarnMission",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 35000
+    },
+    {
+     "name": "science",
+     "val": 350000
+    },
+    {
+     "name": "starchart",
+     "val": 7500
+    },
+    {
+     "name": "kerosene",
+     "val": 12000
+    }
+   ],
+   "unlocks": {
+    "planet": [
+     "yarn"
+    ],
+    "spaceMission": [
+     "umbraMission"
+    ]
+   },
+   "requiredTech": null,
+   "maxLevel": null
+  },
+  {
+   "name": "umbraMission",
+   "prices": [
+    {
+     "name": "science",
+     "val": 500000
+    },
+    {
+     "name": "starchart",
+     "val": 25000
+    },
+    {
+     "name": "kerosene",
+     "val": 25000
+    },
+    {
+     "name": "thorium",
+     "val": 15000
+    }
+   ],
+   "unlocks": {
+    "planet": [
+     "umbra"
+    ],
+    "spaceMission": [
+     "charonMission"
+    ]
+   },
+   "requiredTech": null,
+   "maxLevel": null
+  },
+  {
+   "name": "charonMission",
+   "prices": [
+    {
+     "name": "science",
+     "val": 750000
+    },
+    {
+     "name": "starchart",
+     "val": 75000
+    },
+    {
+     "name": "kerosene",
+     "val": 35000
+    },
+    {
+     "name": "thorium",
+     "val": 35000
+    }
+   ],
+   "unlocks": {
+    "planet": [
+     "charon"
+    ]
+   },
+   "requiredTech": null,
+   "maxLevel": null
+  },
+  {
+   "name": "centaurusSystemMission",
+   "prices": [
+    {
+     "name": "titanium",
+     "val": 40000
+    },
+    {
+     "name": "science",
+     "val": 800000
+    },
+    {
+     "name": "starchart",
+     "val": 100000
+    },
+    {
+     "name": "kerosene",
+     "val": 50000
+    },
+    {
+     "name": "thorium",
+     "val": 50000
+    }
+   ],
+   "unlocks": {
+    "challenges": [
+     "energy"
+    ],
+    "planet": [
+     "centaurusSystem"
+    ],
+    "spaceMission": [
+     "furthestRingMission"
+    ]
+   },
+   "requiredTech": null,
+   "maxLevel": null
+  },
+  {
+   "name": "furthestRingMission",
+   "prices": [
+    {
+     "name": "science",
+     "val": 1250000
+    },
+    {
+     "name": "starchart",
+     "val": 500000
+    },
+    {
+     "name": "kerosene",
+     "val": 75000
+    },
+    {
+     "name": "thorium",
+     "val": 75000
+    }
+   ],
+   "unlocks": {
+    "planet": [
+     "furthestRing"
+    ]
+   },
+   "requiredTech": null,
+   "maxLevel": null
+  }
+ ],
+ "planets": [
+  {
+   "name": "cath",
+   "reached": false,
+   "unlocked": false,
+   "routeDays": 0,
+   "buildings": [
+    {
+     "name": "spaceElevator",
+     "prices": [
+      {
+       "name": "titanium",
+       "val": 6000
+      },
+      {
+       "name": "unobtainium",
+       "val": 50
+      },
+      {
+       "name": "science",
+       "val": 75000
+      }
+     ],
+     "unlockRatio": null,
+     "requiredTech": [
+      "orbitalEngineering",
+      "nanotechnology"
+     ],
+     "unlockThreshold": null,
+     "unlocks": null,
+     "effects": {
+      "oilReductionRatio": 0,
+      "spaceRatio": 0,
+      "prodTransferBonus": 0
+     },
+     "calculateEffects": true,
+     "action": false,
+     "stages": null
+    },
+    {
+     "name": "sattelite",
+     "prices": [
+      {
+       "name": "titanium",
+       "val": 2500
+      },
+      {
+       "name": "oil",
+       "val": 15000
+      },
+      {
+       "name": "science",
+       "val": 100000
+      },
+      {
+       "name": "starchart",
+       "val": 325
+      }
+     ],
+     "unlockRatio": null,
+     "requiredTech": [
+      "sattelites"
+     ],
+     "unlockThreshold": null,
+     "unlocks": {
+      "policies": [
+       "outerSpaceTreaty",
+       "militarizeSpace"
+      ]
+     },
+     "effects": {
+      "observatoryRatio": 0,
+      "starchartPerTickBaseSpace": 0,
+      "energyConsumption": 0,
+      "energyProduction": 0
+     },
+     "calculateEffects": true,
+     "action": false,
+     "stages": null
+    },
+    {
+     "name": "spaceStation",
+     "prices": [
+      {
+       "name": "oil",
+       "val": 35000
+      },
+      {
+       "name": "science",
+       "val": 150000
+      },
+      {
+       "name": "starchart",
+       "val": 425
+      },
+      {
+       "name": "alloy",
+       "val": 750
+      }
+     ],
+     "unlockRatio": null,
+     "requiredTech": [
+      "orbitalEngineering"
+     ],
+     "unlockThreshold": null,
+     "unlocks": {
+      "tabs": [
+       "village"
+      ]
+     },
+     "effects": {
+      "scienceRatio": 0,
+      "maxKittens": 0,
+      "energyConsumption": 0
+     },
+     "calculateEffects": true,
+     "action": false,
+     "stages": null
+    }
+   ]
+  },
+  {
+   "name": "moon",
+   "reached": false,
+   "unlocked": false,
+   "routeDays": 30,
+   "buildings": [
+    {
+     "name": "moonOutpost",
+     "prices": [
+      {
+       "name": "oil",
+       "val": 55000
+      },
+      {
+       "name": "uranium",
+       "val": 500
+      },
+      {
+       "name": "science",
+       "val": 100000
+      },
+      {
+       "name": "starchart",
+       "val": 650
+      },
+      {
+       "name": "concrate",
+       "val": 150
+      },
+      {
+       "name": "alloy",
+       "val": 750
+      }
+     ],
+     "unlockRatio": null,
+     "requiredTech": null,
+     "unlockThreshold": null,
+     "unlocks": null,
+     "effects": {
+      "uraniumPerTickCon": 0,
+      "unobtainiumPerTickSpace": 0,
+      "energyConsumption": 0
+     },
+     "calculateEffects": true,
+     "action": true,
+     "stages": null
+    },
+    {
+     "name": "moonBase",
+     "prices": [
+      {
+       "name": "titanium",
+       "val": 9500
+      },
+      {
+       "name": "oil",
+       "val": 70000
+      },
+      {
+       "name": "unobtainium",
+       "val": 50
+      },
+      {
+       "name": "science",
+       "val": 100000
+      },
+      {
+       "name": "starchart",
+       "val": 700
+      },
+      {
+       "name": "concrate",
+       "val": 250
+      }
+     ],
+     "unlockRatio": null,
+     "requiredTech": null,
+     "unlockThreshold": null,
+     "unlocks": null,
+     "effects": {
+      "catnipMax": 0,
+      "woodMax": 0,
+      "mineralsMax": 0,
+      "coalMax": 0,
+      "ironMax": 0,
+      "titaniumMax": 0,
+      "oilMax": 0,
+      "unobtainiumMax": 0,
+      "energyConsumption": 0
+     },
+     "calculateEffects": true,
+     "action": false,
+     "stages": null
+    }
+   ]
+  },
+  {
+   "name": "dune",
+   "reached": false,
+   "unlocked": false,
+   "routeDays": 356,
+   "buildings": [
+    {
+     "name": "planetCracker",
+     "prices": [
+      {
+       "name": "science",
+       "val": 125000
+      },
+      {
+       "name": "starchart",
+       "val": 2500
+      },
+      {
+       "name": "alloy",
+       "val": 1750
+      },
+      {
+       "name": "kerosene",
+       "val": 50
+      }
+     ],
+     "unlockRatio": null,
+     "requiredTech": null,
+     "unlockThreshold": null,
+     "unlocks": null,
+     "effects": {
+      "uraniumPerTickSpace": 0,
+      "uraniumMax": 0
+     },
+     "calculateEffects": true,
+     "action": false,
+     "stages": null
+    },
+    {
+     "name": "hydrofracturer",
+     "prices": [
+      {
+       "name": "science",
+       "val": 150000
+      },
+      {
+       "name": "starchart",
+       "val": 750
+      },
+      {
+       "name": "alloy",
+       "val": 1025
+      },
+      {
+       "name": "kerosene",
+       "val": 100
+      }
+     ],
+     "unlockRatio": null,
+     "requiredTech": null,
+     "unlockThreshold": null,
+     "unlocks": null,
+     "effects": {
+      "oilPerTickAutoprodSpace": 0
+     },
+     "calculateEffects": true,
+     "action": false,
+     "stages": null
+    },
+    {
+     "name": "spiceRefinery",
+     "prices": [
+      {
+       "name": "science",
+       "val": 75000
+      },
+      {
+       "name": "starchart",
+       "val": 500
+      },
+      {
+       "name": "alloy",
+       "val": 500
+      },
+      {
+       "name": "kerosene",
+       "val": 125
+      }
+     ],
+     "unlockRatio": null,
+     "requiredTech": null,
+     "unlockThreshold": null,
+     "unlocks": null,
+     "effects": {
+      "spicePerTickAutoprodSpace": 0
+     },
+     "calculateEffects": true,
+     "action": false,
+     "stages": null
+    }
+   ]
+  },
+  {
+   "name": "piscine",
+   "reached": false,
+   "unlocked": false,
+   "routeDays": 256,
+   "buildings": [
+    {
+     "name": "researchVessel",
+     "prices": [
+      {
+       "name": "titanium",
+       "val": 12500
+      },
+      {
+       "name": "starchart",
+       "val": 100
+      },
+      {
+       "name": "alloy",
+       "val": 2500
+      },
+      {
+       "name": "kerosene",
+       "val": 250
+      }
+     ],
+     "unlockRatio": null,
+     "requiredTech": null,
+     "unlockThreshold": null,
+     "unlocks": null,
+     "effects": {
+      "scienceMax": 0,
+      "starchartPerTickBaseSpace": 0
+     },
+     "calculateEffects": true,
+     "action": false,
+     "stages": null
+    },
+    {
+     "name": "orbitalArray",
+     "prices": [
+      {
+       "name": "science",
+       "val": 250000
+      },
+      {
+       "name": "starchart",
+       "val": 2000
+      },
+      {
+       "name": "eludium",
+       "val": 100
+      },
+      {
+       "name": "kerosene",
+       "val": 500
+      }
+     ],
+     "unlockRatio": null,
+     "requiredTech": null,
+     "unlockThreshold": null,
+     "unlocks": null,
+     "effects": {
+      "spaceRatio": 0,
+      "energyConsumption": 0
+     },
+     "calculateEffects": true,
+     "action": false,
+     "stages": null
+    }
+   ]
+  },
+  {
+   "name": "helios",
+   "reached": false,
+   "unlocked": false,
+   "routeDays": 1200,
+   "buildings": [
+    {
+     "name": "sunlifter",
+     "prices": [
+      {
+       "name": "science",
+       "val": 500000
+      },
+      {
+       "name": "eludium",
+       "val": 225
+      },
+      {
+       "name": "kerosene",
+       "val": 2500
+      }
+     ],
+     "unlockRatio": null,
+     "requiredTech": null,
+     "unlockThreshold": null,
+     "unlocks": null,
+     "effects": {
+      "antimatterProduction": 0,
+      "energyProduction": 0
+     },
+     "calculateEffects": true,
+     "action": false,
+     "stages": null
+    },
+    {
+     "name": "containmentChamber",
+     "prices": [
+      {
+       "name": "science",
+       "val": 500000
+      },
+      {
+       "name": "kerosene",
+       "val": 2500
+      }
+     ],
+     "unlockRatio": null,
+     "requiredTech": null,
+     "unlockThreshold": null,
+     "unlocks": null,
+     "effects": {
+      "antimatterMax": 0,
+      "energyConsumption": 0
+     },
+     "calculateEffects": true,
+     "action": false,
+     "stages": null
+    },
+    {
+     "name": "heatsink",
+     "prices": [
+      {
+       "name": "science",
+       "val": 125000
+      },
+      {
+       "name": "relic",
+       "val": 1
+      },
+      {
+       "name": "kerosene",
+       "val": 5000
+      },
+      {
+       "name": "thorium",
+       "val": 12500
+      }
+     ],
+     "unlockRatio": null,
+     "requiredTech": null,
+     "unlockThreshold": null,
+     "unlocks": null,
+     "effects": {},
+     "calculateEffects": true,
+     "action": false,
+     "stages": null
+    },
+    {
+     "name": "sunforge",
+     "prices": [
+      {
+       "name": "antimatter",
+       "val": 250
+      },
+      {
+       "name": "science",
+       "val": 100000
+      },
+      {
+       "name": "relic",
+       "val": 1
+      },
+      {
+       "name": "kerosene",
+       "val": 1250
+      }
+     ],
+     "unlockRatio": null,
+     "requiredTech": null,
+     "unlockThreshold": null,
+     "unlocks": null,
+     "effects": {
+      "baseMetalMaxRatio": 0.01
+     },
+     "calculateEffects": true,
+     "action": false,
+     "stages": null
+    }
+   ]
+  },
+  {
+   "name": "terminus",
+   "reached": false,
+   "unlocked": false,
+   "routeDays": 2500,
+   "buildings": [
+    {
+     "name": "cryostation",
+     "prices": [
+      {
+       "name": "science",
+       "val": 200000
+      },
+      {
+       "name": "concrate",
+       "val": 1500
+      },
+      {
+       "name": "eludium",
+       "val": 25
+      },
+      {
+       "name": "kerosene",
+       "val": 500
+      }
+     ],
+     "unlockRatio": null,
+     "requiredTech": null,
+     "unlockThreshold": null,
+     "unlocks": null,
+     "effects": {
+      "woodMax": 0,
+      "mineralsMax": 0,
+      "coalMax": 0,
+      "ironMax": 0,
+      "titaniumMax": 0,
+      "oilMax": 0,
+      "uraniumMax": 0,
+      "unobtainiumMax": 0
+     },
+     "calculateEffects": true,
+     "action": false,
+     "stages": null
+    }
+   ]
+  },
+  {
+   "name": "kairo",
+   "reached": false,
+   "unlocked": false,
+   "routeDays": 5000,
+   "buildings": [
+    {
+     "name": "spaceBeacon",
+     "prices": [
+      {
+       "name": "antimatter",
+       "val": 50
+      },
+      {
+       "name": "starchart",
+       "val": 25000
+      },
+      {
+       "name": "alloy",
+       "val": 25000
+      },
+      {
+       "name": "kerosene",
+       "val": 7500
+      }
+     ],
+     "unlockRatio": null,
+     "requiredTech": null,
+     "unlockThreshold": null,
+     "unlocks": null,
+     "effects": {
+      "scienceMax": 25000,
+      "starchartPerTickBaseSpace": 0.025,
+      "relicPerDay": 0
+     },
+     "calculateEffects": false,
+     "action": true,
+     "stages": null
+    }
+   ]
+  },
+  {
+   "name": "yarn",
+   "reached": false,
+   "unlocked": false,
+   "routeDays": 3800,
+   "buildings": [
+    {
+     "name": "terraformingStation",
+     "prices": [
+      {
+       "name": "uranium",
+       "val": 5000
+      },
+      {
+       "name": "antimatter",
+       "val": 25
+      },
+      {
+       "name": "kerosene",
+       "val": 5000
+      }
+     ],
+     "unlockRatio": null,
+     "requiredTech": [
+      "terraformation"
+     ],
+     "unlockThreshold": null,
+     "unlocks": {
+      "tabs": [
+       "village"
+      ]
+     },
+     "effects": {
+      "maxKittens": 1
+     },
+     "calculateEffects": false,
+     "action": true,
+     "stages": null
+    },
+    {
+     "name": "hydroponics",
+     "prices": [
+      {
+       "name": "unobtainium",
+       "val": 1
+      },
+      {
+       "name": "kerosene",
+       "val": 500
+      }
+     ],
+     "unlockRatio": null,
+     "requiredTech": [
+      "hydroponics"
+     ],
+     "unlockThreshold": null,
+     "unlocks": null,
+     "effects": {
+      "catnipRatio": 0.025,
+      "catnipMaxRatio": 0.1,
+      "terraformingMaxKittensRatio": 0
+     },
+     "calculateEffects": false,
+     "action": true,
+     "stages": null
+    }
+   ]
+  },
+  {
+   "name": "umbra",
+   "reached": false,
+   "unlocked": false,
+   "routeDays": 7500,
+   "buildings": [
+    {
+     "name": "hrHarvester",
+     "prices": [
+      {
+       "name": "antimatter",
+       "val": 1250
+      },
+      {
+       "name": "relic",
+       "val": 25
+      }
+     ],
+     "unlockRatio": null,
+     "requiredTech": null,
+     "unlockThreshold": null,
+     "unlocks": null,
+     "effects": {
+      "energyProduction": 1
+     },
+     "calculateEffects": true,
+     "action": false,
+     "stages": null
+    },
+    {
+     "name": "navigationRelay",
+     "prices": [
+      {
+       "name": "titanium",
+       "val": 50000
+      },
+      {
+       "name": "concrate",
+       "val": 5000
+      }
+     ],
+     "unlockRatio": null,
+     "requiredTech": false,
+     "unlockThreshold": null,
+     "unlocks": null,
+     "effects": {},
+     "calculateEffects": false,
+     "action": false,
+     "stages": null
+    },
+    {
+     "name": "spaceShuttle",
+     "prices": [
+      {
+       "name": "antimatter",
+       "val": 50
+      },
+      {
+       "name": "eludium",
+       "val": 500
+      }
+     ],
+     "unlockRatio": null,
+     "requiredTech": false,
+     "unlockThreshold": null,
+     "unlocks": null,
+     "effects": {},
+     "calculateEffects": false,
+     "action": false,
+     "stages": null
+    }
+   ]
+  },
+  {
+   "name": "charon",
+   "reached": false,
+   "unlocked": false,
+   "routeDays": 25000,
+   "buildings": [
+    {
+     "name": "entangler",
+     "prices": [
+      {
+       "name": "antimatter",
+       "val": 5250
+      },
+      {
+       "name": "relic",
+       "val": 1250
+      },
+      {
+       "name": "eludium",
+       "val": 5000
+      }
+     ],
+     "unlockRatio": null,
+     "requiredTech": [
+      "quantumCryptography"
+     ],
+     "unlockThreshold": null,
+     "unlocks": null,
+     "effects": {
+      "gflopsConsumption": 0.1,
+      "hashrate": 0,
+      "hashRateLevel": 0,
+      "nextHashLevelAt": 0,
+      "hrProgress": 0,
+      "energyConsumption": 25
+     },
+     "calculateEffects": false,
+     "action": true,
+     "stages": null
+    }
+   ]
+  },
+  {
+   "name": "centaurusSystem",
+   "reached": false,
+   "unlocked": false,
+   "routeDays": 120000,
+   "buildings": [
+    {
+     "name": "tectonic",
+     "prices": [
+      {
+       "name": "antimatter",
+       "val": 500
+      },
+      {
+       "name": "thorium",
+       "val": 75000
+      }
+     ],
+     "unlockRatio": null,
+     "requiredTech": [
+      "terraformation"
+     ],
+     "unlockThreshold": null,
+     "unlocks": null,
+     "effects": {
+      "energyProduction": 0
+     },
+     "calculateEffects": true,
+     "action": false,
+     "stages": null
+    },
+    {
+     "name": "moltenCore",
+     "prices": [
+      {
+       "name": "uranium",
+       "val": 5000000
+      },
+      {
+       "name": "science",
+       "val": 25000000
+      }
+     ],
+     "unlockRatio": null,
+     "requiredTech": [
+      "exogeophysics"
+     ],
+     "unlockThreshold": null,
+     "unlocks": null,
+     "effects": {
+      "tectonicBonus": 0.05
+     },
+     "calculateEffects": false,
+     "action": false,
+     "stages": null
+    }
+   ]
+  },
+  {
+   "name": "furthestRing",
+   "reached": false,
+   "unlocked": false,
+   "routeDays": 725000000,
+   "buildings": []
+  }
+ ]
+}

@@ -1,0 +1,20 @@
+# name: space-program
+# seed: 20260927
+# checkpoints: 0, 100, 200, 300, 400, 500
+# space-01/05/06/09/10: mission purchases (orbitalLaunch → cath unlock → moon
+# chain), route progression + planet reach, planet building unlock by
+# requiredTech, spaceElevator purchase, live space effects + save section.
+0 resop seed 20260927
+0 resop setres oil 100000
+0 resop setres manpower 50000
+0 resop setres science 500000
+0 resop setres starchart 5000
+0 resop setres titanium 50000
+0 resop setres kerosene 10000
+10 mission orbitalLaunch
+100 mission moonMission
+200 mission duneMission
+300 mission piscineMission
+350 resop setres uranium 10000
+400 sbuilding spaceElevator 3
+500 sbuilding sattelite 2

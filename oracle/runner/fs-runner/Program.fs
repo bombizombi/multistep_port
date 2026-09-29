@@ -214,6 +214,9 @@ let execute (scenario: Scenario) : ExecResult =
     let mutable voidp = Game.Time.initVoid ()
     let mutable winterCatnipPerTick = 0.0
     let mutable winterPhase = 0
+    // space-05 pool
+    let mutable spacep = Game.Space.init ()
+
     // steamworks.jammed (buildings-NN seam): set by factory automation, cleared
     // onNewYear; gates the per-tick automation action
     let mutable steamworksJammed = false
@@ -379,7 +382,8 @@ let execute (scenario: Scenario) : ExecResult =
     let religionGroup () = Game.Religion.religionGroup rpool
     let challengesGroup () = emptyGroup ()
     let prestigeGroup () = Game.Prestige.prestigeGroup ppool
-    let spaceGroup () = emptyGroup ()
+    let spacepRef = ref (Game.Space.init ()) // late-bound: synced in refreshCache/gtick
+    let spaceGroup () = Game.Space.spaceGroup !spacepRef
     let timeGroup () : Game.Effects.ManagerGroup =
         { Base =
             Game.Catalog.BaseEffects.baseEffects
@@ -623,6 +627,7 @@ let execute (scenario: Scenario) : ExecResult =
                 | _ -> 0.0 }
 
     and refreshCache () =
+        spacepRef := spacep
         cache <- Game.Effects.updateCaches cache (allGroups ())
         let pctx = prodCtx ()
         pool <-
@@ -2259,6 +2264,10 @@ let execute (scenario: Scenario) : ExecResult =
         if tpool.IsAccelerated && ticks % 2 = 0 then updateModelBody ()
 
 
+        // space.update (L1100-1145): routes + planet reach + building unlocks
+        spacep <-
+            Game.Space.update (Game.Effects.getEffect cache) Game.Calendar.ticksPerDay spacep
+        spacep <- Game.Space.unlockBuildings (fun tn -> (match spool.Techs |> Map.tryFind tn with Some x -> x.Researched | None -> false)) spacep
         // time.update (time-02/03): accelerated flux burn + heat engine +
         // blastFurnace/timeBoiler actions. calculateRedshift is a bookkeeping
         // no-op (opts.enableRedshift false; timestamp advance on the fake clock).
@@ -2303,6 +2312,9 @@ let execute (scenario: Scenario) : ExecResult =
                   LeviathanEnergy = dp.Races.["leviathans"].Energy
                   TotalYears = Game.Stats.getStat stpool "totalYears"
                   TotalResets = Game.Stats.getStat stpool "totalResets"
+                  JupiterAscending = (Game.Space.getProgram spacep "orbitalLaunch").On > 0 && calendar.Year <= 1.0
+                  MoonMissionOn = (Game.Space.getProgram spacep "moonMission").On > 0
+                  ParagonValue = getResValue "paragon"
                   IronWill = ironWill
                   MineVal = (match Game.Buildings.get bpool "mine" with Some b -> b.Val | None -> 0)
                   WarehouseVal = (match Game.Buildings.get bpool "warehouse" with Some b -> b.Val | None -> 0)
@@ -3291,6 +3303,39 @@ let execute (scenario: Scenario) : ExecResult =
         | "accelerate" ->
             // AccelerateTimeBtn: toggle; consumes 1 flux/tick while on
             tpool <- { tpool with IsAccelerated = not tpool.IsAccelerated }
+        | "mission" ->
+            // MissionBtnController.build(model, 1)
+            let name = m.Args.[0]
+            let sp2, pool2, counter = Game.Space.buyProgram calendarDay name 1 spacep pool
+            spacep <- sp2
+            pool <- pool2
+            if counter > 0 then
+                // game.unlock(unlocks): chained missions are handled in buyProgram;
+                // policies + planets unlock here (policy = flag only at this slice)
+                let def = Game.Catalog.Space.programDefs |> List.find (fun d0 -> d0.Name = name)
+                for pol in def.UnlocksPolicies do
+                    match spool.Policies |> Map.tryFind pol with
+                    | Some p0 -> spool <- { spool with Policies = spool.Policies |> Map.add pol { p0 with Unlocked = true } }
+                    | None -> ()
+                refreshCache () // unlock fan-out
+            else
+                actionLog <- (m.Tick, "mission", m.Args, RText "cannot-afford-or-locked") :: actionLog
+        | "sbuilding" ->
+            // PlanetBuildingBtnController.build(model, n)
+            let name = m.Args.[0]
+            let n = if m.Args.Length >= 2 then int m.Args.[1] else 1
+            let sp2, pool2, counter = Game.Space.buyBuilding calendarDay name n spacep pool
+            spacep <- sp2
+            pool <- pool2
+            if counter > 0 then
+                let def = Game.Catalog.Space.buildingDefs |> List.find (fun d0 -> d0.Name = name)
+                for pol in def.UnlocksPolicies do
+                    match spool.Policies |> Map.tryFind pol with
+                    | Some p0 -> spool <- { spool with Policies = spool.Policies |> Map.add pol { p0 with Unlocked = true } }
+                    | None -> ()
+                refreshCache ()
+            else
+                actionLog <- (m.Tick, "sbuilding", m.Args, RText "cannot-afford-or-locked") :: actionLog
         | "shatter" ->
             // ShatterTCBtnController.doShatterAmt(model, amt)
             let amt = int m.Args.[0]

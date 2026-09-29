@@ -39,18 +39,21 @@ const ORIG_LOAD_ORDER = [
 // CLI
 const dumpCatalogOnly = process.argv[2] === "--dump-catalog";
 const dumpVillageOnly = process.argv[2] === "--dump-village" || process.argv[2] === "--dump-defs";
-const scenarioPath = (dumpCatalogOnly || dumpVillageOnly) ? null : process.argv[2];
+const dumpSpaceOnly = process.argv[2] === "--dump-space";
+const scenarioPath = (dumpCatalogOnly || dumpVillageOnly || dumpSpaceOnly) ? null : process.argv[2];
 let outPath = process.argv[3];
-if (!dumpCatalogOnly && !dumpVillageOnly && !scenarioPath) {
+if (!dumpCatalogOnly && !dumpVillageOnly && !dumpSpaceOnly && !scenarioPath) {
   console.error("usage: node orig-driver.js <scenario.cat> [output.json]\n       node orig-driver.js --dump-catalog <output.json>\n       node orig-driver.js --dump-village <output.json>");
   process.exit(2);
 }
-const scenario = (dumpCatalogOnly || dumpVillageOnly) ? null : parseScenario(fs.readFileSync(scenarioPath, "utf8"));
+const scenario = (dumpCatalogOnly || dumpVillageOnly || dumpSpaceOnly) ? null : parseScenario(fs.readFileSync(scenarioPath, "utf8"));
 if (scenario && scenario.problems.length) {
   for (const p of scenario.problems) console.error(`scenario: ${p}`);
   if (scenario.problems.some((p) => !p.includes("ignored"))) process.exit(2);
 }
-if (!outPath) outPath = dumpCatalogOnly
+if (!outPath) outPath = dumpSpaceOnly
+  ? path.resolve(__dirname, "..", "fixtures", "space-orig.json")
+  : dumpCatalogOnly
   ? path.resolve(__dirname, "..", "fixtures", "resource-catalog-orig.json")
   : path.resolve(__dirname, "..", "recordings", `${scenario.name}.json`);
 
@@ -405,6 +408,31 @@ function doAction(move) {
       case "accelerate":
         game.time.isAccelerated = !game.time.isAccelerated;
         return;
+      case "mission": {
+        // MissionBtnController.build(model, 1) via the stackable fetchModel
+        const controller = new com.nuclearunicorn.game.ui.SpaceProgramBtnController(game);
+        const model = controller.fetchModel({ id: args[0] });
+        const valBefore = model.metadata.val;
+        controller.build(model, 1);
+        if (model.metadata.val === valBefore) {
+          actionLog.push({ tick: tickIndex, action, args, reason: "cannot-afford-or-locked" });
+        }
+        game.updateCaches();
+        return;
+      }
+      case "sbuilding": {
+        // PlanetBuildingBtnController.build(model, n)
+        const controller = new classes.ui.space.PlanetBuildingBtnController(game);
+        const model = controller.fetchModel({ id: args[0] });
+        const valBefore = model.metadata.val;
+        const n = args.length >= 2 ? Number(args[1]) : 1;
+        controller.build(model, n);
+        if (model.metadata.val === valBefore) {
+          actionLog.push({ tick: tickIndex, action, args, reason: "cannot-afford-or-locked" });
+        }
+        game.updateCaches();
+        return;
+      }
       case "shatter": {
         // ShatterTCBtnController.doShatterAmt via the controller's fetchModel
         const amt = Number(args[0]);
@@ -732,6 +760,20 @@ function doAction(move) {
           actionLog.push({ tick: tickIndex, action: "resop", args, result: (blob || "").length });
           return;
         }
+        if (fn === "satprobe") {
+          const s = game.space.getBuilding("sattelite");
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: s.val * 100 + s.on });
+          console.log("SATPROBE val=" + s.val + " on=" + s.on + " ptc=" + game.resPool.get("starchart").perTickCached);
+          return;
+        }
+        if (fn === "iwprobe") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.ironWill ? 1 : 0 });
+          return;
+        }
+        if (fn === "moonon") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.space.getProgram("moonMission").on || 0 });
+          return;
+        }
         if (fn === "esprobe") {
           const prod = game.village.getResProduction();
           actionLog.push({ tick: tickIndex, action: "resop", args, result: prod["ESwood"] || 0 });
@@ -1018,6 +1060,26 @@ function takeSnapshot() {
 // ---------------------------------------------------------------------------
 // Catalog dump mode (--dump-catalog): initial resPool state, logic fields only.
 // Used by resources-01 verification (see D014 / session 04).
+
+if (process.argv[2] === "--dump-space") {
+  const g = game;
+  const clone = (o) => o === undefined ? null : JSON.parse(JSON.stringify(o));
+  const programs = g.space.programs.map((p) => ({
+    name: p.name, prices: p.prices, unlocks: clone(p.unlocks),
+    requiredTech: clone(p.requiredTech), maxLevel: p.maxLevel === undefined ? null : p.maxLevel,
+  }));
+  const planets = g.space.planets.map((pl) => ({
+    name: pl.name, reached: !!pl.reached, unlocked: !!pl.unlocked, routeDays: pl.routeDays || 0,
+    buildings: pl.buildings.map((b) => ({
+      name: b.name, prices: clone(b.prices), unlockRatio: b.unlockRatio === undefined ? null : b.unlockRatio,
+      requiredTech: clone(b.requiredTech), unlockThreshold: b.unlockThreshold === undefined ? null : b.unlockThreshold,
+      unlocks: clone(b.unlocks), effects: clone(b.effects), calculateEffects: typeof b.calculateEffects === "function",
+      action: typeof b.action === "function", stages: clone(b.stages) || null,
+    })),
+  }));
+  console.log(JSON.stringify({ programs, planets }, null, 1));
+  process.exit(0);
+}
 if (process.argv[2] === "--dump-defs") {
   const g = game;
   const clone = (o) => JSON.parse(JSON.stringify(o === undefined ? null : o));
