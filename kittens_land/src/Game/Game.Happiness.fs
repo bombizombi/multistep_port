@@ -16,6 +16,7 @@ type HappinessContext =
       // luxury scan over resPool (orig iterates ALL resources; only uncommon/
       // rare types with value > 0 count — at fresh none qualify)
       LuxuryCount: int
+      PollutionHappines: float
       ElderBoxWithPaper: bool
       ConsumableLuxuryCount: int }
 
@@ -26,6 +27,7 @@ let freshHappinessContext : HappinessContext =
       Karma = 0.0
       UpfrontPaymentResearched = false
       LuxuryCount = 0
+      PollutionHappines = 0.0
       ElderBoxWithPaper = false
       ConsumableLuxuryCount = 0 }
 
@@ -44,7 +46,8 @@ let updateHappiness (ctx: HappinessContext) (kittens: int) (maxKittens: int) : f
 
     // environment effect: bonus + unhappiness + pollutionHappines (all 0 at fresh)
     happiness <- happiness + (ctx.GetEffect "happiness" + ctx.GetEffect "environmentHappinessBonus"
-                              + ctx.GetEffect "environmentUnhappiness" + ctx.GetEffect "challengeHappiness")
+                              + ctx.GetEffect "environmentUnhappiness" + ctx.GetEffect "challengeHappiness"
+                              + ctx.PollutionHappines)
 
     // luxury resources: +10% each (+epicurianism/consumable seams)
     let perLuxury = 10.0 + ctx.GetEffect "luxuryHappinessBonus"

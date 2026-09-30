@@ -28,6 +28,7 @@ type ProductionContext =
       LeaderRank: int
       MagnetoOn: int
       SolarRevolutionRatio: float
+      SolarRevolutionPollution: float
       DisableCMBR: bool
       CMBRBonus: float
       VillageResConsumption: string -> float
@@ -50,6 +51,7 @@ let freshProductionContext (cache: EffectsCache) (cal: CalendarState) (calCtx: C
       LeaderRank = 0
       MagnetoOn = 0
       SolarRevolutionRatio = 0.0
+      SolarRevolutionPollution = 0.0
       DisableCMBR = false
       CMBRBonus = 0.0
       VillageResConsumption = fun _ -> 0.0
@@ -156,8 +158,8 @@ let calcResourcePerTick (ctx: ProductionContext) (pool: ResPool) (resName: strin
         perTick <- perTick * (1.0 + eff "productionRatio")
         paragonSpaceProductionRatio <- paragonSpaceProductionRatio + paragonSpaceProductionRatio * eff "productionRatio"
 
-    // +*FAITH BONUS (solarRevolutionPollution: pollutionEffects seam, 0 at fresh)
-    let solarPollution = 0.0
+    // +*FAITH BONUS (solarRevolutionPollution gates to wood/catnip, L3771)
+    let solarPollution = if resName = "wood" || resName = "catnip" then ctx.SolarRevolutionPollution else 0.0
     perTick <- perTick * (1.0 + ctx.SolarRevolutionRatio * (1.0 + solarPollution))
 
     // +COSMIC RADIATION

@@ -924,6 +924,25 @@ function doAction(move) {
           actionLog.push({ tick: tickIndex, action: "resop", args, result: race ? 1 : 0 });
           return;
         }
+        if (fn === "setpollution") {
+          game.bld.cathPollution = Number(arg1);
+          game.bld.calculatePollutionEffects();
+          game.bld.cacheCathPollutionPerTick();
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.bld.cathPollution });
+          return;
+        }
+        if (fn === "pollution") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.bld.cathPollution });
+          return;
+        }
+        if (fn === "pollutiontick") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.bld.cathPollutionPerTick });
+          return;
+        }
+        if (fn === "pollutionlevel") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.bld.getPollutionLevel() });
+          return;
+        }
         if (fn === "bldprobe") {
           const b = game.bld.get(arg1);
           console.log("BLDPROBE " + arg1 + " val=" + b.val + " on=" + b.on + " togglable=" + b.togglable + " togglableOnOff=" + b.togglableOnOff);

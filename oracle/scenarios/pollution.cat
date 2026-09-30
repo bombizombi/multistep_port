@@ -1,0 +1,34 @@
+# name: pollution
+# seed: 20260927
+# checkpoints: 0, 100, 200, 300
+# buildings-10: pollution levels 0-2 effect tables, dissipation decay,
+# accumulation via smelters/steamworks/magnetos.
+0 resop seed 20260927
+0 resop setres catnip 900000
+0 resop setres wood 400000
+0 resop setres minerals 400000
+0 resop setres iron 40000
+0 resop setres coal 40000
+0 resop setres oil 40000
+0 resop setres uranium 40000
+0 resop setres steel 40000
+0 resop setres gear 4000
+0 resop setres blueprint 400
+0 resop setres titanium 40000
+0 resop setres alloy 4000
+20 buy steamworks 2
+30 buy magneto 2
+35 resop pollutiontick
+100 resop pollution
+110 resop pollutiontick
+120 resop pollutionlevel
+200 resop setpollution 5000000
+210 resop pollutionlevel
+220 resop pollution
+300 resop setpollution 50000000
+310 resop pollutionlevel
+320 resop pollution
+330 resop setpollution 500000000
+340 resop pollutionlevel
+350 resop pollution
+360 resop pollutiontick
