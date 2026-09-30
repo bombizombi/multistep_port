@@ -173,6 +173,7 @@ type UndoData =
     | VSUUndo of metaId: string * val_: int               // time.undo buildVSU (100% refund)
     | CraftUndo of craft: string * gained: float * spent: (string * float) list
     | TradeUndo of trades: float * spent: (string * float) list * gained: (string * float) list
+    | SpaceUndo of action: string * metaId: string * val_: int      // space.undo (build 100% refund / sell re-gain)
     | PraiseUndo of faithSpent: float * worshipGained: float
     | AdoreUndo of worshipBefore: float * epiphanyGained: float
 

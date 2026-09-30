@@ -428,3 +428,25 @@ let spaceGroup
                     else
                         v * float m.On)
             else None) }
+
+/// space.undo refund path (js/space.js undo L1267-1281): sell ONE unit via
+/// PlanetBuildingBtnController.sellInternal — refund = current ladder prices
+/// × refundPercentage (build undo 1.0, sell undo 0 = re-add). Requires the
+/// planet to have been reached and val > 0.
+let sellOne (calendarDay: int) (name: string) (pool: ResPool) (refundPercentage: float) (sp: SpacePool) : SpacePool * ResPool * bool =
+    let def = Game.Catalog.Space.buildingDefs |> List.find (fun d -> d.Name = name)
+    let m = sp.Buildings.[name]
+    if m.Val = 0 || not sp.Planets.[def.Planet].Reached then sp, pool, false
+    else
+        let prices () =
+            def.Prices
+            |> List.map (fun p -> (p.Resource, p.Val * (1.1 ** float (m.Val - 1))))
+        // refund at the pre-decrement ladder
+        let refundPrices = prices () |> List.map (fun (r, v) -> (r, v * refundPercentage))
+        let sp' = { sp with Buildings = sp.Buildings |> Map.add name { m with Val = m.Val - 1; On = m.On - 1 } }
+        let mutable pool' = pool
+        for (r, v) in refundPrices do
+            if v > 0.0 then
+                let pool1, _ = Game.Resources.addResEvent calendarDay r v pool'
+                pool' <- pool1
+        sp', pool', true

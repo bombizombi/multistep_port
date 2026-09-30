@@ -1536,6 +1536,8 @@ let execute (scenario: Scenario) : ExecResult =
             stpool <- Game.Stats.bumpStat "totalKittens" (float (vpool.Kittens.Length - beforeBirths)) stpool
         let kittensRes = pool.ByName["kittens"]
         pool <- { pool with ByName = pool.ByName |> Map.add "kittens" { kittensRes with Value = float vpool.Kittens.Length; MaxValue = float vpool.MaxKittens } }
+        // space.fastforward (js/space.js L1147-1175): route countdown only
+        spacep <- Game.Space.fastforward (Game.Effects.getEffect cache) Game.Calendar.ticksPerDay daysOffset spacep
         // religion.fastforward: paradox-day adjustment + necrocorns + OotV
         let paradoxChance = Game.Effects.getEffect cache "temporalParadoxChance"
         let mutable ffDays = daysOffset
@@ -4677,6 +4679,7 @@ let execute (scenario: Scenario) : ExecResult =
                 let mutable rpoolU = rpool
                 let mutable dpU = dp
                 let mutable tpoolU = tpool
+                let mutable spacepU = spacep
                 let mutable ok = true
                 for ev in u.Events do
                     match ev.Data with
@@ -4692,10 +4695,15 @@ let execute (scenario: Scenario) : ExecResult =
                         let p2, okC = Game.Managers.undoCraft calendarDay craft gained spent poolU
                         poolU <- p2
                         if not okC then ok <- false
-                    | Game.Types.TradeUndo(trades, spent, gainedLst) ->
-                        let dp2, p2, okT = Game.Diplomacy.undoTrade calendarDay trades spent gainedLst poolU dpU
-                        dpU <- dp2; poolU <- p2
-                        if not okT then ok <- false
+                    | Game.Types.SpaceUndo(undoAction, metaId, count) ->
+                        // space.undo (js/space.js L1267-1281): build = full refund
+                        // at the CURRENT ladder; sell re-adds the units
+                        let mutable refundedAny = false
+                        let refundPct = if undoAction = "build" then 1.0 else 0.0
+                        for _ in 1..count do
+                            let sp2, p2, sold = Game.Space.sellOne calendarDay metaId poolU refundPct spacepU
+                            if sold then spacepU <- sp2; poolU <- p2; refundedAny <- true
+                        if not refundedAny then ok <- false
                     | Game.Types.PraiseUndo(faithSpent, worshipGained) ->
                         let rp2, p2, okP = Game.Religion.undoPraise faithSpent worshipGained poolU rpoolU
                         rpoolU <- rp2; poolU <- p2
@@ -4724,6 +4732,7 @@ let execute (scenario: Scenario) : ExecResult =
                 rpool <- rpoolU
                 tpool <- tpoolU
                 dp <- dpU
+                spacep <- spacepU
                 undoChange <- None
                 if not ok then
                     actionLog <- (m.Tick, "undo", m.Args, RText "undo-incomplete") :: actionLog

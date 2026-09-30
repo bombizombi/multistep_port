@@ -1,0 +1,19 @@
+# name: space-undo
+# seed: 20260927
+# checkpoints: 0, 100
+# space-11: sbuilding registers SpaceUndo; undo refunds at 100% (current
+# ladder), undo-incomplete when resources cannot absorb the refund.
+0 resop seed 20260927
+0 resop setres catnip 900000
+0 resop setres wood 400000
+0 resop setres minerals 400000
+0 resop setres science 900000
+0 resop setres oil 900000
+0 resop setres titanium 900000
+0 resop setres uranium 90000
+0 resop setres manpower 90000
+10 research rocketry
+20 mission orbitalLaunch
+30 sbuilding spaceElevator 2
+40 resop setres titanium 10
+50 undo
