@@ -1,0 +1,25 @@
+# name: settings-opts
+# seed: 20260927
+# checkpoints: 0, 100, 200
+# settings-01/02/03 + config-01: setopt → opts state → save → load roundtrip;
+# hodl onChange sells the blackcoin stash at the OLD hodl price (bcoinPrice
+# 63918 when hodl was on, cryptoPrice when off) into relics; useWorkers
+# migration; opts load defaults.
+0 resop seed 20260927
+0 resop setres blackcoin 100
+0 resop setres catnip 900000
+10 resop getopt hodl
+20 resop setopt disableCMBR true
+30 resop getopt disableCMBR
+40 resop setopt hodl false
+50 resop getopt hodl
+60 save
+70 load
+80 resop getopt hodl
+90 resop getopt disableCMBR
+100 resop getopt IWSmelter
+200 resop setopt hodl true
+210 resop setopt hodl false
+220 save
+230 load
+240 resop getopt hodl

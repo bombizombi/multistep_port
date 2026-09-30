@@ -8,6 +8,7 @@
     <ItemGroup>
         <Compile Include="src/Shared.fs"/>
         <Compile Include="src/Game/Game.Catalog.Policies.fs"/>
+        <Compile Include="src/Game/Game.Settings.fs"/>
         <Compile Include="src/Game/Game.Types.fs"/>
         <Compile Include="src/Game/Game.LzString.fs"/>
         <Compile Include="src/Game/Game.Math.fs"/>

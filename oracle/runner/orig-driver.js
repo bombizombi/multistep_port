@@ -904,6 +904,15 @@ function doAction(move) {
           actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
           return;
         }
+        if (fn === "setopt") {
+          game.settings.set(arg1, arg2 === "true");
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "getopt") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.opts[arg1] ? 1 : 0 });
+          return;
+        }
         if (fn === "explore") {
           // SendExplorersButtonController: pay 1000 manpower, unlockRandomRace;
           // on failure (all races met) refund 950 → net 50

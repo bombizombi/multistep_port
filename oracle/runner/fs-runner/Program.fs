@@ -274,6 +274,8 @@ let execute (scenario: Scenario) : ExecResult =
     // buildings-10: bld.cathPollution / cathPollutionPerTick (js/buildings.js)
     let mutable cathPollution = 0.0
     let mutable cathPollutionPerTick = 0.0
+    // settings-01/02: game.opts (booleans + notation + batchSize)
+    let mutable opts = Game.Settings.freshOpts ()
     // classes.reserveMan (challenges-10): reserveResources / reserveKittens /
     // reserveCryochambers — populated by applyPending's reset path
     let mutable reserveResources: Map<string, float> = Map.empty
@@ -2331,17 +2333,16 @@ let execute (scenario: Scenario) : ExecResult =
         key "cheatMode"; boolv false; sb.Append "," |> ignore
         key "startedWithoutChronospheres"; boolv true; sb.Append "," |> ignore
         key "opts"; objStart ()
-        let opts = [
-            "notation", "\"si\""; "batchSize", "10"; "useWorkers", "true"; "forceHighPrecision", "false";
-            "usePerSecondValues", "true"; "usePercentageResourceValues", "false"; "showNonApplicableButtons", "false";
-            "usePercentageConsumptionValues", "false"; "highlightUnavailable", "true"; "hideSell", "false";
-            "hideDowngrade", "false"; "hideBGImage", "false"; "tooltipsInRightColumn", "false"; "noConfirm", "false";
-            "IWSmelter", "true"; "disableTelemetry", "false"; "enableRedshift", "false"; "disablePollution", "false";
-            "enableRedshiftGflops", "false"; "useLegacyTwoInRowLayout", "false"; "useSwipeNavigation", "false";
-            "ksEnabled", "false"; "forceLZ", "false"; "compressSaveFile", "false"; "hodl", "true"; "disableCMBR", "false"
-        ]
+        // settings-01: emission from the live opts state in settingsArr order
+        let optsRows =
+            [
+              yield ("notation", "\"" + opts.Notation + "\"")
+              yield ("batchSize", num opts.BatchSize)
+              for s in Game.Settings.settingsArr do
+                  yield (s.Name, if opts.Bools.[s.Name] then "true" else "false")
+            ]
         let firstO = ref true
-        for on, ov in opts do
+        for on, ov in optsRows do
             sep firstO
             key on; raw ov
         objEnd ()
@@ -2388,6 +2389,7 @@ let execute (scenario: Scenario) : ExecResult =
             huntFilterUnlocked <- false
             prodOverrides <- Map.empty
             lastLimits <- Map.empty
+            opts <- Game.Settings.freshOpts ()
             reserveResources <- Map.empty
             reserveKittens <- []
             reserveCryochambers <- 0
@@ -3172,12 +3174,30 @@ let execute (scenario: Scenario) : ExecResult =
                                 bpool <- bp2; spool <- sp2; wpool <- wp2
                             | None -> ()
 
-            // game.save tail: karmaKittens / ironWill / deadKittens
+            // game.save tail: karmaKittens / ironWill / deadKittens + opts
             (match jget root "game" with
              | Some (JObj gv) ->
                  let karma = (jnumF (jget gv "karmaKittens") |> Option.defaultValue 0.0) |> int
                  pool <- { pool with KarmaKittens = karma }
                  ironWill <- jboolF (jget gv "ironWill") |> Option.defaultValue true
+                 // game.opts (js/game.js L3146-3164): copy all; defaults for
+                 // tooltipsInRightColumn/fontSize; hodl opt-out for old saves
+                 (match jget gv "opts" with
+                  | Some (JObj ov) ->
+                      for (k, v) in ov do
+                          match v with
+                          | JBool b when opts.Bools |> Map.containsKey k ->
+                              opts <- { opts with Bools = opts.Bools |> Map.add k b }
+                          | JStr s when k = "notation" -> opts <- { opts with Notation = s }
+                          | JNum f when k = "batchSize" -> opts <- { opts with BatchSize = f }
+                          | _ -> ()
+                      if not (ov |> List.exists (fun (k, _) -> k = "tooltipsInRightColumn")) then
+                          opts <- { opts with Bools = opts.Bools |> Map.add "tooltipsInRightColumn" false }
+                      if not (ov |> List.exists (fun (k, _) -> k = "hodl")) then
+                          opts <- { opts with Bools = opts.Bools |> Map.add "hodl" false }
+                  | None ->
+                      // no opts at all → hodl forced false (opt-out)
+                      opts <- { opts with Bools = opts.Bools |> Map.add "hodl" false })
                  // deadKittens sets only game.deadKittens (no FS field) — the
                  // kittensDead STAT lives in the stats section, skipped when
                  // broken
@@ -3757,6 +3777,26 @@ let execute (scenario: Scenario) : ExecResult =
                     actionLog <- (curLogTick, "resop", m.Args, RNum (match ev.Race with Some _ -> 1.0 | None -> 0.0)) :: actionLog
                 else
                     actionLog <- (curLogTick, "resop", m.Args, RText "cannot-afford") :: actionLog
+            | [ "setopt"; optName; valueArg ] ->
+                // SettingsManager.set with the hodl onChange → sellBcoin
+                let value = valueArg = "true"
+                let cryptoPrice = calendar.CryptoPrice
+                let opts', fireHodl = Game.Settings.setBool optName value opts
+                opts <- opts'
+                (match fireHodl with
+                 | Some oldHodl ->
+                     // diplomacy.sellBcoin(oldHodl): blackcoin × getCryptoPrice(hodl) → relic
+                     let price = if oldHodl then 63918.0 else cryptoPrice // server.bcoinPrice (storage form)
+                     let stash = (match get pool "blackcoin" with Some r -> r.Value | None -> 0.0)
+                     let amt = stash * price
+                     let pool1, _ = Game.Resources.addResEvent calendarDay "relic" amt pool
+                     pool <- pool1
+                     let bc = pool.ByName["blackcoin"]
+                     pool <- { pool with ByName = pool.ByName |> Map.add "blackcoin" { bc with Value = 0.0 } }
+                 | None -> ())
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "getopt"; optName ] ->
+                actionLog <- (curLogTick, "resop", m.Args, RNum (if opts.Bools.[optName] then 1.0 else 0.0)) :: actionLog
             | [ "esprobe" ] ->
                 actionLog <- (curLogTick, "resop", m.Args, RNum (getResProductionCached () |> Map.tryFind "ESwood" |> Option.defaultValue 0.0)) :: actionLog
             | [ "addkitten" ] ->
