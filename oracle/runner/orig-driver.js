@@ -1077,6 +1077,86 @@ if (fn === "qlen") {
           actionLog.push({ tick: tickIndex, action: "resop", args, result: r });
           return;
         }
+        if (fn === "guid") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.telemetry.guid });
+          return;
+        }
+        if (fn === "newguid") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.telemetry.generateGuid() });
+          return;
+        }
+        if (fn === "timerdump") {
+          const s = game.timer.handlers.map((h) => String(h.frequency)).join(",");
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: s });
+          return;
+        }
+        if (fn === "tabs") {
+          const s = game.tabs.map((t) => t.tabId).join(",");
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: s });
+          return;
+        }
+        if (fn === "managers") {
+          const s = game.managers.map((m0) => m0.id).join(",");
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: s });
+          return;
+        }
+        if (fn === "sched") {
+          game.timer.scheduleEvent(function () { game.__schedProbes = (game.__schedProbes || 0) + 1; });
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "schedcount") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.__schedProbes || 0 });
+          return;
+        }
+        if (fn === "msg") {
+          game.msg(arg1, undefined, arg2 || undefined);
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "msgtype") {
+          game.msg(arg1, arg2 || undefined, undefined);
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "lockfilter") {
+          game.console.lockFilter(arg1);
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: Boolean(game.console.filters[arg1]) });
+          return;
+        }
+        if (fn === "conclear") {
+          game.console.clear();
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "conmsg") {
+          const s = game.console.messages.map((m0) => [
+            parseInt(m0.id.substr("consoleMessage_".length), 10), m0.text,
+            m0.type === undefined ? "-" : m0.type, m0.tag === undefined ? "-" : m0.tag,
+            m0.hasCalendarTech ? "1" : "0",
+            m0.year === null ? "-" : m0.year,
+            m0.seasonTitle === null ? "-" : m0.seasonTitle,
+            m0.seasonTitleShorten === null ? "-" : m0.seasonTitleShorten,
+          ].join("|")).join(";");
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: s });
+          return;
+        }
+        if (fn === "filters") {
+          const s = Object.keys(game.console.static.filters).map((f) => {
+            const fl = game.console.filters[f];
+            return f + ":" + (fl.unlocked ? 1 : 0) + (fl.enabled ? 1 : 0);
+          }).join(",");
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: s });
+          return;
+        }
+        if (fn === "schemes") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.unlockedSchemes === undefined ? "" : game.unlockedSchemes.join(",") });
+          return;
+        }
+        if (fn === "isreadonly") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.isReadOnly() });
+          return;
+        }
         if (fn === "qcap") {
           actionLog.push({ tick: tickIndex, action: "resop", args, result: game.time.queue.cap });
           return;

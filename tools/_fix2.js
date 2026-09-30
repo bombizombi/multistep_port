@@ -1,0 +1,11 @@
+const fs = require("fs");
+const p = "oracle/runner/fs-runner/Program.fs";
+let t = fs.readFileSync(p, "utf8");
+const anchor = "type QueueItem =\r\n    { QName: string; QType: string; QLabel: string; QValue: float }";
+const alt = "type QueueItem =\n    { QName: string; QType: string; QLabel: string; QValue: float }";
+const add = "\n\n// core.js logmsg (L527-541) — core-05\ntype ConsoleMsg =\n    { CmId: int\n      CmText: string\n      CmType: string option\n      CmTag: string option\n      CmHasCal: bool\n      CmYear: string option\n      CmSeason: string option\n      CmSeasonShort: string option }";
+if (t.includes(anchor)) t = t.replace(anchor, anchor + add);
+else if (t.includes(alt)) t = t.replace(alt, alt + add);
+else throw new Error("queueitem anchor");
+fs.writeFileSync(p, t);
+console.log("ok");

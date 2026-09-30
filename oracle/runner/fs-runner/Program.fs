@@ -189,6 +189,17 @@ type JsValue =
 type QueueItem =
     { QName: string; QType: string; QLabel: string; QValue: float }
 
+// core.js logmsg (L527-541) — core-05
+type ConsoleMsg =
+    { CmId: int
+      CmText: string
+      CmType: string option
+      CmTag: string option
+      CmHasCal: bool
+      CmYear: string option
+      CmSeason: string option
+      CmSeasonShort: string option }
+
 let rec private jsOfElement (e: System.Text.Json.JsonElement) : JsValue =
     match e.ValueKind with
     | System.Text.Json.JsonValueKind.Null -> JNull
@@ -272,10 +283,36 @@ let execute (scenario: Scenario) : ExecResult =
     let mutable lcStorageSave = ""
     let mutable ticksBeforeSave = 400 // orig game.js L2296 (80s @ 5tps)
     let mutable currentSaveIsBroken = false // game.currentSaveIsBroken (load.js L3108 catch)
+    // com.nuclearunicorn.game.log.Console (core.js L404-624) — core-05.
     // console.filters["craft"].unlocked — set by the first craftAll msg
     // (core.js L537); ["hunt"] unlocks on every hunt success msg
-    let mutable craftFilterUnlocked = false
-    let mutable huntFilterUnlocked = false
+    let consoleFilterNames =
+        [ "astronomicalEvent"; "hunt"; "trade"; "craft"; "workshopAutomation"; "meteor";
+          "ivoryMeteor"; "unicornRift"; "unicornSacrifice"; "alicornRift"; "alicornSacrifice";
+          "alicornCorruption"; "tcShatter"; "tcRefine"; "faith"; "elders"; "blackcoin";
+          "festival"; "undo"; "explore"; "combat" ]
+    let mutable consoleFilters : Map<string, bool * bool> =
+        consoleFilterNames |> List.map (fun f -> (f, (false, true))) |> Map.ofList // (unlocked, enabled)
+    let mutable consoleMessages : ConsoleMsg list = []
+    let mutable consoleMsgCounter = 0
+    // classes.game.Timer (game.js L71-143) — game-01: registration table; the
+    // prod/caches/ach/winter/queue phases run in gtick, server/policy seams stay off
+    let timerRegistrations : (string * int) list =
+        [ ("village.updateResourceProduction", 10); ("updateCaches", 5); ("policyRecalc", 25);
+          ("achievements.update", 50); ("server.refresh", 3000); ("fetchBcoinPrice", 1500);
+          ("heartbeat", 3000); ("updateWinterCatnip", 25); ("checkForUpdates", 1500);
+          ("time.updateQueue", 10) ]
+    let mutable scheduledEvents = 0 // timer.scheduleEvent probe markers
+    let mutable scheduledFired = 0
+    // GamePage tab registry + manager list (game.js L2503-2590) — game-06
+    let tabRegistryData =
+        [ "Bonfire"; "Village"; "Science"; "Workshop"; "Trade"; "Religion";
+          "Space"; "Time"; "Challenges"; "Achievements"; "Stats" ]
+    let managerOrderData =
+        [ "challenges"; "workshop"; "diplomacy"; "bld"; "science"; "achievements";
+          "religion"; "space"; "time"; "prestige"; "stats"; "void"; "settings" ]
+    // js: undefined until the options UI initializes it (never headless)
+    let mutable unlockedSchemes : string list option = None
     // buildings-10: bld.cathPollution / cathPollutionPerTick (js/buildings.js)
     let mutable cathPollution = 0.0
     let mutable cathPollutionPerTick = 0.0
@@ -1861,7 +1898,7 @@ let execute (scenario: Scenario) : ExecResult =
         pool <- pool'
         wpool <- wpool'
         if craftsDone > 0.0 then
-            craftFilterUnlocked <- true
+            consoleFilters <- consoleFilters |> Map.add "craft" (true, true)
             // orig craft() bumps stats on every successful craft incl. engineer ones
             stpool <- Game.Stats.bumpStat "totalCrafts" craftsDone stpool
             stpool <- Game.Stats.bumpStatCurrent "totalCrafts" craftsDone stpool
@@ -2177,7 +2214,7 @@ let execute (scenario: Scenario) : ExecResult =
         for f0 in filters do
             sep firstF
             let unl =
-                (f0 = "craft" && craftFilterUnlocked) || (f0 = "hunt" && huntFilterUnlocked)
+                (consoleFilters |> Map.tryFind f0 |> Option.map (fun (u, _) -> u) |> Option.defaultValue false)
             key f0; objStart (); key "unlocked"; boolv unl; sb.Append "," |> ignore; key "enabled"; boolv true; objEnd ()
         objEnd (); objEnd (); sb.Append "," |> ignore
 
@@ -2546,8 +2583,8 @@ let execute (scenario: Scenario) : ExecResult =
             queueItems <- []
             queueCap <- 3
             queueSort <- true
-            craftFilterUnlocked <- false
-            huntFilterUnlocked <- false
+            consoleFilters <- consoleFilterNames |> List.map (fun f -> (f, (false, true))) |> Map.ofList
+
             prodOverrides <- Map.empty
             lastLimits <- Map.empty
             opts <- Game.Settings.freshOpts ()
@@ -2686,14 +2723,25 @@ let execute (scenario: Scenario) : ExecResult =
                          CryptoPrice = jnumF (jget cv "cryptoPrice") |> Option.defaultValue 1000.0 }
              | _ -> ())
 
-            // console.load: the craft filter is the only FS-tracked filter
+            // console.load: per-filter unlocked/enabled merge
             (match jget root "console" with
              | Some (JObj cv) ->
                  (match jget cv "filters" with
                   | Some (JObj fs0) ->
-                      (match jget fs0 "craft" with
-                       | Some (JObj fv) -> craftFilterUnlocked <- jboolF (jget fv "unlocked") |> Option.defaultValue false
-                       | _ -> ())
+                      consoleFilters <-
+                          fs0
+                          |> List.fold (fun acc (fname, fv) ->
+                              match acc |> Map.tryFind fname with
+                              | Some (_, en) ->
+                                  let unl =
+                                      match fv with
+                                      | JObj kv ->
+                                          (match kv |> List.tryFind (fun (k, _) -> k = "unlocked") with
+                                           | Some (_, JBool b) -> b
+                                           | _ -> false)
+                                      | _ -> false
+                                  acc |> Map.add fname (unl, en)
+                              | None -> acc) consoleFilters
                   | _ -> ())
              | _ -> ())
 
@@ -3798,6 +3846,53 @@ let execute (scenario: Scenario) : ExecResult =
         if drawGameRand () <= hitRate then
             tgtHp.Value <- max 0.0 (tgtHp.Value - damage)
 
+    // com.nuclearunicorn.game.log.Console msg/clear/lockFilter — core-05
+    let consoleMsg (text: string) (typ: string option) (tag: string option) (noBullet: bool) : unit =
+        let mutable drop = false
+        match tag with
+        | Some tg ->
+            (match consoleFilters |> Map.tryFind tg with
+             | Some (unlocked, enabled) ->
+                 if not unlocked then consoleFilters <- consoleFilters |> Map.add tg (true, enabled)
+                 elif not enabled then drop <- true
+             | None -> ())
+        | None -> ()
+        if not drop then
+            let hasCal = (match spool.Techs |> Map.tryFind "calendar" with Some t -> t.Researched | None -> false)
+            // year.toLocaleString() — en-US, up to 3 fraction digits, no trailing zeros
+            let fmtYear (v: float) : string =
+                let s = v.ToString("N3", System.Globalization.CultureInfo.GetCultureInfo("en-US"))
+                s.TrimEnd('0').TrimEnd('.')
+            let season = Game.Calendar.seasons.[calendar.Season]
+            let numeral =
+                if Game.Challenges.isActive cpool "winterIsComing"
+                then [ " I"; " II"; " III"; " IV" ] |> List.item calendar.Season
+                else ""
+            let title = "$calendar.season." + season.Name + "$" + numeral
+            let shortT = "$calendar.season." + season.Name + ".short$" + numeral
+            consoleMsgCounter <- consoleMsgCounter + 1
+            consoleMessages <-
+                consoleMessages
+                @ [ { CmId = consoleMsgCounter - 1
+                      CmText = text
+                      CmType = typ
+                      CmTag = tag
+                      CmHasCal = hasCal
+                      CmYear = (if hasCal then Some (fmtYear calendar.Year) else None)
+                      CmSeason = (if hasCal then Some title else None)
+                      CmSeasonShort = (if hasCal then Some shortT else None) } ]
+            if consoleMessages.Length > 40 then consoleMessages <- consoleMessages.Tail
+
+    let consoleClear () : unit = consoleMessages <- []
+
+    let consoleLockFilter (name: string) : bool =
+        // sets unlocked = false (re-locks); NOT an enabled toggle
+        match consoleFilters |> Map.tryFind name with
+        | Some (_, enabled) ->
+            consoleFilters <- consoleFilters |> Map.add name (false, enabled)
+            true
+        | None -> false // orig console.error on invalid filter
+
     // -------------------------------------------------------------------
     // game.js display formatters (L4899-5240) — game-12 probes. Labels are
     // the $I() mock placeholders ("$unit.y$" etc).
@@ -4213,6 +4308,10 @@ let execute (scenario: Scenario) : ExecResult =
     // resPool.update → bld.update → village sim (+ kittens sync) → timer
     // (updateCaches+updateResources every 5 ticks) → calendar.tick
     let gtick () =
+        // game.tick head: updateScheduledEvents — probe markers fire here
+        if scheduledEvents > 0 then
+            scheduledFired <- scheduledFired + scheduledEvents
+            scheduledEvents <- 0
         // game.update() head (L4453-4461): autosave countdown; save() resets
         // ticksBeforeSave to autosaveFrequency (400)
         ticksBeforeSave <- ticksBeforeSave - 1
@@ -4455,6 +4554,70 @@ let execute (scenario: Scenario) : ExecResult =
                 actionLog <- (curLogTick, "resop", m.Args, RRes (toDisplayPercentage (float p) None false)) :: actionLog
             | [ "tpct"; p; prec; fixedM ] ->
                 actionLog <- (curLogTick, "resop", m.Args, RRes (toDisplayPercentage (float p) (Some (float prec)) (fixedM = "1"))) :: actionLog
+            | [ "guid" ] ->
+                actionLog <- (curLogTick, "resop", m.Args, RRes telemetryGuid) :: actionLog
+            | [ "newguid" ] ->
+                // telemetry.generateGuid: v4 template, one Math.random per x/y char
+                let tmpl = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
+                let hex = "0123456789abcdef"
+                let sb = System.Text.StringBuilder()
+                for c in tmpl do
+                    if c = 'x' || c = 'y' then
+                        rngDraws <- rngDraws + 1
+                        let r = rand ()
+                        let v = if c = 'x' then int (16.0 * r) else (int (4.0 * r)) ||| 8
+                        sb.Append hex.[v] |> ignore
+                    else sb.Append c |> ignore
+                actionLog <- (curLogTick, "resop", m.Args, RRes (sb.ToString())) :: actionLog
+            | [ "timerdump" ] ->
+                actionLog <- (curLogTick, "resop", m.Args, RRes (timerRegistrations |> List.map snd |> List.map string |> String.concat ",")) :: actionLog
+            | [ "tabs" ] ->
+                actionLog <- (curLogTick, "resop", m.Args, RRes (String.concat "," tabRegistryData)) :: actionLog
+            | [ "managers" ] ->
+                actionLog <- (curLogTick, "resop", m.Args, RRes (String.concat "," managerOrderData)) :: actionLog
+            | [ "sched" ] ->
+                scheduledEvents <- scheduledEvents + 1
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "schedcount" ] ->
+                actionLog <- (curLogTick, "resop", m.Args, RNum (float scheduledFired)) :: actionLog
+            | [ "msg"; text; tag ] ->
+                consoleMsg text None (Some tag) false
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "msgtype"; text; typ ] ->
+                consoleMsg text (Some typ) None false
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "lockfilter"; name ] ->
+                actionLog <- (curLogTick, "resop", m.Args, RBool (consoleLockFilter name)) :: actionLog
+            | [ "conclear" ] ->
+                consoleClear ()
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "conmsg" ] ->
+                let s =
+                    consoleMessages
+                    |> List.map (fun m ->
+                        sprintf "%d|%s|%s|%s|%s|%s|%s|%s" m.CmId m.CmText
+                            (match m.CmType with Some t -> t | None -> "-")
+                            (match m.CmTag with Some t -> t | None -> "-")
+                            (if m.CmHasCal then "1" else "0")
+                            (match m.CmYear with Some t -> t | None -> "-")
+                            (match m.CmSeason with Some t -> t | None -> "-")
+                            (match m.CmSeasonShort with Some t -> t | None -> "-"))
+                    |> String.concat ";"
+                actionLog <- (curLogTick, "resop", m.Args, RRes s) :: actionLog
+            | [ "filters" ] ->
+                let s =
+                    consoleFilterNames
+                    |> List.map (fun f ->
+                        match consoleFilters |> Map.tryFind f with
+                        | Some (u, e) -> sprintf "%s:%d%d" f (if u then 1 else 0) (if e then 1 else 0)
+                        | None -> f + ":??")
+                    |> String.concat ","
+                actionLog <- (curLogTick, "resop", m.Args, RRes s) :: actionLog
+            | [ "schemes" ] ->
+                let s = match unlockedSchemes with Some l -> String.concat "," l | None -> ""
+                actionLog <- (curLogTick, "resop", m.Args, RRes s) :: actionLog
+            | [ "isreadonly" ] ->
+                actionLog <- (curLogTick, "resop", m.Args, RBool false) :: actionLog // previewMode
             | [ "caps" ] ->
                 pool <- updateMaxValueAll (capCtx ()) pool
                 actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
@@ -5319,7 +5482,7 @@ let execute (scenario: Scenario) : ExecResult =
             // (js/village.js gainHuntRes tail) → unlocks the filter
             let manpowerAfter =
                 (match Game.Resources.get pool "manpower" with Some m0 -> m0.Value | None -> 0.0)
-            if manpowerAfter < manpowerBefore then huntFilterUnlocked <- true
+            if manpowerAfter < manpowerBefore then consoleFilters <- consoleFilters |> Map.add "hunt" (true, true)
         | "praise" ->
             // orig religion.praise (js/religion.js L1536): worship += faith.value
             // * (1 + apocrypha); faith.value = 0.0001 + undo registration.
@@ -5695,7 +5858,7 @@ let execute (scenario: Scenario) : ExecResult =
             pool <- pool'
             wpool <- wpool'
             if ok then
-                craftFilterUnlocked <- true // craftAll emits the craft-tag msg
+                consoleFilters <- consoleFilters |> Map.add "craft" (true, true) // craftAll emits the craft-tag msg
                 stpool <- Game.Stats.bumpStat "totalCrafts" 1.0 stpool
                 stpool <- Game.Stats.bumpStatCurrent "totalCrafts" 1.0 stpool
             refreshResourcesOnly () // craftAll: workshop.craftAll + updateResources (no updateCaches)

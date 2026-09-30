@@ -1,0 +1,37 @@
+# name: shell-infra
+# seed: 20260927
+# checkpoints: 0, 3, 12
+# core-01/02/05 + game-01/02/06/18: console filters + msg log (unlock-on-first-
+# use, enabled gate, lockFilter toggle, clear, calendar-tech year/season
+# stamping), timer registration frequencies, scheduleEvent → first-of-tick
+# firing, tab registry, manager order, telemetry guid (v4 template, 32 draws),
+# unlockedSchemes, previewMode.
+0 resop timerdump
+0 resop tabs
+0 resop managers
+0 resop guid
+0 resop newguid
+0 resop newguid
+0 resop schemes
+0 resop isreadonly
+0 resop filters
+0 resop msg hello craft
+0 resop msg hello_hunt hunt
+0 resop msg greeted hunt
+0 resop filters
+0 resop lockfilter hunt
+0 resop msg blocked hunt
+0 resop conmsg
+0 resop conclear
+0 resop conmsg
+0 resop addResEvent science 100
+0 research calendar
+0 resop msg stamped undo
+0 resop conmsg
+1 resop sched
+2 resop sched
+3 resop schedcount
+3 resop sched
+3 resop gtick 5
+12 resop schedcount
+12 resop filters
