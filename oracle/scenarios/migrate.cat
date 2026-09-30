@@ -1,0 +1,8 @@
+# name: migrate
+# seed: 20260927
+# checkpoints: 0
+# game-14: migrateSave chain v1→v15 over the shared legacy template (moon/cath
+# program moves, on=val passes, time.energy→temporalFlux, currentChallenge,
+# rorschach→centaurus, resource unlock clears, atheism unlock+gate, TU tier
+# unlocks from tcratio, planet building unlockable).
+0 resop migrate

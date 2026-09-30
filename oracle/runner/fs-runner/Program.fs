@@ -200,6 +200,8 @@ type ConsoleMsg =
       CmSeason: string option
       CmSeasonShort: string option }
 
+let migrateTpl = "{\"saveVersion\":1,\"space\":{\"programs\":[{\"name\":\"moonOutpost\",\"val\":2,\"researched\":true},{\"name\":\"spaceElevator\",\"val\":1},{\"name\":\"moonMission\",\"val\":0,\"researched\":true},{\"name\":\"rorschachMission\",\"on\":1,\"val\":1}],\"planets\":[{\"name\":\"moon\",\"buildings\":[]},{\"name\":\"dune\",\"buildings\":[{\"name\":\"cactusBridge\",\"val\":3,\"unlocked\":true}]}]},\"buildings\":[{\"name\":\"hut\",\"val\":4,\"unlocked\":true},{\"name\":\"field\",\"val\":2}],\"religion\":{\"ru\":[{\"name\":\"transcendence\",\"val\":0,\"researched\":true},{\"name\":\"solarchant\",\"val\":2,\"researched\":false}],\"zu\":[{\"name\":\"unicornPasture\",\"val\":1}],\"tu\":[{\"name\":\"blackObelisk\",\"val\":1,\"tier\":1}],\"tcratio\":3.7},\"time\":{\"energy\":42,\"usedCryochambers\":[{\"name\":\"usedCryochambers\",\"val\":3}],\"cfu\":[{\"name\":\"temporalPress\",\"val\":2}],\"vsu\":[{\"name\":\"cryochambers\",\"val\":1}]},\"challenges\":{},\"resources\":[{\"name\":\"catnip\",\"value\":10},{\"name\":\"wood\",\"value\":5,\"unlocked\":true}],\"science\":{\"techs\":[{\"name\":\"voidSpace\",\"researched\":true}]}}"
+
 let rec private jsOfElement (e: System.Text.Json.JsonElement) : JsValue =
     match e.ValueKind with
     | System.Text.Json.JsonValueKind.Null -> JNull
@@ -4441,20 +4443,23 @@ let execute (scenario: Scenario) : ExecResult =
 
     // -------------------------------------------------------------------
     // game.reset / _resetInternal (game.js L5391-5883) — game-17
-    let rec jsonOfValue (v: JsValue) : string =
+    let rec jsonOfValueDrop (drop: bool) (v: JsValue) : string =
         match v with
         | JBool b -> if b then "true" else "false"
         | JNum f -> num f
         | JStr s -> "\"" + esc s + "\""
-        | JArr xs -> "[" + (xs |> List.map (function JNull -> "null" | x -> jsonOfValue x) |> String.concat ",") + "]"
+        | JArr xs -> "[" + (xs |> List.map (function JNull -> "null" | x -> jsonOfValueDrop drop x) |> String.concat ",") + "]"
         | JObj kv ->
             "{"
             + (kv
-               |> List.filter (fun (_, v0) -> v0 <> JNull)
-               |> List.map (fun (k0, v0) -> "\"" + esc k0 + "\":" + jsonOfValue v0)
+               |> List.filter (fun (_, v0) -> (if drop then v0 <> JNull else true))
+               |> List.map (fun (k0, v0) -> "\"" + esc k0 + "\":" + jsonOfValueDrop drop v0)
                |> String.concat ",")
             + "}"
-        | JNull -> failwith "unreachable"
+        | JNull -> if drop then failwith "unreachable" else "null"
+
+    /// save-blob serialization: JSONreplacer drops undefined AND null values
+    let jsonOfValue (v: JsValue) : string = jsonOfValueDrop true v
 
     let jset (k: string) (v: JsValue) (kv: (string * JsValue) list) : (string * JsValue) list =
         kv |> List.map (fun (k0, v0) -> if k0 = k then (k, v) else (k0, v0))
@@ -4760,6 +4765,302 @@ let execute (scenario: Scenario) : ExecResult =
             curLogTick <- ticks
 
 
+    // -------------------------------------------------------------------
+    // game.migrateSave (game.js L3304-3589) — game-14
+    let migrateSave (saveIn: JsValue) : JsValue =
+        let mutable save = saveIn
+        // local mutable accessors over the JObj tree
+        let getS (k: string) : JsValue option =
+            match save with
+            | JObj kv -> kv |> List.tryFind (fun (k0, _) -> k0 = k) |> Option.map snd
+            | _ -> None
+        let setS (k: string) (v: JsValue) : unit =
+            save <-
+                match save with
+                | JObj kv -> JObj (kv |> List.map (fun (k0, v0) -> if k0 = k then (k, v) else (k0, v0)))
+                | x -> x
+        let asArr (k: string) : JsValue list =
+            match getS k with Some (JArr xs) -> xs | _ -> []
+        let setArr (k: string) (xs: JsValue list) : unit = setS k (JArr xs)
+        // in-place field mutation inside a named array's elements
+        let mapArr (k: string) (f: JsValue -> JsValue) : unit = setArr k (asArr k |> List.map f)
+        let jobjSet (key: string) (v: JsValue) (kv: (string * JsValue) list) : (string * JsValue) list =
+            // JS obj[key] = v replaces or appends
+            if kv |> List.exists (fun (k0, _) -> k0 = key) then
+                kv |> List.map (fun (k0, v0) -> if k0 = key then (key, v) else (k0, v0))
+            else kv @ [ (key, v) ]
+        let numF (v: JsValue) : float = match v with JNum f -> f | _ -> 0.0
+        let fieldF (o: JsValue) (key: string) : float = match o with JObj kv -> (match kv |> List.tryFind (fun (k, _) -> k = key) with Some (_, JNum f) -> f | _ -> 0.0) | _ -> 0.0
+        let fieldB (o: JsValue) (key: string) : bool = match o with JObj kv -> (match kv |> List.tryFind (fun (k, _) -> k = key) with Some (_, JBool b) -> b | _ -> false) | _ -> false
+        let fieldName (o: JsValue) : string = match o with JObj kv -> (match kv |> List.tryFind (fun (k, _) -> k = "name") with Some (_, JStr s) -> s | _ -> "") | _ -> ""
+        let withField (key: string) (v: JsValue) (o: JsValue) : JsValue =
+            match o with
+            | JObj kv -> JObj (jobjSet key v kv)
+            | x -> x
+        let addOnFromVal (o: JsValue) : JsValue = o |> withField "on" (JNum (fieldF o "val"))
+        // v1: undefined saveVersion → 1
+        (match getS "saveVersion" with None -> setS "saveVersion" (JNum 1.0) | _ -> ())
+        let ver () = numF (match getS "saveVersion" with Some v -> v | None -> JNull)
+        // v1 → v2: moon buildings out of programs
+        if ver () = 1.0 then
+            let progs = asArr "space" |> ignore  // placeholder, replaced below
+            ()
+        // (the space steps need nested handling — implemented as explicit blocks)
+        // v1 → v2
+        if ver () = 1.0 then
+            match getS "space" with
+            | Some (JObj sp) ->
+                let progs = (match sp |> List.tryFind (fun (k, _) -> k = "programs") with Some (_, JArr xs) -> xs | _ -> [])
+                let planets = (match sp |> List.tryFind (fun (k, _) -> k = "planets") with Some (_, JArr xs) -> xs | _ -> [])
+                let mutable moved = []
+                let kept =
+                    progs
+                    |> List.filter (fun pr ->
+                        let n = fieldName pr
+                        if n = "moonOutpost" || n = "moonBase" then
+                            moved <- moved @ [ pr |> withField "unlocked" (JBool true) ]
+                            false
+                        else true)
+                let planets2 =
+                    planets
+                    |> List.map (fun pl ->
+                        if fieldName pl = "moon" then pl |> withField "buildings" (JArr moved) else pl)
+                setS "space"
+                    (JObj
+                        (sp
+                         |> jobjSet "programs" (JArr kept)
+                         |> jobjSet "planets" (JArr planets2)))
+            | _ -> ()
+            setS "saveVersion" (JNum 2.0)
+        // v2 → v3: cath planet
+        if ver () = 2.0 then
+            match getS "space" with
+            | Some (JObj sp) ->
+                let progs = (match sp |> List.tryFind (fun (k, _) -> k = "programs") with Some (_, JArr xs) -> xs | _ -> [])
+                let planets = (match sp |> List.tryFind (fun (k, _) -> k = "planets") with Some (_, JArr xs) -> xs | _ -> [])
+                let mutable moved = []
+                let kept =
+                    progs
+                    |> List.filter (fun pr ->
+                        let n = fieldName pr
+                        if n = "spaceElevator" || n = "sattelite" || n = "spaceStation" then
+                            moved <- moved @ [ pr |> withField "unlocked" (JBool true) ]
+                            false
+                        else true)
+                setS "space"
+                    (JObj
+                        (sp
+                         |> jobjSet "programs" (JArr kept)
+                         |> jobjSet "planets" (JArr (planets @ [ JObj [ ("name", JStr "cath"); ("buildings", JArr moved) ] ]))))
+            | _ -> ()
+            setS "saveVersion" (JNum 3.0)
+        // v3 → v4: buildings on=val
+        if ver () = 3.0 then
+            mapArr "buildings" addOnFromVal
+            setS "saveVersion" (JNum 4.0)
+        // v4 → v5
+        if ver () = 4.0 then
+            (match getS "religion" with
+             | Some (JObj rl) ->
+                 let ru = (match rl |> List.tryFind (fun (k, _) -> k = "ru") with Some (_, JArr xs) -> xs | _ -> [])
+                 let ru2 =
+                     ru
+                     |> List.map (fun r0 ->
+                         let v0 = fieldF r0 "val"
+                         let nul = (match r0 with JObj kv -> kv |> List.exists (fun (k, _) -> k = "val") |> not | _ -> false)
+                         let v1 = if fieldB r0 "researched" && (v0 = 0.0 || nul) then 1.0 else v0
+                         r0 |> withField "val" (JNum v1) |> addOnFromVal)
+                 setS "religion" (JObj (rl |> jobjSet "ru" (JArr ru2)))
+             | _ -> ())
+            (match getS "space" with
+             | Some (JObj sp) ->
+                 let progs = (match sp |> List.tryFind (fun (k, _) -> k = "programs") with Some (_, JArr xs) -> xs | _ -> [])
+                 let progs2 =
+                     progs
+                     |> List.map (fun pr ->
+                         if fieldB pr "researched" then
+                             pr |> withField "on" (JNum 1.0) |> withField "val" (JNum 1.0)
+                         else pr)
+                 let planets = (match sp |> List.tryFind (fun (k, _) -> k = "planets") with Some (_, JArr xs) -> xs | _ -> [])
+                 let planets2 =
+                     planets
+                     |> List.map (fun pl ->
+                         match pl with
+                         | JObj pkv ->
+                             let blds = (match pkv |> List.tryFind (fun (k, _) -> k = "buildings") with Some (_, JArr xs) -> xs | _ -> [])
+                             pl |> withField "buildings" (JArr (blds |> List.map addOnFromVal))
+                         | x -> x)
+                 setS "space" (JObj (sp |> jobjSet "programs" (JArr progs2) |> jobjSet "planets" (JArr planets2)))
+             | _ -> ())
+            setS "saveVersion" (JNum 5.0)
+        // v5 → v6: time.energy → temporalFlux resource
+        if ver () = 5.0 then
+            (match getS "time", getS "resources" with
+             | Some (JObj tv), Some (JArr rs) ->
+                 (match tv |> List.tryFind (fun (k, _) -> k = "energy") with
+                  | Some (_, JNum energy) ->
+                      let mutable changement = false
+                      let rs2 =
+                          rs
+                          |> List.map (fun r0 ->
+                              if fieldName r0 = "temporalFlux" then
+                                  changement <- true
+                                  r0 |> withField "value" (JNum energy)
+                              else r0)
+                      let rs3 =
+                          if changement then rs2
+                          else
+                              rs2
+                              @ [ JObj
+                                    [ ("name", JStr "temporalFlux")
+                                      ("title", JStr "$resources.temporalFlux.title$")
+                                      ("description", JStr "")
+                                      ("type", JStr "exotic")
+                                      ("craftable", JBool false)
+                                      ("visible", JBool false)
+                                      ("persists", JBool true)
+                                      ("value", JNum energy) ] ]
+                      setS "resources" (JArr rs3)
+                  | _ -> ())
+             | _ -> ())
+            setS "saveVersion" (JNum 6.0)
+        // v6 → v8: on=val everywhere
+        if ver () = 6.0 then
+            (match getS "religion" with
+             | Some (JObj rl) ->
+                 let rl2 =
+                     rl
+                     |> List.map (fun (k, v) ->
+                         if k = "zu" || k = "tu" then
+                             (k, JArr ((match v with JArr xs -> xs | _ -> []) |> List.map addOnFromVal))
+                         else (k, v))
+                 setS "religion" (JObj rl2)
+             | _ -> ())
+            (match getS "time" with
+             | Some (JObj tv) ->
+                 let tv2 =
+                     tv
+                     |> List.map (fun (k, v) ->
+                         if k = "usedCryochambers" || k = "cfu" || k = "vsu" then
+                             (k, JArr ((match v with JArr xs -> xs | _ -> []) |> List.map addOnFromVal))
+                         else (k, v))
+                 setS "time" (JObj tv2)
+             | _ -> ())
+            setS "saveVersion" (JNum 8.0)
+        // v8 → v9
+        if ver () = 8.0 then
+            (match getS "challenges" with
+             | None -> setS "challenges" (JArr []) // currentChallenge=null on an array is lost in JSON
+             | Some (JObj cv) -> setS "challenges" (JObj (("currentChallenge", JNull) :: cv))
+             | Some (JArr _) -> () // property set on an array — invisible to JSON
+             | _ -> ())
+            setS "saveVersion" (JNum 9.0)
+        // v9 → v10
+        if ver () = 9.0 then
+            // unlockable = unlocked only when the key exists (undefined dropped)
+            mapArr "buildings" (fun b0 ->
+                let hasUnl = (match b0 with JObj kv -> kv |> List.exists (fun (k, _) -> k = "unlocked") | _ -> false)
+                let b1 = if hasUnl then b0 |> withField "unlockable" (JBool (fieldB b0 "unlocked")) else b0
+                b1 |> withField "unlocked" (JBool false))
+            (match getS "space" with
+             | Some (JObj sp) ->
+                 let progs = (match sp |> List.tryFind (fun (k, _) -> k = "programs") with Some (_, JArr xs) -> xs | _ -> [])
+                 let extra =
+                     progs
+                     |> List.choose (fun pr ->
+                         if fieldName pr = "rorschachMission" && fieldF pr "on" = 1.0 then
+                             Some (JObj [ ("name", JStr "centaurusSystemMission"); ("val", JNum 0.0); ("on", JNum 0.0); ("unlocked", JBool true) ])
+                         else None)
+                 if extra <> [] then
+                     setS "space" (JObj (sp |> jobjSet "programs" (JArr (progs @ extra))))
+             | _ -> ())
+            setS "saveVersion" (JNum 10.0)
+        // v10 → v11: resources unlocked=false
+        if ver () = 10.0 then
+            mapArr "resources" (fun r0 -> r0 |> withField "unlocked" (JBool false))
+            setS "saveVersion" (JNum 11.0)
+        // v11 → v12: atheism unlock for transcendence owners
+        if ver () = 11.0 then
+            (match getS "challenges" with
+             | None -> setS "challenges" (JArr [])
+             | _ -> ())
+            (match getS "religion" with
+             | Some (JObj rl) ->
+                 let ru = (match rl |> List.tryFind (fun (k, _) -> k = "ru") with Some (_, JArr xs) -> xs | _ -> [])
+                 let hasTranscendence =
+                     ru
+                     |> List.exists (fun r0 -> fieldName r0 = "transcendence" && fieldF r0 "on" = 1.0)
+                 if hasTranscendence then
+                     let atheism = JObj [ ("name", JStr "atheism"); ("researched", JBool false); ("unlocked", JBool true) ]
+                     match getS "challenges" with
+                     | Some (JObj cv) ->
+                         let chList = (match cv |> List.tryFind (fun (k, _) -> k = "challenges") with Some (_, JArr xs) -> xs | _ -> [])
+                         setS "challenges" (JObj (cv |> jobjSet "challenges" (JArr (chList @ [ atheism ]))))
+                     | Some (JArr _) -> () // push onto an array — invisible to JSON
+                     | _ -> ()
+             | _ -> ())
+            setS "saveVersion" (JNum 12.0)
+        // v12 → v13: TU tier unlocks from tcratio
+        if ver () = 12.0 then
+            (match getS "religion" with
+             | Some (JObj rl) ->
+                 (match rl |> List.tryFind (fun (k, _) -> k = "tcratio"), rl |> List.tryFind (fun (k, _) -> k = "tu") with
+                  | Some (_, JNum tcr), Some (_, JArr tus) ->
+                      let level =
+                          max 0.0 (System.Math.Round (System.Math.Log (10.0 * Game.Math.getUnlimitedDR tcr 0.1)))
+                      let tus2 =
+                          tus
+                          |> List.map (fun t0 ->
+                              let def = Game.Catalog.World.tuDefs |> List.tryFind (fun dd -> dd.Name = fieldName t0)
+                              let tier = match def with Some dd -> float dd.Tier | None -> 0.0
+                              if level >= tier then t0 |> withField "unlocked" (JBool true) else t0)
+                      setS "religion" (JObj (rl |> jobjSet "tu" (JArr tus2)))
+                  | _ -> ())
+             | _ -> ())
+            setS "saveVersion" (JNum 13.0)
+        // v13 → v14: atheism unlock gate
+        if ver () = 13.0 then
+            (match getS "challenges" with
+             | Some (JObj cv) ->
+                 let chList = (match cv |> List.tryFind (fun (k, _) -> k = "challenges") with Some (_, JArr xs) -> xs | _ -> [])
+                 let voidSpaceResearched =
+                     (match getS "science" with
+                      | Some (JObj sv) ->
+                          let techs = (match sv |> List.tryFind (fun (k, _) -> k = "techs") with Some (_, JArr xs) -> xs | _ -> [])
+                          techs |> List.exists (fun t0 -> fieldName t0 = "voidSpace" && fieldB t0 "researched")
+                      | _ -> false)
+                 let chList2 =
+                     chList
+                     |> List.map (fun c0 ->
+                         if fieldName c0 = "atheism" then
+                             c0 |> withField "unlocked" (JBool voidSpaceResearched)
+                         else c0)
+                 setS "challenges" (JObj (cv |> jobjSet "challenges" (JArr chList2)))
+             | _ -> ())
+            setS "saveVersion" (JNum 14.0)
+        // v14 → v15: planet building unlockable
+        if ver () = 14.0 then
+            (match getS "space" with
+             | Some (JObj sp) ->
+                 let planets = (match sp |> List.tryFind (fun (k, _) -> k = "planets") with Some (_, JArr xs) -> xs | _ -> [])
+                 let planets2 =
+                     planets
+                     |> List.map (fun pl ->
+                         match pl with
+                         | JObj pkv ->
+                             let blds = (match pkv |> List.tryFind (fun (k, _) -> k = "buildings") with Some (_, JArr xs) -> xs | _ -> [])
+                             let blds2 =
+                                 blds
+                                 |> List.map (fun b0 ->
+                                     let hasUnl = (match b0 with JObj kv -> kv |> List.exists (fun (k, _) -> k = "unlocked") | _ -> false)
+                                     b0 |> withField "unlockable" (JBool (if hasUnl then fieldB b0 "unlocked" else false)))
+                             pl |> withField "buildings" (JArr blds2)
+                         | x -> x)
+                 setS "space" (JObj (sp |> jobjSet "planets" (JArr planets2)))
+             | _ -> ())
+            setS "saveVersion" (JNum 15.0)
+        save
+
     let doMove (m: Move) =
         match m.Action with
         | "resop" ->
@@ -4953,6 +5254,10 @@ let execute (scenario: Scenario) : ExecResult =
                     | "building" -> (Game.Buildings.get bpool name |> Option.map (fun b -> b.Unlocked) |> Option.defaultValue false)
                     | _ -> false
                 actionLog <- (curLogTick, "resop", m.Args, RBool v) :: actionLog
+            | [ "migrate" ] ->
+                // game.migrateSave over the shared legacy template (v1 → v15)
+                let tree = migrateSave (match parseSaveBlob migrateTpl with JObj kv -> JObj kv | x -> x)
+                actionLog <- (curLogTick, "resop", m.Args, RRes (jsonOfValueDrop false tree)) :: actionLog
             | [ "resetprestige" ] ->
                 let (kk, pp) = getResetPrestige ()
                 actionLog <- (curLogTick, "resop", m.Args, RRes (sprintf "%s/%s" (string kk) (string pp))) :: actionLog

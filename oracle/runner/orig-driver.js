@@ -1191,6 +1191,12 @@ if (fn === "qlen") {
           actionLog.push({ tick: tickIndex, action: "resop", args, result: v });
           return;
         }
+        if (fn === "migrate") {
+          const tpl = {"saveVersion":1,"space":{"programs":[{"name":"moonOutpost","val":2,"researched":true},{"name":"spaceElevator","val":1},{"name":"moonMission","val":0,"researched":true},{"name":"rorschachMission","on":1,"val":1}],"planets":[{"name":"moon","buildings":[]},{"name":"dune","buildings":[{"name":"cactusBridge","val":3,"unlocked":true}]}]},"buildings":[{"name":"hut","val":4,"unlocked":true},{"name":"field","val":2}],"religion":{"ru":[{"name":"transcendence","val":0,"researched":true},{"name":"solarchant","val":2,"researched":false}],"zu":[{"name":"unicornPasture","val":1}],"tu":[{"name":"blackObelisk","val":1,"tier":1}],"tcratio":3.7},"time":{"energy":42,"usedCryochambers":[{"name":"usedCryochambers","val":3}],"cfu":[{"name":"temporalPress","val":2}],"vsu":[{"name":"cryochambers","val":1}]},"challenges":{},"resources":[{"name":"catnip","value":10},{"name":"wood","value":5,"unlocked":true}],"science":{"techs":[{"name":"voidSpace","researched":true}]}};
+          const migrated = game.migrateSave(JSON.parse(JSON.stringify(tpl)));
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: JSON.stringify(migrated) });
+          return;
+        }
         if (fn === "resetprestige") {
           const rp = game.getResetPrestige();
           actionLog.push({ tick: tickIndex, action: "resop", args, result: `${rp.karmaKittens}/${rp.paragonPoints}` });
