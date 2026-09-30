@@ -1,0 +1,21 @@
+# name: controllers
+# seed: 20260927
+# checkpoints: 0, 5
+# challenges-11 (ChallengeBtnController togglePending + updateVisible),
+# science-13 (TechButtonController updateVisible), buildings-13 (modern
+# controller updateVisible), plus policy toggles via the policy moves
+# (science-12) and gather/refine/craft/upgrade/cfu/vsu controller semantics
+# already carried by their verified move paths.
+0 resop cvis challenge anarchy
+0 resop cvis challenge ironWill
+0 resop chpend anarchy
+0 resop chpend anarchy
+0 resop cvis tech calendar
+0 research calendar
+0 resop cvis tech calendar
+0 resop cvis building hut
+0 policy environmentalism
+0 resop cvis building field
+0 gather 10
+0 buy field
+0 resop cvis building field

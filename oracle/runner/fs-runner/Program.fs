@@ -4616,6 +4616,22 @@ let execute (scenario: Scenario) : ExecResult =
             | [ "schemes" ] ->
                 let s = match unlockedSchemes with Some l -> String.concat "," l | None -> ""
                 actionLog <- (curLogTick, "resop", m.Args, RRes s) :: actionLog
+            | [ "chpend"; name ] ->
+                // ChallengeBtnController.togglePending (non-IW branch)
+                let c = cpool.Challenges.[name]
+                cpool <- { cpool with Challenges = cpool.Challenges |> Map.add name { c with Pending = not c.Pending } }
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "cvis"; kind; name ] ->
+                // controller.updateVisible mirrors (hideResearched=false headless)
+                let v =
+                    match kind with
+                    | "challenge" -> cpool.Challenges.[name].Unlocked
+                    | "tech" ->
+                        let t = spool.Techs.[name]
+                        t.Unlocked // visible = unlocked; hideResearched=false headless
+                    | "building" -> (Game.Buildings.get bpool name |> Option.map (fun b -> b.Unlocked) |> Option.defaultValue false)
+                    | _ -> false
+                actionLog <- (curLogTick, "resop", m.Args, RBool v) :: actionLog
             | [ "isreadonly" ] ->
                 actionLog <- (curLogTick, "resop", m.Args, RBool false) :: actionLog // previewMode
             | [ "caps" ] ->

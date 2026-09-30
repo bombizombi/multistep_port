@@ -1153,6 +1153,38 @@ if (fn === "qlen") {
           actionLog.push({ tick: tickIndex, action: "resop", args, result: game.unlockedSchemes === undefined ? "" : game.unlockedSchemes.join(",") });
           return;
         }
+        if (fn === "chpend") {
+          const c = new classes.ui.ChallengeBtnController(game);
+          const m = { options: { id: arg1 }, pending: false };
+          m.metadata = c.getMetadata(m);
+          c.togglePending(m);
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "cvis") {
+          let v = false;
+          if (arg1 === "challenge") {
+            const c = new classes.ui.ChallengeBtnController(game);
+            const m = { options: { id: arg2 }, visible: false };
+            m.metadata = c.getMetadata(m);
+            c.updateVisible(m);
+            v = m.visible;
+          } else if (arg1 === "tech") {
+            const c = new com.nuclearunicorn.game.ui.TechButtonController(game);
+            const m = { options: { id: arg2 }, visible: false };
+            m.metadata = c.getMetadata(m);
+            c.updateVisible(m);
+            v = m.visible;
+          } else if (arg1 === "building") {
+            const c = new classes.ui.btn.BuildingBtnModernController(game);
+            const m = { options: { building: arg2 }, visible: false };
+            m.metadata = c.getMetadata(m);
+            c.updateVisible(m);
+            v = m.visible;
+          }
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: v });
+          return;
+        }
         if (fn === "isreadonly") {
           actionLog.push({ tick: tickIndex, action: "resop", args, result: game.isReadOnly() });
           return;
