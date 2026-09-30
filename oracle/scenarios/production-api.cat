@@ -1,0 +1,22 @@
+# name: production-api
+# seed: 20260927
+# checkpoints: 0, 100
+# game-10: production query API — per-tick-with-conversion, per-day,
+# on-year production, CMBR bonus.
+0 resop seed 20260927
+0 resop setres catnip 90000
+0 resop setres uranium 90000
+0 resop setres antimatter 900
+0 resop setres necrocorn 900
+10 buy library
+20 buy aqueduct
+30 buy pasture
+40 buy mine 3
+100 resop ptd catnip
+110 resop ptd wood
+120 resop ptd minerals
+130 resop perday catnip
+140 resop perday necrocorn
+150 resop onyear antimatter
+160 resop onyear uranium
+170 resop cmbr

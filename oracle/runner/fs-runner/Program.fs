@@ -348,6 +348,7 @@ let execute (scenario: Scenario) : ExecResult =
         cathPollutionPerTick <- undissipated - dissipation
     // settings-01/02: game.opts (booleans + notation + batchSize)
     let mutable opts = Game.Settings.freshOpts ()
+    let mutable isCmbREnabled = false // game.isCMBREnabled (game section)
     // classes.reserveMan (challenges-10): reserveResources / reserveKittens /
     // reserveCryochambers — populated by applyPending's reset path
     let mutable reserveResources: Map<string, float> = Map.empty
@@ -3260,6 +3261,8 @@ let execute (scenario: Scenario) : ExecResult =
                  let karma = (jnumF (jget gv "karmaKittens") |> Option.defaultValue 0.0) |> int
                  pool <- { pool with KarmaKittens = karma }
                  ironWill <- jboolF (jget gv "ironWill") |> Option.defaultValue true
+                 // game.isCMBREnabled: false for new games, true for existing saves
+                 isCmbREnabled <- jboolF (jget gv "isCMBREnabled") |> Option.defaultValue false
                  // game.opts (js/game.js L3146-3164): copy all; defaults for
                  // tooltipsInRightColumn/fontSize; hodl opt-out for old saves
                  (match jget gv "opts" with
@@ -3892,6 +3895,25 @@ let execute (scenario: Scenario) : ExecResult =
                 actionLog <- (curLogTick, "resop", m.Args, RNum cathPollutionPerTick) :: actionLog
             | [ "pollutionlevel" ] ->
                 actionLog <- (curLogTick, "resop", m.Args, RNum (float (getPollutionLevel ()))) :: actionLog
+            | [ "ptd"; resName ] ->
+                // getResourcePerTick(name, true): cached + conversion
+                let cached = (match get pool resName with Some r when r.Def.CalculatePerTick -> r.PerTickCached | _ -> 0.0)
+                let conv = Game.Production.getResourcePerTickConvertion (prodCtx ()) resName
+                actionLog <- (curLogTick, "resop", m.Args, RNum (cached + conv)) :: actionLog
+            | [ "perday"; resName ] ->
+                let modifier = Game.Religion.getNecrocornDeficitConsumptionModifier (corruptionCtx ()) pool rpool
+                let corruptionPerTick = Game.Religion.getCorruptionPerTick (corruptionCtx ()) None
+                actionLog <-
+                    (curLogTick, "resop", m.Args,
+                     RNum (Game.Production.getResourcePerDay (Game.Effects.getEffect cache) modifier corruptionPerTick Game.Calendar.ticksPerDay resName))
+                    :: actionLog
+            | [ "onyear"; resName ] ->
+                actionLog <-
+                    (curLogTick, "resop", m.Args,
+                     RNum (Game.Production.getResourceOnYearProduction (Game.Effects.getEffect cache) pool.EnergyProd pool.EnergyCons resName))
+                    :: actionLog
+            | [ "cmbr" ] ->
+                actionLog <- (curLogTick, "resop", m.Args, RNum (Game.Production.getCMBRBonus isCmbREnabled)) :: actionLog
             | [ "esprobe" ] ->
                 actionLog <- (curLogTick, "resop", m.Args, RNum (getResProductionCached () |> Map.tryFind "ESwood" |> Option.defaultValue 0.0)) :: actionLog
             | [ "addkitten" ] ->

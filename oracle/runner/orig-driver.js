@@ -943,6 +943,22 @@ function doAction(move) {
           actionLog.push({ tick: tickIndex, action: "resop", args, result: game.bld.getPollutionLevel() });
           return;
         }
+        if (fn === "ptd") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.getResourcePerTick(arg1, true) });
+          return;
+        }
+        if (fn === "perday") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.getResourcePerDay(arg1) });
+          return;
+        }
+        if (fn === "onyear") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.getResourceOnYearProduction(arg1) });
+          return;
+        }
+        if (fn === "cmbr") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.getCMBRBonus() });
+          return;
+        }
         if (fn === "bldprobe") {
           const b = game.bld.get(arg1);
           console.log("BLDPROBE " + arg1 + " val=" + b.val + " on=" + b.on + " togglable=" + b.togglable + " togglableOnOff=" + b.togglableOnOff);

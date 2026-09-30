@@ -68,6 +68,27 @@ let fixFloatPointNumber (number: float) : float =
     else
         adjusted
 
+/// orig getResourcePerTickConvertion (game.js L4619-4623): fixFloat(PerTickCon
+/// − ambassadorConsumption), ambassadors not modeled at this slice (0).
+let getResourcePerTickConvertion (ctx: ProductionContext) (resName: string) : float =
+    fixFloatPointNumber (Game.Effects.getEffect ctx.Cache (resName + "PerTickCon"))
+
+/// orig getResourcePerDay (game.js L4595-4601): PerDay effect; necrocorn adds
+/// the deficit-consumption modifier + corruptionPerTick × ticksPerDay.
+let getResourcePerDay (getEffect: string -> float) (necrocornModifier: float) (corruptionPerTick: float) (ticksPerDay: float) (resName: string) : float =
+    if resName = "necrocorn" then
+        necrocornModifier * getEffect (resName + "PerDay") + corruptionPerTick * ticksPerDay
+    else getEffect (resName + "PerDay")
+
+/// orig getResourceOnYearProduction (game.js L4605-4612): Production ×
+/// (1+PolicyRatio) × (1+pyramidPerYearRatio); antimatter gated on energy.
+let getResourceOnYearProduction (getEffect: string -> float) (energyProd: float) (energyCons: float) (resName: string) : float =
+    if resName = "antimatter" && energyProd < energyCons then 0.0
+    else getEffect (resName + "Production") * (1.0 + getEffect (resName + "PolicyRatio")) * (1.0 + getEffect "pyramidPerYearRatio")
+
+/// orig getCMBRBonus (game.js L4404-4406): isCMBREnabled ? 0.2 : 0
+let getCMBRBonus (isCmbREnabled: bool) : float = if isCmbREnabled then 0.2 else 0.0
+
 /// orig calcResourcePerTick(resName) — the full term chain in exact order.
 /// The pool supplies the resource def (flags) and the sorrow value.
 let calcResourcePerTick (ctx: ProductionContext) (pool: ResPool) (resName: string) : float =
