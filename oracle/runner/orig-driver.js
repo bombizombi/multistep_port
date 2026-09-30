@@ -131,6 +131,13 @@ global.mixin = namespace.mixin;
 global.dojo = {
   version: { minor: 6 },
   declare: dojo.declare,
+  // D014: PolicyBtnController require-confirmation builds a dojo.Deferred;
+  // ui.confirm auto-OKs synchronously so the purchase lands before callback()
+  Deferred: function () {
+    const self = this;
+    self.callback = function (v) { self._resolved = v; return self; };
+    self.addCallback = function (f) { if (self._resolved !== undefined) f(self._resolved); return self; };
+  },
   destroy: function () {},
   empty: function () {},
   create: function () { return { connect: function () {} }; }, // observe-button UI (D014: headless stub)
@@ -816,6 +823,18 @@ function doAction(move) {
           LCstorage["com.nuclearunicorn.kittengame.savedata"] = lz;
           game.load();
           actionLog.push({ tick: tickIndex, action: "resop", args, result: json.length });
+          return;
+        }
+        if (fn === "bldprobe") {
+          const b = game.bld.get(arg1);
+          console.log("BLDPROBE " + arg1 + " val=" + b.val + " on=" + b.on + " togglable=" + b.togglable + " togglableOnOff=" + b.togglableOnOff);
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "polprobe") {
+          const p = game.science.getPolicy(arg1);
+          console.log("POLPROBE " + arg1 + " unlocked=" + p.unlocked + " researched=" + p.researched + " blocked=" + p.blocked);
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
           return;
         }
         if (fn === "esprobe") {

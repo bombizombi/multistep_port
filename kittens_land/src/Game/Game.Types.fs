@@ -137,7 +137,11 @@ type ResearchState =
 type PolicyState =
     { Def: PolicyDef
       Unlocked: bool
-      Researched: bool }
+      Researched: bool
+      // js/science.js: policies carry live effects tables (calculateEffects
+      // mutates them) and purchases permanently block rivals
+      Blocked: bool
+      Effects: Map<string, float> }
 
 type UpgradeState =
     { Def: UpgradeDef
@@ -184,5 +188,10 @@ type UndoChange =
 // names, and F# record inference resolves to the LAST declared — these pin the
 // intended type at every construction site.
 let mkResearch (def: TechDef) : ResearchState = { Def = def; Unlocked = false; Researched = false }
-let mkPolicy (def: PolicyDef) : PolicyState = { Def = def; Unlocked = false; Researched = false }
+let mkPolicy (def: PolicyDef) : PolicyState =
+    { Def = def
+      Unlocked = false
+      Researched = false
+      Blocked = false
+      Effects = Game.Catalog.Policies.effects |> Map.tryFind def.Name |> Option.defaultValue Map.empty }
 let mkUpgrade (def: UpgradeDef) : UpgradeState = { Def = def; Unlocked = def.StartsUnlocked; Researched = false }

@@ -1,0 +1,30 @@
+# name: policies
+# seed: 20260927
+# checkpoints: 0, 100, 200, 300
+# science-05/06/07/08/11: policy purchase chain — unlock fan-outs (liberty →
+# authocracy/republic visible in the snapshot), evaluateLocks veto (communism
+# stays locked without factory+rival), effects tables (communism policy ratios
+# on coal/iron/titanium per-tick; liberty maxKittens), pacifism price scaling
+# (policyFakeBought), blocks (tradition after liberty → blocked).
+0 resop seed 20260927
+0 resop setres culture 60000
+0 resop setres science 40000
+0 resop setres catnip 90000
+0 resop setres wood 40000
+0 resop setres minerals 40000
+0 resop setres iron 2000
+10 buy field 3
+20 buy library
+30 research astronomy
+40 policy liberty
+50 policy tradition
+60 policy monarchy
+70 policy communism
+100 policy mysticism
+110 buy smelter 3
+120 resop setchallenge pacifism active
+130 policy stoicism
+140 policy liberty
+200 resop setres culture 60000
+210 policy liberalism
+300 policy knowledgeSharing

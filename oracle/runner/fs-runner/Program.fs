@@ -288,6 +288,37 @@ let execute (scenario: Scenario) : ExecResult =
           UsedCryochambers = tpool.VSUs.["usedCryochambers"].Val
           IronWill = ironWill
           PollutionLevel = 0.0 }
+    // policy calculateEffects inputs (js/science.js)
+    let scienceCalcCtx () : Game.Managers.PolicyCalcCtx =
+        { IronWill = ironWill
+          NagaEmbassies = dp.Races.["nagas"].EmbassyLevel
+          SpiderEmbassies = dp.Races.["spiders"].EmbassyLevel
+          CycleYear = calendar.CycleYear
+          PactsAvailable = Game.Effects.getEffect cache "pactsAvailable"
+          FracturedOn = (match rpool.Pacts |> Map.tryFind "fractured" with Some p -> p.On | None -> 0)
+          UncappedHousing = 0 } // authocracy population scan: seam (never researched in scenarios)
+    // evaluateLocks vetoes for non-relation policies (game.js L6070 skips
+    // unlock entries whose evaluateLocks returns false)
+    let techResearched (n: string) = (match spool.Techs |> Map.tryFind n with Some x -> x.Researched | None -> false)
+    let policyResearched (n: string) = (match spool.Policies |> Map.tryFind n with Some x -> x.Researched | None -> false)
+    let bldVal (n: string) = (match Game.Buildings.get bpool n with Some b -> b.Val | None -> 0)
+    let policyVeto (name: string) : bool =
+        match name with
+        | "liberalism" -> not ((policyResearched "monarchy" || policyResearched "republic") && bldVal "factory" > 0)
+        | "communism" -> not ((policyResearched "republic" || policyResearched "authocracy") && bldVal "factory" > 0)
+        | "fascism" -> not ((policyResearched "monarchy" || policyResearched "authocracy") && bldVal "factory" > 0)
+        | "scientificCommunism" -> not (bldVal "workshop" < 2 && bldVal "factory" < 1 && policyResearched "socialism")
+        | "knowledgeSharing" | "culturalExchange" -> not (techResearched "diplomacy" && techResearched "astronomy")
+        | "bigStickPolicy" -> not (policyResearched "isolationism" && techResearched "astronomy" && not (Game.Challenges.isActive cpool "pacifism"))
+        | "cityOnAHill" -> not (policyResearched "isolationism" && techResearched "astronomy")
+        | "outerSpaceTreaty" -> not (bldVal "sattelite" > 0)
+        | "militarizeSpace" -> not (bldVal "sattelite" > 0 && not (Game.Challenges.isActive cpool "pacifism"))
+        | "sustainability" | "fullIndustrialization" -> not ((policyResearched "stripMining" || policyResearched "clearCutting") && techResearched "industrialization")
+        | "conservation" | "openWoodlands" -> not (policyResearched "environmentalism" && techResearched "ecology")
+        | "siphoning" | "feedingFrenzy" | "upfrontPayment" ->
+            not ((match rpool.TUs |> Map.tryFind "mausoleum" with Some m -> m.Val | None -> 0) > 0
+                 && (match rpool.ZUs |> Map.tryFind "marker" with Some m -> m.Val | None -> 0) > 0)
+        | _ -> false
     let chronoforgeResearched () =
         match wpool.Upgrades |> Map.tryFind "chronoforge" with
         | Some u -> u.Researched
@@ -460,7 +491,7 @@ let execute (scenario: Scenario) : ExecResult =
                 match wpool.Upgrades |> Map.tryFind n with
                 | Some u when u.Researched -> Some(u.Def.Effects, (fun _ v -> v))
                 | _ -> None) }
-    let scienceGroup () = emptyGroup () // techs carry no static effects in this version
+    let scienceGroup () = Game.Managers.scienceGroup spool
 
     let challengesGroup () =
         Game.Challenges.challengesGroup cpool (Game.Effects.getEffect cache)
@@ -538,8 +569,9 @@ let execute (scenario: Scenario) : ExecResult =
                                 st <- { st with ObserveRemainingTime = 0 }
                                 doObserveHandler ()
                         else
-                            st <- { st with ObserveRemainingTime = if false then 600 else 300 }
-                            calendar <- { calendar with ObserveRemainingTime = 300 }
+                            let iwSeconds = if ironWill then 600 else 300
+                            st <- { st with ObserveRemainingTime = iwSeconds }
+                            calendar <- { calendar with ObserveRemainingTime = iwSeconds }
                 // calendar-06: meteor (roll always; effect gated on mining)
                 let meteorRoll = Game.Math.uniformRandomInteger drand 0.0 10000.0
                 let iwChance = if ironWill then 40.0 else 0.0
@@ -1499,6 +1531,27 @@ let execute (scenario: Scenario) : ExecResult =
               EnergyChallengeActive = energyChallengeActive () }
         pool <- update uctx calendarDay pool
         bpool <- Game.Buildings.update pool bpool
+        // smelter per-tick action (js/buildings.js L1119-1152): IW safe-switch,
+        // stock-capped wood/minerals draw scaling the con/autoprod effects
+        (match Game.Buildings.get bpool "smelter" with
+         | Some sm when sm.On > 0 ->
+             let iron = pool.ByName["iron"]
+             // game.opts.IWSmelter defaults true (settings-01)
+             if ironWill && iron.Value > iron.MaxValue * 0.95 then
+                 bpool <- { bpool with ByName = bpool.ByName |> Map.add "smelter" { sm with On = 0 } }
+             else
+                 let calc = sm.Def.Effects
+                 let calcKey k = calc |> Map.tryFind k |> Option.defaultValue 0.0
+                 let pool2, amt =
+                     Game.Resources.getAmtDependsOnStock
+                         calendarDay
+                         [ ("wood", -(calcKey "woodPerTickCon")); ("minerals", -(calcKey "mineralsPerTickCon")) ]
+                         (float sm.On)
+                         pool
+                 pool <- pool2
+                 let scaleKeys = [ "woodPerTickCon"; "mineralsPerTickCon"; "coalPerTickAutoprod"; "ironPerTickAutoprod"; "titaniumPerTickAutoprod"; "goldPerTickAutoprod" ]
+                 bpool <- Game.Buildings.setEffects bpool "smelter" (fun e0 -> scaleKeys |> List.fold (fun acc k -> acc |> Map.add k (calcKey k * amt)) e0)
+         | _ -> ())
         // aiCore per-tick action (js/buildings.js L2172-2175): gflops accrual +
         // updateEffects (non-proportional energy/aiLevel table). Def-order: runs
         // before the steamworks action.
@@ -1732,6 +1785,9 @@ let execute (scenario: Scenario) : ExecResult =
             [ ("spaceMission", Game.Catalog.Space.programDefs |> List.map (fun d -> d.Name))
               ("spaceBuilding", Game.Catalog.Space.buildingDefs |> List.map (fun d -> d.Name))
               ("planet", Game.Catalog.Space.planetDefs |> List.map (fun d -> d.Name)) ]
+        // metaKeys policies (reversed): recalc researched policy effects
+        for n in List.rev spool.PolicyOrder do
+            spool <- Game.Managers.recalcPolicy (scienceCalcCtx ()) n spool
         let chronosphereOn = (Game.Buildings.get bpool "chronosphere" |> Option.map (fun b -> b.On) |> Option.defaultValue 0)
         tpool <- Game.Time.vsuCalculate tpool chronosphereOn (Game.Effects.getEffect cache)
         for name in List.rev tpool.CfuOrder do
@@ -3061,7 +3117,7 @@ let execute (scenario: Scenario) : ExecResult =
                          if pk.Researched then
                              match (Game.Catalog.World.perkDefs |> List.find (fun d -> d.Name = n)).Unlocks with
                              | Some u ->
-                                 let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs u.Jobs u.Tech u.Policies u.Upgrades u.ZebraUpgrades u.Crafts bpool spool wpool
+                                 let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs u.Jobs u.Tech (u.Policies |> List.filter (fun p0 -> not (policyVeto p0))) u.Upgrades u.ZebraUpgrades u.Crafts bpool spool wpool
                                  bpool <- bp2; spool <- sp2; wpool <- wp2
                              | None -> ()
                  | _ -> ())
@@ -3099,10 +3155,13 @@ let execute (scenario: Scenario) : ExecResult =
                     for n in List.rev spool.TechOrder do
                         let t = spool.Techs.[n]
                         if t.Researched then
+                            // orig afterLoad re-runs tech handlers (L2339-2341)
+                            if n = "cryptotheology" then queueSourcesUnlocked <- Set.add "transcendenceUpgrades" queueSourcesUnlocked
+                            if n = "voidSpace" then queueSourcesUnlocked <- Set.add "voidSpace" queueSourcesUnlocked
                             match t.Def.Unlocks with
                             | Some u ->
                                 vpool <- { vpool with JobUnlocked = vpool.JobUnlocked |> Set.union (Set.ofList u.Jobs) }
-                                let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs [] u.Tech u.Policies u.Upgrades [] u.Crafts bpool spool wpool
+                                let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs [] u.Tech (u.Policies |> List.filter (fun p0 -> not (policyVeto p0))) u.Upgrades [] u.Crafts bpool spool wpool
                                 bpool <- bp2; spool <- sp2; wpool <- wp2
                             | None -> ()
 
@@ -3894,7 +3953,7 @@ let execute (scenario: Scenario) : ExecResult =
                 match b.Def.Unlocks with
                 | Some u ->
                     vpool <- { vpool with JobUnlocked = vpool.JobUnlocked |> Set.union (Set.ofList u.Jobs) }
-                    let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs [] u.Tech u.Policies u.Upgrades [] u.Crafts bpool spool wpool
+                    let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs [] u.Tech (u.Policies |> List.filter (fun p0 -> not (policyVeto p0))) u.Upgrades [] u.Crafts bpool spool wpool
                     bpool <- bp2
                     spool <- sp2
                     wpool <- wp2
@@ -3986,12 +4045,15 @@ let execute (scenario: Scenario) : ExecResult =
                   match t.Def.Unlocks with
                   | Some u ->
                       vpool <- { vpool with JobUnlocked = vpool.JobUnlocked |> Set.union (Set.ofList u.Jobs) }
-                      let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs [] u.Tech u.Policies u.Upgrades [] u.Crafts bpool spool wpool
+                      let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs [] u.Tech (u.Policies |> List.filter (fun p0 -> not (policyVeto p0))) u.Upgrades [] u.Crafts bpool spool wpool
                       bpool <- bp2
                       spool <- sp2
                       wpool <- wp2
                   | None -> ()
               | None -> ()
+              // tech handlers (js/science.js L808-831): unlock queue sources
+              if m.Args.[0] = "cryptotheology" then queueSourcesUnlocked <- Set.add "transcendenceUpgrades" queueSourcesUnlocked
+              if m.Args.[0] = "voidSpace" then queueSourcesUnlocked <- Set.add "voidSpace" queueSourcesUnlocked
         | "upgrade" ->
             let pool', wpool', ok = Game.Managers.buyUpgrade calendarDay m.Args.[0] pool wpool
             pool <- pool'
@@ -4000,12 +4062,57 @@ let execute (scenario: Scenario) : ExecResult =
                 let already = (match wpool'.Upgrades |> Map.tryFind m.Args.[0] with Some u -> u.Researched | None -> false)
                 actionLog <- (m.Tick, "upgrade", m.Args, RText(if already then "already-bought" else "cannot-afford")) :: actionLog
         | "policy" ->
-            let pool', spool', ok = Game.Managers.researchPolicy calendarDay m.Args.[0] pool spool
+            // orig PolicyBtnController.buyItem: researched/afford/gates/blocks;
+            // require-confirmation auto-OKs through ui.confirm
+            let priestLeader =
+                match vpool.LeaderSeed with
+                | Some seed ->
+                    vpool.Kittens
+                    |> List.tryFind (fun k -> k.Seed = seed)
+                    |> Option.map (fun k -> k.Job = Some "priest")
+                    |> Option.defaultValue false
+                | None -> false
+            let aiLevel =
+                (match Game.Buildings.get bpool "aiCore" with
+                 | Some b -> b.Def.Effects |> Map.tryFind "aiLevel" |> Option.defaultValue 0.0
+                 | None -> 0.0)
+            let bctx : Game.Managers.PolicyBuyCtx =
+                { Calc = scienceCalcCtx ()
+                  GetEffect = Game.Effects.getEffect cache
+                  PriestLeader = priestLeader
+                  AiLevel = aiLevel
+                  Necrocorns = (match get pool "necrocorn" with Some r -> r.Value | None -> 0.0)
+                  ActivePacts = Game.Religion.countActivePacts rpool }
+            let pool', spool', result = Game.Managers.researchPolicy calendarDay m.Args.[0] bctx pool spool
             pool <- pool'
             spool <- spool'
-            if not ok then
-                let already = (match spool'.Policies |> Map.tryFind m.Args.[0] with Some p -> p.Researched | None -> false)
-                actionLog <- (m.Tick, "policy", m.Args, RText(if already then "already-bought" else "cannot-afford")) :: actionLog
+            match result with
+            | "OkBought" ->
+                // onPurchase: unlock fan-out (evaluateLocks veto) + jobs
+                match spool.Policies.[m.Args.[0]].Def.Unlocks with
+                | Some u ->
+                    vpool <- { vpool with JobUnlocked = vpool.JobUnlocked |> Set.union (Set.ofList u.Jobs) }
+                    let pols = u.Policies |> List.filter (fun p0 -> not (policyVeto p0))
+                    let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs [] u.Tech pols u.Upgrades u.ZebraUpgrades u.Crafts bpool spool wpool
+                    bpool <- bp2; spool <- sp2; wpool <- wp2
+                | None -> ()
+                // meta.upgrades → game.upgrade (recalc fan-out; cache refreshes)
+                let ups = Game.Catalog.Policies.upgrades |> Map.tryFind m.Args.[0] |> Option.defaultValue []
+                if ups <> [] then refreshCache ()
+                // the driver path hits require-confirmation → ui.confirm auto-OK:
+                // buyItem still RETURNS itemBought:false + this reason (logged)
+                actionLog <- (m.Tick, "policy", m.Args, RText "require-confirmation") :: actionLog
+                // onResearch: cryochamberExtraction bumps the VSU
+                if m.Args.[0] = "cryochamberExtraction" then
+                    let v = tpool.VSUs.["usedCryochambers"]
+                    tpool <- { tpool with VSUs = tpool.VSUs |> Map.add "usedCryochambers" { v with Val = v.Val + 1; On = v.On + 1; Unlocked = true } }
+                refreshCache ()
+            | "AlreadyBought" ->
+                actionLog <- (m.Tick, "policy", m.Args, RText "already-bought") :: actionLog
+            | "CannotAfford" ->
+                actionLog <- (m.Tick, "policy", m.Args, RText "cannot-afford") :: actionLog
+            | _ ->
+                actionLog <- (m.Tick, "policy", m.Args, RText "blocked") :: actionLog
         | "refine" ->
             // orig bld.refineCatnip (js/buildings.js L3003): pay 100 catnip via the
             // button's buyItem prices, gain 1 + craftRatio wood (advancedRefinement
@@ -4089,7 +4196,7 @@ let execute (scenario: Scenario) : ExecResult =
                 refreshCache () // build tail: calculateEffects + fan-outs
                 match res.UnlockFanOut with
                 | Some u ->
-                    let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs u.Jobs u.Tech u.Policies u.Upgrades u.ZebraUpgrades u.Crafts bpool spool wpool
+                    let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs u.Jobs u.Tech (u.Policies |> List.filter (fun p0 -> not (policyVeto p0))) u.Upgrades u.ZebraUpgrades u.Crafts bpool spool wpool
                     bpool <- bp2; spool <- sp2; wpool <- wp2
                     vpool <- { vpool with JobUnlocked = vpool.JobUnlocked |> Set.union (Set.ofList u.Jobs) }
                 | None -> ()
@@ -4103,7 +4210,7 @@ let execute (scenario: Scenario) : ExecResult =
                 refreshCache ()
                 match res.UnlockFanOut with
                 | Some u ->
-                    let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs u.Jobs u.Tech u.Policies u.Upgrades u.ZebraUpgrades u.Crafts bpool spool wpool
+                    let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs u.Jobs u.Tech (u.Policies |> List.filter (fun p0 -> not (policyVeto p0))) u.Upgrades u.ZebraUpgrades u.Crafts bpool spool wpool
                     bpool <- bp2; spool <- sp2; wpool <- wp2
                 | None -> ()
         | "embassy" ->
@@ -4228,7 +4335,7 @@ let execute (scenario: Scenario) : ExecResult =
             if res.Bought then
                 match res.UnlockFanOut with
                 | Some u ->
-                    let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs u.Jobs u.Tech u.Policies u.Upgrades u.ZebraUpgrades u.Crafts bpool spool wpool
+                    let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs u.Jobs u.Tech (u.Policies |> List.filter (fun p0 -> not (policyVeto p0))) u.Upgrades u.ZebraUpgrades u.Crafts bpool spool wpool
                     bpool <- bp2; spool <- sp2; wpool <- wp2
                 | None -> ()
                 match res.UpgradeFanOut with
