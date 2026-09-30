@@ -118,7 +118,8 @@ units:
       unlock rules) and diffs against the spec file. All diffs either fixed in the
       re-emitted spec or recorded as discrepancies. Output: analysis/specs/*.fs.md
       marked verified.
-    status: not-started
+    status: verified, session: "2026-10-01-30", verification: "verify-specs.js written + run: parses F# records from the 11 old elmishKittens specs (612 entities), diffs prices/ratios/effects/unlock-rules/visibility against oracle fixtures (defs-orig.json, space-orig.json — real orig objects). Result: 7 discrepancies, ALL entity-count undercounts in the old specs (Science misses tech:brewery; Workshop misses upgrade:alicornStable + crafts kerosene/plastic/microchip) — every shared field value matches orig exactly. Re-emitted copies with recorded discrepancies under analysis/specs/ + verify-report.md; kittens_land catalogs remain authoritative"
+
 
   # -------------------------------------------------------------------- recon
   # Recon units: describe file semantics into analysis/inventory.md + split into
