@@ -904,6 +904,17 @@ function doAction(move) {
           actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
           return;
         }
+        if (fn === "explore") {
+          // SendExplorersButtonController: pay 1000 manpower, unlockRandomRace;
+          // on failure (all races met) refund 950 → net 50
+          if (game.resPool.get("manpower").value < 1000) { actionLog.push({ tick: tickIndex, action: "resop", args, reason: "cannot-afford" }); return; }
+          game.resPool.addResEvent("manpower", -1000);
+          const race = game.diplomacy.unlockRandomRace();
+          if (race) game.msg("trade.new.civ", "notice");
+          else game.resPool.addResEvent("manpower", 950);
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: race ? 1 : 0 });
+          return;
+        }
         if (fn === "bldprobe") {
           const b = game.bld.get(arg1);
           console.log("BLDPROBE " + arg1 + " val=" + b.val + " on=" + b.on + " togglable=" + b.togglable + " togglableOnOff=" + b.togglableOnOff);

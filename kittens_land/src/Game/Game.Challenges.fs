@@ -82,8 +82,8 @@ let private ldr = Game.Math.getLimitedDR
 /// orig getTradeBonusEffect (L318-330): tradepost ladder, requires completions
 /// and an inactive challenge. tradepostVal is the live building val; the
 /// tradeRatio 0.015 is the tradepost meta's own static effect.
-let private getTradeBonusEffect (_cp: ChallengePool) (getEffect: string -> float) (tradepostVal: float) : float =
-    let c = _cp.Challenges.["pacifism"]
+let getTradeBonusEffect (cp: ChallengePool) (getEffect: string -> float) (tradepostVal: float) : float =
+    let c = cp.Challenges.["pacifism"]
     if c.On = 0 || c.Active then 0.0
     else
         let tradeKnowledge = getEffect "tradeKnowledge"

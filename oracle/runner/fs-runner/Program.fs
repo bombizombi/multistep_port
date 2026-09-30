@@ -322,6 +322,10 @@ let execute (scenario: Scenario) : ExecResult =
             not ((match rpool.TUs |> Map.tryFind "mausoleum" with Some m -> m.Val | None -> 0) > 0
                  && (match rpool.ZUs |> Map.tryFind "marker" with Some m -> m.Val | None -> 0) > 0)
         | _ -> false
+    let tradepostStandingRatio () =
+        let caravanserai = (match wpool.Upgrades |> Map.tryFind "caravanserai" with Some u -> u.Researched | None -> false)
+        if caravanserai then 0.0035 else 0.0
+    let pollutionLevel = 0 // bld.getPollutionLevel() — buildings-10 seam (cathPollution 0)
     let chronoforgeResearched () =
         match wpool.Upgrades |> Map.tryFind "chronoforge" with
         | Some u -> u.Researched
@@ -3520,7 +3524,8 @@ let execute (scenario: Scenario) : ExecResult =
             | [ "worshipval"; name ] ->
                 let meta = rpool.RUs.[name]
                 actionLog <- (curLogTick, "resop", m.Args, RNum(float meta.Val)) :: actionLog
-            | [ "embassy"; name ] ->
+            | [ "embassy"; name ] | [ "embassy"; name; _ ] ->
+                // orig resop embassy is a level probe (arg1 only)
                 let r = dp.Races.[name]
                 actionLog <- (curLogTick, "resop", m.Args, RNum(float r.EmbassyLevel)) :: actionLog
             | [ "nonrandom" ] ->
@@ -3735,6 +3740,23 @@ let execute (scenario: Scenario) : ExecResult =
                 pool <- pool1
                 ignore refined
                 actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "explore" ] ->
+                // SendExplorersButtonController (js/diplomacy.js L1897-1931):
+                // pay 1000 manpower, unlockRandomRace, refund 950 on failure
+                let manp0 = (match get pool "manpower" with Some r -> r.Value | None -> 0.0)
+                if manp0 >= 1000.0 then
+                    let pool1, _ = Game.Resources.addResEvent calendarDay "manpower" -1000.0 pool
+                    pool <- pool1
+                    let dp1, ev = Game.Diplomacy.unlockRandomRace dp (dctx ()) (fun () -> rngDraws <- rngDraws + 1; rand ())
+                    dp <- dp1
+                    match ev.Race with
+                    | Some _ -> pool <- fst (Game.Resources.addResEvent calendarDay "manpower" 0.0 pool)
+                    | None ->
+                        let pool2, _ = Game.Resources.addResEvent calendarDay "manpower" 950.0 pool
+                        pool <- pool2
+                    actionLog <- (curLogTick, "resop", m.Args, RNum (match ev.Race with Some _ -> 1.0 | None -> 0.0)) :: actionLog
+                else
+                    actionLog <- (curLogTick, "resop", m.Args, RText "cannot-afford") :: actionLog
             | [ "esprobe" ] ->
                 actionLog <- (curLogTick, "resop", m.Args, RNum (getResProductionCached () |> Map.tryFind "ESwood" |> Option.defaultValue 0.0)) :: actionLog
             | [ "addkitten" ] ->
@@ -3905,7 +3927,7 @@ let execute (scenario: Scenario) : ExecResult =
                       NuclearFissionResearched = false
                       IronWill = false }
                 let manpM = Game.Diplomacy.getManpowerCost dp dctxM |> ignore
-                let maxAmt = Game.Diplomacy.getMaxTradeAmt dp dctxM ambassadorEffects raceName
+                let maxAmt = Game.Diplomacy.getMaxTradeAmt dp dctxM (int pollutionLevel) (Game.Challenges.isActive cpool "postApocalypse") ambassadorEffects raceName
                 actionLog <- (curLogTick, "resop", m.Args, RNum(maxAmt |> Option.defaultValue 0.0)) :: actionLog
             | [ "standing"; name ] ->
                 let dctx : Game.Diplomacy.DiplomacyContext =
@@ -3916,7 +3938,13 @@ let execute (scenario: Scenario) : ExecResult =
                       Season = Game.Calendar.seasons.[calendar.Season].Name
                       NuclearFissionResearched = false
                       IronWill = false }
-                actionLog <- (curLogTick, "resop", m.Args, RNum(Game.Diplomacy.getFinalStanding dp dctx name)) :: actionLog
+                actionLog <-
+                    (curLogTick, "resop", m.Args,
+                     RNum(Game.Diplomacy.getFinalStanding dp dctx name
+                         (Game.Effects.getEffect cache "standingRatio" * 0.0 + tradepostStandingRatio ())
+                         (policyResearched "lizardRelationsDiplomats")
+                         (Game.Effects.getEffect cache "neutralRaceEmbassyStanding")))
+                    :: actionLog
             | [ "setbld"; bldName; valueArg ] ->
                 let b = bpool.ByName[bldName]
                 let v = int valueArg
@@ -4374,14 +4402,14 @@ let execute (scenario: Scenario) : ExecResult =
                 // orig trade(race) relies on the button controller paying the
                 // costs (manpower/gold/buy item at trade volume) before
                 // tradeImpl(race, 1); mirror that controller path.
-                let manp = Game.Diplomacy.getManpowerCost dp dctx
-                let gold = Game.Diplomacy.getGoldCost dp dctx
+                let manp = Game.Diplomacy.getManpowerCost dp dctx (int pollutionLevel) (Game.Challenges.isActive cpool "postApocalypse")
+                let gold = Game.Diplomacy.getGoldCost dp dctx (int pollutionLevel) (Game.Challenges.isActive cpool "postApocalypse")
                 let volume = Game.Diplomacy.getTradeVolume dctx ambassadorEffects
                 let buyPrice = raceState.Buys.[0].Val * 1.0 * volume
                 let cost = [ ("manpower", manp); ("gold", gold); (raceState.Buys.[0].Resource, buyPrice) ]
                 if Game.Resources.hasRes pool cost 0.0 then
                     pool <- Game.Resources.payPrices calendarDay pool cost
-                    let dp', gained, successful = Game.Diplomacy.tradeImpl dp dctx rand' raceName 1.0 ambassadorEffects
+                    let dp', gained, successful = Game.Diplomacy.tradeImpl dp dctx rand' raceName 1.0 ambassadorEffects (tradepostStandingRatio ()) (policyResearched "lizardRelationsDiplomats") (Game.Effects.getEffect cache "neutralRaceEmbassyStanding") (Game.Challenges.getTradeBonusEffect cpool (Game.Effects.getEffect cache) (match Game.Buildings.get bpool "tradepost" with Some b -> float b.Val | None -> 0.0)) (int pollutionLevel) (Game.Challenges.isActive cpool "postApocalypse")
                     dp <- dp'
                     for KeyValue(resName, amt) in gained do
                         let pool2, _ = Game.Resources.addResEvent calendarDay resName amt pool
@@ -4395,8 +4423,8 @@ let execute (scenario: Scenario) : ExecResult =
             else
                 // tradeMultiple: hasMultipleResources gate, negative addResEvent
                 // costs, then tradeImpl(amt)
-                let manp = Game.Diplomacy.getManpowerCost dp dctx
-                let gold = Game.Diplomacy.getGoldCost dp dctx
+                let manp = Game.Diplomacy.getManpowerCost dp dctx (int pollutionLevel) (Game.Challenges.isActive cpool "postApocalypse")
+                let gold = Game.Diplomacy.getGoldCost dp dctx (int pollutionLevel) (Game.Challenges.isActive cpool "postApocalypse")
                 let volume = Game.Diplomacy.getTradeVolume dctx ambassadorEffects
                 let afford =
                     (getResValue "gold") >= gold * float n
@@ -4407,7 +4435,7 @@ let execute (scenario: Scenario) : ExecResult =
                     let pool2, _ = Game.Resources.addResEvent calendarDay "gold" (-gold * float n) pool1
                     let pool3, _ = Game.Resources.addResEvent calendarDay raceState.Buys.[0].Resource (-raceState.Buys.[0].Val * float n * volume) pool2
                     pool <- pool3
-                    let dp', gained, successful = Game.Diplomacy.tradeImpl dp dctx rand' raceName (float n) ambassadorEffects
+                    let dp', gained, successful = Game.Diplomacy.tradeImpl dp dctx rand' raceName (float n) ambassadorEffects (tradepostStandingRatio ()) (policyResearched "lizardRelationsDiplomats") (Game.Effects.getEffect cache "neutralRaceEmbassyStanding") (Game.Challenges.getTradeBonusEffect cpool (Game.Effects.getEffect cache) (match Game.Buildings.get bpool "tradepost" with Some b -> float b.Val | None -> 0.0)) (int pollutionLevel) (Game.Challenges.isActive cpool "postApocalypse")
                     dp <- dp'
                     for KeyValue(resName, amt) in gained do
                         let pool2, _ = Game.Resources.addResEvent calendarDay resName amt pool
@@ -4431,16 +4459,16 @@ let execute (scenario: Scenario) : ExecResult =
                   IronWill = false }
             let rand' = fun () -> rngDraws <- rngDraws + 1; rand ()
             let raceState = dp.Races.[raceName]
-            match Game.Diplomacy.getMaxTradeAmt dp dctxT ambassadorEffects raceName with
+            match Game.Diplomacy.getMaxTradeAmt dp dctxT (int pollutionLevel) (Game.Challenges.isActive cpool "postApocalypse") ambassadorEffects raceName with
             | Some amt ->
-                let manp = Game.Diplomacy.getManpowerCost dp dctxT
-                let gold = Game.Diplomacy.getGoldCost dp dctxT
+                let manp = Game.Diplomacy.getManpowerCost dp dctxT (int pollutionLevel) (Game.Challenges.isActive cpool "postApocalypse")
+                let gold = Game.Diplomacy.getGoldCost dp dctxT (int pollutionLevel) (Game.Challenges.isActive cpool "postApocalypse")
                 let volume = Game.Diplomacy.getTradeVolume dctxT ambassadorEffects
                 let pool1, _ = Game.Resources.addResEvent calendarDay "manpower" (-manp * amt) pool
                 let pool2, _ = Game.Resources.addResEvent calendarDay "gold" (-gold * amt) pool1
                 let pool3, _ = Game.Resources.addResEvent calendarDay raceState.Buys.[0].Resource (-raceState.Buys.[0].Val * amt * volume) pool2
                 pool <- pool3
-                let dp', gained, successful = Game.Diplomacy.tradeImpl dp dctxT rand' raceName amt ambassadorEffects
+                let dp', gained, successful = Game.Diplomacy.tradeImpl dp dctxT rand' raceName amt ambassadorEffects (tradepostStandingRatio ()) (policyResearched "lizardRelationsDiplomats") (Game.Effects.getEffect cache "neutralRaceEmbassyStanding") (Game.Challenges.getTradeBonusEffect cpool (Game.Effects.getEffect cache) (match Game.Buildings.get bpool "tradepost" with Some b -> float b.Val | None -> 0.0)) (int pollutionLevel) (Game.Challenges.isActive cpool "postApocalypse")
                 dp <- dp'
                 for KeyValue(resName, a) in gained do
                     let pool2', _ = Game.Resources.addResEvent calendarDay resName a pool

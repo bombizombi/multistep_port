@@ -1,0 +1,41 @@
+# name: diplomacy-cluster
+# seed: 20260927
+# checkpoints: 0, 100, 200, 300
+# diplomacy-09/10/11/12: standing math (policies + tradepost), trade impl
+# (fail/bonus binomials, spice/blueprint/titanium), embassy ladder with
+# fake-bought, explorers (unlock roll + refund), maxtrade.
+0 resop seed 20260927
+0 resop setres catnip 900000
+0 resop setres wood 400000
+0 resop setres minerals 400000
+0 resop setres gold 900000
+0 resop setres manpower 900000
+0 resop setres culture 900000
+0 resop setres iron 90000
+0 resop setres furs 90000
+10 research currency
+20 policy diplomacy
+30 policy zebraRelationsAppeasement
+40 policy liberalism
+50 buy tradepost 3
+60 trade lizards 5
+70 trade sharks 3
+80 trade griffins 2
+90 resop embassy lizards 4
+100 resop embassy sharks 2
+110 policy lizardRelationsDiplomats
+120 policy bigStickPolicy
+130 trade lizards 3
+140 trade nagas 1
+150 resop explore
+160 resop explore
+170 policy zebraRelationsBellicosity
+180 trade sharks 2
+190 resop standing lizards
+200 resop standing sharks
+210 resop standing zebras
+220 resop nonrandom
+230 trade griffins 4
+240 resop embassy nagas 1
+250 policy mysticism
+260 trade spiders 1

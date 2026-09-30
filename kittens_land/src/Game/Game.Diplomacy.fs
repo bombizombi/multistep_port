@@ -194,10 +194,11 @@ let unlockRandomRace (dp: DiplomacyPool) (ctx: DiplomacyContext) (rand: unit -> 
             let dp = { dp with Races = dp.Races |> Map.add "dragons" { dp.Races.["dragons"] with Unlocked = true } }
             (dp, { noneEvent with Race = Some "dragons" })
         else
+            // orig consumes the draw even when unmetRaces is empty (L521)
+            let raceId = int (floor (rand () * float unmetRaces.Length))
             if unmetRaces.IsEmpty then
                 (dp, noneEvent)
             else
-                let raceId = int (floor (rand () * float unmetRaces.Length))
                 match List.tryItem raceId unmetRaces with
                 | Some name ->
                     let dp = { dp with Races = dp.Races |> Map.add name { dp.Races.[name] with Unlocked = true } }
@@ -219,12 +220,14 @@ let update (dp: DiplomacyPool) (ctx: DiplomacyContext) (year: float) (karmaKitte
 
 // --- trade costs / volume (L998-1108) ------------------------------------------
 
-let getManpowerCost (dp: DiplomacyPool) (ctx: DiplomacyContext) : float =
+let getManpowerCost (dp: DiplomacyPool) (ctx: DiplomacyContext) (pollutionLevel: int) (postApocalypseActive: bool) : float =
     let manpowerCost = dp.BaseManpowerCost - ctx.GetEffect "tradeCatpowerDiscount"
+    let manpowerCost = if postApocalypseActive then manpowerCost * (1.0 + float pollutionLevel) else manpowerCost
     if manpowerCost < 0.0 then 0.0 else manpowerCost
 
-let getGoldCost (dp: DiplomacyPool) (ctx: DiplomacyContext) : float =
+let getGoldCost (dp: DiplomacyPool) (ctx: DiplomacyContext) (pollutionLevel: int) (postApocalypseActive: bool) : float =
     let goldCost = dp.BaseGoldCost - ctx.GetEffect "tradeGoldDiscount"
+    let goldCost = if postApocalypseActive then goldCost * (1.0 + float pollutionLevel) else goldCost
     if goldCost < 0.0 then 0.0 else goldCost
 
 /// orig getTradeVolume (L1082): (1 + tradeVolume) * (1 + ambassador tradeVolume)
@@ -239,17 +242,27 @@ let getTradeRatio (ctx: DiplomacyContext) : float =
 // --- standing & chances (L1109-1161) -------------------------------------------
 
 /// orig calculateStandingFromPolicies: policy-gated, 0 at this slice.
-let calculateStandingFromPolicies (_raceName: string) : float = 0.0
+/// orig calculatePhantomTradeposts (L1222-1231): globalRelationsBonus +
+/// zebra/nonZebra relation modifiers from policies
+let calculatePhantomTradeposts (ctx: DiplomacyContext) (raceName: string) : float =
+    ctx.GetEffect "globalRelationsBonus"
+    + (if raceName = "zebras" then ctx.GetEffect "zebraRelationModifier" else ctx.GetEffect "nonZebraRelationModifier")
 
-let getFinalStanding (dp: DiplomacyPool) (ctx: DiplomacyContext) (raceName: string) : float =
+/// orig calculateStandingFromPolicies (L1232-1236): phantom × tradepost standingRatio
+let calculateStandingFromPolicies (ctx: DiplomacyContext) (tradepostStandingRatio: float) (raceName: string) : float =
+    calculatePhantomTradeposts ctx raceName * tradepostStandingRatio
+
+let getFinalStanding (dp: DiplomacyPool) (ctx: DiplomacyContext) (raceName: string) (tradepostStandingRatio: float) (diplomatsResearched: bool) (neutralRaceEmbassyStanding: float) : float =
     let def = Game.Catalog.World.raceDefs |> List.find (fun r -> r.Name = raceName)
     let race = dp.Races.[raceName]
-    let bonusStanding = ctx.GetEffect "standingRatio" + calculateStandingFromPolicies raceName
+    let bonusStanding = ctx.GetEffect "standingRatio" + calculateStandingFromPolicies ctx tradepostStandingRatio raceName
     if def.Standing < 0.0 then
         min (def.Standing + bonusStanding) 0.0
     elif def.Standing = 0.0 then
-        // lizardRelationsDiplomats seam: not researched at this slice → 0
-        0.0
+        if diplomatsResearched then
+            let b = bonusStanding + float race.EmbassyLevel * neutralRaceEmbassyStanding
+            max ((b - 0.25) / 3.0) 0.0
+        else 0.0
     else
         def.Standing + bonusStanding / 2.0
 
@@ -324,10 +337,10 @@ let fuzzGainedAmount (rand: unit -> float) (amount: float) (width: float) : floa
 /// orig tradeImpl (L859-961): pure computation + nonRandom bookkeeping.
 /// Returns bought resources (name → amount) + updated NonRandomTrades state.
 /// Returns (pool, boughtResources, successfulTradeAmount).
-let tradeImpl (dp: DiplomacyPool) (ctx: DiplomacyContext) (rand: unit -> float) (raceName: string) (totalTradeAmount: float) (ambassadorEffects: Map<string, float>) : DiplomacyPool * Map<string, float> * float =
+let tradeImpl (dp: DiplomacyPool) (ctx: DiplomacyContext) (rand: unit -> float) (raceName: string) (totalTradeAmount: float) (ambassadorEffects: Map<string, float>) (tradepostStandingRatio: float) (diplomatsResearched: bool) (neutralRaceEmbassyStanding: float) (pacifismTradeBonus: float) (pollutionLevel: int) (postApocalypseActive: bool) : DiplomacyPool * Map<string, float> * float =
     let def = Game.Catalog.World.raceDefs |> List.find (fun r -> r.Name = raceName)
     let raceState = dp.Races.[raceName]
-    let tradeResults = calculateFailedNormalBonusTrades ctx rand (getFinalStanding dp ctx raceName) totalTradeAmount dp.NonRandomTrades
+    let tradeResults = calculateFailedNormalBonusTrades ctx rand (getFinalStanding dp ctx raceName tradepostStandingRatio diplomatsResearched neutralRaceEmbassyStanding) totalTradeAmount dp.NonRandomTrades
     let dp = { dp with NonRandomTrades = max (dp.NonRandomTrades - tradeResults.Failed) 0.0 }
     let normalTradeAmount = tradeResults.Normal
     let bonusTradeAmount = tradeResults.Bonus
@@ -339,9 +352,8 @@ let tradeImpl (dp: DiplomacyPool) (ctx: DiplomacyContext) (rand: unit -> float) 
         let mutable dp = dp
         // race.duration clamp (L886-887): at most 1 year + 1 season per energy unit
         let race = dp.Races.[raceName]
-        let durationCap = 100.0 * (1.0 + floor race.Energy) // daysPerSeason=100, seasonsPerYear=1... see note
-        // NOTE: orig reads calendar.daysPerSeason * (calendar.seasonsPerYear + floor(energy));
-        // those are 100 and 1 at this slice.
+        // orig L884: daysPerSeason × (seasonsPerYear + floor(energy)) = 100×(4+E)
+        let durationCap = 100.0 * (4.0 + floor race.Energy)
         let duration = min race.Duration durationCap
         dp <- { dp with Races = dp.Races |> Map.add raceName { race with Duration = duration } }
 
@@ -349,8 +361,8 @@ let tradeImpl (dp: DiplomacyPool) (ctx: DiplomacyContext) (rand: unit -> float) 
         let tradeRatio =
             1.0
             + getTradeRatio ctx
-            + 0.0 // calculateTradeBonusFromPolicies: policy-gated, 0 at this slice
-            + 0.0 // pacifism challenge seam
+            + (calculatePhantomTradeposts ctx raceName * 0.015) // calculateTradeBonusFromPolicies (merchant seam 0)
+            + pacifismTradeBonus
         let raceRatio = 1.0 + race.Energy * 0.02
         let currentSeason = ctx.Season
 
@@ -420,12 +432,14 @@ let tradeImpl (dp: DiplomacyPool) (ctx: DiplomacyContext) (rand: unit -> float) 
 let getMaxTradeAmt
     (dp: DiplomacyPool)
     (ctx: DiplomacyContext)
+    (pollutionLevel: int)
+    (postApocalypseActive: bool)
     (ambassadorEffects: Map<string, float>)
     (raceName: string)
     : float option =
     let raceState = dp.Races.[raceName]
-    let manpowerCost = getManpowerCost dp ctx
-    let goldCost = getGoldCost dp ctx
+    let manpowerCost = getManpowerCost dp ctx pollutionLevel postApocalypseActive
+    let goldCost = getGoldCost dp ctx pollutionLevel postApocalypseActive
     let volume = getTradeVolume ctx ambassadorEffects
     let goldAmt = floor (ctx.GetResValue "gold" / max goldCost 1.0)
     let manpAmt = floor (ctx.GetResValue "manpower" / max manpowerCost 1.0)
@@ -478,7 +492,7 @@ let embassyPrices (dp: DiplomacyPool) (ctx: DiplomacyContext) (raceName: string)
     def.EmbassyPrices
     |> List.map (fun p ->
         { p with
-            Val = p.Val * priceCoeficient * 1.15 ** float (race.EmbassyLevel) })
+            Val = p.Val * priceCoeficient * 1.15 ** (float race.EmbassyLevel + ctx.GetEffect "embassyFakeBought") })
 
 /// Buy n embassies while affordable (build loop; increments embassyLevel).
 /// Requires writing researched + race unlocked (buyItem gates L1626-1643) —
