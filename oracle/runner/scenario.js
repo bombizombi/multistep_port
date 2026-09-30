@@ -37,6 +37,8 @@ const ACTIONS = new Set([
   "feedelder", "undo", "pact", "accelerate", "observe", "save", "load",
   "resop", "refine",
   "shatter", "useheat", "cfu", "vsu", "huntall", "hunthalf", "huntfifth", "mission", "sbuilding",
+  "qadd", "qremove", "qback", "qfront", "qsort", "qsource",
+  "burnparagon", "hgoff",
 ]);
 
 function parseScenario(text) {

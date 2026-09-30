@@ -1,0 +1,81 @@
+# name: queue
+# seed: 20260927
+# checkpoints: 0, 1, 291, 320, 430, 560, 650, 685, 719
+# time-14/15/16: classes.queue.manager — cap + editing ops (addToQueue merge/
+# ctrl+shift batch/cap clamp, remove splice, pushBack/pushFront), options
+# lists (unsorted + en-US collation), ETA (getFirstItemEtaDay incl. nonzero),
+# per-tick automation (timer freq 10: buy → dropLastItem, cannot-afford waits,
+# head blocking), save slice (queueItems + queueSources) and load quirks
+# (buildings boolean validation, alphabeticalSort never saved → falsy).
+#
+# --- Phase A: fresh cap + editing probes (tick 0, before any timer fire) ---
+0 resop qcap
+0 resop qlen
+0 qadd hut buildings
+0 qadd hut buildings
+0 resop qitems
+0 qadd hut buildings ctrl
+0 resop qlen
+0 qadd calendar tech
+0 resop qitems
+0 qback 0
+0 resop qitems
+0 qfront 1
+0 resop qitems
+0 qremove 0 1
+0 qremove 1 1
+0 resop qitems
+0 qremove 5 1
+0 resop qlen
+0 resop qopts buildings
+0 resop qoptsa buildings
+0 resop qopts tech
+0 resop qoptsa tech
+0 qsort
+0 resop qopts buildings
+0 qsort
+0 resop qeta
+# --- Phase B: production bring-up; queue automation ---
+0 gather 40
+0 buy field
+50 gather 40
+90 buy field
+130 gather 60
+170 buy field 2
+210 gather 100
+250 craft wood 3
+290 craft wood 3
+# the queued hut waits on wood (3 < 5) — cannot-afford hold, head blocking
+310 resop qitems
+320 qadd field buildings
+321 resop qlen
+430 qremove 0 1
+431 resop qitems
+440 qback 0
+441 resop qitems
+450 qfront 1
+451 resop qitems
+460 qremove 0 1
+461 resop qitems
+465 qadd field buildings shift
+466 resop qlen
+470 gather 200
+471 buy field 2
+472 craft wood 2
+480 qadd field buildings
+480 resop qeta
+560 resop qitems
+570 resop qeta
+580 qadd hut buildings
+590 resop qeta
+# --- Phase C: save slice + load quirks ---
+640 save
+645 resop qitems
+650 load
+655 resop qitems
+660 resop qopts buildings
+670 qsource spaceMission
+675 save
+680 resop savedump
+685 load
+690 resop qitems

@@ -1,0 +1,31 @@
+# name: village-combat
+# seed: 20260927
+# checkpoints: 0, 10
+# village-16: combat math — getExp (<<0 trunc + df penalty), getHitRate
+# (clamp 100), getKillExp (floor at 1), xmur3/getSeededStatRoll, rand
+# finalizer, getStatAtLevel (baked stat seed + macroLuck + jitter),
+# getCombatStatsAt (traitless bias +0.05, floor 1), getCombatLevel/
+# getCombatExpProgress, attack (±10% damage roll then hit check, hp floor 0).
+0 resop exp 120 3 40 4 2
+0 resop exp 500 1 30 2 6
+0 resop exp 99 5 60 3 5
+0 resop hitrate 10 1.5 8
+0 resop hitrate 5 0 3
+0 resop killexp 3 1.2 25 4
+0 resop killexp 10 0.8 5 1
+0 resop statroll alpha 3 2
+0 resop statroll beta 7 5
+0 resop murmur 123456789
+0 resop murmur 42
+0 resop statlvl 987654 12 0 0 2.5 0.8
+0 resop statlvl 987654 12 5 20 15 1.0
+0 resop cstats 12345 5 1
+0 resop cstats 12345 5 0
+0 resop cstats 999 20 1
+0 resop clevel 0
+0 resop clevel 1
+0 resop clevel 50
+0 resop clevel 625
+0 resop attack 8 1.5 12 6 3 100 6 1.0 8 3 10 2 40
+0 resop attack 4 1.0 6 2 1 80 5 0.8 7 2 9 3 60
+0 resop attack 3 0.5 4 1 0 30 2 0.2 12 4 14 1 200

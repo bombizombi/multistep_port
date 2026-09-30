@@ -1,0 +1,54 @@
+# name: display-fmt
+# seed: 20260927
+# checkpoints: 0, 5
+# game-12: display formatters — getDisplayValueExt (si/e/sie notations,
+# postfix ladder incl. K at 9e3, usePerSecondValues hack, prefix/infinity),
+# getDisplayValue (toFixed precision, forceHighPrecision, "(...)" mantissa),
+# toDisplaySeconds / toDisplayDays (unit decomposition, year suppression),
+# toDisplayPercentage (auto-precision cascade + fixed mode), fixFloatPointNumber.
+0 resop dve 0
+0 resop dve 5
+0 resop dve 12345.678
+0 resop dve 999999999
+0 resop dve 1e12
+0 resop dve 1e42
+0 resop dve 1e210
+0 resop dve 9000
+0 resop dve 8999
+0 resop dve 0.5 t
+0 resop dve -1234
+0 resop dve 7 p
+0 resop setopt notation e
+0 resop dve 12345.678
+0 resop dve 999
+0 resop setopt notation sie
+0 resop dve 1e14
+0 resop dve 1e15
+0 resop dve 1e16
+0 resop setopt notation si
+0 resop dv 3.14159
+0 resop dv 2 1 0
+0 resop dv 0.005
+0 resop dv -1.5
+0 resop tsec 0
+0 resop tsec 59
+0 resop tsec 61
+0 resop tsec 3600
+0 resop tsec 90061
+0 resop tsec 31536000
+0 resop tsec 400
+0 resop tdays 0
+0 resop tdays 399
+0 resop tdays 400
+0 resop tdays 800000
+0 resop tpct 0.5
+0 resop tpct 0.123456789
+0 resop tpct 0.99999
+0 resop tpct 1 2 1
+0 resop tpct 0.25 3 1
+0 resop ffp 0.30000000000000004
+0 resop ffp 1.9999999999999
+0 resop setopt forceHighPrecision 1
+0 resop dv 3.14159
+0 resop setopt forceHighPrecision 0
+0 resop dv 3.14159

@@ -498,11 +498,37 @@ function doAction(move) {
       }
       case "save": game.save(); return;
       case "load": game.load(); return;
-      case "load": game.load(); return;
+      // classes.queue.manager editing moves (time-14; js/time.js L2034-2303)
+      case "qadd": {
+        const ev = {};
+        if (args[2] === "shift") ev.shiftKey = true;
+        if (args[2] === "ctrl") ev.ctrlKey = true;
+        game.time.queue.addToQueue(args[0], args[1], null, ev); // null label → "$name$"
+        return;
+      }
+      case "qremove": {
+        const ok = game.time.queue.remove(parseInt(args[0], 10), args.length >= 2 ? parseFloat(args[1]) : 1);
+        actionLog.push({ tick: tickIndex, action, args, reason: ok ? "removed" : "invalid-index" });
+        return;
+      }
+      case "qback": {
+        const ok = game.time.queue.pushBack(parseInt(args[0], 10));
+        actionLog.push({ tick: tickIndex, action, args, reason: ok ? "moved" : "invalid-index" });
+        return;
+      }
+      case "qfront": {
+        const ok = game.time.queue.pushFront(parseInt(args[0], 10));
+        actionLog.push({ tick: tickIndex, action, args, reason: ok ? "moved" : "invalid-index" });
+        return;
+      }
+      case "qsort": game.time.queue.toggleAlphabeticalSort(); return;
+      case "burnparagon": game.discardParagon(); return; // ui.confirm chain auto-OKs straight to doDiscardParagon
+      case "hgoff": game.religion.turnHGOff(); return;
+      case "qsource": game.time.queue.unlockQueueSource(args[0]); return;
       // resop — test-hook action (D014): direct resPool calls for unit-level
       // verification of the resource pipeline (mirrors orig's own jest practice).
       case "resop": {
-        const [fn, arg1, arg2, arg3] = args;
+        const [fn, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12] = args;
         if (fn === "caps") {
           game.resPool.updateMaxValueAll();
           actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
@@ -933,6 +959,148 @@ function doAction(move) {
         }
         if (fn === "pollution") {
           actionLog.push({ tick: tickIndex, action: "resop", args, result: game.bld.cathPollution });
+          return;
+        }
+        // classes.queue.manager probes (time-14/15; js/time.js L2045-2620)
+        if (fn === "pvis") {
+          // controller.updateVisible probes (prestige-07/08)
+          let v = false;
+          if (arg1 === "burn") {
+            const c = new classes.ui.BurnParagonBtnController(game);
+            const m = {};
+            c.updateVisible(m);
+            v = m.visible;
+          } else if (arg1 === "hgoff") {
+            const c = new classes.ui.turnHGOffButtonController(game);
+            const m = {};
+            c.updateVisible(m);
+            v = m.visible;
+          } else if (arg1 === "perk") {
+            const c = new classes.ui.PrestigeBtnController(game);
+            const m = { options: { id: arg2 }, visible: false };
+            m.metadata = c.getMetadata(m); // base flow: model.metadata = getMetadata(model)
+            c.updateVisible(m);
+            v = m.visible;
+          }
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: v });
+          return;
+        }
+        if (fn === "exp") {
+          const src = { exp: parseFloat(arg1), level: parseFloat(arg2) };
+          const tgt = { exp: parseFloat(arg3), lvl: parseFloat(arg4), level: parseFloat(arg5) };
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.village.map.getExp(src, tgt) });
+          return;
+        }
+        if (fn === "hitrate") {
+          const v = game.village.map.getHitRate({ agi: parseFloat(arg1), efficiency: arg2 === undefined ? undefined : parseFloat(arg2) }, { agi: parseFloat(arg3) });
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: v });
+          return;
+        }
+        if (fn === "killexp") {
+          const v = game.village.map.getKillExp(parseFloat(arg1), parseFloat(arg2), parseFloat(arg3), parseFloat(arg4));
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: v });
+          return;
+        }
+        if (fn === "statroll") {
+          const v = game.village.map.getSeededStatRoll(arg1, parseInt(arg2, 10), parseInt(arg3, 10));
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: v });
+          return;
+        }
+        if (fn === "murmur") {
+          const v = game.village.map.rand(parseInt(arg1, 10));
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: v });
+          return;
+        }
+        if (fn === "statlvl") {
+          const v = game.village.map.getStatAtLevel(parseInt(arg1, 10), parseInt(arg2, 10), parseInt(arg3, 10),
+            { base: parseFloat(arg4), growth: parseFloat(arg5), bias: parseFloat(arg6) });
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: v });
+          return;
+        }
+        if (fn === "cstats") {
+          const stats = game.village.map.getCombatStatsAt(parseInt(arg1, 10), parseInt(arg2, 10), arg3 === "1");
+          const s = Object.keys(game.village.map.leaderStatIds).map((k) => `${k}=${stats[k]}`).join(",");
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: s });
+          return;
+        }
+        if (fn === "clevel") {
+          const exp = parseFloat(arg1);
+          const p = game.village.getCombatExpProgress(exp);
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: `${game.village.getCombatLevel(exp)}/${p.current}/${p.total}/${p.pct}` });
+          return;
+        }
+        if (fn === "attack") {
+          // squad [agi eff str atk def hp] vs fauna [agi eff str atk def hp], n iters
+          const squad = { agi: parseFloat(arg1), efficiency: parseFloat(arg2), str: parseFloat(arg3), atk: parseFloat(arg4), def: parseFloat(arg5), hp: parseFloat(arg6) };
+          const fauna = { agi: parseFloat(arg7), efficiency: parseFloat(arg8), str: parseFloat(arg9), atk: parseFloat(arg10), def: parseFloat(arg11), hp: parseFloat(arg12) };
+          for (let i = 0; i < parseInt(args[13], 10); i++) {
+            game.village.map.attack(squad, fauna);
+            game.village.map.attack(fauna, squad);
+          }
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: `${squad.hp}/${fauna.hp}` });
+          return;
+        }
+if (fn === "qlen") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.time.queue.queueLength() });
+          return;
+        }
+        if (fn === "ffp") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.fixFloatPointNumber(parseFloat(arg1)) });
+          return;
+        }
+        if (fn === "dve") {
+          const prefix = (arg2 || "").includes("p");
+          const perTick = (arg2 || "").includes("t");
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.getDisplayValueExt(parseFloat(arg1), prefix, perTick) });
+          return;
+        }
+        if (fn === "dv") {
+          const v = parseFloat(arg1);
+          const r = arg3 !== undefined
+            ? game.getDisplayValue(v, arg2 === "1", parseFloat(arg3))
+            : game.getDisplayValue(v);
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: r });
+          return;
+        }
+        if (fn === "tsec") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.toDisplaySeconds(parseFloat(arg1)) });
+          return;
+        }
+        if (fn === "tdays") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.toDisplayDays(parseFloat(arg1)) });
+          return;
+        }
+        if (fn === "tpct") {
+          const r = arg3 !== undefined
+            ? game.toDisplayPercentage(parseFloat(arg1), parseFloat(arg2), arg3 === "1")
+            : game.toDisplayPercentage(parseFloat(arg1));
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: r });
+          return;
+        }
+        if (fn === "qcap") {
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: game.time.queue.cap });
+          return;
+        }
+        if (fn === "qitems") {
+          const s = game.time.queue.queueItems
+            .map((it) => `${it.type}|${it.name}|${it.label}|${it.value}`)
+            .join(";");
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: s });
+          return;
+        }
+        if (fn === "qopts" || fn === "qoptsa") {
+          const q = game.time.queue;
+          const sorted = fn === "qoptsa";
+          const prevSort = q.alphabeticalSort;
+          if (sorted) q.alphabeticalSort = true;
+          const names = q.getQueueOptions(arg1).map((o) => o.name).join(",");
+          if (sorted) q.alphabeticalSort = prevSort;
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: names });
+          return;
+        }
+        if (fn === "qeta") {
+          const [eta, ok] = game.time.queue.getFirstItemEtaDay();
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: `${eta}/${ok}` });
           return;
         }
         if (fn === "pollutiontick") {

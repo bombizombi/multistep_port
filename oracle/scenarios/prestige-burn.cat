@@ -1,0 +1,21 @@
+# name: prestige-burn
+# seed: 20260927
+# checkpoints: 0, 15, 30
+# prestige-07/08: PrestigeBtnController (metaphysics buy gate + updateVisible),
+# BurnParagonBtnController.updateVisible (paragon > 0) + doDiscardParagon
+# (burnedParagon += paragon; paragon = 0; ironWill &&= spaceOddity star),
+# turnHGOffButtonController.updateVisible + religion.turnHGOff.
+0 resop pvis burn
+0 resop pvis hgoff
+0 resop pvis perk voidOrder
+0 perk voidOrder
+0 resop addResEvent paragon 250
+0 resop addResEvent burnedParagon 10
+5 resop pvis burn
+10 burnparagon
+15 resop pvis burn
+15 resop pvis hgoff
+20 hgoff
+25 resop pvis hgoff
+29 save
+30 resop savedump

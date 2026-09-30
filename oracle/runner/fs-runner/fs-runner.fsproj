@@ -34,6 +34,7 @@
         <Compile Include="../../../kittens_land/src/Game/Game.Stats.fs"/>
         <Compile Include="../../../kittens_land/src/Game/Game.Achievements.fs"/>
         <Compile Include="../../../kittens_land/src/Game/Game.Production.fs"/>
+        <Compile Include="QueueLabels.fs"/>
         <Compile Include="Program.fs"/>
     </ItemGroup>
 
