@@ -38,7 +38,7 @@ const ACTIONS = new Set([
   "resop", "refine",
   "shatter", "useheat", "cfu", "vsu", "huntall", "hunthalf", "huntfifth", "mission", "sbuilding",
   "qadd", "qremove", "qback", "qfront", "qsort", "qsource",
-  "burnparagon", "hgoff",
+  "burnparagon", "hgoff", "reset", "applyreset",
 ]);
 
 function parseScenario(text) {

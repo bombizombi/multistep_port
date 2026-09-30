@@ -304,6 +304,9 @@ let execute (scenario: Scenario) : ExecResult =
           ("time.updateQueue", 10) ]
     let mutable scheduledEvents = 0 // timer.scheduleEvent probe markers
     let mutable scheduledFired = 0
+    let mutable pausedReset = false // post-_resetInternal pause (isPaused)
+    let mutable karmaZebras = 0 // game.karmaZebras
+    let mutable resetPendingFlag = false // timer.scheduleEvent(resetAutomatic)
     // GamePage tab registry + manager list (game.js L2503-2590) — game-06
     let tabRegistryData =
         [ "Bonfire"; "Village"; "Science"; "Workshop"; "Trade"; "Religion";
@@ -578,7 +581,7 @@ let execute (scenario: Scenario) : ExecResult =
           CMBRBonus = 0.0
           UnicornTearsActive = false
           SilosResearched = false
-          KarmaZebras = 0 }
+          KarmaZebras = karmaZebras }
 
     let emptyGroup () : Game.Effects.ManagerGroup = { Base = Map.empty; Items = [] }
     let religionGroup () = Game.Religion.religionGroup rpool
@@ -2521,7 +2524,7 @@ let execute (scenario: Scenario) : ExecResult =
         key "isCMBREnabled"; boolv false; sb.Append "," |> ignore
         key "colorScheme"; str ""; sb.Append "," |> ignore
         key "karmaKittens"; intv pool.KarmaKittens; sb.Append "," |> ignore
-        key "karmaZebras"; intv 0; sb.Append "," |> ignore
+        key "karmaZebras"; intv karmaZebras; sb.Append "," |> ignore
         key "ironWill"; boolv ironWill; sb.Append "," |> ignore
         key "deadKittens"; numv (Game.Stats.getStat stpool "kittensDead"); sb.Append "," |> ignore
         key "cheatMode"; boolv false; sb.Append "," |> ignore
@@ -2583,6 +2586,8 @@ let execute (scenario: Scenario) : ExecResult =
             queueItems <- []
             queueCap <- 3
             queueSort <- true
+            karmaZebras <- 0
+            resetPendingFlag <- false
             consoleFilters <- consoleFilterNames |> List.map (fun f -> (f, (false, true))) |> Map.ofList
 
             prodOverrides <- Map.empty
@@ -4307,11 +4312,8 @@ let execute (scenario: Scenario) : ExecResult =
     // gtick: the port's game.tick() — updateModel order:
     // resPool.update → bld.update → village sim (+ kittens sync) → timer
     // (updateCaches+updateResources every 5 ticks) → calendar.tick
-    let gtick () =
-        // game.tick head: updateScheduledEvents — probe markers fire here
-        if scheduledEvents > 0 then
-            scheduledFired <- scheduledFired + scheduledEvents
-            scheduledEvents <- 0
+    let gtickBody () =
+
         // game.update() head (L4453-4461): autosave countdown; save() resets
         // ticksBeforeSave to autosaveFrequency (400)
         ticksBeforeSave <- ticksBeforeSave - 1
@@ -4436,8 +4438,327 @@ let execute (scenario: Scenario) : ExecResult =
             let poolY2, _ = Game.Resources.addResEvent calendarDay "temporalFlux" (yearFlux * years) pool
             pool <- poolY2
             refreshCache () // upgrade({policies: [authocracy + 2 relation policies]})
-        ticks <- ticks + 1
-        curLogTick <- ticks
+
+    // -------------------------------------------------------------------
+    // game.reset / _resetInternal (game.js L5391-5883) — game-17
+    let rec jsonOfValue (v: JsValue) : string =
+        match v with
+        | JBool b -> if b then "true" else "false"
+        | JNum f -> num f
+        | JStr s -> "\"" + esc s + "\""
+        | JArr xs -> "[" + (xs |> List.map (function JNull -> "null" | x -> jsonOfValue x) |> String.concat ",") + "]"
+        | JObj kv ->
+            "{"
+            + (kv
+               |> List.filter (fun (_, v0) -> v0 <> JNull)
+               |> List.map (fun (k0, v0) -> "\"" + esc k0 + "\":" + jsonOfValue v0)
+               |> String.concat ",")
+            + "}"
+        | JNull -> failwith "unreachable"
+
+    let jset (k: string) (v: JsValue) (kv: (string * JsValue) list) : (string * JsValue) list =
+        kv |> List.map (fun (k0, v0) -> if k0 = k then (k, v) else (k0, v0))
+
+    // game.getResetPrestige (read-only; also the ResetWgt breakdown — time-13)
+    let getResetPrestige () : float * float =
+        let kittens =
+            System.Math.Round (getResValue "kittens" * (1.0 + Game.Effects.getEffect cache "simScalingRatio"))
+        let anarchy = cpool.Challenges.["anarchy"].Researched
+        let k2 = if anarchy then kittens * 2.0 else kittens
+        let mutable kk = float pool.KarmaKittens
+        if k2 > 35.0 then kk <- kk + (k2 - 35.0)
+        if k2 > 60.0 then kk <- kk + (k2 - 60.0) * 3.0
+        if k2 > 100.0 then kk <- kk + (k2 - 100.0) * 4.0
+        if k2 > 150.0 then kk <- kk + (k2 - 150.0) * 5.0
+        if k2 > 300.0 then kk <- kk + (k2 - 300.0) * 10.0
+        if k2 > 750.0 then kk <- kk + (k2 - 750.0) * 15.0
+        let paragonPoints = if kittens > 70.0 then kittens - 70.0 else 0.0
+        (kk, paragonPoints)
+
+    // game._getBonusZebras
+    let getBonusZebras () : int =
+        let anachronomancy = (Game.Prestige.getPerk ppool "anachronomancy").Researched
+        let mutable bonusZebras =
+            if spool.Techs.["archery"].Researched && karmaZebras < 10 then 1 else 0
+        let mutable totalScience = 0.0
+        for tn in spool.TechOrder do
+            let td = spool.Techs.[tn]
+            if not (tn = "chronophysics" && anachronomancy) && td.Researched then
+                (match td.Def.Prices |> List.tryFind (fun p0 -> p0.Resource = "science") with
+                 | Some p0 -> totalScience <- totalScience + p0.Val
+                 | None -> ())
+        bonusZebras + int (System.Math.Floor (Game.Math.getLimitedDR (totalScience / 10000.0) 100.0))
+
+    // village.loadoutController default loadouts (village-17 data slice; the
+    // $I() mock titles, static job tables, trait/job pairings)
+    let loJob (idx: int) (name: string) (value: int) : string * JsValue =
+        (string idx, JObj [ ("name", JStr name); ("value", JNum (float value)) ])
+    let loEntry (title: string) (jobs: (int * string * int) list) (traitName: string) (traitTitle: string) (leaderJob: string) : JsValue =
+        JObj
+            [ ("title", JStr title)
+              ("jobs", JObj (jobs |> List.map (fun (idx, n, v) -> loJob idx n v)))
+              ("engineerJobs", JObj [])
+              ("leaderTrait", JObj [ ("name", JStr traitName); ("title", JStr traitTitle) ])
+              ("leaderJob", JStr leaderJob)
+              ("pinned", JBool false)
+              ("isDefault", JBool true)
+              ("lastSelected", JBool false) ]
+    let defaultLoadoutsJson : JsValue =
+        JArr
+            [ loEntry "$village.loadout.default.balanced.title$"
+                  [ (0, "woodcutter", 1); (1, "farmer", 1); (2, "scholar", 1); (3, "hunter", 1); (4, "miner", 1); (5, "priest", 1); (6, "geologist", 1) ]
+                  "engineer" "$village.trait.engineer$" "farmer"
+              loEntry "$village.loadout.default.farming.title$"
+                  [ (0, "woodcutter", 1); (1, "farmer", 5); (2, "scholar", 1); (3, "hunter", 1); (4, "miner", 1); (5, "priest", 1); (6, "geologist", 1) ]
+                  "engineer" "$village.trait.engineer$" "farmer"
+              loEntry "$village.loadout.default.gathering.title$"
+                  [ (0, "woodcutter", 5); (1, "farmer", 2); (2, "scholar", 1); (3, "hunter", 1); (4, "miner", 5); (5, "priest", 1) ]
+                  "engineer" "$village.trait.engineer$" "woodcutter"
+              loEntry "$village.loadout.default.hunting.title$"
+                  [ (0, "woodcutter", 1); (1, "farmer", 2); (2, "scholar", 1); (3, "hunter", 10); (4, "miner", 1); (5, "priest", 1) ]
+                  "manager" "$village.trait.manager$" "hunter"
+              loEntry "$village.loadout.default.research.title$"
+                  [ (0, "woodcutter", 1); (1, "farmer", 2); (2, "scholar", 10); (3, "hunter", 1); (4, "miner", 1); (5, "priest", 1) ]
+                  "scientist" "$village.trait.scientist$" "scholar"
+              loEntry "$village.loadout.default.religion.title$"
+                  [ (0, "woodcutter", 1); (1, "farmer", 2); (2, "scholar", 1); (3, "hunter", 1); (4, "miner", 1); (5, "priest", 10) ]
+                  "wise" "$village.trait.wise$" "priest"
+              loEntry "$village.loadout.default.trade.title$"
+                  [ (0, "woodcutter", 1); (1, "farmer", 2); (2, "scholar", 1); (3, "hunter", 5); (4, "miner", 1); (5, "priest", 1); (6, "geologist", 5) ]
+                  "merchant" "$village.trait.merchant$" "geologist"
+              loEntry "$village.loadout.default.metallurgy.title$"
+                  [ (0, "woodcutter", 1); (1, "farmer", 2); (2, "scholar", 1); (3, "hunter", 1); (4, "miner", 5); (5, "priest", 1); (6, "geologist", 5) ]
+                  "metallurgist" "$village.trait.metallurgist$" "geologist" ]
+
+    let resetInternal () : unit =
+        // challenges.onRunReset: active challenges with an on-reset completion check
+        let cryoOn = tpool.VSUs.["cryochambers"].On
+        let stasisOn = (Game.Buildings.get bpool "stasisPod" |> Option.map (fun b -> b.On) |> Option.defaultValue 0)
+        for cn in cpool.Order do
+            let c = cpool.Challenges.[cn]
+            if c.Active then
+                let completesOnReset =
+                    (cn = "ironWill" && (cryoOn > 0 || stasisOn > 0))
+                    || cn = "pacifism" // unconditional reset hook (badge)
+                if completesOnReset then researchChallengeFull cn
+        // challenge filterMetadata snapshot taken BEFORE the pending clear:
+        // the _resetInternal flip sets active = wasPending, everything else false
+        let challengeEntries =
+            cpool.Order
+            |> List.map (fun cn ->
+                let c = cpool.Challenges.[cn]
+                JObj
+                    [ ("name", JStr cn)
+                      ("researched", JBool c.Researched)
+                      ("on", JNum (float c.On))
+                      ("unlocked", JBool c.Unlocked)
+                      ("active", JBool c.Pending) ])
+        for cn in cpool.Order do
+            let c = cpool.Challenges.[cn]
+            cpool <- { cpool with Challenges = cpool.Challenges |> Map.add cn { c with Pending = false } }
+        let kittens =
+            System.Math.Round (getResValue "kittens" * (1.0 + Game.Effects.getEffect cache "simScalingRatio"))
+        let anarchy = cpool.Challenges.["anarchy"].Researched
+        let k2 = if anarchy then kittens * 2.0 else kittens
+        let mutable kk = float pool.KarmaKittens
+        if k2 > 35.0 then kk <- kk + (k2 - 35.0)
+        if k2 > 60.0 then kk <- kk + (k2 - 60.0) * 3.0
+        if k2 > 100.0 then kk <- kk + (k2 - 100.0) * 4.0
+        if k2 > 150.0 then kk <- kk + (k2 - 150.0) * 5.0
+        if k2 > 300.0 then kk <- kk + (k2 - 300.0) * 10.0
+        if k2 > 750.0 then kk <- kk + (k2 - 750.0) * 15.0
+        let paragonPoints = if kittens > 70.0 then kittens - 70.0 else 0.0
+        pool <- { pool with KarmaKittens = int kk }
+        let bonusZebras = getBonusZebras ()
+
+        if (match get pool "zebras" with Some r -> r.Value | None -> 0.0) > 0.0 && ironWill then
+            karmaZebras <- karmaZebras + bonusZebras
+
+        stpool <- Game.Stats.bumpStat "totalParagon" paragonPoints stpool
+        stpool <- Game.Stats.bumpStat "totalResets" 1.0 stpool
+        // pre-reset faith so forgotten praise is not lost (apocripha bonus)
+        let apocriphaOn = (Game.Religion.getRU rpool "apocripha").On > 0
+        let mutable bonusRatio = 1.0
+        if (Game.Religion.getRU rpool "transcendence").On > 0 then
+            bonusRatio <- bonusRatio * float ((1 + rpool.TranscendenceTier) * (1 + rpool.TranscendenceTier))
+        let apocriphaBonus = (rpool.Faith / 100000.0) * 0.1 * bonusRatio
+        let faithRatio = rpool.FaithRatio + (if apocriphaOn then apocriphaBonus else 0.0)
+        let blob = buildSaveString ()
+        let tree = match parseSaveBlob blob with JObj kv -> kv | _ -> []
+        let jget0 (k: string) : JsValue option =
+            match tree |> List.tryFind (fun (k0, _) -> k0 = k) with
+            | Some (_, v) -> Some v
+            | None -> None
+        let chronosphereVal =
+            (Game.Buildings.get bpool "chronosphere" |> Option.map (fun b -> b.Val) |> Option.defaultValue 0)
+        let saveRatio = if chronosphereVal > 0 then Game.Effects.getEffect cache "resStasisRatio" else 0.0
+        let anachronomancy = (Game.Prestige.getPerk ppool "anachronomancy").Researched
+        let fluxCondensator =
+            (match wpool.Upgrades |> Map.tryFind "fluxCondensator" with Some u -> u.Researched | None -> false)
+        let newResources =
+            pool.Order
+            |> List.choose (fun rn ->
+                let r = pool.ByName.[rn]
+                let persists = (r.Def.Persists = Some true)
+                let strictFalse = (r.Def.Persists = Some false)
+                let craftable = r.Def.Craftable
+                if strictFalse
+                   || (craftable && rn <> "wood" && not fluxCondensator) then None
+                else
+                    let mutable value = 0.0
+                    if rn = "timeCrystal" then
+                        if anachronomancy then value <- r.Value
+                    elif persists then value <- r.Value
+                    elif not craftable || rn = "wood" then
+                        value <- r.Value * saveRatio
+                        if rn = "void" then value <- System.Math.Floor value
+                    elif r.Value > 0.0 then
+                        value <- System.Math.Sqrt(r.Value) * saveRatio * 100.0
+                    if rn = "paragon" then value <- value + paragonPoints
+                    if value > 0.0 then
+                        Some(
+                            JObj
+                                ([ ("name", JStr rn)
+                                   ("value", JNum value)
+                                   ("isHidden", JBool false)
+                                   ("unlocked", JBool false) ]
+                                 @ (if rn = "wood" then [ ("isHiddenFromCrafting", JBool false) ] else [])))
+                    else None)
+        let tuEntries =
+            rpool.TuOrder
+            |> List.map (fun n ->
+                let m = Game.Religion.getTU rpool n
+                JObj
+                    [ ("name", JStr n)
+                      ("val", JNum (float m.Val))
+                      ("on", JNum (float m.On))
+                      ("unlocked", JBool m.Unlocked) ])
+        let press = tpool.CFUs.["temporalPress"]
+        let pressCap = Game.Effects.getEffect cache "temporalPressCap"
+        let pressSaved = min (float press.Val) pressCap
+        let pressAutomation : JsValue =
+            if pressSaved > 0.0 then
+                (match press.IsAutomationEnabled with Some b -> JBool b | None -> JNull)
+            else JNull
+        let pressEntry =
+            JObj
+                ([ ("name", JStr "temporalPress")
+                   ("val", JNum (if pressSaved > 0.0 then pressSaved else 0.0))
+                   ("on", JNum (if pressSaved > 0.0 then min (float press.On) pressSaved else 0.0)) ]
+                 @ (if pressSaved > 0.0 then [] else [ ("isAutomationEnabled", JNull) ])
+                 @ (if pressSaved > 0.0 then [ ("isAutomationEnabled", pressAutomation) ] else []))
+        let gameJson =
+            match jget0 "game" with
+            | Some (JObj gv) ->
+                JObj
+                    (gv
+                     |> jset "karmaKittens" (JNum (float pool.KarmaKittens))
+                     |> jset "karmaZebras" (JNum (float karmaZebras))
+                     |> jset "ironWill" (JBool (not (saveRatio > 0.0 || cryoOn > 0)))
+                     |> jset "startedWithoutChronospheres" (JBool (saveRatio = 0.0 && cryoOn = 0))
+                     |> jset "deadKittens" (JNum 0.0)
+                     |> jset "isCMBREnabled" (JBool false))
+            | _ -> JNull
+        let reservesJson =
+            match jget0 "challenges" with
+            | Some (JObj cv) ->
+                (match cv |> List.tryFind (fun (k0, _) -> k0 = "reserves") with
+                 | Some (_, v) -> v
+                 | None -> JNull)
+            | _ -> JNull
+        let statsCurrentZeroed =
+            JArr
+                (Game.Catalog.World.statCurrentDefs
+                 |> List.map (fun dd -> JObj [ ("name", JStr dd.Name); ("val", JNum 0.0) ]))
+        let cryptoPrice =
+            match jget0 "calendar" with
+            | Some (JObj cv) ->
+                (match cv |> List.tryFind (fun (k0, _) -> k0 = "cryptoPrice") with
+                 | Some (_, v) -> v
+                 | None -> JNum 1000.0)
+            | _ -> JNum 1000.0
+        let hgOn = (Game.Religion.getTU rpool "holyGenocide").On
+        let chronophysics =
+            if anachronomancy then
+                let t = spool.Techs.["chronophysics"]
+                [ JObj
+                      [ ("name", JStr "chronophysics")
+                        ("unlocked", JBool t.Unlocked)
+                        ("researched", JBool t.Researched) ] ]
+            else []
+        let resetTree : (string * JsValue) list =
+            [ ("saveVersion", (match jget0 "saveVersion" with Some v -> v | None -> JNum 15.0))
+              ("game", gameJson)
+              ("resources", JArr newResources)
+              ("buildings", JArr [])
+              ("calendar", JObj [ ("cryptoPrice", cryptoPrice) ])
+              ("challenges", JObj [ ("challenges", JArr challengeEntries); ("reserves", reservesJson) ])
+              ("diplomacy", JObj [ ("races", JArr []) ])
+              ("prestige", (match jget0 "prestige" with Some v -> v | None -> JNull))
+              ("religion",
+               JObj
+                   [ ("transcendenceTier", JNum (float rpool.TranscendenceTier))
+                     ("faithRatio", JNum faithRatio)
+                     ("activeHolyGenocide", JNum (float hgOn))
+                     ("zu", JArr [])
+                     ("ru", JArr [])
+                     ("tu", JArr tuEntries)
+                     ("pact", JArr []) ])
+              ("science",
+               JObj
+                   [ ("hideResearched", JBool false)
+                     ("policyToggleResearched", JBool false)
+                     ("policyToggleBlocked", JBool false)
+                     ("techs", JArr chronophysics)
+                     ("policies", JArr []) ])
+              ("space", JObj [ ("hideResearched", JBool false); ("programs", JArr []); ("planets", JArr []) ])
+              ("time",
+               JObj
+                   [ ("cfu",
+                      JArr
+                          [ JObj
+                                [ ("name", JStr "temporalImpedance")
+                                  ("unlocked", JBool tpool.CFUs.["temporalImpedance"].Unlocked) ]
+                            pressEntry ])
+                     ("vsu", JArr [])
+                     ("usedCryochambers", JArr [ JObj [ ("name", JStr "usedCryochambers"); ("val", JNum 0.0); ("on", JNum 0.0) ] ])
+                     ("timestamp", JNum (1759000000000.0 + float curLogTick * 1000.0))
+                     ("testShatter", JNum (float tpool.TestShatter)) ])
+              ("village",
+               JObj
+                   [ ("kittens", JArr [])
+                     ("jobs", JArr [])
+                     ("traits", JArr [])
+                     ("hadKittenHunters", JBool false)
+                     ("loadouts", defaultLoadoutsJson) ])
+              ("workshop",
+               JObj
+                   [ ("hideResearched", JBool false)
+                     ("upgrades", JArr [])
+                     ("crafts", JArr [])
+                     ("zebraUpgrades", JArr []) ])
+              ("achievements", (match jget0 "achievements" with Some v -> v | None -> JNull))
+              ("ach", (match jget0 "ach" with Some v -> v | None -> JNull))
+              ("stats", (match jget0 "stats" with Some v -> v | None -> JNull))
+              ("statsCurrent", statsCurrentZeroed)
+              ("telemetry", (match jget0 "telemetry" with Some v -> v | None -> JNull))
+              ("cathPollution", JNum 0.0) ]
+        lcStorageSave <- jsonOfValue (JObj resetTree)
+        pausedReset <- true
+
+    let gtick () =
+        // game.tick head: updateScheduledEvents — fires even while paused
+        if scheduledEvents > 0 then
+            scheduledFired <- scheduledFired + scheduledEvents
+            scheduledEvents <- 0
+        if resetPendingFlag then
+            resetPendingFlag <- false
+            resetInternal () // pause lands mid-tick: the rest of the tick is skipped
+        if not pausedReset then
+            gtickBody ()
+            ticks <- ticks + 1
+            curLogTick <- ticks
+
 
     let doMove (m: Move) =
         match m.Action with
@@ -4632,6 +4953,9 @@ let execute (scenario: Scenario) : ExecResult =
                     | "building" -> (Game.Buildings.get bpool name |> Option.map (fun b -> b.Unlocked) |> Option.defaultValue false)
                     | _ -> false
                 actionLog <- (curLogTick, "resop", m.Args, RBool v) :: actionLog
+            | [ "resetprestige" ] ->
+                let (kk, pp) = getResetPrestige ()
+                actionLog <- (curLogTick, "resop", m.Args, RRes (sprintf "%s/%s" (string kk) (string pp))) :: actionLog
             | [ "isreadonly" ] ->
                 actionLog <- (curLogTick, "resop", m.Args, RBool false) :: actionLog // previewMode
             | [ "caps" ] ->
@@ -4643,6 +4967,7 @@ let execute (scenario: Scenario) : ExecResult =
             | [ "gtick"; n ] ->
                 for _ in 1..int n do
                     gtick ()
+                curLogTick <- ticks // orig: tickIndex = game.ticks after resop gticks
                 actionLog <- (curLogTick, "resop", m.Args, RNum(float ticks)) :: actionLog
             | [ "snap" ] ->
                 snapshots <- takeSnapshot () :: snapshots
@@ -5273,7 +5598,7 @@ let execute (scenario: Scenario) : ExecResult =
                 // hasResources check (updateEnabled), same value as affordBefore
                 let _ = bpool
                 actionLog <-
-                    (m.Tick, "buy", m.Args,
+                    (curLogTick, "buy", m.Args,
                      RText(sprintf "built %d/%d (enabled=%s, affordBefore=%s)" built n (if affordBefore then "true" else "false") (if affordBefore then "true" else "false")))
                     :: actionLog
             if built > 0 then
@@ -5326,7 +5651,7 @@ let execute (scenario: Scenario) : ExecResult =
                     |> List.map (fun p -> sprintf "{\"name\":\"%s\",\"val\":%s}" (esc p.Resource) (num (p.Val * amt)))
                     |> String.concat ","
                 actionLog <-
-                    (m.Tick, "craft", m.Args,
+                    (curLogTick, "craft", m.Args,
                      RText(sprintf "gained %s/%s (affordBefore=%s, prices=[%s])" (num gainedActual) (num amt) (if affordBefore then "true" else "false") pj))
                     :: actionLog
             refreshResourcesOnly () // orig game.craft → workshop.craft + updateResources (no updateCaches)
@@ -5353,7 +5678,7 @@ let execute (scenario: Scenario) : ExecResult =
                 prodCache <- Some(updateResourceProduction ()) // orig refreshes instantly (village.js L3513)
             if freeBefore < n || assigned < n then
                 actionLog <-
-                    (m.Tick, "assign", m.Args,
+                    (curLogTick, "assign", m.Args,
                      RText(sprintf "assigned %d/%d (freeBefore=%d, jobLimit=%d)" assigned n freeBefore jobLimit))
                     :: actionLog
 
@@ -5364,7 +5689,7 @@ let execute (scenario: Scenario) : ExecResult =
             if not ok then
                 // orig BuildingNotStackableBtnController.buyItem reasons
                 let already = (match spool'.Techs |> Map.tryFind m.Args.[0] with Some t -> t.Researched | None -> false)
-                actionLog <- (m.Tick, "research", m.Args, RText(if already then "already-bought" else "cannot-afford")) :: actionLog
+                actionLog <- (curLogTick, "research", m.Args, RText(if already then "already-bought" else "cannot-afford")) :: actionLog
             if ok then
               // orig onPurchase: handler -> unlock (NO cache refresh) -> if the
               // tech itself has an upgrades key, game.upgrade refreshes twice
@@ -5393,7 +5718,7 @@ let execute (scenario: Scenario) : ExecResult =
             wpool <- wpool'
             if not ok then
                 let already = (match wpool'.Upgrades |> Map.tryFind m.Args.[0] with Some u -> u.Researched | None -> false)
-                actionLog <- (m.Tick, "upgrade", m.Args, RText(if already then "already-bought" else "cannot-afford")) :: actionLog
+                actionLog <- (curLogTick, "upgrade", m.Args, RText(if already then "already-bought" else "cannot-afford")) :: actionLog
         | "policy" ->
             // orig PolicyBtnController.buyItem: researched/afford/gates/blocks;
             // require-confirmation auto-OKs through ui.confirm
@@ -5434,18 +5759,18 @@ let execute (scenario: Scenario) : ExecResult =
                 if ups <> [] then refreshCache ()
                 // the driver path hits require-confirmation → ui.confirm auto-OK:
                 // buyItem still RETURNS itemBought:false + this reason (logged)
-                actionLog <- (m.Tick, "policy", m.Args, RText "require-confirmation") :: actionLog
+                actionLog <- (curLogTick, "policy", m.Args, RText "require-confirmation") :: actionLog
                 // onResearch: cryochamberExtraction bumps the VSU
                 if m.Args.[0] = "cryochamberExtraction" then
                     let v = tpool.VSUs.["usedCryochambers"]
                     tpool <- { tpool with VSUs = tpool.VSUs |> Map.add "usedCryochambers" { v with Val = v.Val + 1; On = v.On + 1; Unlocked = true } }
                 refreshCache ()
             | "AlreadyBought" ->
-                actionLog <- (m.Tick, "policy", m.Args, RText "already-bought") :: actionLog
+                actionLog <- (curLogTick, "policy", m.Args, RText "already-bought") :: actionLog
             | "CannotAfford" ->
-                actionLog <- (m.Tick, "policy", m.Args, RText "cannot-afford") :: actionLog
+                actionLog <- (curLogTick, "policy", m.Args, RText "cannot-afford") :: actionLog
             | _ ->
-                actionLog <- (m.Tick, "policy", m.Args, RText "blocked") :: actionLog
+                actionLog <- (curLogTick, "policy", m.Args, RText "blocked") :: actionLog
         | "refine" ->
             // orig bld.refineCatnip (js/buildings.js L3003): pay 100 catnip via the
             // button's buyItem prices, gain 1 + craftRatio wood (advancedRefinement
@@ -5557,7 +5882,7 @@ let execute (scenario: Scenario) : ExecResult =
             pool <- pool'
             rpool <- rpool'
             if bought = 0 then
-                actionLog <- (m.Tick, "tu", m.Args, RText "cannot-afford-or-locked") :: actionLog
+                actionLog <- (curLogTick, "tu", m.Args, RText "cannot-afford-or-locked") :: actionLog
             else refreshCache () // TU effects enter the cache
         | "sacrifice" ->
             // unicorn sacrifice: unicorns 2500 → tears × ziggurat.on
@@ -5598,13 +5923,13 @@ let execute (scenario: Scenario) : ExecResult =
             let mult = 1.0 + Game.Effects.getEffect cache "relicRefineRatio" * float bpEff
             let pool', _, _, _, ok = Game.Religion.transform calendarDay "timeCrystal" "relic" 25.0 1 n mult pool
             pool <- pool'
-            if not ok then actionLog <- (m.Tick, "refinetc", m.Args, RText "cannot-afford") :: actionLog
+            if not ok then actionLog <- (curLogTick, "refinetc", m.Args, RText "cannot-afford") :: actionLog
         | "refinetears" ->
             // RefineTearsBtnController: tears 10000 → sorrow.value++ (capped 17)
             let n = if m.Args.Length >= 1 then int m.Args.[0] else 1
             let pool', refined = Game.Religion.refineTears calendarDay n pool
             pool <- pool'
-            if refined = 0 then actionLog <- (m.Tick, "refinetears", m.Args, RText "cannot-afford-or-capped") :: actionLog
+            if refined = 0 then actionLog <- (curLogTick, "refinetears", m.Args, RText "cannot-afford-or-capped") :: actionLog
         | "embassy" ->
             // EmbassyButtonController.buyItem gates: writing + race unlocked
             let raceName = m.Args.[0]
@@ -5626,7 +5951,7 @@ let execute (scenario: Scenario) : ExecResult =
                 dp <- dp'
                 pool <- pool'
                 if built <> n then
-                    actionLog <- (m.Tick, "embassy", m.Args, RText(sprintf "built %d/%d" built n)) :: actionLog
+                    actionLog <- (curLogTick, "embassy", m.Args, RText(sprintf "built %d/%d" built n)) :: actionLog
                 // triggerOnEmbassyCountChanged: science.unlockRelations() (+ UI)
                 let diplomacyPerk = (Game.Prestige.getPerk ppool "diplomacy").Researched
                 let sp2, _ = Game.Managers.unlockRelations diplomacyPerk (fun r -> dp.Races.[r].EmbassyLevel) spool
@@ -5658,7 +5983,7 @@ let execute (scenario: Scenario) : ExecResult =
                     let spent = [ ("manpower", manp * 1.0); ("gold", gold * 1.0); (raceState.Buys.[0].Resource, buyPrice * 1.0) ]
                     registerUndo [ { ManagerId = "diplomacy"; Data = Game.Types.TradeUndo(1.0, spent, gained |> Map.toList) } ]
                 else
-                    actionLog <- (m.Tick, "trade", m.Args, RText "cannot afford") :: actionLog
+                    actionLog <- (curLogTick, "trade", m.Args, RText "cannot afford") :: actionLog
             else
                 // tradeMultiple: hasMultipleResources gate, negative addResEvent
                 // costs, then tradeImpl(amt)
@@ -5684,7 +6009,7 @@ let execute (scenario: Scenario) : ExecResult =
                     let spent = [ ("manpower", manp * float n); ("gold", gold * float n); (raceState.Buys.[0].Resource, raceState.Buys.[0].Val * float n * volume) ]
                     registerUndo [ { ManagerId = "diplomacy"; Data = Game.Types.TradeUndo(float n, spent, gained |> Map.toList) } ]
                 else
-                    actionLog <- (m.Tick, "trade", m.Args, RText "cannot afford multiple") :: actionLog
+                    actionLog <- (curLogTick, "trade", m.Args, RText "cannot afford multiple") :: actionLog
         | "tradeall" ->
             // tradeAll: tradeMultiple(race, getMaxTradeAmt(race)); undefined max -> no-op
             let raceName = m.Args.[0]
@@ -5741,7 +6066,7 @@ let execute (scenario: Scenario) : ExecResult =
             else
                 // PrestigeBtnController.buyItem gate precedes afford checks —
                 // buyItem returns without touching state
-                actionLog <- (m.Tick, "perk", m.Args, RText "not-unlocked") :: actionLog
+                actionLog <- (curLogTick, "perk", m.Args, RText "not-unlocked") :: actionLog
         | "festival" ->
             // orig village.holdFestival (L1131-1146); carnivals perk seam false
             // → duration = daysPerSeason(100) × seasonsPerYear(4), amt ignored
@@ -5842,7 +6167,7 @@ let execute (scenario: Scenario) : ExecResult =
                 spacep <- spacepU
                 undoChange <- None
                 if not ok then
-                    actionLog <- (m.Tick, "undo", m.Args, RText "undo-incomplete") :: actionLog
+                    actionLog <- (curLogTick, "undo", m.Args, RText "undo-incomplete") :: actionLog
             | None -> ()
         | "speciality" ->
             // CraftButtonController.assignCraftJob: min(value, freeEngineers) loop
@@ -5866,7 +6191,7 @@ let execute (scenario: Scenario) : ExecResult =
             wpool <- { wpool with Crafts = wpool.Crafts |> Map.add craftName { c with Value = c.Value + float added } }
             if added < n then
                 let freeStr = string (Game.Math.jsRound (Game.Managers.getFreeEngineers vpool wpool))
-                actionLog <- (m.Tick, "speciality", m.Args, RText(sprintf "assigned %d/%d (free=%s)" added n freeStr)) :: actionLog
+                actionLog <- (curLogTick, "speciality", m.Args, RText(sprintf "assigned %d/%d (free=%s)" added n freeStr)) :: actionLog
         | "craftall" ->
             // orig game.craftAll minus the wood winter-confirm branch (headless:
             // workshop.craftAll + updateResources — same end state)
@@ -5914,7 +6239,7 @@ let execute (scenario: Scenario) : ExecResult =
                     | None -> ()
                 refreshCache () // unlock fan-out
             else
-                actionLog <- (m.Tick, "mission", m.Args, RText "cannot-afford-or-locked") :: actionLog
+                actionLog <- (curLogTick, "mission", m.Args, RText "cannot-afford-or-locked") :: actionLog
         | "sbuilding" ->
             // PlanetBuildingBtnController.build(model, n)
             let name = m.Args.[0]
@@ -5944,20 +6269,20 @@ let execute (scenario: Scenario) : ExecResult =
                     upgradeMetas ups
                 refreshCache ()
             else
-                actionLog <- (m.Tick, "sbuilding", m.Args, RText "cannot-afford-or-locked") :: actionLog
+                actionLog <- (curLogTick, "sbuilding", m.Args, RText "cannot-afford-or-locked") :: actionLog
         | "shatter" ->
             // ShatterTCBtnController.doShatterAmt(model, amt)
             let amt = int m.Args.[0]
             let okS = doShatterManual amt
             if not okS then
-                actionLog <- (m.Tick, "shatter", m.Args, RText "cannot-afford") :: actionLog
+                actionLog <- (curLogTick, "shatter", m.Args, RText "cannot-afford") :: actionLog
         | "useheat" ->
             // UseHeatBtnController.doShatterAmt — "all" computes max(2, heat/100)
             let okU =
                 if m.Args.[0] = "all" then useHeatManual None
                 else useHeatManual (Some (int m.Args.[0]))
             if not okU then
-                actionLog <- (m.Tick, "useheat", m.Args, RText "not-enough-heat") :: actionLog
+                actionLog <- (curLogTick, "useheat", m.Args, RText "not-enough-heat") :: actionLog
         | "cfu" ->
             // ChronoforgeBtnController.build(model, 1) + unlock/upgrade fan-outs
             let name = m.Args.[0]
@@ -5987,7 +6312,7 @@ let execute (scenario: Scenario) : ExecResult =
                                    Data = Game.Types.CFUUndo(name, tpool.CFUs.[name].Val - counter) } ] })
                 refreshCache () // game.upgrade ends with updateCaches
             else
-                actionLog <- (m.Tick, "cfu", m.Args, RText "cannot-afford-or-locked") :: actionLog
+                actionLog <- (curLogTick, "cfu", m.Args, RText "cannot-afford-or-locked") :: actionLog
         | "vsu" ->
             // VoidSpaceBtnController.build(model, 1) + breakIronWill/calc/undo
             let name = m.Args.[0]
@@ -6021,7 +6346,7 @@ let execute (scenario: Scenario) : ExecResult =
                                    Data = Game.Types.VSUUndo(name, tpool.VSUs.[name].Val - counter) } ] })
                 refreshCache ()
             else
-                actionLog <- (m.Tick, "vsu", m.Args, RText "cannot-afford-or-locked") :: actionLog
+                actionLog <- (curLogTick, "vsu", m.Args, RText "cannot-afford-or-locked") :: actionLog
         // time.queue editing moves (classes.queue.manager)
         | "qadd" ->
             let name = m.Args.[0]
@@ -6033,15 +6358,24 @@ let execute (scenario: Scenario) : ExecResult =
             let idx = int m.Args.[0]
             let amt = if m.Args.Length >= 2 then float m.Args.[1] else 1.0
             let okR = queueRemove idx amt
-            actionLog <- (m.Tick, "qremove", m.Args, RText(if okR then "removed" else "invalid-index")) :: actionLog
+            actionLog <- (curLogTick, "qremove", m.Args, RText(if okR then "removed" else "invalid-index")) :: actionLog
         | "qback" ->
             let okR = queuePushBack (int m.Args.[0])
-            actionLog <- (m.Tick, "qback", m.Args, RText(if okR then "moved" else "invalid-index")) :: actionLog
+            actionLog <- (curLogTick, "qback", m.Args, RText(if okR then "moved" else "invalid-index")) :: actionLog
         | "qfront" ->
             let okR = queuePushFront (int m.Args.[0])
-            actionLog <- (m.Tick, "qfront", m.Args, RText(if okR then "moved" else "invalid-index")) :: actionLog
+            actionLog <- (curLogTick, "qfront", m.Args, RText(if okR then "moved" else "invalid-index")) :: actionLog
         | "qsort" -> queueSort <- not queueSort
         | "qsource" -> unlockQueueSource m.Args.[0]
+        | "reset" ->
+            // game.reset: confirm auto-OK → onRunReset + pending clears +
+            // resetAutomatic schedule (fires at next tick start)
+            resetPendingFlag <- true
+        | "applyreset" ->
+            // window.location.reload() equivalent: load the post-reset blob;
+            // load() catches its own broken-load quirk headlessly
+            if pausedReset then applySaveBlob lcStorageSave
+            actionLog <- (curLogTick, "applyreset", m.Args, RNum 0.0) :: actionLog
         | "burnparagon" ->
             // game.discardParagon → doDiscardParagon (confirm chain auto-OKs)
             let p = pool.ByName["paragon"]
@@ -6062,7 +6396,7 @@ let execute (scenario: Scenario) : ExecResult =
                 { rpool with
                     ActiveHolyGenocide = 0
                     TUs = rpool.TUs |> Map.add "holyGenocide" { hg with On = 0 } }
-        | other -> actionLog <- (m.Tick, other, m.Args, RNone) :: actionLog
+        | other -> actionLog <- (curLogTick, other, m.Args, RNone) :: actionLog
 
     // scenario run loop mirroring orig-driver (D010): tick-0 moves before the
     // tick-0 snapshot; moves at tick T before tick T's gtick; checkpoint

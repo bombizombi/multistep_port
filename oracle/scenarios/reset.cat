@@ -1,0 +1,23 @@
+# name: reset
+# seed: 20260927
+# checkpoints: 0, 10, 12
+# game-17: reset flow — getResetPrestige (karma ladder + paragon threshold),
+# reset → onRunReset + pending clears → scheduleEvent, _resetInternal post-
+# reset blob (persisted resources + paragon add, carried game/opts/prestige/
+# achievements/telemetry, challenge post-flip filter, TU/press carry, empty
+# sections, stats+totalParagon/totalResets, statsCurrent zeros, timestamp),
+# reload via the broken-load quirk.
+0 resop addResEvent kittens 100
+0 resop addResEvent paragon 50
+0 resop addResEvent burnedParagon 7
+0 resop addResEvent temporalFlux 3
+0 resop addResEvent timeCrystal 40
+0 resop addResEvent void 12
+0 research calendar
+0 buy hut
+10 save
+10 resop resetprestige
+11 reset
+12 resop gtick 1
+12 applyreset
+12 resop savedump

@@ -522,6 +522,12 @@ function doAction(move) {
         return;
       }
       case "qsort": game.time.queue.toggleAlphabeticalSort(); return;
+      case "reset": game.reset(); return; // confirm auto-OK → schedule
+      case "applyreset": {
+        if (game.isPaused) { try { game.load(); } catch (e) { /* broken-load quirk */ } }
+        actionLog.push({ tick: tickIndex, action, args, result: 0 });
+        return;
+      }
       case "burnparagon": game.discardParagon(); return; // ui.confirm chain auto-OKs straight to doDiscardParagon
       case "hgoff": game.religion.turnHGOff(); return;
       case "qsource": game.time.queue.unlockQueueSource(args[0]); return;
@@ -1183,6 +1189,11 @@ if (fn === "qlen") {
             v = m.visible;
           }
           actionLog.push({ tick: tickIndex, action: "resop", args, result: v });
+          return;
+        }
+        if (fn === "resetprestige") {
+          const rp = game.getResetPrestige();
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: `${rp.karmaKittens}/${rp.paragonPoints}` });
           return;
         }
         if (fn === "isreadonly") {
