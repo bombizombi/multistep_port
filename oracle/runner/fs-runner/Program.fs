@@ -172,6 +172,46 @@ let parseSpec (s: string) : (string * float) list =
         (parts.[0], float parts.[1]))
     |> Array.toList
 
+// --- game-13 load half: save-blob parsing ------------------------------------
+// orig _parseLSSaveData: raw JSON when the blob starts with '{', else
+// decompressLZData (base64 first, UTF-16 fallback), then JSON.parse.
+
+type JsValue =
+    | JNull
+    | JBool of bool
+    | JNum of float
+    | JStr of string
+    | JArr of JsValue list
+    | JObj of (string * JsValue) list
+
+let rec private jsOfElement (e: System.Text.Json.JsonElement) : JsValue =
+    match e.ValueKind with
+    | System.Text.Json.JsonValueKind.Null -> JNull
+    | System.Text.Json.JsonValueKind.True -> JBool true
+    | System.Text.Json.JsonValueKind.False -> JBool false
+    | System.Text.Json.JsonValueKind.Number -> JNum (e.GetDouble())
+    | System.Text.Json.JsonValueKind.String -> JStr (e.GetString())
+    | System.Text.Json.JsonValueKind.Array -> JArr [ for x in e.EnumerateArray() -> jsOfElement x ]
+    | _ -> JObj [ for p in e.EnumerateObject() -> (p.Name, jsOfElement p.Value) ]
+
+let parseSaveBlob (blob: string) : JsValue =
+    let raw =
+        if blob.Length > 0 && blob.[0] = '{' then Some blob
+        else
+            let b64 = Game.LzString.decompressFromBase64 blob
+            let utf16 = Game.LzString.decompressFromUTF16 blob
+            if b64.IsSome && b64.Value.Length > 0 && b64.Value.[0] = '{' then b64
+            else utf16
+    match raw with
+    | Some s -> jsOfElement ((System.Text.Json.JsonDocument.Parse s).RootElement.Clone())
+    | None -> failwith "unable to parse save blob"
+
+let private jget (kvs: (string * JsValue) list) (name: string) : JsValue option =
+    kvs |> List.tryFind (fun (k, _) -> k = name) |> Option.map snd
+let private jstrF (v: JsValue option) : string option = match v with Some (JStr s) -> Some s | _ -> None
+let private jnumF (v: JsValue option) : float option = match v with Some (JNum f) -> Some f | _ -> None
+let private jboolF (v: JsValue option) : bool option = match v with Some (JBool b) -> Some b | _ -> None
+
 // ---------------------------------------------------------------------------
 // Scenario execution against the F# core — the full live pipeline.
 
@@ -226,8 +266,11 @@ let execute (scenario: Scenario) : ExecResult =
     // LCstorage["com.nuclearunicorn.kittengame.savedata"] equivalent (game-13)
     let mutable lcStorageSave = ""
     let mutable ticksBeforeSave = 400 // orig game.js L2296 (80s @ 5tps)
-    // console.filters["craft"].unlocked — set by the first craft msg (core.js L537)
+    let mutable currentSaveIsBroken = false // game.currentSaveIsBroken (load.js L3108 catch)
+    // console.filters["craft"].unlocked — set by the first craftAll msg
+    // (core.js L537); ["hunt"] unlocks on every hunt success msg
     let mutable craftFilterUnlocked = false
+    let mutable huntFilterUnlocked = false
     // classes.reserveMan (challenges-10): reserveResources / reserveKittens /
     // reserveCryochambers — populated by applyPending's reset path
     let mutable reserveResources: Map<string, float> = Map.empty
@@ -1786,7 +1829,15 @@ let execute (scenario: Scenario) : ExecResult =
 
     /// game-13 _saveDataToString: JSON.stringify(saveData, JSONreplacer) with
     /// orig key insertion order (undefined keys dropped). No LZ at <5mb.
-    let buildSaveString () : string =
+    /// plain=true replicates export's JSON.stringify(saveData) — the loose
+    /// `value == undefined` in JSONreplacer drops NULLS from the storage
+    /// form, while the export form keeps them (motdContent/weather/faction).
+    // buildings whose defs declare isAutomationEnabled (js/buildings.js:
+    // warehouse, calciner, steamworks, oilWell, factory, reactor)
+    let automationBuildingSet =
+        set [ "warehouse"; "calciner"; "steamworks"; "oilWell"; "factory"; "reactor" ]
+
+    let buildSaveStringMode (plain: bool) : string =
         let sb = System.Text.StringBuilder()
         let inline key (k: string) = (sb.Append("\"").Append(k).Append("\":") |> ignore) |> ignore
         let inline raw (v: string) = sb.Append v |> ignore
@@ -1805,7 +1856,11 @@ let execute (scenario: Scenario) : ExecResult =
         objStart ()
         key "saveVersion"; intv 15; sb.Append "," |> ignore
         // server.save: motdContent undefined at this slice → dropped
-        key "server"; objStart (); key "bcoinPrice"; numv 63918.0; objEnd (); sb.Append "," |> ignore
+        key "server"; objStart ()
+        if plain then
+            // preparedSaveData.server.motdContent is null — export keeps it
+            key "motdContent"; raw "null"; sb.Append "," |> ignore
+        key "bcoinPrice"; numv 63918.0; objEnd (); sb.Append "," |> ignore
 
         // resPool.save
         key "resources"; arrStart ()
@@ -1878,6 +1933,10 @@ let execute (scenario: Scenario) : ExecResult =
             sep firstB
             objStart (); key "name"; str bn; sb.Append "," |> ignore; key "unlocked"; boolv bu; objEnd ()
         arrEnd (); sb.Append "," |> ignore
+        if plain then
+            // map.currentBiome / map.lastBiome are null at this slice
+            key "currentBiome"; raw "null"; sb.Append "," |> ignore
+            key "lastBiome"; raw "null"; sb.Append "," |> ignore
         key "hadKittenHunters"; boolv false; sb.Append "," |> ignore
         key "nextKittenProgress"; numv vpool.NextKittenProgress; sb.Append "," |> ignore
         key "map"; objStart (); key "hqLevel"; intv 0; sb.Append "," |> ignore; key "energy"; numv 70.0; sb.Append "," |> ignore; key "explorersLevel"; intv 0; objEnd (); sb.Append "," |> ignore
@@ -1891,7 +1950,7 @@ let execute (scenario: Scenario) : ExecResult =
         key "season"; intv calendar.Season; sb.Append "," |> ignore
         (match calendar.Weather with
          | Some w0 -> key "weather"; str w0; sb.Append "," |> ignore
-         | None -> ())
+         | None -> if plain then (key "weather"; raw "null"; sb.Append "," |> ignore))
         key "festivalDays"; intv calendar.FestivalDays; sb.Append "," |> ignore
         key "cycle"; intv calendar.Cycle; sb.Append "," |> ignore
         key "cycleYear"; intv calendar.CycleYear; sb.Append "," |> ignore
@@ -1905,7 +1964,9 @@ let execute (scenario: Scenario) : ExecResult =
         let firstF = ref true
         for f0 in filters do
             sep firstF
-            key f0; objStart (); key "unlocked"; boolv (f0 = "craft" && craftFilterUnlocked); sb.Append "," |> ignore; key "enabled"; boolv true; objEnd ()
+            let unl =
+                (f0 = "craft" && craftFilterUnlocked) || (f0 = "hunt" && huntFilterUnlocked)
+            key f0; objStart (); key "unlocked"; boolv unl; sb.Append "," |> ignore; key "enabled"; boolv true; objEnd ()
         objEnd (); objEnd (); sb.Append "," |> ignore
 
         key "telemetry"; objStart (); key "guid"; str telemetryGuid; objEnd (); sb.Append "," |> ignore
@@ -1986,6 +2047,9 @@ let execute (scenario: Scenario) : ExecResult =
             if b.Val <> 0 then sb.Append "," |> ignore; key "val"; intv b.Val
             if b.On <> 0 then sb.Append "," |> ignore; key "on"; intv b.On
             if b.Def.Stages.Length > 0 then sb.Append "," |> ignore; key "stage"; intv b.Stage
+            // plain form keeps the declared-but-nulled isAutomationEnabled
+            if plain && automationBuildingSet.Contains n then
+                sb.Append "," |> ignore; key "isAutomationEnabled"; raw "null"
             objEnd ()
         arrEnd (); sb.Append "," |> ignore
         key "bldData"; objStart (); key "groupBuildings"; boolv false; sb.Append "," |> ignore; key "twoRows"; boolv false; objEnd (); sb.Append "," |> ignore
@@ -2118,10 +2182,19 @@ let execute (scenario: Scenario) : ExecResult =
             if n = "controlledDelay" then sb.Append "," |> ignore; key "delayTicks"; intv m.DelayTicks
             sb.Append "," |> ignore
             key "unlocked"; boolv m.Unlocked
-            if (Game.Catalog.World.cfuDefs |> List.find (fun d -> d.Name = n)).AutomationInit.IsSome && m.IsAutomationEnabled <> None then
-                sb.Append "," |> ignore
-                key "isAutomationEnabled"
-                boolv (m.IsAutomationEnabled = Some true)
+            let cfuDef = Game.Catalog.World.cfuDefs |> List.find (fun d -> d.Name = n)
+            if cfuDef.AutomationInit.IsSome then
+                (match m.IsAutomationEnabled with
+                 | Some b ->
+                     sb.Append "," |> ignore
+                     key "isAutomationEnabled"
+                     boolv b
+                 // plain form keeps the reset null (replacer drops it entirely)
+                 | None when plain ->
+                     sb.Append "," |> ignore
+                     key "isAutomationEnabled"
+                     raw "null"
+                 | None -> ())
             objEnd ()
         arrEnd (); sb.Append "," |> ignore
         key "vsu"; arrStart ()
@@ -2179,7 +2252,9 @@ let execute (scenario: Scenario) : ExecResult =
             sep firstVu
             objStart (); key "name"; str n; objEnd ()
         arrEnd ()
-        (match voidp.Faction with Some f0 -> sb.Append "," |> ignore; key "faction"; str f0 | None -> ())
+        (match voidp.Faction with
+         | Some f0 -> sb.Append "," |> ignore; key "faction"; str f0
+         | None -> if plain then (sb.Append "," |> ignore; key "faction"; raw "null"))
         objEnd (); sb.Append "," |> ignore
 
         // game.save tail
@@ -2207,11 +2282,861 @@ let execute (scenario: Scenario) : ExecResult =
             sep firstO
             key on; raw ov
         objEnd ()
+        if plain then
+            sb.Append "," |> ignore; key "lastBackup"; raw "null"
         objEnd ()
         objEnd ()
         sb.ToString()
 
+    let buildSaveString () : string = buildSaveStringMode false
+
     saveDataBuilder <- Some buildSaveString
+
+    /// orig game.load() — resetState, then one loader per saved section, then
+    /// calculateAllEffects + updateMaxValueAll + updateCaches. The unlock
+    /// fan-outs that re-fire for researched metas are replicated with the
+    /// typed catalog UnlockLists.
+    let applySaveBlob (blob: string) : unit =
+        match parseSaveBlob blob with
+        | JObj root ->
+            // resetState
+            pool <- init Game.Catalog.Resources.resourceDefs
+            calendar <- Game.Calendar.init
+            bpool <- Game.Buildings.init Game.Catalog.Defs.buildingDefs
+            spool <- Game.Managers.initScience Game.Catalog.Defs.techDefs Game.Catalog.Defs.policyDefs
+            wpool <- Game.Managers.initWorkshop Game.Catalog.Defs.upgradeDefs Game.Catalog.Defs.craftDefs
+            vpool <- Game.Managers.initVillage Game.Catalog.Village.jobDefs
+            rpool <- Game.Religion.init ()
+            dp <- Game.Diplomacy.init ()
+            ppool <- Game.Prestige.init ()
+            stpool <- Game.Stats.init ()
+            apool <- Game.Achievements.init ()
+            cpool <- Game.Challenges.init ()
+            tpool <- Game.Time.init ()
+            spacep <- Game.Space.init ()
+            voidp <- Game.Time.initVoid ()
+            ironWill <- true
+            steamworksJammed <- false
+            // mapFauna: orig village.resetState never touches the map — the
+            // biome fauna skeleton survives load untouched
+            // winterCatnipPerTick is a driver-level cache — NOT reset by load
+            queueSourcesUnlocked <- set [ "buildings" ]
+            craftFilterUnlocked <- false
+            huntFilterUnlocked <- false
+            prodOverrides <- Map.empty
+            lastLimits <- Map.empty
+            reserveResources <- Map.empty
+            reserveKittens <- []
+            reserveCryochambers <- 0
+
+            let jobNames = Game.Catalog.Village.jobDefs |> List.map (fun j -> j.Name)
+
+            // resPool.load: value/unlocked/isHidden per resource
+            (match jget root "resources" with
+             | Some (JArr rs) ->
+                 for r in rs do
+                     match r with
+                     | JObj kv ->
+                         (match jstrF (jget kv "name") with
+                          | Some n ->
+                              let v = jnumF (jget kv "value") |> Option.defaultValue 0.0
+                              let u = jboolF (jget kv "unlocked") |> Option.defaultValue false
+                              match Game.Resources.get pool n with
+                              | Some r0 -> pool <- { pool with ByName = pool.ByName |> Map.add n { r0 with Value = v; Unlocked = u } }
+                              | None -> ()
+                          | None -> ())
+                     | _ -> ()
+             | _ -> ())
+
+            // village.load: kittens (seed → loadSeeded, else ssn → loadCompressed)
+            (match jget root "village" with
+             | Some (JObj vk) ->
+                 let loadKitten (kv0: JsValue) : Game.Managers.Kitten =
+                     match kv0 with
+                     | JObj kv ->
+                         let baseK =
+                             match jnumF (jget kv "seed") with
+                             | Some sd -> Game.Managers.kittenFromSeed sd
+                             | None ->
+                                 // loadCompressed: _splitSSN(ssn, 7) base-100
+                                 let merged = jnumF (jget kv "ssn") |> Option.defaultValue 0.0
+                                 let mutable m = merged
+                                 let vals = [ for _ in 1..7 do
+                                                  let v = m % 100.0
+                                                  m <- (m - v) / 100.0
+                                                  yield v ]
+                                 let idx i = int vals.[i]
+                                 let name =
+                                     match jstrF (jget kv "name") with
+                                     | Some s -> s
+                                     | None -> Game.Catalog.Village.names.[idx 0]
+                                 let surname =
+                                     match jstrF (jget kv "surname") with
+                                     | Some s -> s
+                                     | None -> Game.Catalog.Village.surnames.[idx 1]
+                                 { Game.Managers.kittenFromSeed 0 with
+                                     Seed = 0
+                                     Name = name
+                                     Surname = surname
+                                     Trait = Game.Catalog.Village.traitDefs.[idx 3].Name
+                                     Age = vals.[2]
+                                     Color = idx 4
+                                     Variety = idx 5
+                                     Rarity = idx 6 }
+                         let cap (v: float) = if v > 20001.0 then 20001.0 else v
+                         let skills =
+                             match jget kv "skills" with
+                             | Some (JNum f) -> jobNames |> List.map (fun j -> (j, cap f)) |> Map.ofList
+                             | Some (JArr xs) ->
+                                 jobNames
+                                 |> List.mapi (fun i j ->
+                                     (j, cap (match xs |> List.tryItem i with Some (JNum f) -> f | _ -> 0.0)))
+                                 |> Map.ofList
+                             | _ -> jobNames |> List.map (fun j -> (j, 0.0)) |> Map.ofList
+                         let job =
+                             match jget kv "job" with
+                             | Some (JNum i) -> (match jobNames |> List.tryItem (int i) with Some j -> Some j | None -> None)
+                             | Some (JStr s) -> Some s
+                             | _ -> None
+                         { baseK with
+                             Skills = skills
+                             Exp = jnumF (jget kv "exp") |> Option.defaultValue 0.0
+                             Job = job
+                             EngineerSpeciality = jstrF (jget kv "engineerSpeciality")
+                             Rank = (jnumF (jget kv "rank") |> Option.defaultValue 0.0) |> int
+                             IsLeader = jboolF (jget kv "isLeader") |> Option.defaultValue false }
+                     | _ -> Game.Managers.kittenFromSeed 0
+                 // orig village.load constructs a seedless `new Kitten()` per
+                 // saved entry (REVERSED loop) — identity rolls burn game-rand
+                 // draws even though loadSeeded/loadCompressed overwrite them
+                 (match jget vk "kittens" with
+                  | Some (JArr ks) -> for _ in List.rev ks do ignore (Game.Managers.kittenWithGameRand (fun () -> rngDraws <- rngDraws + 1; rand ()))
+                  | None -> ())
+                 let kittens =
+                     match jget vk "kittens" with
+                     | Some (JArr ks) -> ks |> List.map loadKitten
+                     | _ -> []
+                 // orig rebuilds traits with reversed iteration + unshift
+                 let mutable traits = []
+                 for k in List.rev kittens do
+                     if not (traits |> List.contains k.Trait) then traits <- k.Trait :: traits
+                 vpool <-
+                     { vpool with
+                         Kittens = kittens
+                         Traits = traits
+                         MaxKittens = (jnumF (jget vk "maxKittens") |> Option.defaultValue 0.0) |> int
+                         NextKittenProgress = jnumF (jget vk "nextKittenProgress") |> Option.defaultValue 0.0
+                         LeaderSeed = (kittens |> List.tryFind (fun k -> k.IsLeader) |> Option.map (fun k -> k.Seed)) }
+                 (match jget vk "jobs" with
+                  | Some (JArr js) ->
+                      for j in js do
+                          match j with
+                          | JObj jv ->
+                              (match jstrF (jget jv "name") with
+                               | Some n ->
+                                   let unl = jboolF (jget jv "unlocked") |> Option.defaultValue false
+                                   let value = (jnumF (jget jv "value") |> Option.defaultValue 0.0) |> int
+                                   vpool <-
+                                       { vpool with
+                                           JobUnlocked = (if unl then vpool.JobUnlocked |> Set.add n else vpool.JobUnlocked)
+                                           JobValues = vpool.JobValues |> Map.add n value }
+                               | None -> ())
+                          | _ -> ()
+                  | _ -> ())
+             | _ -> ())
+
+            // calendar.load
+            (match jget root "calendar" with
+             | Some (JObj cv) ->
+                 calendar <-
+                     { calendar with
+                         Year = jnumF (jget cv "year") |> Option.defaultValue 0.0
+                         Day = jnumF (jget cv "day") |> Option.defaultValue 0.0
+                         Season = (jnumF (jget cv "season") |> Option.defaultValue 0.0) |> int
+                         Weather = jstrF (jget cv "weather")
+                         FestivalDays = (jnumF (jget cv "festivalDays") |> Option.defaultValue 0.0) |> int
+                         Cycle = (jnumF (jget cv "cycle") |> Option.defaultValue 0.0) |> int
+                         CycleYear = (jnumF (jget cv "cycleYear") |> Option.defaultValue 0.0) |> int
+                         CryptoPrice = jnumF (jget cv "cryptoPrice") |> Option.defaultValue 1000.0 }
+             | _ -> ())
+
+            // console.load: the craft filter is the only FS-tracked filter
+            (match jget root "console" with
+             | Some (JObj cv) ->
+                 (match jget cv "filters" with
+                  | Some (JObj fs0) ->
+                      (match jget fs0 "craft" with
+                       | Some (JObj fv) -> craftFilterUnlocked <- jboolF (jget fv "unlocked") |> Option.defaultValue false
+                       | _ -> ())
+                  | _ -> ())
+             | _ -> ())
+
+            // telemetry.load
+            (match jget root "telemetry" with
+             | Some (JObj tv) ->
+                 (match jstrF (jget tv "guid") with
+                  | Some g -> telemetryGuid <- g
+                  | None -> ())
+             | _ -> ())
+
+            // challenges.load (+ reserveMan)
+            (match jget root "challenges" with
+             | Some (JObj cv) ->
+                 (match jget cv "challenges" with
+                  | Some (JArr cs) ->
+                      for c in cs do
+                          match c with
+                          | JObj jv ->
+                              (match jstrF (jget jv "name") with
+                               | Some n ->
+                                   match cpool.Challenges |> Map.tryFind n with
+                                   | Some st ->
+                                       let st1 =
+                                           { st with
+                                               Researched = jboolF (jget jv "researched") |> Option.defaultValue st.Researched
+                                               On = (jnumF (jget jv "on") |> Option.defaultValue (float st.On)) |> int
+                                               Unlocked = jboolF (jget jv "unlocked") |> Option.defaultValue st.Unlocked
+                                               Active = jboolF (jget jv "active") |> Option.defaultValue st.Active }
+                                       // legacy compat: researched && !on → on = 1
+                                       let st2 = if st1.Researched && st1.On = 0 then { st1 with On = 1 } else st1
+                                       cpool <- { cpool with Challenges = cpool.Challenges |> Map.add n st2 }
+                                       // unlocks && on && !active → game.unlock
+                                       if st2.On > 0 && not st2.Active then
+                                           if n = "1000Years" then
+                                               let pm = tpool.CFUs.["temporalPress"]
+                                               tpool <- { tpool with CFUs = tpool.CFUs |> Map.add "temporalPress" { pm with Unlocked = true } }
+                               | None -> ())
+                          | _ -> ()
+                  | _ -> ())
+                 (match jget cv "reserves" with
+                  | Some (JObj rv) ->
+                      (match jget rv "reserveResources" with
+                       | Some (JObj rr) ->
+                           for (k, v) in rr do
+                               (match v with
+                                | JNum f -> reserveResources <- reserveResources |> Map.add k f
+                                | _ -> ())
+                       | _ -> ())
+                      reserveCryochambers <- (jnumF (jget rv "reserveCryochambers") |> Option.defaultValue 0.0) |> int
+                  | _ -> ())
+             | _ -> ())
+
+            // workshop.load (no unlock re-fire: UpgradeDef carries no unlock
+            // data — purchase paths skip it too)
+            (match jget root "workshop" with
+             | Some (JObj wv) ->
+                 (match jget wv "upgrades" with
+                  | Some (JArr us) ->
+                      for u in us do
+                          match u with
+                          | JObj jv ->
+                              (match jstrF (jget jv "name") with
+                               | Some n ->
+                                   match wpool.Upgrades |> Map.tryFind n with
+                                   | Some st ->
+                                       wpool <-
+                                           { wpool with
+                                               Upgrades =
+                                                   wpool.Upgrades
+                                                   |> Map.add n
+                                                       { st with
+                                                           Unlocked = jboolF (jget jv "unlocked") |> Option.defaultValue st.Unlocked
+                                                           Researched = jboolF (jget jv "researched") |> Option.defaultValue st.Researched } }
+                               | None -> ())
+                          | _ -> ()
+                  | _ -> ())
+                 (match jget wv "crafts" with
+                  | Some (JArr cs) ->
+                      for c0 in cs do
+                          match c0 with
+                          | JObj jv ->
+                              (match jstrF (jget jv "name") with
+                               | Some n ->
+                                   match wpool.Crafts |> Map.tryFind n with
+                                   | Some st ->
+                                       wpool <-
+                                           { wpool with
+                                               Crafts =
+                                                   wpool.Crafts
+                                                   |> Map.add n
+                                                       { st with
+                                                           Unlocked = jboolF (jget jv "unlocked") |> Option.defaultValue st.Unlocked
+                                                           Value = jnumF (jget jv "value") |> Option.defaultValue st.Value
+                                                           Progress = jnumF (jget jv "progress") |> Option.defaultValue st.Progress } }
+                               | None -> ())
+                          | _ -> ()
+                  | _ -> ())
+                 (match jget wv "zebraUpgrades" with
+                  | Some (JArr zs) ->
+                      for z in zs do
+                          match z with
+                          | JObj jv ->
+                              (match jstrF (jget jv "name") with
+                               | Some n ->
+                                   match wpool.ZebraUpgrades |> Map.tryFind n with
+                                   | Some st ->
+                                       wpool <-
+                                           { wpool with
+                                               ZebraUpgrades =
+                                                   wpool.ZebraUpgrades
+                                                   |> Map.add n
+                                                       { st with
+                                                           Unlocked = jboolF (jget jv "unlocked") |> Option.defaultValue st.Unlocked
+                                                           Researched = jboolF (jget jv "researched") |> Option.defaultValue st.Researched } }
+                               | None -> ())
+                          | _ -> ()
+                  | _ -> ())
+             | _ -> ())
+
+            // diplomacy.load: races
+            (match jget root "diplomacy" with
+             | Some (JObj dv) ->
+                 (match jget dv "races" with
+                  | Some (JArr rs) ->
+                      for r in rs do
+                          match r with
+                          | JObj jv ->
+                              (match jstrF (jget jv "name") with
+                               | Some n ->
+                                   match dp.Races |> Map.tryFind n with
+                                   | Some st ->
+                                       dp <-
+                                           { dp with
+                                               Races =
+                                                   dp.Races
+                                                   |> Map.add n
+                                                       { st with
+                                                           EmbassyLevel = (jnumF (jget jv "embassyLevel") |> Option.defaultValue 0.0) |> int
+                                                           Unlocked = jboolF (jget jv "unlocked") |> Option.defaultValue st.Unlocked
+                                                           Energy = jnumF (jget jv "energy") |> Option.defaultValue st.Energy
+                                                           Duration = jnumF (jget jv "duration") |> Option.defaultValue st.Duration } }
+                               | None -> ())
+                          | _ -> ()
+                  | _ -> ())
+             | _ -> ())
+
+            // buildings.load: val/on/unlocked + stage (drop-empty semantics:
+            // absent keys keep the reset defaults)
+            (match jget root "buildings" with
+             | Some (JArr bs) ->
+                 for b0 in bs do
+                     match b0 with
+                     | JObj jv ->
+                         (match jstrF (jget jv "name") with
+                          | Some n ->
+                              match bpool.ByName |> Map.tryFind n with
+                              | Some st ->
+                                  bpool <-
+                                      { bpool with
+                                          ByName =
+                                              bpool.ByName
+                                              |> Map.add n
+                                                  { st with
+                                                      Unlocked = jboolF (jget jv "unlocked") |> Option.defaultValue st.Unlocked
+                                                      Val = (jnumF (jget jv "val") |> Option.defaultValue (float st.Val)) |> int
+                                                      On = (jnumF (jget jv "on") |> Option.defaultValue (float st.On)) |> int
+                                                      Stage = (jnumF (jget jv "stage") |> Option.defaultValue (float st.Stage)) |> int } }
+                          | None -> ())
+                     | _ -> ()
+             | _ -> ())
+
+            // science.load
+            (match jget root "science" with
+             | Some (JObj sv) ->
+                 (match jget sv "techs" with
+                  | Some (JArr ts) ->
+                      for t0 in ts do
+                          match t0 with
+                          | JObj jv ->
+                              (match jstrF (jget jv "name") with
+                               | Some n ->
+                                   match spool.Techs |> Map.tryFind n with
+                                   | Some st ->
+                                       spool <-
+                                           { spool with
+                                               Techs =
+                                                   spool.Techs
+                                                   |> Map.add n
+                                                       { st with
+                                                           Unlocked = jboolF (jget jv "unlocked") |> Option.defaultValue st.Unlocked
+                                                           Researched = jboolF (jget jv "researched") |> Option.defaultValue st.Researched } }
+                               | None -> ())
+                          | _ -> ()
+                  | _ -> ())
+                 (match jget sv "policies" with
+                  | Some (JArr ps) ->
+                      for p0 in ps do
+                          match p0 with
+                          | JObj jv ->
+                              (match jstrF (jget jv "name") with
+                               | Some n ->
+                                   match spool.Policies |> Map.tryFind n with
+                                   | Some st ->
+                                       spool <-
+                                           { spool with
+                                               Policies =
+                                                   spool.Policies
+                                                   |> Map.add n
+                                                       { st with
+                                                           Unlocked = jboolF (jget jv "unlocked") |> Option.defaultValue st.Unlocked
+                                                           Researched = jboolF (jget jv "researched") |> Option.defaultValue st.Researched } }
+                               | None -> ())
+                          | _ -> ()
+                  | _ -> ())
+             | _ -> ())
+
+            // achievements.load
+            (match jget root "achievements" with
+             | Some (JArr a0s) ->
+                 for a0 in a0s do
+                     match a0 with
+                     | JObj jv ->
+                         (match jstrF (jget jv "name") with
+                          | Some n ->
+                              match apool.Achievements |> Map.tryFind n with
+                              | Some st ->
+                                  apool <-
+                                      { apool with
+                                          Achievements =
+                                              apool.Achievements
+                                              |> Map.add n
+                                                  { st with
+                                                      Unlocked = jboolF (jget jv "unlocked") |> Option.defaultValue st.Unlocked
+                                                      StarUnlocked = jboolF (jget jv "starUnlocked") |> Option.defaultValue st.StarUnlocked } }
+                          | None -> ())
+                     | _ -> ()
+             | _ -> ())
+            (match jget root "ach" with
+             | Some (JObj av) ->
+                 (match jget av "badges" with
+                  | Some (JArr bs) ->
+                      for b0 in bs do
+                          match b0 with
+                          | JObj jv ->
+                              (match jstrF (jget jv "name") with
+                               | Some n ->
+                                   match apool.Badges |> Map.tryFind n with
+                                   | Some st ->
+                                       apool <-
+                                           { apool with
+                                               Badges =
+                                                   apool.Badges
+                                                   |> Map.add n { st with Unlocked = jboolF (jget jv "unlocked") |> Option.defaultValue st.Unlocked } }
+                               | None -> ())
+                          | _ -> ()
+                  | _ -> ())
+             | _ -> ())
+
+            // religion.load (+ legacy tcratio tier derivation)
+            (match jget root "religion" with
+             | Some (JObj rv) ->
+                 rpool <-
+                     { rpool with
+                         Faith = jnumF (jget rv "faith") |> Option.defaultValue 0.0
+                         Corruption = jnumF (jget rv "corruption") |> Option.defaultValue 0.0
+                         FaithRatio = jnumF (jget rv "faithRatio") |> Option.defaultValue 0.0
+                         TranscendenceTier = (jnumF (jget rv "transcendenceTier") |> Option.defaultValue 0.0) |> int
+                         ActiveHolyGenocide = (jnumF (jget rv "activeHolyGenocide") |> Option.defaultValue 0.0) |> int
+                         NecrocornDeficit = jnumF (jget rv "necrocornDeficit") |> Option.defaultValue 0.0 }
+                 if rpool.TranscendenceTier = 0 then
+                     match jnumF (jget rv "tcratio") with
+                     | Some tc when tc > 0.0 ->
+                         let tier = Game.Math.jsRound (System.Math.Log (10.0 * Game.Math.getUnlimitedDR tc 0.1))
+                         rpool <- { rpool with TranscendenceTier = max 0.0 tier |> int }
+                     | _ -> ()
+                 (match jget rv "zu" with
+                  | Some (JArr xs) ->
+                      for x in xs do
+                          match x with
+                          | JObj jv ->
+                              (match jstrF (jget jv "name") with
+                               | Some n ->
+                                   (match rpool.ZUs |> Map.tryFind n with
+                                    | Some st ->
+                                        rpool <-
+                                            { rpool with
+                                                ZUs =
+                                                    rpool.ZUs
+                                                    |> Map.add n
+                                                        { st with
+                                                            Val = (jnumF (jget jv "val") |> Option.defaultValue (float st.Val)) |> int
+                                                            On = (jnumF (jget jv "on") |> Option.defaultValue (float st.On)) |> int
+                                                            Unlocked = jboolF (jget jv "unlocked") |> Option.defaultValue st.Unlocked } }
+                                    | None -> ())
+                               | None -> ())
+                          | _ -> ()
+                  | _ -> ())
+                 (match jget rv "ru" with
+                  | Some (JArr xs) ->
+                      for x in xs do
+                          match x with
+                          | JObj jv ->
+                              (match jstrF (jget jv "name") with
+                               | Some n ->
+                                   (match rpool.RUs |> Map.tryFind n with
+                                    | Some st ->
+                                        rpool <-
+                                            { rpool with
+                                                RUs =
+                                                    rpool.RUs
+                                                    |> Map.add n
+                                                        { st with
+                                                            Val = (jnumF (jget jv "val") |> Option.defaultValue (float st.Val)) |> int
+                                                            On = (jnumF (jget jv "on") |> Option.defaultValue (float st.On)) |> int } }
+                                    | None -> ())
+                               | None -> ())
+                          | _ -> ()
+                  | _ -> ())
+                 (match jget rv "tu" with
+                  | Some (JArr xs) ->
+                      for x in xs do
+                          match x with
+                          | JObj jv ->
+                              (match jstrF (jget jv "name") with
+                               | Some n ->
+                                   (match rpool.TUs |> Map.tryFind n with
+                                    | Some st ->
+                                        rpool <-
+                                            { rpool with
+                                                TUs =
+                                                    rpool.TUs
+                                                    |> Map.add n
+                                                        { st with
+                                                            Val = (jnumF (jget jv "val") |> Option.defaultValue (float st.Val)) |> int
+                                                            On = (jnumF (jget jv "on") |> Option.defaultValue (float st.On)) |> int
+                                                            Unlocked = jboolF (jget jv "unlocked") |> Option.defaultValue st.Unlocked } }
+                                    | None -> ())
+                               | None -> ())
+                          | _ -> ()
+                  | _ -> ())
+                 (match jget rv "pact" with
+                  | Some (JArr xs) ->
+                      for x in xs do
+                          match x with
+                          | JObj jv ->
+                              (match jstrF (jget jv "name") with
+                               | Some n ->
+                                   (match rpool.Pacts |> Map.tryFind n with
+                                    | Some st ->
+                                        rpool <-
+                                            { rpool with
+                                                Pacts =
+                                                    rpool.Pacts
+                                                    |> Map.add n
+                                                        { st with
+                                                            Val = (jnumF (jget jv "val") |> Option.defaultValue (float st.Val)) |> int
+                                                            On = (jnumF (jget jv "on") |> Option.defaultValue (float st.On)) |> int
+                                                            Unlocked = jboolF (jget jv "unlocked") |> Option.defaultValue st.Unlocked } }
+                                    | None -> ())
+                               | None -> ())
+                          | _ -> ()
+                  | _ -> ())
+                 // religion.afterLoad TU tier unlocks: TUDef carries no tier
+                 // data and the tier is 0 in every reachable state — the save's
+                 // own unlocked flags carry the state (no-op seam)
+             | _ -> ())
+
+            // space.load: metas + reversed unlock loops
+            (match jget root "space" with
+             | Some (JObj sv) ->
+                 (match jget sv "programs" with
+                  | Some (JArr ps) ->
+                      for p0 in ps do
+                          match p0 with
+                          | JObj jv ->
+                              (match jstrF (jget jv "name") with
+                               | Some n ->
+                                   (match spacep.Programs |> Map.tryFind n with
+                                    | Some st ->
+                                        spacep <-
+                                            { spacep with
+                                                Programs =
+                                                    spacep.Programs
+                                                    |> Map.add n
+                                                        { st with
+                                                            Val = (jnumF (jget jv "val") |> Option.defaultValue (float st.Val)) |> int
+                                                            On = (jnumF (jget jv "on") |> Option.defaultValue (float st.On)) |> int
+                                                            Unlocked = jboolF (jget jv "unlocked") |> Option.defaultValue st.Unlocked } }
+                                    | None -> ())
+                               | None -> ())
+                          | _ -> ()
+                  | _ -> ())
+                 (match jget sv "planets" with
+                  | Some (JArr pls) ->
+                      for pl in pls do
+                          match pl with
+                          | JObj pv ->
+                              (match jstrF (jget pv "name") with
+                               | Some pn ->
+                                   (match spacep.Planets |> Map.tryFind pn with
+                                    | Some st ->
+                                        spacep <-
+                                            { spacep with
+                                                Planets =
+                                                    spacep.Planets
+                                                    |> Map.add pn
+                                                        { st with
+                                                            Reached = jboolF (jget pv "reached") |> Option.defaultValue st.Reached
+                                                            Unlocked = jboolF (jget pv "unlocked") |> Option.defaultValue st.Unlocked
+                                                            RouteDays = jnumF (jget pv "routeDays") |> Option.defaultValue st.RouteDays } }
+                                    | None -> ())
+                                   (match jget pv "buildings" with
+                                    | Some (JArr bs) ->
+                                        for b0 in bs do
+                                            match b0 with
+                                            | JObj jv ->
+                                                (match jstrF (jget jv "name") with
+                                                 | Some n ->
+                                                     (match spacep.Buildings |> Map.tryFind n with
+                                                      | Some st ->
+                                                          spacep <-
+                                                              { spacep with
+                                                                  Buildings =
+                                                                      spacep.Buildings
+                                                                      |> Map.add n
+                                                                          { st with
+                                                                              Val = (jnumF (jget jv "val") |> Option.defaultValue (float st.Val)) |> int
+                                                                              On = (jnumF (jget jv "on") |> Option.defaultValue (float st.On)) |> int
+                                                                              Unlocked = jboolF (jget jv "unlocked") |> Option.defaultValue st.Unlocked } }
+                                                      | None -> ())
+                                                 | None -> ())
+                                            | _ -> ()
+                                    | _ -> ())
+                               | None -> ())
+                          | _ -> ()
+                  | _ -> ())
+                 // load fan-outs: val>0 metas re-unlock their chains (reversed)
+                 for pd in List.rev Game.Catalog.Space.programDefs do
+                     let m = spacep.Programs.[pd.Name]
+                     if m.Val > 0 then
+                         for pn in pd.UnlocksPlanets do
+                             let pl = spacep.Planets.[pn]
+                             spacep <- { spacep with Planets = spacep.Planets |> Map.add pn { pl with Unlocked = true } }
+                         for mn in pd.UnlocksMissions do
+                             let m0 = spacep.Programs.[mn]
+                             spacep <- { spacep with Programs = spacep.Programs |> Map.add mn { m0 with Unlocked = true } }
+                         for pol in pd.UnlocksPolicies do
+                             match spool.Policies |> Map.tryFind pol with
+                             | Some p0 -> spool <- { spool with Policies = spool.Policies |> Map.add pol { p0 with Unlocked = true } }
+                             | None -> ()
+                 for bd in List.rev Game.Catalog.Space.buildingDefs do
+                     let m = spacep.Buildings.[bd.Name]
+                     if m.Val > 0 then
+                         for pol in bd.UnlocksPolicies do
+                             match spool.Policies |> Map.tryFind pol with
+                             | Some p0 -> spool <- { spool with Policies = spool.Policies |> Map.add pol { p0 with Unlocked = true } }
+                             | None -> ()
+             | _ -> ())
+
+            // time.load
+            (match jget root "time" with
+             | Some (JObj tv) ->
+                 tpool <-
+                     { tpool with
+                         Flux = jnumF (jget tv "flux") |> Option.defaultValue tpool.Flux
+                         Heat = jnumF (jget tv "heat") |> Option.defaultValue tpool.Heat
+                         TestShatter = (jnumF (jget tv "testShatter") |> Option.defaultValue (float tpool.TestShatter)) |> int
+                         IsAccelerated = jboolF (jget tv "isAccelerated") |> Option.defaultValue tpool.IsAccelerated }
+                 (match jget tv "cfu" with
+                  | Some (JArr xs) ->
+                      for x in xs do
+                          match x with
+                          | JObj jv ->
+                              (match jstrF (jget jv "name") with
+                               | Some n ->
+                                   (match tpool.CFUs |> Map.tryFind n with
+                                    | Some st ->
+                                        let st1 =
+                                            { st with
+                                                Val = (jnumF (jget jv "val") |> Option.defaultValue (float st.Val)) |> int
+                                                On = (jnumF (jget jv "on") |> Option.defaultValue (float st.On)) |> int
+                                                Unlocked = jboolF (jget jv "unlocked") |> Option.defaultValue st.Unlocked }
+                                        let st2 =
+                                            match jnumF (jget jv "heat") with
+                                            | Some h -> { st1 with Heat = h }
+                                            | None -> st1
+                                        let st3 =
+                                            match jnumF (jget jv "delayTicks") with
+                                            | Some d -> { st2 with DelayTicks = int d }
+                                            | None -> st2
+                                        let st4 =
+                                            match jget jv "isAutomationEnabled" with
+                                            | Some (JBool b) -> { st3 with IsAutomationEnabled = Some b }
+                                            | _ -> st3
+                                        tpool <- { tpool with CFUs = tpool.CFUs |> Map.add n st4 }
+                                    | None -> ())
+                               | None -> ())
+                          | _ -> ()
+                  | _ -> ())
+                 (match jget tv "vsu" with
+                  | Some (JArr xs) ->
+                      for x in xs do
+                          match x with
+                          | JObj jv ->
+                              (match jstrF (jget jv "name") with
+                               | Some n ->
+                                   (match tpool.VSUs |> Map.tryFind n with
+                                    | Some st ->
+                                        tpool <-
+                                            { tpool with
+                                                VSUs =
+                                                    tpool.VSUs
+                                                    |> Map.add n
+                                                        { st with
+                                                            Val = (jnumF (jget jv "val") |> Option.defaultValue (float st.Val)) |> int
+                                                            On = (jnumF (jget jv "on") |> Option.defaultValue (float st.On)) |> int
+                                                            Unlocked =
+                                                                (match jboolF (jget jv "unlocked") with
+                                                                 | Some u -> u
+                                                                 | None -> st.Unlocked) } }
+                                    | None -> ())
+                               | None -> ())
+                          | _ -> ()
+                  | _ -> ())
+                 // timeBoiler unlocks with the blast furnace
+                 let bfVal = tpool.CFUs.["blastFurnace"].Val
+                 let tb = tpool.CFUs.["timeBoiler"]
+                 tpool <- { tpool with CFUs = tpool.CFUs |> Map.add "timeBoiler" { tb with Unlocked = bfVal > 0 } }
+                 // queueSources
+                 (match jget tv "queueSources" with
+                  | Some (JObj qs) ->
+                      let mutable s = Set.empty
+                      for (k, v) in qs do
+                          match v with
+                          | JBool true -> s <- s |> Set.add k
+                          | _ -> ()
+                      queueSourcesUnlocked <- s
+                  | _ -> ())
+                 // gainTemporalFlux(ts) — calendar gate, fake clock delta
+                 (match jnumF (jget tv "timestamp") with
+                  | Some ts ->
+                      let calResearched = (match spool.Techs |> Map.tryFind "calendar" with Some t -> t.Researched | None -> false)
+                      if calResearched then
+                          let delta = (1759000000000.0 + float curLogTick * 1000.0) - ts
+                          if delta > 0.0 then
+                              refreshCache ()
+                              let ta = tpool.CFUs.["temporalAccelerator"]
+                              let energyRatio = 1.0 + float ta.Val * (ta.Eff |> Map.tryFind "timeRatio" |> Option.defaultValue 0.0)
+                              let gained = Game.Math.jsRound (delta / 60000.0 * (5.0 * energyRatio))
+                              let pool1, _ = Game.Resources.addResEvent calendarDay "temporalFlux" gained pool
+                              pool <- pool1
+                  | None -> ())
+                 // HEADLESS ORIG QUIRK: the next call — queue.updateQueueSourcesArr
+                 // — hits a bare `self` (js/time.js L2107) → ReferenceError. The
+                 // game.load catch aborts here: prestige/stats/void never load,
+                 // afterLoads never run, and currentSaveIsBroken turns every
+                 // later save() into a no-op. (Browsers: self = window, no throw.)
+                 currentSaveIsBroken <- true
+             | _ -> ())
+
+            // managers-loop order: prestige/stats/void sit AFTER time and only
+            // restore when the time section was absent (load not broken)
+            if not currentSaveIsBroken then
+                // prestige.load: perks + researched unlock re-fire
+                (match jget root "prestige" with
+                 | Some (JObj pv) ->
+                     (match jget pv "perks" with
+                      | Some (JArr ps) ->
+                          for p0 in ps do
+                              match p0 with
+                              | JObj jv ->
+                                  (match jstrF (jget jv "name") with
+                                   | Some n ->
+                                       (match ppool.Perks |> Map.tryFind n with
+                                        | Some st ->
+                                            ppool <-
+                                                { ppool with
+                                                    Perks =
+                                                        ppool.Perks
+                                                        |> Map.add n
+                                                            { st with
+                                                                Unlocked = jboolF (jget jv "unlocked") |> Option.defaultValue st.Unlocked
+                                                                Researched = jboolF (jget jv "researched") |> Option.defaultValue st.Researched } }
+                                        | None -> ())
+                                   | None -> ())
+                              | _ -> ()
+                      | _ -> ())
+                     for n in ppool.PerkOrder do
+                         let pk = ppool.Perks.[n]
+                         if pk.Researched then
+                             match (Game.Catalog.World.perkDefs |> List.find (fun d -> d.Name = n)).Unlocks with
+                             | Some u ->
+                                 let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs u.Jobs u.Tech u.Policies u.Upgrades u.ZebraUpgrades u.Crafts bpool spool wpool
+                                 bpool <- bp2; spool <- sp2; wpool <- wp2
+                             | None -> ()
+                 | _ -> ())
+
+                // stats.load
+                (match jget root "stats" with
+                 | Some (JArr xs) ->
+                     for x in xs do
+                         match x with
+                         | JObj jv ->
+                             (match jstrF (jget jv "name"), jnumF (jget jv "val") with
+                              | Some n, Some v -> stpool <- { stpool with Values = stpool.Values |> Map.add n v }
+                              | _ -> ())
+                         | _ -> ()
+                 | _ -> ())
+                (match jget root "statsCurrent" with
+                 | Some (JArr xs) ->
+                     for x in xs do
+                         match x with
+                         | JObj jv ->
+                             (match jstrF (jget jv "name"), jnumF (jget jv "val") with
+                              | Some n, Some v -> stpool <- { stpool with Current = stpool.Current |> Map.add n v }
+                              | _ -> ())
+                         | _ -> ()
+                 | _ -> ())
+
+                // void.load
+                (match jget root "void" with
+                 | Some (JObj vv) -> voidp <- { voidp with Faction = jstrF (jget vv "faction") }
+                 | _ -> ())
+
+                // afterLoad pass runs after the managers loop — never reached
+                // when the load is broken
+                if not currentSaveIsBroken then
+                    for n in List.rev spool.TechOrder do
+                        let t = spool.Techs.[n]
+                        if t.Researched then
+                            match t.Def.Unlocks with
+                            | Some u ->
+                                vpool <- { vpool with JobUnlocked = vpool.JobUnlocked |> Set.union (Set.ofList u.Jobs) }
+                                let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs [] u.Tech u.Policies u.Upgrades [] u.Crafts bpool spool wpool
+                                bpool <- bp2; spool <- sp2; wpool <- wp2
+                            | None -> ()
+
+            // game.save tail: karmaKittens / ironWill / deadKittens
+            (match jget root "game" with
+             | Some (JObj gv) ->
+                 let karma = (jnumF (jget gv "karmaKittens") |> Option.defaultValue 0.0) |> int
+                 pool <- { pool with KarmaKittens = karma }
+                 ironWill <- jboolF (jget gv "ironWill") |> Option.defaultValue true
+                 // deadKittens sets only game.deadKittens (no FS field) — the
+                 // kittensDead STAT lives in the stats section, skipped when
+                 // broken
+             | _ -> ())
+
+            // calculateAllEffects + updateMaxValueAll + updateCaches
+            calculateAllTime ()
+            pool <- Game.Resources.updateMaxValueAll (capCtx ()) pool
+            refreshCache ()
+            // game.load tail: village.updateHappines() with the loaded state
+            let luxCountLoad =
+                pool.Order
+                |> List.sumBy (fun n ->
+                    match Game.Resources.get pool n with
+                    | Some r when r.Def.Category <> "common" && r.Value > 0.0 -> 1
+                    | _ -> 0)
+            let hctxLoad : Game.Happiness.HappinessContext =
+                { Game.Happiness.freshHappinessContext with
+                    LuxuryCount = luxCountLoad
+                    FestivalDays = calendar.FestivalDays
+                    GetEffect = Game.Effects.getEffect cache }
+            // orig reads sim.maxKittens here — village.load restores
+            // village.maxKittens but NOT sim.maxKittens (still 0 from reset)
+            vpool <- { vpool with Happiness = Game.Happiness.updateHappiness hctxLoad vpool.Kittens.Length 0 }
+        | _ -> failwith "save blob is not a JSON object"
 
     let takeSnapshot () =
         let resources =
@@ -2337,8 +3262,11 @@ let execute (scenario: Scenario) : ExecResult =
         // ticksBeforeSave to autosaveFrequency (400)
         ticksBeforeSave <- ticksBeforeSave - 1
         if ticksBeforeSave = 0 then
-            lcStorageSave <- buildSaveString ()
-            ticksBeforeSave <- 400
+            // broken save state: save() early-returns WITHOUT resetting the
+            // counter — it decrements forever, no further autosaves
+            if not currentSaveIsBroken then
+                lcStorageSave <- buildSaveString ()
+                ticksBeforeSave <- 400
         // orig game.tick (L4464-4473): updateModel — run TWICE on accelerated
         // even ticks (the Tempus Fugit hack) — then time.update, timers, calendar.
         updateModelBody ()
@@ -2652,6 +3580,36 @@ let execute (scenario: Scenario) : ExecResult =
                 System.Console.WriteLine("SAVEDUMP len=" + string lcStorageSave.Length + " sha=" + sha lcStorageSave)
                 System.Console.WriteLine("SAVEBLOB " + lcStorageSave)
                 actionLog <- (curLogTick, "resop", m.Args, RNum (float lcStorageSave.Length)) :: actionLog
+            | [ "loadfile"; path ] ->
+                // D014 harness input: load an orig-produced blob from disk
+                let loaded = System.IO.File.ReadAllText(path)
+                lcStorageSave <- loaded
+                applySaveBlob loaded
+                actionLog <- (curLogTick, "resop", m.Args, RNum (float loaded.Length)) :: actionLog
+            | [ "saveexport" ] ->
+                // orig saveExport: JSON.stringify(save()) → compressToBase64 —
+                // the PLAIN stringify (nulls kept)
+                let dataString = buildSaveStringMode true
+                let enc = Game.LzString.compressToBase64 dataString
+                let sha (s: string) =
+                    use sha256 = System.Security.Cryptography.SHA256.Create()
+                    System.BitConverter.ToString(sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes s)).Replace("-", "").ToLowerInvariant()
+                System.Console.WriteLine("EXPORT len=" + string enc.Length + " sha=" + sha enc)
+                System.Console.WriteLine("EXPORTBLOB " + enc)
+                actionLog <- (curLogTick, "resop", m.Args, RNum (float enc.Length)) :: actionLog
+            | [ "importfile"; path ] ->
+                // orig _loadSaveJson: decompress, integrity check, store the LZ
+                // blob itself, then load
+                let lz = System.IO.File.ReadAllText(path)
+                let b64 = Game.LzString.decompressFromBase64 lz
+                let utf16 = Game.LzString.decompressFromUTF16 lz
+                let json =
+                    if b64.IsSome && b64.Value.Length > 0 && b64.Value.[0] = '{' then b64.Value
+                    elif utf16.IsSome && utf16.Value.Length > 0 && utf16.Value.[0] = '{' then utf16.Value
+                    else failwith "Integrity check failure"
+                lcStorageSave <- lz
+                applySaveBlob lz
+                actionLog <- (curLogTick, "resop", m.Args, RNum (float json.Length)) :: actionLog
             | [ "esprobe" ] ->
                 actionLog <- (curLogTick, "resop", m.Args, RNum (getResProductionCached () |> Map.tryFind "ESwood" |> Option.defaultValue 0.0)) :: actionLog
             | [ "addkitten" ] ->
@@ -2963,7 +3921,8 @@ let execute (scenario: Scenario) : ExecResult =
             pool <- pool'
             wpool <- wpool'
             if ok then
-                craftFilterUnlocked <- true
+                // manual game.craft emits NO message — the craft console filter
+                // unlocks only via the craftAll msg (js/workshop.js L2813)
                 stpool <- Game.Stats.bumpStat "totalCrafts" 1.0 stpool
                 stpool <- Game.Stats.bumpStatCurrent "totalCrafts" 1.0 stpool
                 let gained = (1.0 + Game.Managers.getResCraftRatio cache (crctx ()) craftName) * ceil amt
@@ -3088,11 +4047,18 @@ let execute (scenario: Scenario) : ExecResult =
                        0.5 * (1.0 + Game.Prestige.getBurnedParagonRatio (getResValue "burnedParagon"))
                            * (if (match spool.Policies |> Map.tryFind "monarchy" with Some p -> p.Researched | None -> false) then 1.95 else 1.0)
                    | _ -> 0.0) }
+            let manpowerBefore =
+                (match Game.Resources.get pool "manpower" with Some m0 -> m0.Value | None -> 0.0)
             match m.Action with
             | "huntall" -> pool <- Game.Village.huntFraction hctx 1.0 pool
             | "hunthalf" -> pool <- Game.Village.huntFraction hctx 2.0 pool
             | "huntfifth" -> pool <- Game.Village.huntFraction hctx 5.0 pool
             | _ -> pool <- Game.Village.huntAll hctx pool
+            // a successful hunt always emits the success msg with tag "hunt"
+            // (js/village.js gainHuntRes tail) → unlocks the filter
+            let manpowerAfter =
+                (match Game.Resources.get pool "manpower" with Some m0 -> m0.Value | None -> 0.0)
+            if manpowerAfter < manpowerBefore then huntFilterUnlocked <- true
         | "praise" ->
             // orig religion.praise (js/religion.js L1536): worship += faith.value
             // * (1 + apocrypha); faith.value = 0.0001 + undo registration.
@@ -3375,13 +4341,14 @@ let execute (scenario: Scenario) : ExecResult =
             pool <- pool'
             wpool <- wpool'
             if ok then
+                craftFilterUnlocked <- true // craftAll emits the craft-tag msg
                 stpool <- Game.Stats.bumpStat "totalCrafts" 1.0 stpool
                 stpool <- Game.Stats.bumpStatCurrent "totalCrafts" 1.0 stpool
             refreshCache ()
-        | "save" ->
-            lcStorageSave <- buildSaveString ()
-            actionLog <- (m.Tick, "save", m.Args, RNone) :: actionLog
-        | "load" -> actionLog <- (m.Tick, "load", m.Args, RNone) :: actionLog
+        | "save" -> if not currentSaveIsBroken then lcStorageSave <- buildSaveString () // silent; no-op when broken
+        | "load" ->
+            // orig game.load(): parse the LCstorage blob, reset + apply (silent)
+            applySaveBlob lcStorageSave
         | "observe" ->
             // the observe button: handler only while an event is pending
             if calendar.ObserveRemainingTime > 0 then

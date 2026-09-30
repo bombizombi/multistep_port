@@ -1,0 +1,26 @@
+# name: save-export-import
+# seed: 20260927
+# checkpoints: 0, 100, 200
+# game-15: export (base64 LZ of the save JSON) + import roundtrip. saveexport
+# prints EXPORT len/sha on stdout (compared across drivers); the import path
+# is exercised by oracle/wip/probe-load-import (file handoff).
+0 resop seed 20260927
+0 resop setres catnip 8000
+0 resop setres wood 3000
+0 resop setres manpower 3000
+0 resop setres science 3000
+0 resop setres minerals 3000
+10 gather 30
+20 buy hut
+30 buy field 2
+40 craftall wood
+50 huntall
+60 resop addkitten
+70 resop addkitten
+80 research calendar
+90 craft wood 3
+100 huntall
+150 save
+160 resop saveexport
+170 buy hut
+200 huntall

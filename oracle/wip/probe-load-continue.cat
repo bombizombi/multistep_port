@@ -1,0 +1,15 @@
+# name: probe-load-continue
+# seed: 20260927
+# checkpoints: 0, 50, 100, 200, 300
+# wip probe: both drivers loadfile the orig-produced blob, then keep playing.
+0 resop seed 20260927
+0 resop importfile C:/Users/mestar/AppData/Local/Temp/origexport.txt
+10 gather 20
+50 huntall
+60 craft wood 2
+100 craftall wood
+150 huntall
+200 buy field 4
+250 huntall
+300 save
+301 resop savedump

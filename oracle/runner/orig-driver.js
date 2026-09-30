@@ -491,6 +491,7 @@ function doAction(move) {
       }
       case "save": game.save(); return;
       case "load": game.load(); return;
+      case "load": game.load(); return;
       // resop — test-hook action (D014): direct resPool calls for unit-level
       // verification of the resource pipeline (mirrors orig's own jest practice).
       case "resop": {
@@ -781,6 +782,40 @@ function doAction(move) {
         }
         if (fn === "moonon") {
           actionLog.push({ tick: tickIndex, action: "resop", args, result: game.space.getProgram("moonMission").on || 0 });
+          return;
+        }
+        if (fn === "loadfile") {
+          const loaded = require("fs").readFileSync(arg1, "utf8");
+          LCstorage["com.nuclearunicorn.kittengame.savedata"] = loaded;
+          game.load();
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: loaded.length });
+          return;
+        }
+        if (fn === "saveexport") {
+          const data = game.save();
+          const diffs = [];
+          const walk = (obj, rep, path) => {
+            if (rep === null || typeof rep !== "object") { if (JSON.stringify(obj) !== JSON.stringify(rep)) diffs.push(path + ": " + JSON.stringify(obj) + " vs " + JSON.stringify(rep)); return; }
+            const keys = new Set([...Object.keys(obj || {}), ...Object.keys(rep || {})]);
+            for (const k of keys) walk((obj || {})[k], (rep || {})[k], path + "." + k);
+          };
+          const plain = JSON.parse(JSON.stringify(data));
+          const rep = JSON.parse(JSON.stringify(data, game.JSONreplacer));
+          walk(plain, rep, "$");
+          console.log("NULLDIFFS", JSON.stringify(diffs));
+          const enc = game.compressLZData(JSON.stringify(data));
+          console.log("EXPORT len=" + enc.length + " sha=" + require("crypto").createHash("sha256").update(enc).digest("hex"));
+          console.log("EXPORTBLOB " + enc);
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: enc.length });
+          return;
+        }
+        if (fn === "importfile") {
+          const lz = require("fs").readFileSync(arg1, "utf8");
+          const json = game.decompressLZData(lz);
+          if (!json || json[0] !== "{") throw new Error("Integrity check failure");
+          LCstorage["com.nuclearunicorn.kittengame.savedata"] = lz;
+          game.load();
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: json.length });
           return;
         }
         if (fn === "esprobe") {

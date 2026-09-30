@@ -505,8 +505,9 @@ let private kittenLcg (seed: int) : int -> int =
 /// orig Kitten._generateAttributes (village.js L1483-1515) draw-for-draw on the
 /// kitten's private Lehmer LCG: name, surname, trait, age 5+rand(10) with the
 /// rand(100)<30 growth roll, then the color/variety/rarity tables.
-let private makeKitten (seed: int) : Kitten =
-    let rand = kittenLcg seed
+/// orig Kitten._generateAttributes — draw-for-draw identity rolls (the rand
+/// source differs by call site: kitten LCG at birth, game rand for seedless).
+let private generateIdentity (rand: int -> int) : Kitten =
     let name = Game.Catalog.Village.names.[rand Game.Catalog.Village.names.Length]
     let surname = Game.Catalog.Village.surnames.[rand Game.Catalog.Village.surnames.Length]
     let trait = Game.Catalog.Village.traitDefs.[rand Game.Catalog.Village.traitDefs.Length].Name
@@ -523,9 +524,28 @@ let private makeKitten (seed: int) : Kitten =
     if rand 100 <= 5 then
         rarity <- rand 2 + 1
         if rand 100 <= 10 then rarity <- rarity + 1
-    { Name = name; Surname = surname; Job = None; Rank = 0; Exp = 0.0; Seed = seed
+    { Name = name; Surname = surname; Job = None; Rank = 0; Exp = 0.0; Seed = 0
       Trait = trait; Age = age; Color = color; Variety = variety; Rarity = rarity
       IsLeader = false; Skills = Map.empty; EngineerSpeciality = None }
+
+let private makeKitten (seed: int) : Kitten =
+    { (generateIdentity (kittenLcg seed)) with Seed = seed }
+
+/// orig `new Kitten()` without a seed: identity rolls on the GAME rand
+/// (Math.random under the headless driver). village.load constructs one per
+/// saved kitten — the draws are burned even when loadSeeded/loadCompressed
+/// then overwrite the identity.
+let kittenWithGameRand (rand: unit -> float) : Kitten =
+    let r ratio = int (floor (rand () * float ratio))
+    generateIdentity r
+
+/// orig Kitten.loadSeeded: _normalizeSeed (floor, NaN→0, clamp 0..SEED_MAX
+/// 999999) + _generateAttributes — identity is deterministically regenerated
+/// from the seed; the caller applies skills/exp/job/rank/isLeader on top.
+let kittenFromSeed (seed: float) : Kitten =
+    let s = System.Math.Floor seed
+    let s = if System.Double.IsNaN s then 0.0 else s
+    makeKitten (int (max 0.0 (min 999999.0 s)))
 
 let addKitten (rand: unit -> float) (pool: VillagePool) : VillagePool =
     let seed = generateKittenSeed rand
