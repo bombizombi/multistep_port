@@ -271,6 +271,9 @@ let execute (scenario: Scenario) : ExecResult =
     // (core.js L537); ["hunt"] unlocks on every hunt success msg
     let mutable craftFilterUnlocked = false
     let mutable huntFilterUnlocked = false
+    // buildings-10: bld.cathPollution / cathPollutionPerTick (js/buildings.js)
+    let mutable cathPollution = 0.0
+    let mutable cathPollutionPerTick = 0.0
     // classes.reserveMan (challenges-10): reserveResources / reserveKittens /
     // reserveCryochambers — populated by applyPending's reset path
     let mutable reserveResources: Map<string, float> = Map.empty
@@ -3669,6 +3672,69 @@ let execute (scenario: Scenario) : ExecResult =
                 lcStorageSave <- lz
                 applySaveBlob lz
                 actionLog <- (curLogTick, "resop", m.Args, RNum (float json.Length)) :: actionLog
+            | [ "tumove"; name; count ] ->
+                let n = int count
+                let tier = rpool.TranscendenceTier
+                let meta = rpool.TUs.[name]
+                let def = Game.Catalog.World.tuDefs |> List.find (fun d -> d.Name = name)
+                // button handler tier-unlock loop (L3166-3174)
+                for tuName in rpool.TuOrder do
+                    let d2 = Game.Catalog.World.tuDefs |> List.find (fun d -> d.Name = tuName)
+                    let tu = rpool.TUs.[tuName]
+                    if tier >= d2.Tier && tu.Unlocked = false then
+                        rpool <- { rpool with TUs = rpool.TUs |> Map.add tuName { tu with Unlocked = true } }
+                let meta = rpool.TUs.[name]
+                if tier < def.Tier then
+                    actionLog <- (curLogTick, "resop", m.Args, RText "cannot-afford-or-locked") :: actionLog
+                else
+                    let pool1, rpool1, bought = Game.Religion.buyTU calendarDay (Game.Effects.getEffect cache) tier name n pool rpool
+                    pool <- pool1
+                    rpool <- rpool1
+                    if bought = 0 then
+                        actionLog <- (curLogTick, "resop", m.Args, RText "cannot-afford-or-locked") :: actionLog
+                    else
+                        actionLog <- (curLogTick, "resop", m.Args, RNum (float bought)) :: actionLog
+                        refreshCache ()
+            | [ "sacrificemove"; count ] ->
+                let n = int count
+                let zigguratOn = (match Game.Buildings.get bpool "ziggurat" with Some z -> z.On | None -> 0)
+                let pool1, priceCount, _attempted, overcap, ok =
+                    Game.Religion.transform calendarDay "unicorns" "tears" 2500.0 1 n (float zigguratOn) pool
+                pool <- pool1
+                if ok then
+                    stpool <- Game.Stats.bumpStat "unicornsSacrificed" priceCount stpool
+                    if overcap > 0.001 then
+                        let rate = Game.Effects.getEffect cache "cathPollutionPerTearOvercapped"
+                        if rate <> 0.0 then cathPollution <- cathPollution + overcap * rate
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "sacrificealicornmove"; count ] ->
+                let n = int count
+                let tcRefine = Game.Effects.getEffect cache "tcRefineRatio"
+                let pool1, _, _, _, ok = Game.Religion.transform calendarDay "alicorn" "timeCrystal" 25.0 1 n (1.0 + tcRefine) pool
+                pool <- pool1
+                if ok then
+                    let ctxZ : Game.Religion.ZuCalcCtx =
+                      { AlicornmancyResearched = (match ppool.Perks |> Map.tryFind "alicornmancy" with Some p -> p.Researched | None -> false)
+                        AlicornValue = (match get pool "alicorn" with Some r -> r.Value | None -> 0.0)
+                        UnicornTearsActive = Game.Challenges.isActive cpool "unicornTears" }
+                    for z0 in [ "skyPalace"; "unicornUtopia"; "sunspire" ] do
+                        rpool <- Game.Religion.zuCalcEffects ctxZ z0 rpool
+                    refreshCache ()
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "refinetcmove"; count ] ->
+                let n = int count
+                let bpEff = Game.Religion.blackPyramidEffectiveValue rpool cpool.Challenges.["blackSky"].Researched (Game.Challenges.isActive cpool "blackSky")
+                let mult = 1.0 + Game.Effects.getEffect cache "relicRefineRatio" * float bpEff
+                let pool1, _, _, _, ok = Game.Religion.transform calendarDay "timeCrystal" "relic" 25.0 1 n mult pool
+                pool <- pool1
+                ignore ok
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
+            | [ "refinetearsmove"; count ] ->
+                let n = int count
+                let pool1, refined = Game.Religion.refineTears calendarDay n pool
+                pool <- pool1
+                ignore refined
+                actionLog <- (curLogTick, "resop", m.Args, RNum 0.0) :: actionLog
             | [ "esprobe" ] ->
                 actionLog <- (curLogTick, "resop", m.Args, RNum (getResProductionCached () |> Map.tryFind "ESwood" |> Option.defaultValue 0.0)) :: actionLog
             | [ "addkitten" ] ->
@@ -4179,12 +4245,15 @@ let execute (scenario: Scenario) : ExecResult =
         | "adore" ->
             // orig resetFaith(1.01, true) -> _resetFaithInternal(1.01) (L3157)
             let worshipBefore = rpool.Faith
+            let epiphanyBefore = rpool.FaithRatio
             rpool <- Game.Religion.adoreInternal rpool 1.01
-            registerUndo [ { ManagerId = "religion"; Data = Game.Types.AdoreUndo(worshipBefore, rpool.FaithRatio) } ]
+            registerUndo [ { ManagerId = "religion"; Data = Game.Types.AdoreUndo(worshipBefore, rpool.FaithRatio - epiphanyBefore) } ]
         | "transcend" ->
-            let rp', ok = Game.Religion.transcend rpool
-            rpool <- rp'
-            if ok then calculateAllTime () // game.calculateAllEffects on success
+            let rpT, okT = Game.Religion.transcend rpool
+            rpool <- rpT
+            if okT then calculateAllTime () // game.calculateAllEffects on success
+            // note: TU tier-unlock lives in the BUTTON handler (L3160-3174),
+            // not in religion.transcend — the tumove resop does it explicitly
         | "worship" ->
             // RU purchase via ReligionBtnController -> stackable build loop
             let n = if m.Args.Length >= 2 then int m.Args.[1] else 1
@@ -4213,6 +4282,62 @@ let execute (scenario: Scenario) : ExecResult =
                     let bp2, sp2, wp2 = Game.Managers.unlock u.Buildings u.Tabs u.Jobs u.Tech (u.Policies |> List.filter (fun p0 -> not (policyVeto p0))) u.Upgrades u.ZebraUpgrades u.Crafts bpool spool wpool
                     bpool <- bp2; spool <- sp2; wpool <- wp2
                 | None -> ()
+        | "tu" ->
+            // TranscendenceBtnController: tier-gated cryptotheology ladder
+            let name = m.Args.[0]
+            let n = if m.Args.Length >= 2 then int m.Args.[1] else 1
+            let pool', rpool', bought = Game.Religion.buyTU calendarDay (Game.Effects.getEffect cache) (rpool.TranscendenceTier) name n pool rpool
+            pool <- pool'
+            rpool <- rpool'
+            if bought = 0 then
+                actionLog <- (m.Tick, "tu", m.Args, RText "cannot-afford-or-locked") :: actionLog
+            else refreshCache () // TU effects enter the cache
+        | "sacrifice" ->
+            // unicorn sacrifice: unicorns 2500 → tears × ziggurat.on
+            let n = if m.Args.Length >= 1 then int m.Args.[0] else 1
+            let zigguratOn = (match Game.Buildings.get bpool "ziggurat" with Some z -> z.On | None -> 0)
+            let pool', priceCount, attempted, overcap, ok =
+                Game.Religion.transform calendarDay "unicorns" "tears" 2500.0 1 n (float zigguratOn) pool
+            pool <- pool'
+            if ok then
+                stpool <- Game.Stats.bumpStat "unicornsSacrificed" priceCount stpool
+                // tears overcap evaporates into cathPollution (js/religion.js L2207-2212)
+                if overcap > 0.001 then
+                    let rate = Game.Effects.getEffect cache "cathPollutionPerTearOvercapped"
+                    if rate <> 0.0 then cathPollution <- cathPollution + overcap * rate
+        | "sacrificealicorn" ->
+            // alicorn sacrifice: alicorn 25 → timeCrystal × (1 + tcRefineRatio)
+            let n = if m.Args.Length >= 1 then int m.Args.[0] else 1
+            let tcRefine = Game.Effects.getEffect cache "tcRefineRatio"
+            let pool', _, _, _, ok =
+                Game.Religion.transform calendarDay "alicorn" "timeCrystal" 25.0 1 n (1.0 + tcRefine) pool
+            pool <- pool'
+            if ok then
+                // applyAtGain: keeps skyPalace/unicornUtopia/sunspire effects live
+                let ctxZ : Game.Religion.ZuCalcCtx =
+                  { AlicornmancyResearched = (match ppool.Perks |> Map.tryFind "alicornmancy" with Some p -> p.Researched | None -> false)
+                    AlicornValue = (match get pool "alicorn" with Some r -> r.Value | None -> 0.0)
+                    UnicornTearsActive = Game.Challenges.isActive cpool "unicornTears" }
+                for z0 in ["skyPalace"; "unicornUtopia"; "sunspire"] do
+                    rpool <- Game.Religion.zuCalcEffects ctxZ z0 rpool
+                refreshCache ()
+        | "refinetc" ->
+            // timeCrystal 25 → relic × (1 + relicRefineRatio × BP effective)
+            let n = if m.Args.Length >= 1 then int m.Args.[0] else 1
+            let bpEff =
+                Game.Religion.blackPyramidEffectiveValue rpool
+                    (cpool.Challenges.["blackSky"].Researched)
+                    (Game.Challenges.isActive cpool "blackSky")
+            let mult = 1.0 + Game.Effects.getEffect cache "relicRefineRatio" * float bpEff
+            let pool', _, _, _, ok = Game.Religion.transform calendarDay "timeCrystal" "relic" 25.0 1 n mult pool
+            pool <- pool'
+            if not ok then actionLog <- (m.Tick, "refinetc", m.Args, RText "cannot-afford") :: actionLog
+        | "refinetears" ->
+            // RefineTearsBtnController: tears 10000 → sorrow.value++ (capped 17)
+            let n = if m.Args.Length >= 1 then int m.Args.[0] else 1
+            let pool', refined = Game.Religion.refineTears calendarDay n pool
+            pool <- pool'
+            if refined = 0 then actionLog <- (m.Tick, "refinetears", m.Args, RText "cannot-afford-or-capped") :: actionLog
         | "embassy" ->
             // EmbassyButtonController.buyItem gates: writing + race unlocked
             let raceName = m.Args.[0]

@@ -672,7 +672,9 @@ let buyZU (calendarDay: int) (cache: Game.Effects.EffectsCache) (pool: ResPool) 
 let buyRU (calendarDay: int) (cache: Game.Effects.EffectsCache) (pool: ResPool) (n: int) (name: string) (rp: ReligionPool) : ReligionPool * ResPool * ReligionBuyResult =
     let def = Game.Catalog.World.ruDefs |> List.find (fun d -> d.Name = name)
     let meta = rp.RUs.[name]
-    let noStackableNow = def.NoStackable
+    // orig recalculates noStackable via calculateEffects to
+    // (transcendence.on == 0): with the transcendence RU ON the RU stacks
+    let noStackableNow = def.NoStackable && (match rp.RUs |> Map.tryFind "transcendence" with Some t -> t.On = 0 | None -> true)
     if meta.On > 0 && noStackableNow then
         (rp, pool, { Pool = rp; Bought = 0; UnlockFanOut = None; UpgradeFanOut = None })
     else
@@ -695,6 +697,135 @@ let buyRU (calendarDay: int) (cache: Game.Effects.EffectsCache) (pool: ResPool) 
 
 /// solarRevolution calculateEffects (religion.js L1154-1156): freeze the live
 /// ratio INTO the meta's effects (orig mutates the def; frozen until recalc).
+// --- religion-11/12: transform controller + sorrow refine (js/religion.js) ---
+
+/// blackPyramid.getEffectiveValue: val + (blackSky researched && !active ? 1 : 0)
+let blackPyramidEffectiveValue (pool: ReligionPool) (blackSkyResearched: bool) (blackSkyActive: bool) : int =
+    (match pool.ZUs |> Map.tryFind "blackPyramid" with Some z -> z.Val | None -> 0)
+    + (if blackSkyResearched && not blackSkyActive then 1 else 0)
+
+/// ctx for the ZU calculateEffects REPLACE tables (skyPalace/utopia/sunspire)
+type ZuCalcCtx =
+    { AlicornmancyResearched: bool
+      AlicornValue: float
+      UnicornTearsActive: bool }
+
+let zuCalcEffects (ctx: ZuCalcCtx) (name: string) (pool: ReligionPool) : ReligionPool =
+    let alicornPerTick = if ctx.AlicornmancyResearched || ctx.AlicornValue > 0.0 then 1.0 else 0.0
+    let newEffects =
+      match name with
+      | "skyPalace" ->
+        [ "goldMaxRatio", 0.01; "unicornsRatioReligion", 0.5; "alicornChance", 0.0001
+          "alicornPerTick", 0.00002 * alicornPerTick; "ivoryMeteorRatio", 0.05
+          "unicornsMax", 0.0; "tearsMax", 0.0; "alicornMax", 0.0 ]
+        |> (fun l ->
+             if ctx.UnicornTearsActive
+             then l @ [ "unicornsMax", 50.0; "tearsMax", 275.0; "alicornMax", 0.2 ]
+             else l)
+        |> Map.ofList
+      | "unicornUtopia" ->
+        [ "unicornsRatioReligion", 2.5; "alicornChance", 0.00015
+          "alicornPerTick", 0.000025 * alicornPerTick; "tcRefineRatio", 0.05
+          "ivoryMeteorRatio", 0.15
+          "unicornsMax", 0.0; "tearsMax", 0.0; "alicornMax", 0.0 ]
+        |> (fun l ->
+             if ctx.UnicornTearsActive
+             then l @ [ "unicornsMax", 5500.0; "tearsMax", 1800.0; "alicornMax", 0.6 ]
+             else l)
+        |> Map.ofList
+      | "sunspire" ->
+        [ "unicornsRatioReligion", 5.0; "alicornChance", 0.0003
+          "alicornPerTick", 0.00005 * alicornPerTick; "tcRefineRatio", 0.1
+          "ivoryMeteorRatio", 0.5
+          "unicornsMaxRatio", 0.0; "tearsMax", 0.0; "alicornMax", 0.0 ]
+        |> (fun l ->
+             if ctx.UnicornTearsActive
+             then l @ [ "unicornsMaxRatio", 0.1; "tearsMax", 10000.0; "alicornMax", 1.0 ]
+             else l)
+        |> Map.ofList
+      | _ -> (match pool.ZUs |> Map.tryFind name with Some z -> z.FrozenEffects | None -> Map.empty)
+    match pool.ZUs |> Map.tryFind name with
+    | Some z -> { pool with ZUs = pool.ZUs |> Map.add name { z with FrozenEffects = newEffects } }
+    | None -> pool
+
+/// TU purchase (TranscendenceBtnController → stackable ladder + tier gate).
+/// darkParacosm uses priceRules (per-price paragon priceRatio 2).
+let buyTU (calendarDay: int) (getEffect: string -> float) (tier: int) (name: string) (n: int) (pool: ResPool) (rpool: ReligionPool) : ResPool * ReligionPool * int =
+    match rpool.TUs |> Map.tryFind name with
+    | Some m when m.Unlocked && m.Val = 0 ->
+        let def = Game.Catalog.World.tuDefs |> List.find (fun d -> d.Name = name)
+        // tier gate evaluated at the moment of purchase (unlock flag set at
+        // transcend time — the button is invisible below tier anyway)
+        let ratio = def.PriceRatio |> Option.defaultValue 1.15
+        let priceFor () =
+            def.Prices
+            |> List.map (fun p ->
+                let base0 = p.Val * (ratio ** float m.Val)
+                let v =
+                  if def.PriceRules && p.Resource = "paragon" then
+                    8.0 * (2.0 ** float m.Val)
+                  elif def.PriceRules then p.Val
+                  else base0
+                (p.Resource, v))
+        let mutable r = pool
+        let mutable rp2 = rpool
+        let mutable bought = 0
+        let mutable left = n
+        while left > 0 && (Game.Resources.hasRes r (priceFor ()) 0.0) do
+            let pool1 = Game.Resources.payPrices calendarDay r (priceFor ())
+            r <- pool1
+            rp2 <- { rp2 with TUs = rp2.TUs |> Map.add name { m with Val = m.Val + 1 } }
+            bought <- bought + 1
+            left <- left - 1
+        r, rp2, bought
+    | _ -> pool, rpool, 0
+
+/// transform controller core (TransformBtnController._transform): pay
+/// priceCount from resFrom, gain gainMultiplier×amt of resTo (capped),
+/// overcap = attempted − actual (0 when uncapped).
+let transform (calendarDay: int) (resFrom: string) (resTo: string) (price: float) (divider: int) (n: int) (gainMultiplier: float) (pool: ResPool) : ResPool * float * float * float * bool =
+    // n = ALL/half/fifth selector (MultiLinkBtn divider): canAfford/n batches
+    let afford0 = floor ((match Game.Resources.get pool resFrom with Some r -> r.Value | None -> 0.0) / price) |> int
+    let gainMax = (match Game.Resources.get pool resTo with Some r -> r.MaxValue | None -> 0.0)
+    let gainNow = (match Game.Resources.get pool resTo with Some r -> r.Value | None -> 0.0)
+    let canAfford =
+        if gainMax <> 0.0 && afford0 > 1 then
+            max 1 (min afford0 (int (ceil ((gainMax - gainNow) / gainMultiplier))))
+        else afford0
+    let transformations = canAfford / n
+    if transformations <= 0 then pool, 0.0, 0.0, 0.0, false
+    else
+        let amt = float (transformations * divider)
+        let priceCount = price * amt
+        let fromValue = (match Game.Resources.get pool resFrom with Some r -> r.Value | None -> 0.0)
+        if priceCount > fromValue then pool, 0.0, 0.0, 0.0, false
+        else
+            let attemptedGain = gainMultiplier * amt
+            let pool1, actualGain = Game.Resources.addResEvent calendarDay resFrom -priceCount pool
+            let pool2, actual = Game.Resources.addResEvent calendarDay resTo attemptedGain pool1
+            let maxV = (match Game.Resources.get pool2 resTo with Some r -> r.MaxValue | None -> 0.0)
+            let overcap = if maxV = 0.0 then 0.0 else attemptedGain - actual
+            pool2, price * float (transformations * divider), attemptedGain, overcap, true
+
+/// RefineTearsBtnController: tears 10000 → sorrow.value++ per batch, direct
+/// value write bypassing addResEvent; stops at sorrow.maxValue.
+let refineTears (calendarDay: int) (n: int) (pool: ResPool) : ResPool * int =
+    let price = 10000.0
+    let sorrowMax = 17.0
+    let mutable r = pool
+    let mutable refined = 0
+    let mutable left = n
+    while left > 0
+          && (match Game.Resources.get r "tears" with Some t -> t.Value >= price | None -> false)
+          && (match Game.Resources.get r "sorrow" with Some s -> s.Value < sorrowMax | None -> false) do
+        let pool1, _ = Game.Resources.addResEvent calendarDay "tears" -price r
+        let s = pool1.ByName["sorrow"]
+        r <- { pool1 with ByName = pool1.ByName |> Map.add "sorrow" { s with Value = s.Value + 1.0 } }
+        refined <- refined + 1
+        left <- left - 1
+    r, refined
+
+/// orig ReligionManager.necrocornDeficitPunishment (deficit ≥ 50 wipes skills — later unit)
 let freezeSolarRevolution (cache: Game.Effects.EffectsCache) (rp: ReligionPool) : ReligionPool =
     let m = rp.RUs.["solarRevolution"]
     if m.On > 0 then

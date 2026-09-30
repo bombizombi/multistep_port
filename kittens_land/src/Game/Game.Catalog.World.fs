@@ -29,7 +29,9 @@ type RUDef =
 
 type TUDef =
     { Name: string; Prices: Price list; Effects: Map<string, float>
-      PriceRatio: float option; Unlocks: UnlockList option; Upgrades: UnlockList option }
+      PriceRatio: float option; Unlocks: UnlockList option; Upgrades: UnlockList option
+      Tier: int
+      PriceRules: bool }
 
 type PactDef =
     { Name: string; Prices: Price list; Effects: Map<string, float>
@@ -125,17 +127,17 @@ let ruDefs : RUDef list =
 
 let tuDefs : TUDef list =
     [
-      { Name = "blackObelisk"; Prices = [{ Resource = "relic"; Val = 100 }]; Effects = Map.ofList ["solarRevolutionLimit", 0.05]; PriceRatio = Some 1.15; Unlocks = None; Upgrades = None }
-      { Name = "blackNexus"; Prices = [{ Resource = "relic"; Val = 5000 }]; Effects = Map.ofList ["relicRefineRatio", 1]; PriceRatio = Some 1.15; Unlocks = None; Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
-      { Name = "blackCore"; Prices = [{ Resource = "relic"; Val = 10000 }]; Effects = Map.ofList ["blsLimit", 1]; PriceRatio = Some 1.15; Unlocks = None; Upgrades = None }
-      { Name = "singularity"; Prices = [{ Resource = "relic"; Val = 25000 }]; Effects = Map.ofList ["globalResourceRatio", 0.1]; PriceRatio = Some 1.15; Unlocks = None; Upgrades = None }
-      { Name = "blackLibrary"; Prices = [{ Resource = "relic"; Val = 30000 }]; Effects = Map.ofList ["compendiaTTBoostRatio", 0.02]; PriceRatio = Some 1.15; Unlocks = None; Upgrades = None }
-      { Name = "blackRadiance"; Prices = [{ Resource = "relic"; Val = 37500 }]; Effects = Map.ofList ["blsCorruptionRatio", 0.0012]; PriceRatio = Some 1.15; Unlocks = None; Upgrades = None }
-      { Name = "blazar"; Prices = [{ Resource = "relic"; Val = 50000 }]; Effects = Map.ofList ["timeRatio", 0.1; "rrRatio", 0.02]; PriceRatio = Some 1.15; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
-      { Name = "darkNova"; Prices = [{ Resource = "relic"; Val = 75000 }; { Resource = "void"; Val = 7500 }]; Effects = Map.ofList ["energyProductionRatio", 0.02]; PriceRatio = Some 1.15; Unlocks = None; Upgrades = None }
-      { Name = "mausoleum"; Prices = [{ Resource = "relic"; Val = 50000 }; { Resource = "void"; Val = 12500 }; { Resource = "necrocorn"; Val = 10 }]; Effects = Map.ofList ["pactsAvailable", 1]; PriceRatio = Some 1.15; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["siphoning"; "feedingFrenzy"; "upfrontPayment"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["feedingFrenzy"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
-      { Name = "holyGenocide"; Prices = [{ Resource = "relic"; Val = 100000 }; { Resource = "void"; Val = 25000 }]; Effects = Map.ofList ["maxKittensRatio", -0.01; "simScalingRatio", 0.02; "activeHG", 0]; PriceRatio = Some 1.15; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = []; Tabs = []; Jobs = ["ambassador"]; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }) }
-      { Name = "darkParacosm"; Prices = [{ Resource = "relic"; Val = 230000 }; { Resource = "void"; Val = 29000 }; { Resource = "paragon"; Val = 8 }]; Effects = Map.ofList ["milleninumParagon", 1]; PriceRatio = Some 1.75; Unlocks = None; Upgrades = None }
+      { Name = "blackObelisk"; Prices = [{ Resource = "relic"; Val = 100 }]; Effects = Map.ofList ["solarRevolutionLimit", 0.05]; PriceRatio = Some 1.15; Unlocks = None; Upgrades = None; Tier = 1; PriceRules = false }
+      { Name = "blackNexus"; Prices = [{ Resource = "relic"; Val = 5000 }]; Effects = Map.ofList ["relicRefineRatio", 1]; PriceRatio = Some 1.15; Unlocks = None; Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Tier = 3; PriceRules = false }
+      { Name = "blackCore"; Prices = [{ Resource = "relic"; Val = 10000 }]; Effects = Map.ofList ["blsLimit", 1]; PriceRatio = Some 1.15; Unlocks = None; Upgrades = None; Tier = 5; PriceRules = false }
+      { Name = "singularity"; Prices = [{ Resource = "relic"; Val = 25000 }]; Effects = Map.ofList ["globalResourceRatio", 0.1]; PriceRatio = Some 1.15; Unlocks = None; Upgrades = None; Tier = 7; PriceRules = false }
+      { Name = "blackLibrary"; Prices = [{ Resource = "relic"; Val = 30000 }]; Effects = Map.ofList ["compendiaTTBoostRatio", 0.02]; PriceRatio = Some 1.15; Unlocks = None; Upgrades = None; Tier = 9; PriceRules = false }
+      { Name = "blackRadiance"; Prices = [{ Resource = "relic"; Val = 37500 }]; Effects = Map.ofList ["blsCorruptionRatio", 0.0012]; PriceRatio = Some 1.15; Unlocks = None; Upgrades = None; Tier = 12; PriceRules = false }
+      { Name = "blazar"; Prices = [{ Resource = "relic"; Val = 50000 }]; Effects = Map.ofList ["timeRatio", 0.1; "rrRatio", 0.02]; PriceRatio = Some 1.15; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Tier = 15; PriceRules = false }
+      { Name = "darkNova"; Prices = [{ Resource = "relic"; Val = 75000 }; { Resource = "void"; Val = 7500 }]; Effects = Map.ofList ["energyProductionRatio", 0.02]; PriceRatio = Some 1.15; Unlocks = None; Upgrades = None; Tier = 20; PriceRules = false }
+      { Name = "mausoleum"; Prices = [{ Resource = "relic"; Val = 50000 }; { Resource = "void"; Val = 12500 }; { Resource = "necrocorn"; Val = 10 }]; Effects = Map.ofList ["pactsAvailable", 1]; PriceRatio = Some 1.15; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["siphoning"; "feedingFrenzy"; "upfrontPayment"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = ["feedingFrenzy"]; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Tier = 23; PriceRules = false }
+      { Name = "holyGenocide"; Prices = [{ Resource = "relic"; Val = 100000 }; { Resource = "void"; Val = 25000 }]; Effects = Map.ofList ["maxKittensRatio", -0.01; "simScalingRatio", 0.02; "activeHG", 0]; PriceRatio = Some 1.15; Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = []; Tabs = []; Jobs = ["ambassador"]; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Tier = 25; PriceRules = false }
+      { Name = "darkParacosm"; Prices = [{ Resource = "relic"; Val = 230000 }; { Resource = "void"; Val = 29000 }; { Resource = "paragon"; Val = 8 }]; Effects = Map.ofList ["milleninumParagon", 1]; PriceRatio = Some 1.75; Unlocks = None; Upgrades = None; Tier = 27; PriceRules = true }
     ]
 
 let pactDefs : PactDef list =

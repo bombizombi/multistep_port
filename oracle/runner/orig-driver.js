@@ -825,6 +825,85 @@ function doAction(move) {
           actionLog.push({ tick: tickIndex, action: "resop", args, result: json.length });
           return;
         }
+        if (fn === "tumove") {
+          // TranscendenceBtnController stackable build + tier gate
+          const name = args[1];
+          const n = args[2] ? Number(args[2]) : 1;
+          const meta = game.religion.getTU(name);
+          // button handler tier-unlock loop (L3166-3174)
+          for (const tu of game.religion.transcendenceUpgrades) {
+            const check = (!tu.evaluateLocks || tu.evaluateLocks(game));
+            if (check && game.religion.transcendenceTier >= tu.tier) tu.unlocked = true;
+          }
+          if (game.religion.transcendenceTier < meta.tier) {
+            actionLog.push({ tick: tickIndex, action, args, reason: "cannot-afford-or-locked" });
+            return;
+          }
+          const c = new com.nuclearunicorn.game.ui.TranscendenceBtnController(game);
+          const model = c.fetchModel({ id: name });
+          const before = model.metadata.val;
+          if (model.enabled) {
+            c.build(model, n);
+            actionLog.push({ tick: tickIndex, action: "resop", args, result: model.metadata.val - before });
+            game.updateCaches();
+          } else {
+            actionLog.push({ tick: tickIndex, action: "resop", args, reason: "cannot-afford-or-locked" });
+          }
+          return;
+        }
+        if (fn === "sacrificemove") {
+          // unicorn sacrifice via the stored TransformBtnController
+          const n = args[1] ? Number(args[1]) : 1;
+          const c = game.religion.unicornSacController;
+          const model = c.fetchModel({ id: "sacrificeBtn", prices: [{ name: "unicorns", val: 2500 }] });
+          c.transformFixed(model, Math.floor(c.getCanAfford(model) / n));
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "sacrificealicornmove") {
+          const n = args[1] ? Number(args[1]) : 1;
+          const c = new classes.ui.religion.TransformBtnController(game, {
+            gainMultiplier: function () { return 1 + this.game.getEffect("tcRefineRatio"); },
+            gainedResource: "timeCrystal",
+            applyAtGain: function () {
+              this.game.upgrade({ zigguratUpgrades: ["skyPalace", "unicornUtopia", "sunspire"] });
+            },
+            logTextID: "religion.sacrificeAlicornsBtn.sacrifice.msg",
+            logfilterID: "alicornSacrifice",
+          });
+          const model = c.fetchModel({ id: "sacrificeAlicornsBtn", prices: [{ name: "alicorn", val: 25 }] });
+          c.transformFixed(model, Math.floor(c.getCanAfford(model) / n));
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "refinetcmove") {
+          const n = args[1] ? Number(args[1]) : 1;
+          const c = new classes.ui.religion.TransformBtnController(game, {
+            gainMultiplier: function () {
+              return 1 + this.game.getEffect("relicRefineRatio") * this.game.religion.getZU("blackPyramid").getEffectiveValue(this.game);
+            },
+            gainedResource: "relic",
+            logTextID: "religion.refineTCsBtn.refine.msg",
+            logfilterID: "tcRefine",
+          });
+          const model = c.fetchModel({ id: "refineTCBtn", prices: [{ name: "timeCrystal", val: 25 }] });
+          c.transformFixed(model, Math.floor(c.getCanAfford(model) / n));
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
+        if (fn === "refinetearsmove") {
+          // RefineTearsBtnController.buyItem loop (tears 10000 → sorrow++)
+          let n = args[1] ? Number(args[1]) : 1;
+          const tears = game.resPool.get("tears");
+          const sorrow = game.resPool.get("sorrow");
+          while (n > 0 && tears.value >= 10000 && sorrow.value < sorrow.maxValue) {
+            game.resPool.addResEvent("tears", -10000);
+            sorrow.value++;
+            n--;
+          }
+          actionLog.push({ tick: tickIndex, action: "resop", args, result: 0 });
+          return;
+        }
         if (fn === "bldprobe") {
           const b = game.bld.get(arg1);
           console.log("BLDPROBE " + arg1 + " val=" + b.val + " on=" + b.on + " togglable=" + b.togglable + " togglableOnOff=" + b.togglableOnOff);

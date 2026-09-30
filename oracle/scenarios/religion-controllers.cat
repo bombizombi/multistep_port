@@ -1,0 +1,46 @@
+# name: religion-controllers
+# seed: 20260927
+# checkpoints: 0, 100, 200, 300
+# religion-10/11/12/13: praise/adore/transcend math (worship/epiphany via
+# resop setters), transforms (unicorn sacrifice, alicorn - TC, TC - relic
+# with BP effective value), tears-sorrow refine, ZU calc tables, TU purchase
+# with tiers, adore undo delta, RU dynamic noStackable.
+0 resop seed 20260927
+0 resop setres catnip 900000
+0 resop setres unicorns 900000
+0 resop setres tears 900000
+0 resop setres alicorn 5000
+0 resop setres timeCrystal 900000
+0 resop setres faith 900000
+0 resop setres gold 50000
+0 resop setres ivory 500000
+0 resop setres unobtainium 5000
+0 resop setres spice 50000
+0 resop setres necrocorn 500
+20 praise
+30 praise
+40 worship solarchant
+50 worship solarchant
+60 worship solarchant
+70 worship scholasticism
+80 adore
+90 adore
+100 transcend
+110 resop epiphany 3000
+110 transcend
+120 policy mysticism
+130 worship solarRevolution
+140 adore
+150 transcend
+200 resop sacrificemove 2
+210 resop sacrificemove 1
+220 resop sacrificealicornmove 3
+230 resop refinetcmove 4
+240 resop setchallenge blackSky complete
+250 resop setchallenge blackSky inactive
+260 resop refinetcmove 2
+270 resop tumove blackObelisk 3
+280 resop tumove blackNexus 2
+290 resop tumove blackCore 1
+300 resop setres tears 1000000
+300 resop refinetearsmove 30
