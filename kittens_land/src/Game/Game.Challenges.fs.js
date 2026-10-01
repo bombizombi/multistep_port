@@ -128,8 +128,13 @@ export function setActive(name, active, cp) {
 
 const ldr = (effect) => ((limit) => getLimitedDR(effect, limit));
 
-function getTradeBonusEffect(_cp, getEffect, tradepostVal) {
-    const c = FSharpMap__get_Item(_cp.Challenges, "pacifism");
+/**
+ * orig getTradeBonusEffect (L318-330): tradepost ladder, requires completions
+ * and an inactive challenge. tradepostVal is the live building val; the
+ * tradeRatio 0.015 is the tradepost meta's own static effect.
+ */
+export function getTradeBonusEffect(cp, getEffect, tradepostVal) {
+    const c = FSharpMap__get_Item(cp.Challenges, "pacifism");
     if ((c.On === 0) ? true : c.Active) {
         return 0;
     }

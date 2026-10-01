@@ -310,19 +310,21 @@ export function unlockRandomRace(dp, ctx, rand) {
         const dp_4 = new DiplomacyPool(add("dragons", (bind$0040_3 = FSharpMap__get_Item(dp.Races, "dragons"), new RaceState(true, bind$0040_3.EmbassyLevel, bind$0040_3.Energy, bind$0040_3.Duration, bind$0040_3.Sells, bind$0040_3.Buys)), dp.Races), dp.RaceOrder, dp.NonRandomTrades, dp.NonRandomResetDays, dp.BaseGoldCost, dp.BaseManpowerCost);
         return [dp_4, new UnlockEvent("dragons", noneEvent.UnlockCaravanserai, noneEvent.UnlockZebraPolicies)];
     }
-    else if (isEmpty(unmetRaces)) {
-        return [dp, noneEvent];
-    }
     else {
         const raceId = ~~Math.floor(rand() * length(unmetRaces)) | 0;
-        const matchValue = tryItem(raceId, unmetRaces);
-        if (matchValue == null) {
+        if (isEmpty(unmetRaces)) {
             return [dp, noneEvent];
         }
         else {
-            const name_1 = matchValue;
-            const dp_5 = new DiplomacyPool(add(name_1, (bind$0040_4 = FSharpMap__get_Item(dp.Races, name_1), new RaceState(true, bind$0040_4.EmbassyLevel, bind$0040_4.Energy, bind$0040_4.Duration, bind$0040_4.Sells, bind$0040_4.Buys)), dp.Races), dp.RaceOrder, dp.NonRandomTrades, dp.NonRandomResetDays, dp.BaseGoldCost, dp.BaseManpowerCost);
-            return [dp_5, new UnlockEvent(name_1, noneEvent.UnlockCaravanserai, noneEvent.UnlockZebraPolicies)];
+            const matchValue = tryItem(raceId, unmetRaces);
+            if (matchValue == null) {
+                return [dp, noneEvent];
+            }
+            else {
+                const name_1 = matchValue;
+                const dp_5 = new DiplomacyPool(add(name_1, (bind$0040_4 = FSharpMap__get_Item(dp.Races, name_1), new RaceState(true, bind$0040_4.EmbassyLevel, bind$0040_4.Energy, bind$0040_4.Duration, bind$0040_4.Sells, bind$0040_4.Buys)), dp.Races), dp.RaceOrder, dp.NonRandomTrades, dp.NonRandomResetDays, dp.BaseGoldCost, dp.BaseManpowerCost);
+                return [dp_5, new UnlockEvent(name_1, noneEvent.UnlockCaravanserai, noneEvent.UnlockZebraPolicies)];
+            }
         }
     }
 }
@@ -346,23 +348,25 @@ export function update(dp, ctx, year, karmaKittens, rand) {
     }
 }
 
-export function getManpowerCost(dp, ctx) {
+export function getManpowerCost(dp, ctx, pollutionLevel, postApocalypseActive) {
     const manpowerCost = dp.BaseManpowerCost - ctx.GetEffect("tradeCatpowerDiscount");
-    if (manpowerCost < 0) {
+    const manpowerCost_1 = postApocalypseActive ? (manpowerCost * (1 + pollutionLevel)) : manpowerCost;
+    if (manpowerCost_1 < 0) {
         return 0;
     }
     else {
-        return manpowerCost;
+        return manpowerCost_1;
     }
 }
 
-export function getGoldCost(dp, ctx) {
+export function getGoldCost(dp, ctx, pollutionLevel, postApocalypseActive) {
     const goldCost = dp.BaseGoldCost - ctx.GetEffect("tradeGoldDiscount");
-    if (goldCost < 0) {
+    const goldCost_1 = postApocalypseActive ? (goldCost * (1 + pollutionLevel)) : goldCost;
+    if (goldCost_1 < 0) {
         return 0;
     }
     else {
-        return goldCost;
+        return goldCost_1;
     }
 }
 
@@ -382,20 +386,35 @@ export function getTradeRatio(ctx) {
 
 /**
  * orig calculateStandingFromPolicies: policy-gated, 0 at this slice.
+ * orig calculatePhantomTradeposts (L1222-1231): globalRelationsBonus +
+ * zebra/nonZebra relation modifiers from policies
  */
-export function calculateStandingFromPolicies(_raceName) {
-    return 0;
+export function calculatePhantomTradeposts(ctx, raceName) {
+    return ctx.GetEffect("globalRelationsBonus") + ((raceName === "zebras") ? ctx.GetEffect("zebraRelationModifier") : ctx.GetEffect("nonZebraRelationModifier"));
 }
 
-export function getFinalStanding(dp, ctx, raceName) {
+/**
+ * orig calculateStandingFromPolicies (L1232-1236): phantom × tradepost standingRatio
+ */
+export function calculateStandingFromPolicies(ctx, tradepostStandingRatio, raceName) {
+    return calculatePhantomTradeposts(ctx, raceName) * tradepostStandingRatio;
+}
+
+export function getFinalStanding(dp, ctx, raceName, tradepostStandingRatio, diplomatsResearched, neutralRaceEmbassyStanding) {
     const def = find((r) => (r.Name === raceName), raceDefs);
     const race = FSharpMap__get_Item(dp.Races, raceName);
-    const bonusStanding = ctx.GetEffect("standingRatio") + calculateStandingFromPolicies(raceName);
+    const bonusStanding = ctx.GetEffect("standingRatio") + calculateStandingFromPolicies(ctx, tradepostStandingRatio, raceName);
     if (def.Standing < 0) {
         return min(def.Standing + bonusStanding, 0);
     }
     else if (def.Standing === 0) {
-        return 0;
+        if (diplomatsResearched) {
+            const b = bonusStanding + (race.EmbassyLevel * neutralRaceEmbassyStanding);
+            return max((b - 0.25) / 3, 0);
+        }
+        else {
+            return 0;
+        }
     }
     else {
         return def.Standing + (bonusStanding / 2);
@@ -518,11 +537,11 @@ export function fuzzGainedAmount(rand, amount, width) {
  * Returns bought resources (name → amount) + updated NonRandomTrades state.
  * Returns (pool, boughtResources, successfulTradeAmount).
  */
-export function tradeImpl(dp, ctx, rand, raceName, totalTradeAmount, ambassadorEffects) {
+export function tradeImpl(dp, ctx, rand, raceName, totalTradeAmount, ambassadorEffects, tradepostStandingRatio, diplomatsResearched, neutralRaceEmbassyStanding, pacifismTradeBonus, pollutionLevel, postApocalypseActive) {
     let table_3, NonRandomTrades_1;
     const def = find((r) => (r.Name === raceName), raceDefs);
     const raceState = FSharpMap__get_Item(dp.Races, raceName);
-    const tradeResults = calculateFailedNormalBonusTrades(ctx, rand, getFinalStanding(dp, ctx, raceName), totalTradeAmount, dp.NonRandomTrades);
+    const tradeResults = calculateFailedNormalBonusTrades(ctx, rand, getFinalStanding(dp, ctx, raceName, tradepostStandingRatio, diplomatsResearched, neutralRaceEmbassyStanding), totalTradeAmount, dp.NonRandomTrades);
     const dp_1 = new DiplomacyPool(dp.Races, dp.RaceOrder, max(dp.NonRandomTrades - tradeResults.Failed, 0), dp.NonRandomResetDays, dp.BaseGoldCost, dp.BaseManpowerCost);
     const normalTradeAmount = tradeResults.Normal;
     const bonusTradeAmount = tradeResults.Bonus;
@@ -535,11 +554,11 @@ export function tradeImpl(dp, ctx, rand, raceName, totalTradeAmount, ambassadorE
     else {
         let dp_2 = dp_1;
         const race = FSharpMap__get_Item(dp_2.Races, raceName);
-        const durationCap = 100 * (1 + Math.floor(race.Energy));
+        const durationCap = 100 * (4 + Math.floor(race.Energy));
         const duration = min(race.Duration, durationCap);
         dp_2 = (new DiplomacyPool(add(raceName, new RaceState(race.Unlocked, race.EmbassyLevel, race.Energy, duration, race.Sells, race.Buys), dp_2.Races), dp_2.RaceOrder, dp_2.NonRandomTrades, dp_2.NonRandomResetDays, dp_2.BaseGoldCost, dp_2.BaseManpowerCost));
         const tradeVolume = getTradeVolume(ctx, ambassadorEffects);
-        const tradeRatio = ((1 + getTradeRatio(ctx)) + 0) + 0;
+        const tradeRatio = ((1 + getTradeRatio(ctx)) + (calculatePhantomTradeposts(ctx, raceName) * 0.015)) + pacifismTradeBonus;
         const raceRatio = 1 + (race.Energy * 0.02);
         const currentSeason = ctx.Season;
         let bought = empty({
@@ -611,10 +630,10 @@ export function tradeImpl(dp, ctx, rand, raceName, totalTradeAmount, ambassadorE
  * orig getMaxTradeAmt (L1084-1107): min of affordable trades across gold /
  * manpower / the buy resource; None when 0 or unbounded. (JS returns undefined.)
  */
-export function getMaxTradeAmt(dp, ctx, ambassadorEffects, raceName) {
+export function getMaxTradeAmt(dp, ctx, pollutionLevel, postApocalypseActive, ambassadorEffects, raceName) {
     const raceState = FSharpMap__get_Item(dp.Races, raceName);
-    const manpowerCost = getManpowerCost(dp, ctx);
-    const goldCost = getGoldCost(dp, ctx);
+    const manpowerCost = getManpowerCost(dp, ctx, pollutionLevel, postApocalypseActive);
+    const goldCost = getGoldCost(dp, ctx, pollutionLevel, postApocalypseActive);
     const volume = getTradeVolume(ctx, ambassadorEffects);
     const goldAmt = Math.floor(ctx.GetResValue("gold") / max(goldCost, 1));
     const manpAmt = Math.floor(ctx.GetResValue("manpower") / max(manpowerCost, 1));
@@ -684,7 +703,10 @@ export function embassyPrices(dp, ctx, raceName) {
     const def = find((r) => (r.Name === raceName), raceDefs);
     const race = FSharpMap__get_Item(dp.Races, raceName);
     const priceCoeficient = 1 - ctx.GetEffect("embassyCostReduction");
-    return map((p) => (new Price(p.Resource, (p.Val * priceCoeficient) * Math.pow(1.15, race.EmbassyLevel))), def.EmbassyPrices);
+    return map((p) => {
+        let arg1__3;
+        return new Price(p.Resource, (p.Val * priceCoeficient) * ((arg1__3 = (race.EmbassyLevel + ctx.GetEffect("embassyFakeBought")), Math.pow(1.15, arg1__3))));
+    }, def.EmbassyPrices);
 }
 
 /**

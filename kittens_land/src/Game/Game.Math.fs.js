@@ -202,3 +202,11 @@ export function geometricRandom(rand, p) {
     }
 }
 
+/**
+ * orig Kitten.precisionRound(number, 1): the e-notation round-trip reduces to
+ * jsRound(x*10)/10 in the normal range (string round-trip is exact there).
+ */
+export function jsRoundX1(x) {
+    return jsRound(x * 10) / 10;
+}
+

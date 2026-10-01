@@ -7,7 +7,7 @@ import { badgeDefs, achievementDefs } from "./Game.Catalog.World.fs.js";
 import { disposeSafe, getEnumerator, comparePrimitives } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
 
 export class AchContext extends Record {
-    constructor(ResValue, KittensResMax, DeadKittens, Happiness, KittenCount, MaxKittens, Faith, FestivalDays, TrueYear, ObservatoryOn, ZigguratVal, LeviathanEnergy, TotalYears, TotalResets, IronWill, MineVal, WarehouseVal, PastureVal, MagnetoVal, FactoryVal, SteamworksVal) {
+    constructor(ResValue, KittensResMax, DeadKittens, Happiness, KittenCount, MaxKittens, Faith, FestivalDays, TrueYear, ObservatoryOn, ZigguratVal, LeviathanEnergy, TotalYears, TotalResets, JupiterAscending, ParagonValue, MoonMissionOn, IronWill, MineVal, WarehouseVal, PastureVal, MagnetoVal, FactoryVal, SteamworksVal) {
         super();
         this.ResValue = ResValue;
         this.KittensResMax = KittensResMax;
@@ -23,6 +23,9 @@ export class AchContext extends Record {
         this.LeviathanEnergy = LeviathanEnergy;
         this.TotalYears = TotalYears;
         this.TotalResets = TotalResets;
+        this.JupiterAscending = JupiterAscending;
+        this.ParagonValue = ParagonValue;
+        this.MoonMissionOn = MoonMissionOn;
         this.IronWill = IronWill;
         this.MineVal = (MineVal | 0);
         this.WarehouseVal = (WarehouseVal | 0);
@@ -34,7 +37,7 @@ export class AchContext extends Record {
 }
 
 export function AchContext_$reflection() {
-    return record_type("Game.Achievements.AchContext", [], AchContext, () => [["ResValue", lambda_type(string_type, float64_type)], ["KittensResMax", float64_type], ["DeadKittens", float64_type], ["Happiness", float64_type], ["KittenCount", int32_type], ["MaxKittens", int32_type], ["Faith", float64_type], ["FestivalDays", float64_type], ["TrueYear", float64_type], ["ObservatoryOn", int32_type], ["ZigguratVal", int32_type], ["LeviathanEnergy", float64_type], ["TotalYears", float64_type], ["TotalResets", float64_type], ["IronWill", bool_type], ["MineVal", int32_type], ["WarehouseVal", int32_type], ["PastureVal", int32_type], ["MagnetoVal", int32_type], ["FactoryVal", int32_type], ["SteamworksVal", int32_type]]);
+    return record_type("Game.Achievements.AchContext", [], AchContext, () => [["ResValue", lambda_type(string_type, float64_type)], ["KittensResMax", float64_type], ["DeadKittens", float64_type], ["Happiness", float64_type], ["KittenCount", int32_type], ["MaxKittens", int32_type], ["Faith", float64_type], ["FestivalDays", float64_type], ["TrueYear", float64_type], ["ObservatoryOn", int32_type], ["ZigguratVal", int32_type], ["LeviathanEnergy", float64_type], ["TotalYears", float64_type], ["TotalResets", float64_type], ["JupiterAscending", bool_type], ["ParagonValue", float64_type], ["MoonMissionOn", bool_type], ["IronWill", bool_type], ["MineVal", int32_type], ["WarehouseVal", int32_type], ["PastureVal", int32_type], ["MagnetoVal", int32_type], ["FactoryVal", int32_type], ["SteamworksVal", int32_type]]);
 }
 
 export class AchMeta extends Record {
@@ -193,8 +196,12 @@ function evalCondition(ctx, name) {
                 return false;
             }
         case "spaceOddity":
-        case "jupiterAscending":
-            return false;
+            if (ctx.IronWill) {
+                return ctx.MoonMissionOn;
+            }
+            else {
+                return false;
+            }
         case "veryLargeArray":
             return ctx.ObservatoryOn >= 100;
         case "shadowOfTheColossus":
@@ -235,6 +242,8 @@ function evalCondition(ctx, name) {
             return false;
         case "cathammer":
             return ctx.TotalYears >= 40000;
+        case "jupiterAscending":
+            return ctx.JupiterAscending;
         case "eternalBacchanalia":
             return ctx.FestivalDays >= ((100 * 100) * 1);
         case "challenger":
@@ -292,7 +301,9 @@ export function update(ctx, rand, ap) {
                 ap_1 = unlockAchievement(def.Name, ap_1);
             }
             if (!a.StarUnlocked && def.HasStarCondition) {
-                const starHit = (def.Name === "cathammer") && (ctx.TrueYear >= 40000);
+                let starHit;
+                const matchValue = def.Name;
+                starHit = ((matchValue === "spaceOddity") ? ((ctx.IronWill && ctx.MoonMissionOn) && (ctx.ParagonValue < 10)) : ((matchValue === "jupiterAscending") ? ctx.JupiterAscending : ((matchValue === "cathammer") && (ctx.TrueYear >= 40000))));
                 if (starHit) {
                     ap_1 = unlockStarAchievement(def.Name, ap_1);
                 }

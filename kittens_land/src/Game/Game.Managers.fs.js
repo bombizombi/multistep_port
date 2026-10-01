@@ -1,17 +1,18 @@
 
 import { Record } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Types.js";
-import { lambda_type, int32_type, float64_type, option_type, bool_type, record_type, class_type, list_type, string_type } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
-import { BuildingState, Price, UpgradeState, UpgradeDef, CraftState, mkUpgrade, CraftState_$reflection, UpgradeState_$reflection, PolicyState, ResearchState, mkPolicy, mkResearch, PolicyState_$reflection, ResearchState_$reflection } from "./Game.Types.fs.js";
-import { sumBy, updateAt, tail, head, isEmpty, indexed, sortWith, forAll, skip, take, singleton, append, contains, length, item, filter, reverse, cons, empty, find, ofArray, tryFind as tryFind_1, map } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
-import { change, map as map_1, empty as empty_1, toList, FSharpMap__get_Item, add, tryFind, ofList } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Map.js";
-import { equals, stringHash, disposeSafe, getEnumerator, comparePrimitives } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
-import { isStorageLimited, CraftContext, addResEvent, get$, payPrices, hasRes } from "./Game.Resources.fs.js";
+import { option_type, lambda_type, float64_type, int32_type, bool_type, record_type, class_type, list_type, string_type } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
+import { BuildingState, Price, UpgradeState, UpgradeDef, CraftState, mkUpgrade, CraftState_$reflection, UpgradeState_$reflection, PolicyState, mkPolicy, ResearchState, mkResearch, PolicyState_$reflection, ResearchState_$reflection } from "./Game.Types.fs.js";
+import { updateAt, tail, head, isEmpty, indexed, sortWith, forAll, skip, take, singleton, append, contains, length, item, filter, reverse, cons, find, tryFind as tryFind_1, fold, exists, empty as empty_1, sumBy, choose, ofArray, map } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
+import { change, toList, FSharpMap__get_IsEmpty, FSharpMap__get_Item, tryFind, map as map_1, empty, add, ofList } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Map.js";
+import { stringHash, disposeSafe, getEnumerator, equals, comparePrimitives } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
+import { max, min } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Double.js";
+import { jsRound, uniformRandomInteger, getInverseUnlimitedDR, getLimitedDR, getUnlimitedDR } from "./Game.Math.fs.js";
+import { getEffect, ManagerGroup } from "./Game.Effects.fs.js";
+import { isStorageLimited, CraftContext, get$, addResEvent, payPrices, hasRes } from "./Game.Resources.fs.js";
+import { blocks, requiredLeaderJob } from "./Game.Catalog.Policies.fs.js";
+import { defaultArg } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Option.js";
 import { zebraUpgradeDefs } from "./Game.Catalog.Defs.fs.js";
 import { resourceDefs } from "./Game.Catalog.Resources.fs.js";
-import { defaultArg } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Option.js";
-import { getEffect } from "./Game.Effects.fs.js";
-import { jsRound, uniformRandomInteger, getInverseUnlimitedDR, getUnlimitedDR, getLimitedDR } from "./Game.Math.fs.js";
-import { max, min } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Double.js";
 import { BldPool, get$ as get$_1 } from "./Game.Buildings.fs.js";
 import { ofList as ofList_1 } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Set.js";
 import { jobDefs as jobDefs_1, traitDefs, surnames, names } from "./Game.Catalog.Village.fs.js";
@@ -31,11 +32,129 @@ export function SciencePool_$reflection() {
 }
 
 export function initScience(techs, policies) {
-    return new SciencePool(map((t) => t.Name, techs), ofList(map((t_1) => [t_1.Name, mkResearch(t_1)], techs), {
+    return new SciencePool(map((t) => t.Name, techs), ofList(map((t_1) => {
+        let bind$0040;
+        return [t_1.Name, (bind$0040 = mkResearch(t_1), new ResearchState(bind$0040.Def, t_1.Name === "calendar", bind$0040.Researched))];
+    }, techs), {
         Compare: (x, y) => (comparePrimitives(x, y) | 0),
     }), map((p) => p.Name, policies), ofList(map((p_1) => [p_1.Name, mkPolicy(p_1)], policies), {
         Compare: (x_1, y_1) => (comparePrimitives(x_1, y_1) | 0),
     }));
+}
+
+export const scienceEffectsBase = ofList(ofArray([["environmentHappinessBonusModifier", 1], ["environmentUnhappinessModifier", 1]]), {
+    Compare: (x, y) => (comparePrimitives(x, y) | 0),
+});
+
+/**
+ * inputs the policy calculateEffects bodies read (js/science.js L854-2160)
+ */
+export class PolicyCalcCtx extends Record {
+    constructor(IronWill, NagaEmbassies, SpiderEmbassies, CycleYear, PactsAvailable, FracturedOn, UncappedHousing) {
+        super();
+        this.IronWill = IronWill;
+        this.NagaEmbassies = (NagaEmbassies | 0);
+        this.SpiderEmbassies = (SpiderEmbassies | 0);
+        this.CycleYear = (CycleYear | 0);
+        this.PactsAvailable = PactsAvailable;
+        this.FracturedOn = (FracturedOn | 0);
+        this.UncappedHousing = (UncappedHousing | 0);
+    }
+}
+
+export function PolicyCalcCtx_$reflection() {
+    return record_type("Game.Managers.PolicyCalcCtx", [], PolicyCalcCtx, () => [["IronWill", bool_type], ["NagaEmbassies", int32_type], ["SpiderEmbassies", int32_type], ["CycleYear", int32_type], ["PactsAvailable", float64_type], ["FracturedOn", int32_type], ["UncappedHousing", int32_type]]);
+}
+
+/**
+ * policy calculateEffects bodies — mutate the live table in place, exactly
+ * like orig (incl. the socialism bug that substitutes a LOCAL empty table).
+ */
+export function policyCalcEffects(ctx, name, effects) {
+    switch (name) {
+        case "liberty":
+            return add("maxKittens", ctx.IronWill ? 0 : 1, effects);
+        case "authocracy":
+            return add("rankLeaderBonusConversion", 0.004 * ctx.UncappedHousing, effects);
+        case "socialism":
+            return empty({
+                Compare: (x, y) => (comparePrimitives(x, y) | 0),
+            });
+        case "radicalXenophobia": {
+            const pa = (ctx.FracturedOn >= 1) ? 0 : 5;
+            return add("pactsAvailable", pa, effects);
+        }
+        case "sharkRelationsBotanists": {
+            const e = add("woodRatio", 0, add("refinePolicyRatio", 0.25, effects));
+            if (ctx.IronWill) {
+                return add("woodRatio", 0.25, add("refinePolicyRatio", 0, e));
+            }
+            else {
+                return e;
+            }
+        }
+        case "nagaRelationsMasons": {
+            const e_1 = min(ctx.NagaEmbassies * 0.0025, 0.1);
+            const bcr = (ctx.NagaEmbassies > 40) ? ((ctx.NagaEmbassies - 40) * 0.02) : 0;
+            return add("blueprintCraftRatio", bcr, add("nagaBlueprintTradeChance", e_1, effects));
+        }
+        case "spiderRelationsGeologists": {
+            const bonus = min(0.002 * ctx.SpiderEmbassies, 0.15);
+            return map_1((_arg, _arg_1) => bonus, effects);
+        }
+        case "dragonRelationsAstrologers": {
+            const cycle = ctx.CycleYear + 1;
+            return add("starchartPolicyRatio", cycle * 0.03, add("starEventChance", cycle * 0.004, effects));
+        }
+        case "feedingFrenzy":
+            return add("feedEldersEfficiencyRatio", getUnlimitedDR(ctx.PactsAvailable, 50), effects);
+        default:
+            return effects;
+    }
+}
+
+/**
+ * recalc a researched policy's live effects (orig calculateEffects call)
+ */
+export function recalcPolicy(ctx, name, sp) {
+    let p;
+    const matchValue = tryFind(name, sp.Policies);
+    let matchResult, p_1;
+    if (matchValue != null) {
+        if ((p = matchValue, p.Researched)) {
+            matchResult = 0;
+            p_1 = matchValue;
+        }
+        else {
+            matchResult = 1;
+        }
+    }
+    else {
+        matchResult = 1;
+    }
+    switch (matchResult) {
+        case 0:
+            return new SciencePool(sp.TechOrder, sp.Techs, sp.PolicyOrder, add(name, new PolicyState(p_1.Def, p_1.Unlocked, p_1.Researched, p_1.Blocked, policyCalcEffects(ctx, name, p_1.Effects)), sp.Policies));
+        default:
+            return sp;
+    }
+}
+
+/**
+ * science manager group: researched policies contribute their live tables
+ * raw (orig registerMeta("research") — researched && effects), plus the
+ * manager effectsBase keys
+ */
+export function scienceGroup(sp) {
+    return new ManagerGroup(scienceEffectsBase, choose((n) => {
+        const p = FSharpMap__get_Item(sp.Policies, n);
+        if (p.Researched && !FSharpMap__get_IsEmpty(p.Effects)) {
+            return [p.Effects, (_arg) => ((v) => v)];
+        }
+        else {
+            return undefined;
+        }
+    }, sp.PolicyOrder));
 }
 
 export function getTech(sp, name) {
@@ -79,10 +198,32 @@ export function research(calendarDay, name, pool, sp) {
 }
 
 /**
- * orig PolicyBtnController buyItem: pay prices, set researched (toggle-off not
- * needed at our stage).
+ * orig PolicyBtnController purchase inputs (shouldBeBought + getPrices)
  */
-export function researchPolicy(calendarDay, name, pool, sp) {
+export class PolicyBuyCtx extends Record {
+    constructor(Calc, GetEffect, PriestLeader, AiLevel, Necrocorns, ActivePacts) {
+        super();
+        this.Calc = Calc;
+        this.GetEffect = GetEffect;
+        this.PriestLeader = PriestLeader;
+        this.AiLevel = AiLevel;
+        this.Necrocorns = Necrocorns;
+        this.ActivePacts = (ActivePacts | 0);
+    }
+}
+
+export function PolicyBuyCtx_$reflection() {
+    return record_type("Game.Managers.PolicyBuyCtx", [], PolicyBuyCtx, () => [["Calc", PolicyCalcCtx_$reflection()], ["GetEffect", lambda_type(string_type, float64_type)], ["PriestLeader", bool_type], ["AiLevel", float64_type], ["Necrocorns", float64_type], ["ActivePacts", int32_type]]);
+}
+
+/**
+ * orig PolicyBtnController.buyItem — prices ×1.25^policyFakeBought (pacifism),
+ * shouldBeBought gates (leader job, aiLevel, upfront necrocorns, blocks),
+ * permanent rival blocking, onPurchase (researched → calc) → onResearch.
+ * Result codes: OkBought | AlreadyBought | CannotAfford | NeedsLeader
+ * | AiLevelTooHigh | UpfrontCost | BlockedRival
+ */
+export function researchPolicy(calendarDay, name, bctx, pool, sp) {
     let pol;
     const matchValue = tryFind(name, sp.Policies);
     let matchResult, pol_1;
@@ -100,18 +241,79 @@ export function researchPolicy(calendarDay, name, pool, sp) {
     }
     switch (matchResult) {
         case 0: {
-            const prices = map((p) => [p.Resource, p.Val], pol_1.Def.Prices);
-            if (hasRes(pool, prices, 0)) {
-                const pool$0027 = payPrices(calendarDay, pool, prices);
-                const sp$0027 = new SciencePool(sp.TechOrder, sp.Techs, sp.PolicyOrder, add(name, new PolicyState(pol_1.Def, pol_1.Unlocked, true), sp.Policies));
-                return [pool$0027, sp$0027, true];
+            const fake = bctx.GetEffect("policyFakeBought");
+            const prices = map((p) => [p.Resource, p.Val * Math.pow(1.25, fake)], pol_1.Def.Prices);
+            if (!hasRes(pool, prices, 0)) {
+                return [pool, sp, "CannotAfford"];
+            }
+            else if (pol_1.Blocked) {
+                return [pool, sp, "BlockedSelf"];
+            }
+            else if (equals(tryFind(name, requiredLeaderJob), "priest") && !bctx.PriestLeader) {
+                return [pool, sp, "NeedsLeader"];
+            }
+            else if ((name === "transkittenism") && (bctx.AiLevel >= 15)) {
+                return [pool, sp, "AiLevelTooHigh"];
+            }
+            else if ((name === "upfrontPayment") && (bctx.Necrocorns < ((2 * bctx.ActivePacts) + sumBy((p_1) => p_1.Val, pol_1.Def.Prices, {
+                GetZero: () => 0,
+                Add: (x, y) => (x + y),
+            })))) {
+                return [pool, sp, "UpfrontCost"];
             }
             else {
-                return [pool, sp, false];
+                const rivals = defaultArg(tryFind(name, blocks), empty_1());
+                const rivalResearched = exists((r0) => {
+                    const matchValue_1 = tryFind(r0, sp.Policies);
+                    if (matchValue_1 == null) {
+                        return false;
+                    }
+                    else {
+                        const p_2 = matchValue_1;
+                        return p_2.Researched;
+                    }
+                }, rivals);
+                if (rivalResearched) {
+                    const sp$0027 = new SciencePool(sp.TechOrder, sp.Techs, sp.PolicyOrder, add(name, new PolicyState(pol_1.Def, pol_1.Unlocked, pol_1.Researched, true, pol_1.Effects), sp.Policies));
+                    return [pool, sp$0027, "BlockedRival"];
+                }
+                else {
+                    const pool$0027 = payPrices(calendarDay, pool, prices);
+                    const sp1 = new SciencePool(sp.TechOrder, sp.Techs, sp.PolicyOrder, add(name, new PolicyState(pol_1.Def, pol_1.Unlocked, true, pol_1.Blocked, pol_1.Effects), sp.Policies));
+                    const rivals_1 = defaultArg(tryFind(name, blocks), empty_1());
+                    const sp1b = fold((acc, r0_1) => {
+                        const matchValue_2 = tryFind(r0_1, acc.Policies);
+                        if (matchValue_2 == null) {
+                            return acc;
+                        }
+                        else {
+                            const rp = matchValue_2;
+                            return new SciencePool(acc.TechOrder, acc.Techs, acc.PolicyOrder, add(r0_1, new PolicyState(rp.Def, rp.Unlocked, rp.Researched, true, rp.Effects), acc.Policies));
+                        }
+                    }, sp1, rivals_1);
+                    const sp2 = recalcPolicy(bctx.Calc, name, sp1b);
+                    let patternInput_1;
+                    if (name === "upfrontPayment") {
+                        const required = 2 * bctx.ActivePacts;
+                        if (required > 0) {
+                            const pool1 = addResEvent(calendarDay, "necrocorn", -required, pool$0027)[0];
+                            patternInput_1 = [pool1, sp2];
+                        }
+                        else {
+                            patternInput_1 = [pool$0027, sp2];
+                        }
+                    }
+                    else {
+                        patternInput_1 = [pool$0027, sp2];
+                    }
+                    const sp3 = patternInput_1[1];
+                    const pool2 = patternInput_1[0];
+                    return [pool2, sp3, "OkBought"];
+                }
             }
         }
         default:
-            return [pool, sp, false];
+            return [pool, sp, "AlreadyBought"];
     }
 }
 
@@ -136,7 +338,7 @@ export function initWorkshop(upgrades, crafts) {
         Compare: (x, y) => (comparePrimitives(x, y) | 0),
     }), map((c) => c.Name, crafts), ofList(map((c_1) => [c_1.Name, new CraftState(c_1, c_1.StartsUnlocked, 0, 0, false, false)], crafts), {
         Compare: (x_1, y_1) => (comparePrimitives(x_1, y_1) | 0),
-    }), map((u_2) => u_2.Name, zebraUpgradeDefs), ofList(map((u_3) => [u_3.Name, new UpgradeState(new UpgradeDef(u_3.Name, u_3.Prices, u_3.Effects), false, false)], zebraUpgradeDefs), {
+    }), map((u_2) => u_2.Name, zebraUpgradeDefs), ofList(map((u_3) => [u_3.Name, new UpgradeState(new UpgradeDef(u_3.Name, u_3.Prices, u_3.Effects, false), false, false)], zebraUpgradeDefs), {
         Compare: (x_2, y_2) => (comparePrimitives(x_2, y_2) | 0),
     }));
 }
@@ -559,7 +761,7 @@ export function checkRelation(embassyLevel, embassyNeeded) {
 export function unlockRelations(diplomacyPerkResearched, getEmbassyLevel, sp) {
     if (diplomacyPerkResearched) {
         let sp_1 = sp;
-        let unlockedList = empty();
+        let unlockedList = empty_1();
         const enumerator = getEnumerator(toList(sp_1.Policies));
         try {
             while (enumerator["System.Collections.IEnumerator.MoveNext"]()) {
@@ -578,7 +780,7 @@ export function unlockRelations(diplomacyPerkResearched, getEmbassyLevel, sp) {
                     gateOpen = (getEmbassyLevel(race) >= needed);
                 }
                 if ((pol.Def.IsRelation && gateOpen) && !pol.Unlocked) {
-                    sp_1 = ((Policies = add(name, new PolicyState(pol.Def, true, pol.Researched), sp_1.Policies), new SciencePool(sp_1.TechOrder, sp_1.Techs, sp_1.PolicyOrder, Policies)));
+                    sp_1 = ((Policies = add(name, new PolicyState(pol.Def, true, pol.Researched, pol.Blocked, pol.Effects), sp_1.Policies), new SciencePool(sp_1.TechOrder, sp_1.Techs, sp_1.PolicyOrder, Policies)));
                     unlockedList = cons(name, unlockedList);
                 }
             }
@@ -589,7 +791,7 @@ export function unlockRelations(diplomacyPerkResearched, getEmbassyLevel, sp) {
         return [sp_1, reverse(unlockedList)];
     }
     else {
-        return [sp, empty()];
+        return [sp, empty_1()];
     }
 }
 
@@ -600,7 +802,7 @@ export function unlockRelations(diplomacyPerkResearched, getEmbassyLevel, sp) {
 export function getTechPrices(sp, name) {
     const matchValue = tryFind(name, sp.Techs);
     if (matchValue == null) {
-        return empty();
+        return empty_1();
     }
     else {
         const t = matchValue;
@@ -685,7 +887,7 @@ export function unlock(buildings, tabs, jobs, techs, policies, upgrades, zebraUp
             }
             else {
                 const p = matchValue_2;
-                sp_1 = ((Policies = add(name_2, new PolicyState(p.Def, true, p.Researched), sp_1.Policies), new SciencePool(sp_1.TechOrder, sp_1.Techs, sp_1.PolicyOrder, Policies)));
+                sp_1 = ((Policies = add(name_2, new PolicyState(p.Def, true, p.Researched, p.Blocked, p.Effects), sp_1.Policies), new SciencePool(sp_1.TechOrder, sp_1.Techs, sp_1.PolicyOrder, Policies)));
             }
         }
     }
@@ -797,11 +999,11 @@ export function VillagePool_$reflection() {
 }
 
 export function initVillage(jobDefs) {
-    return new VillagePool(empty(), 0, 0, ofList(map((j) => [j.Name, 0], jobDefs), {
+    return new VillagePool(empty_1(), 0, 0, ofList(map((j) => [j.Name, 0], jobDefs), {
         Compare: (x, y) => (comparePrimitives(x, y) | 0),
     }), ofList_1(map((j_2) => j_2.Name, filter((j_1) => j_1.StartsUnlocked, jobDefs)), {
         Compare: (x_1, y_1) => (comparePrimitives(x_1, y_1) | 0),
-    }), 1, 0, undefined, empty());
+    }), 1, 0, undefined, empty_1());
 }
 
 /**
@@ -830,8 +1032,7 @@ function kittenLcg(seed) {
     };
 }
 
-function makeKitten(seed) {
-    const rand = kittenLcg(seed);
+function generateIdentity(rand) {
     const name = item(rand(length(names)), names);
     const surname = item(rand(length(surnames)), surnames);
     const trait = item(rand(length(traitDefs)), traitDefs).Name;
@@ -854,9 +1055,36 @@ function makeKitten(seed) {
             rarity = ((rarity + 1) | 0);
         }
     }
-    return new Kitten(name, surname, undefined, 0, 0, seed, trait, age, color, variety, rarity, false, empty_1({
+    return new Kitten(name, surname, undefined, 0, 0, 0, trait, age, color, variety, rarity, false, empty({
         Compare: (x, y) => (comparePrimitives(x, y) | 0),
     }), undefined);
+}
+
+function makeKitten(seed) {
+    const bind$0040 = generateIdentity(kittenLcg(seed));
+    return new Kitten(bind$0040.Name, bind$0040.Surname, bind$0040.Job, bind$0040.Rank, bind$0040.Exp, seed, bind$0040.Trait, bind$0040.Age, bind$0040.Color, bind$0040.Variety, bind$0040.Rarity, bind$0040.IsLeader, bind$0040.Skills, bind$0040.EngineerSpeciality);
+}
+
+/**
+ * orig `new Kitten()` without a seed: identity rolls on the GAME rand
+ * (Math.random under the headless driver). village.load constructs one per
+ * saved kitten — the draws are burned even when loadSeeded/loadCompressed
+ * then overwrite the identity.
+ */
+export function kittenWithGameRand(rand) {
+    const r = (ratio) => (~~Math.floor(rand() * ratio) | 0);
+    return generateIdentity(r);
+}
+
+/**
+ * orig Kitten.loadSeeded: _normalizeSeed (floor, NaN→0, clamp 0..SEED_MAX
+ * 999999) + _generateAttributes — identity is deterministically regenerated
+ * from the seed; the caller applies skills/exp/job/rank/isLeader on top.
+ */
+export function kittenFromSeed(seed) {
+    const s = Math.floor(seed);
+    const s_1 = Number.isNaN(s) ? 0 : s;
+    return makeKitten(~~max(0, min(999999, s_1)));
 }
 
 export function addKitten(rand, pool) {
@@ -989,24 +1217,7 @@ export function simUpdate(maxKittens, kittensPerTick, times, rand, pool) {
             }
         }
     }
-    const baseSkillXP = max(length(pool_1.Kittens) / 10000, 0.01);
-    const skillXP = (baseSkillXP + 0) * times;
-    return new VillagePool(map((k) => {
-        const matchValue = k.Job;
-        if (matchValue == null) {
-            return k;
-        }
-        else {
-            const job = matchValue;
-            const cur = defaultArg(tryFind(job, k.Skills), 0);
-            if (cur === 0) {
-                return new Kitten(k.Name, k.Surname, k.Job, k.Rank, k.Exp, k.Seed, k.Trait, k.Age, k.Color, k.Variety, k.Rarity, k.IsLeader, add(job, skillXP, k.Skills), k.EngineerSpeciality);
-            }
-            else {
-                return new Kitten(k.Name, k.Surname, k.Job, k.Rank, k.Exp, k.Seed, k.Trait, k.Age, k.Color, k.Variety, k.Rarity, k.IsLeader, add(job, cur + skillXP, k.Skills), k.EngineerSpeciality);
-            }
-        }
-    }, pool_1.Kittens), pool_1.NextKittenProgress, pool_1.MaxKittens, pool_1.JobValues, pool_1.JobUnlocked, pool_1.Happiness, pool_1.DeathTimeout, pool_1.LeaderSeed, pool_1.Traits);
+    return new VillagePool(pool_1.Kittens, pool_1.NextKittenProgress, pool_1.MaxKittens, pool_1.JobValues, pool_1.JobUnlocked, pool_1.Happiness, pool_1.DeathTimeout, pool_1.LeaderSeed, pool_1.Traits);
 }
 
 /**
@@ -1032,7 +1243,7 @@ export function killKittens(amount, vpool) {
     const amount_1 = min(amount, length(vpool.Kittens)) | 0;
     const survivors = take(length(vpool.Kittens) - amount_1, vpool.Kittens);
     let jobValues = vpool.JobValues;
-    let deadSpecialities = empty();
+    let deadSpecialities = empty_1();
     const enumerator = getEnumerator(skip(length(vpool.Kittens) - amount_1, vpool.Kittens));
     try {
         while (enumerator["System.Collections.IEnumerator.MoveNext"]()) {
@@ -1382,7 +1593,7 @@ export function simAssignJob(job, amt, vpool) {
  * engineer "ES<craft>" keys (L691-721).
  */
 export function getResProduction(cache, vpool, jobDefs, wp) {
-    let res = empty_1({
+    let res = empty({
         Compare: (x, y) => (comparePrimitives(x, y) | 0),
     });
     const happiness = vpool.Happiness;
@@ -1597,5 +1808,23 @@ export function clearCraftJobs(vpool) {
             return k;
         }
     }, vpool.Kittens), vpool.NextKittenProgress, vpool.MaxKittens, vpool.JobValues, vpool.JobUnlocked, vpool.Happiness, vpool.DeathTimeout, vpool.LeaderSeed, vpool.Traits);
+}
+
+/**
+ * orig Kitten._mergeSSN (SAVE_PACKET_OFFSET 100): pack 7 small ints base-100.
+ */
+export function mergeSSN(values) {
+    let result = 0;
+    const enumerator = getEnumerator(reverse(values));
+    try {
+        while (enumerator["System.Collections.IEnumerator.MoveNext"]()) {
+            const v = enumerator["System.Collections.Generic.IEnumerator`1.get_Current"]() | 0;
+            result = (((result * 100) + v) | 0);
+        }
+    }
+    finally {
+        disposeSafe(enumerator);
+    }
+    return result | 0;
 }
 

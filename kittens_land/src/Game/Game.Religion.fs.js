@@ -837,7 +837,20 @@ export function buyZU(calendarDay, cache, pool, n, name, rp) {
 export function buyRU(calendarDay, cache, pool, n, name, rp) {
     const def = find((d) => (d.Name === name), ruDefs);
     const meta = FSharpMap__get_Item(rp.RUs, name);
-    const noStackableNow = def.NoStackable;
+    let noStackableNow;
+    if (def.NoStackable) {
+        const matchValue = tryFind("transcendence", rp.RUs);
+        if (matchValue == null) {
+            noStackableNow = true;
+        }
+        else {
+            const t = matchValue;
+            noStackableNow = (t.On === 0);
+        }
+    }
+    else {
+        noStackableNow = false;
+    }
     if ((meta.On > 0) && noStackableNow) {
         return [rp, pool, new ReligionBuyResult(rp, 0, undefined, undefined)];
     }
@@ -848,9 +861,9 @@ export function buyRU(calendarDay, cache, pool, n, name, rp) {
         let pool_1 = pool;
         let counter = 0;
         while ((counter < n) && hasRes(pool_1, priceList, 0)) {
-            let RUs, table;
+            let RUs, table_1;
             const m = FSharpMap__get_Item(rp_1.RUs, name);
-            rp_1 = ((RUs = ((table = rp_1.RUs, add(name, increment(m), table))), new ReligionPool(rp_1.Faith, rp_1.FaithRatio, rp_1.Tcratio, rp_1.TranscendenceTier, rp_1.Corruption, rp_1.NecrocornDeficit, rp_1.FractureThreshold, rp_1.Pacts, rp_1.PactOrder, rp_1.ActiveHolyGenocide, rp_1.ZUs, RUs, rp_1.TUs, rp_1.ZuOrder, rp_1.RuOrder, rp_1.TuOrder)));
+            rp_1 = ((RUs = ((table_1 = rp_1.RUs, add(name, increment(m), table_1))), new ReligionPool(rp_1.Faith, rp_1.FaithRatio, rp_1.Tcratio, rp_1.TranscendenceTier, rp_1.Corruption, rp_1.NecrocornDeficit, rp_1.FractureThreshold, rp_1.Pacts, rp_1.PactOrder, rp_1.ActiveHolyGenocide, rp_1.ZUs, RUs, rp_1.TUs, rp_1.ZuOrder, rp_1.RuOrder, rp_1.TuOrder)));
             pool_1 = payPrices(calendarDay, pool_1, priceList);
             counter = ((counter + 1) | 0);
         }
@@ -860,8 +873,215 @@ export function buyRU(calendarDay, cache, pool, n, name, rp) {
 }
 
 /**
- * solarRevolution calculateEffects (religion.js L1154-1156): freeze the live
- * ratio INTO the meta's effects (orig mutates the def; frozen until recalc).
+ * blackPyramid.getEffectiveValue: val + (blackSky researched && !active ? 1 : 0)
+ */
+export function blackPyramidEffectiveValue(pool, blackSkyResearched, blackSkyActive) {
+    let matchValue, z;
+    return (((matchValue = tryFind("blackPyramid", pool.ZUs), (matchValue == null) ? 0 : ((z = matchValue, z.Val)))) + ((blackSkyResearched && !blackSkyActive) ? 1 : 0)) | 0;
+}
+
+/**
+ * ctx for the ZU calculateEffects REPLACE tables (skyPalace/utopia/sunspire)
+ */
+export class ZuCalcCtx extends Record {
+    constructor(AlicornmancyResearched, AlicornValue, UnicornTearsActive) {
+        super();
+        this.AlicornmancyResearched = AlicornmancyResearched;
+        this.AlicornValue = AlicornValue;
+        this.UnicornTearsActive = UnicornTearsActive;
+    }
+}
+
+export function ZuCalcCtx_$reflection() {
+    return record_type("Game.Religion.ZuCalcCtx", [], ZuCalcCtx, () => [["AlicornmancyResearched", bool_type], ["AlicornValue", float64_type], ["UnicornTearsActive", bool_type]]);
+}
+
+export function zuCalcEffects(ctx, name, pool) {
+    let l, l_1, l_2;
+    const alicornPerTick = (ctx.AlicornmancyResearched ? true : (ctx.AlicornValue > 0)) ? 1 : 0;
+    let newEffects;
+    switch (name) {
+        case "skyPalace": {
+            newEffects = ofList((l = ofArray([["goldMaxRatio", 0.01], ["unicornsRatioReligion", 0.5], ["alicornChance", 0.0001], ["alicornPerTick", 2E-05 * alicornPerTick], ["ivoryMeteorRatio", 0.05], ["unicornsMax", 0], ["tearsMax", 0], ["alicornMax", 0]]), ctx.UnicornTearsActive ? append(l, ofArray([["unicornsMax", 50], ["tearsMax", 275], ["alicornMax", 0.2]])) : l), {
+                Compare: (x, y) => (comparePrimitives(x, y) | 0),
+            });
+            break;
+        }
+        case "unicornUtopia": {
+            newEffects = ofList((l_1 = ofArray([["unicornsRatioReligion", 2.5], ["alicornChance", 0.00015], ["alicornPerTick", 2.5E-05 * alicornPerTick], ["tcRefineRatio", 0.05], ["ivoryMeteorRatio", 0.15], ["unicornsMax", 0], ["tearsMax", 0], ["alicornMax", 0]]), ctx.UnicornTearsActive ? append(l_1, ofArray([["unicornsMax", 5500], ["tearsMax", 1800], ["alicornMax", 0.6]])) : l_1), {
+                Compare: (x_1, y_1) => (comparePrimitives(x_1, y_1) | 0),
+            });
+            break;
+        }
+        case "sunspire": {
+            newEffects = ofList((l_2 = ofArray([["unicornsRatioReligion", 5], ["alicornChance", 0.0003], ["alicornPerTick", 5E-05 * alicornPerTick], ["tcRefineRatio", 0.1], ["ivoryMeteorRatio", 0.5], ["unicornsMaxRatio", 0], ["tearsMax", 0], ["alicornMax", 0]]), ctx.UnicornTearsActive ? append(l_2, ofArray([["unicornsMaxRatio", 0.1], ["tearsMax", 10000], ["alicornMax", 1]])) : l_2), {
+                Compare: (x_2, y_2) => (comparePrimitives(x_2, y_2) | 0),
+            });
+            break;
+        }
+        default: {
+            const matchValue = tryFind(name, pool.ZUs);
+            if (matchValue == null) {
+                newEffects = empty({
+                    Compare: (x_3, y_3) => (comparePrimitives(x_3, y_3) | 0),
+                });
+            }
+            else {
+                const z = matchValue;
+                newEffects = z.FrozenEffects;
+            }
+        }
+    }
+    const matchValue_1 = tryFind(name, pool.ZUs);
+    if (matchValue_1 == null) {
+        return pool;
+    }
+    else {
+        const z_1 = matchValue_1;
+        return new ReligionPool(pool.Faith, pool.FaithRatio, pool.Tcratio, pool.TranscendenceTier, pool.Corruption, pool.NecrocornDeficit, pool.FractureThreshold, pool.Pacts, pool.PactOrder, pool.ActiveHolyGenocide, add(name, new ReligionMeta(z_1.Val, z_1.On, z_1.Unlocked, z_1.Researched, newEffects), pool.ZUs), pool.RUs, pool.TUs, pool.ZuOrder, pool.RuOrder, pool.TuOrder);
+    }
+}
+
+/**
+ * TU purchase (TranscendenceBtnController → stackable ladder + tier gate).
+ * darkParacosm uses priceRules (per-price paragon priceRatio 2).
+ */
+export function buyTU(calendarDay, getEffect, tier, name, n, pool, rpool) {
+    let m;
+    const matchValue = tryFind(name, rpool.TUs);
+    let matchResult, m_1;
+    if (matchValue != null) {
+        if ((m = matchValue, m.Unlocked && (m.Val === 0))) {
+            matchResult = 0;
+            m_1 = matchValue;
+        }
+        else {
+            matchResult = 1;
+        }
+    }
+    else {
+        matchResult = 1;
+    }
+    switch (matchResult) {
+        case 0: {
+            const def = find((d) => (d.Name === name), tuDefs);
+            const ratio = defaultArg(def.PriceRatio, 1.15);
+            const priceFor = () => map((p) => {
+                const base0 = p.Val * Math.pow(ratio, m_1.Val);
+                const v = (def.PriceRules && (p.Resource === "paragon")) ? (8 * Math.pow(2, m_1.Val)) : (def.PriceRules ? p.Val : base0);
+                return [p.Resource, v];
+            }, def.Prices);
+            let r = pool;
+            let rp2 = rpool;
+            let bought = 0;
+            let left = n;
+            while ((left > 0) && hasRes(r, priceFor(), 0)) {
+                let TUs;
+                const pool1 = payPrices(calendarDay, r, priceFor());
+                r = pool1;
+                rp2 = ((TUs = add(name, new ReligionMeta(m_1.Val + 1, m_1.On, m_1.Unlocked, m_1.Researched, m_1.FrozenEffects), rp2.TUs), new ReligionPool(rp2.Faith, rp2.FaithRatio, rp2.Tcratio, rp2.TranscendenceTier, rp2.Corruption, rp2.NecrocornDeficit, rp2.FractureThreshold, rp2.Pacts, rp2.PactOrder, rp2.ActiveHolyGenocide, rp2.ZUs, rp2.RUs, TUs, rp2.ZuOrder, rp2.RuOrder, rp2.TuOrder)));
+                bought = ((bought + 1) | 0);
+                left = ((left - 1) | 0);
+            }
+            return [r, rp2, bought];
+        }
+        default:
+            return [pool, rpool, 0];
+    }
+}
+
+/**
+ * transform controller core (TransformBtnController._transform): pay
+ * priceCount from resFrom, gain gainMultiplier×amt of resTo (capped),
+ * overcap = attempted − actual (0 when uncapped).
+ */
+export function transform(calendarDay, resFrom, resTo, price, divider, n, gainMultiplier, pool) {
+    let matchValue, r;
+    const afford0 = ~~Math.floor(((matchValue = get$(pool, resFrom), (matchValue == null) ? 0 : ((r = matchValue, r.Value)))) / price) | 0;
+    let gainMax;
+    const matchValue_1 = get$(pool, resTo);
+    if (matchValue_1 == null) {
+        gainMax = 0;
+    }
+    else {
+        const r_1 = matchValue_1;
+        gainMax = r_1.MaxValue;
+    }
+    let gainNow;
+    const matchValue_2 = get$(pool, resTo);
+    if (matchValue_2 == null) {
+        gainNow = 0;
+    }
+    else {
+        const r_2 = matchValue_2;
+        gainNow = r_2.Value;
+    }
+    const canAfford = (((gainMax !== 0) && (afford0 > 1)) ? max(1, min(afford0, ~~Math.ceil((gainMax - gainNow) / gainMultiplier))) : afford0) | 0;
+    const transformations = ~~(canAfford / n) | 0;
+    if (transformations <= 0) {
+        return [pool, 0, 0, 0, false];
+    }
+    else {
+        const amt = transformations * divider;
+        const priceCount = price * amt;
+        let fromValue;
+        const matchValue_3 = get$(pool, resFrom);
+        if (matchValue_3 == null) {
+            fromValue = 0;
+        }
+        else {
+            const r_3 = matchValue_3;
+            fromValue = r_3.Value;
+        }
+        if (priceCount > fromValue) {
+            return [pool, 0, 0, 0, false];
+        }
+        else {
+            const attemptedGain = gainMultiplier * amt;
+            const patternInput = addResEvent(calendarDay, resFrom, -priceCount, pool);
+            const pool1 = patternInput[0];
+            const actualGain = patternInput[1];
+            const patternInput_1 = addResEvent(calendarDay, resTo, attemptedGain, pool1);
+            const pool2 = patternInput_1[0];
+            const actual = patternInput_1[1];
+            let maxV;
+            const matchValue_4 = get$(pool2, resTo);
+            if (matchValue_4 == null) {
+                maxV = 0;
+            }
+            else {
+                const r_4 = matchValue_4;
+                maxV = r_4.MaxValue;
+            }
+            const overcap = (maxV === 0) ? 0 : (attemptedGain - actual);
+            return [pool2, price * (transformations * divider), attemptedGain, overcap, true];
+        }
+    }
+}
+
+/**
+ * RefineTearsBtnController: tears 10000 → sorrow.value++ per batch, direct
+ * value write bypassing addResEvent; stops at sorrow.maxValue.
+ */
+export function refineTears(calendarDay, n, pool) {
+    let matchValue, t, matchValue_1, s;
+    const price = 10000;
+    const sorrowMax = 17;
+    let r = pool;
+    let refined = 0;
+    let left = n;
+    while (((left > 0) && ((matchValue = get$(r, "tears"), (matchValue == null) ? false : ((t = matchValue, t.Value >= price))))) && ((matchValue_1 = get$(r, "sorrow"), (matchValue_1 == null) ? false : ((s = matchValue_1, s.Value < sorrowMax))))) {
+        const pool1 = addResEvent(calendarDay, "tears", -price, r)[0];
+        const s_1 = FSharpMap__get_Item(pool1.ByName, "sorrow");
+        r = (new ResPool(pool1.Order, add("sorrow", new ResourceState(s_1.Def, s_1.Value + 1, s_1.Unlocked, s_1.MaxValue, s_1.PerTickCached), pool1.ByName), pool1.KarmaKittens, pool1.EnergyProd, pool1.EnergyWinterProd, pool1.EnergyCons));
+        refined = ((refined + 1) | 0);
+        left = ((left - 1) | 0);
+    }
+    return [r, refined];
+}
+
+/**
+ * orig ReligionManager.necrocornDeficitPunishment (deficit ≥ 50 wipes skills — later unit)
  */
 export function freezeSolarRevolution(cache, rp) {
     const m = FSharpMap__get_Item(rp.RUs, "solarRevolution");

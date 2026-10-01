@@ -119,3 +119,10 @@ export function resetStatsCurrent(sp) {
     return new StatsPool(sp.Values, sp.Unlocked, map_1((_arg, _arg_1) => 0, sp.Current));
 }
 
+/**
+ * Plain current-stat read for the save builder (no context recalc).
+ */
+export function getStatCurrentSimple(sp, name) {
+    return defaultArg(tryFind(name, sp.Current), 0);
+}
+

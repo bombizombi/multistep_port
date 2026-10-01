@@ -1,6 +1,10 @@
 
 import { Record, Union } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Types.js";
 import { tuple_type, int32_type, class_type, list_type, float64_type, record_type, option_type, bool_type, string_type, union_type } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
+import { defaultArg } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Option.js";
+import { empty, tryFind } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Map.js";
+import { effects } from "./Game.Catalog.Policies.fs.js";
+import { comparePrimitives } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
 
 export class RefundableRule extends Union {
     constructor(tag, fields) {
@@ -190,16 +194,17 @@ export function PolicyDef_$reflection() {
 }
 
 export class UpgradeDef extends Record {
-    constructor(Name, Prices, Effects) {
+    constructor(Name, Prices, Effects, StartsUnlocked) {
         super();
         this.Name = Name;
         this.Prices = Prices;
         this.Effects = Effects;
+        this.StartsUnlocked = StartsUnlocked;
     }
 }
 
 export function UpgradeDef_$reflection() {
-    return record_type("Game.Types.UpgradeDef", [], UpgradeDef, () => [["Name", string_type], ["Prices", list_type(Price_$reflection())], ["Effects", class_type("Microsoft.FSharp.Collections.FSharpMap`2", [string_type, float64_type])]]);
+    return record_type("Game.Types.UpgradeDef", [], UpgradeDef, () => [["Name", string_type], ["Prices", list_type(Price_$reflection())], ["Effects", class_type("Microsoft.FSharp.Collections.FSharpMap`2", [string_type, float64_type])], ["StartsUnlocked", bool_type]]);
 }
 
 export class CraftDef extends Record {
@@ -254,16 +259,18 @@ export function ResearchState_$reflection() {
 }
 
 export class PolicyState extends Record {
-    constructor(Def, Unlocked, Researched) {
+    constructor(Def, Unlocked, Researched, Blocked, Effects) {
         super();
         this.Def = Def;
         this.Unlocked = Unlocked;
         this.Researched = Researched;
+        this.Blocked = Blocked;
+        this.Effects = Effects;
     }
 }
 
 export function PolicyState_$reflection() {
-    return record_type("Game.Types.PolicyState", [], PolicyState, () => [["Def", PolicyDef_$reflection()], ["Unlocked", bool_type], ["Researched", bool_type]]);
+    return record_type("Game.Types.PolicyState", [], PolicyState, () => [["Def", PolicyDef_$reflection()], ["Unlocked", bool_type], ["Researched", bool_type], ["Blocked", bool_type], ["Effects", class_type("Microsoft.FSharp.Collections.FSharpMap`2", [string_type, float64_type])]]);
 }
 
 export class UpgradeState extends Record {
@@ -323,12 +330,12 @@ export class UndoData extends Union {
         this.fields = fields;
     }
     cases() {
-        return ["BuildUndo", "CFUUndo", "VSUUndo", "CraftUndo", "TradeUndo", "PraiseUndo", "AdoreUndo"];
+        return ["BuildUndo", "CFUUndo", "VSUUndo", "CraftUndo", "TradeUndo", "SpaceUndo", "PraiseUndo", "AdoreUndo"];
     }
 }
 
 export function UndoData_$reflection() {
-    return union_type("Game.Types.UndoData", [], UndoData, () => [[["building", string_type], ["count", int32_type]], [["metaId", string_type], ["val_", int32_type]], [["metaId", string_type], ["val_", int32_type]], [["craft", string_type], ["gained", float64_type], ["spent", list_type(tuple_type(string_type, float64_type))]], [["trades", float64_type], ["spent", list_type(tuple_type(string_type, float64_type))], ["gained", list_type(tuple_type(string_type, float64_type))]], [["faithSpent", float64_type], ["worshipGained", float64_type]], [["worshipBefore", float64_type], ["epiphanyGained", float64_type]]]);
+    return union_type("Game.Types.UndoData", [], UndoData, () => [[["building", string_type], ["count", int32_type]], [["metaId", string_type], ["val_", int32_type]], [["metaId", string_type], ["val_", int32_type]], [["craft", string_type], ["gained", float64_type], ["spent", list_type(tuple_type(string_type, float64_type))]], [["trades", float64_type], ["spent", list_type(tuple_type(string_type, float64_type))], ["gained", list_type(tuple_type(string_type, float64_type))]], [["action", string_type], ["metaId", string_type], ["val_", int32_type]], [["faithSpent", float64_type], ["worshipGained", float64_type]], [["worshipBefore", float64_type], ["epiphanyGained", float64_type]]]);
 }
 
 export class UndoEvent extends Record {
@@ -360,10 +367,12 @@ export function mkResearch(def) {
 }
 
 export function mkPolicy(def) {
-    return new PolicyState(def, false, false);
+    return new PolicyState(def, false, false, false, defaultArg(tryFind(def.Name, effects), empty({
+        Compare: (x, y) => (comparePrimitives(x, y) | 0),
+    })));
 }
 
 export function mkUpgrade(def) {
-    return new UpgradeState(def, false, false);
+    return new UpgradeState(def, def.StartsUnlocked, false);
 }
 

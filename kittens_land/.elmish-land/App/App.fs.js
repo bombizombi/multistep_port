@@ -6,6 +6,7 @@ import { page, Msg_$reflection as Msg_$reflection_2 } from "../../src/Pages/Page
 import { subscriptions, update as update_2, init as init_2, SharedMsg_$reflection } from "../../src/Shared.fs.js";
 import { RouteModule_parse, Route, Route_$reflection } from "../Base/Routes.fs.js";
 import { Command_none, Command_batch, Command_map, Command$3_$reflection } from "../Base/Command.fs.js";
+import { State_$reflection } from "../../src/KittensState.fs.js";
 import { Cmd_map, Cmd_none, Cmd_batch } from "./fable_modules/Fable.Elmish.5.0.2/cmd.fs.js";
 import { ofArray, singleton, map } from "./fable_modules/fable-library-js.5.17.0/List.js";
 import { equals, compare, uncurry2, curry2, Exception } from "./fable_modules/fable-library-js.5.17.0/Util.js";
@@ -135,7 +136,7 @@ export class PageModel extends Union {
 }
 
 export function PageModel_$reflection() {
-    return union_type("ElmishLand.kittens_land.App.PageModel", [], PageModel, () => [[["Item", unit_type]], []]);
+    return union_type("ElmishLand.kittens_land.App.PageModel", [], PageModel, () => [[["Item", State_$reflection()]], []]);
 }
 
 export class Page extends Union {
@@ -151,7 +152,7 @@ export class Page extends Union {
 }
 
 export function Page_$reflection() {
-    return union_type("ElmishLand.kittens_land.App.Page", [], Page, () => [[["Item", lambda_type(unit_type, MappedPage$4_$reflection(Msg_$reflection_2(), unit_type, Msg_$reflection_1(), unit_type))]], []]);
+    return union_type("ElmishLand.kittens_land.App.Page", [], Page, () => [[["Item", lambda_type(unit_type, MappedPage$4_$reflection(Msg_$reflection_2(), State_$reflection(), Msg_$reflection_1(), unit_type))]], []]);
 }
 
 export class Model extends Record {
@@ -512,7 +513,7 @@ export function subscribe(model) {
             }
             switch (matchResult) {
                 case 0:
-                    return singleton_1(Sub_map("PageHome", (arg_1) => (new Msg(/* PageMsg */ 2, [new PageMsg(arg_1)])), page(model.Shared, route).Subscriptions()));
+                    return singleton_1(Sub_map("PageHome", (arg_1) => (new Msg(/* PageMsg */ 2, [new PageMsg(arg_1)])), page(model.Shared, route).Subscriptions(pageModel)));
                 default:
                     return singleton_1(Sub_none());
             }

@@ -3,7 +3,7 @@ import { Record } from "../../.elmish-land/App/fable_modules/fable-library-js.5.
 import { record_type, int32_type, bool_type, lambda_type, float64_type, string_type } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
 
 export class HappinessContext extends Record {
-    constructor(GetEffect, FascismResearched, FestivalDays, Karma, UpfrontPaymentResearched, LuxuryCount, ElderBoxWithPaper, ConsumableLuxuryCount) {
+    constructor(GetEffect, FascismResearched, FestivalDays, Karma, UpfrontPaymentResearched, LuxuryCount, PollutionHappines, ElderBoxWithPaper, ConsumableLuxuryCount) {
         super();
         this.GetEffect = GetEffect;
         this.FascismResearched = FascismResearched;
@@ -11,16 +11,17 @@ export class HappinessContext extends Record {
         this.Karma = Karma;
         this.UpfrontPaymentResearched = UpfrontPaymentResearched;
         this.LuxuryCount = (LuxuryCount | 0);
+        this.PollutionHappines = PollutionHappines;
         this.ElderBoxWithPaper = ElderBoxWithPaper;
         this.ConsumableLuxuryCount = (ConsumableLuxuryCount | 0);
     }
 }
 
 export function HappinessContext_$reflection() {
-    return record_type("Game.Happiness.HappinessContext", [], HappinessContext, () => [["GetEffect", lambda_type(string_type, float64_type)], ["FascismResearched", bool_type], ["FestivalDays", int32_type], ["Karma", float64_type], ["UpfrontPaymentResearched", bool_type], ["LuxuryCount", int32_type], ["ElderBoxWithPaper", bool_type], ["ConsumableLuxuryCount", int32_type]]);
+    return record_type("Game.Happiness.HappinessContext", [], HappinessContext, () => [["GetEffect", lambda_type(string_type, float64_type)], ["FascismResearched", bool_type], ["FestivalDays", int32_type], ["Karma", float64_type], ["UpfrontPaymentResearched", bool_type], ["LuxuryCount", int32_type], ["PollutionHappines", float64_type], ["ElderBoxWithPaper", bool_type], ["ConsumableLuxuryCount", int32_type]]);
 }
 
-export const freshHappinessContext = new HappinessContext((_arg) => 0, false, 0, 0, false, 0, false, 0);
+export const freshHappinessContext = new HappinessContext((_arg) => 0, false, 0, 0, false, 0, 0, false, 0);
 
 /**
  * orig getUnhappiness(): (kittens − 5) × 2 × (1 + unhappinessRatio).
@@ -43,7 +44,7 @@ export function updateHappiness(ctx, kittens, maxKittens) {
     if (kittens > 5) {
         happiness = (happiness - unhappiness);
     }
-    happiness = (happiness + (((ctx.GetEffect("happiness") + ctx.GetEffect("environmentHappinessBonus")) + ctx.GetEffect("environmentUnhappiness")) + ctx.GetEffect("challengeHappiness")));
+    happiness = (happiness + ((((ctx.GetEffect("happiness") + ctx.GetEffect("environmentHappinessBonus")) + ctx.GetEffect("environmentUnhappiness")) + ctx.GetEffect("challengeHappiness")) + ctx.PollutionHappines));
     const perLuxury = 10 + ctx.GetEffect("luxuryHappinessBonus");
     happiness = (happiness + (ctx.LuxuryCount * perLuxury));
     if (ctx.ElderBoxWithPaper) {

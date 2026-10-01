@@ -1,6 +1,6 @@
 
 import { Record } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Types.js";
-import { getEffect, EffectsCache_$reflection } from "./Game.Effects.fs.js";
+import { getEffect as getEffect_1, EffectsCache_$reflection } from "./Game.Effects.fs.js";
 import { getWeatherMod, CalendarContext_$reflection, CalendarState_$reflection } from "./Game.Calendar.fs.js";
 import { record_type, option_type, int32_type, lambda_type, float64_type, string_type, bool_type } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
 import { jsRound } from "./Game.Math.fs.js";
@@ -9,7 +9,7 @@ import { ResourceDef, RefundableRule } from "./Game.Types.fs.js";
 import { max } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Double.js";
 
 export class ProductionContext extends Record {
-    constructor(Cache, Calendar, CalendarCtx, SpaceManufacturingResearched, VillageResProduction, HGScalingBonus, SteamworksOn, SteamworksEffectGlobal, ParagonProductionRatio, WinterIsComingActive, CatnipPollutionRatio, LeaderRank, MagnetoOn, SolarRevolutionRatio, DisableCMBR, CMBRBonus, VillageResConsumption, Kittens, Happiness, FreeKittens) {
+    constructor(Cache, Calendar, CalendarCtx, SpaceManufacturingResearched, VillageResProduction, HGScalingBonus, SteamworksOn, SteamworksEffectGlobal, ParagonProductionRatio, WinterIsComingActive, CatnipPollutionRatio, LeaderRank, MagnetoOn, SolarRevolutionRatio, SolarRevolutionPollution, DisableCMBR, CMBRBonus, VillageResConsumption, Kittens, Happiness, FreeKittens) {
         super();
         this.Cache = Cache;
         this.Calendar = Calendar;
@@ -25,6 +25,7 @@ export class ProductionContext extends Record {
         this.LeaderRank = (LeaderRank | 0);
         this.MagnetoOn = (MagnetoOn | 0);
         this.SolarRevolutionRatio = SolarRevolutionRatio;
+        this.SolarRevolutionPollution = SolarRevolutionPollution;
         this.DisableCMBR = DisableCMBR;
         this.CMBRBonus = CMBRBonus;
         this.VillageResConsumption = VillageResConsumption;
@@ -35,11 +36,11 @@ export class ProductionContext extends Record {
 }
 
 export function ProductionContext_$reflection() {
-    return record_type("Game.Production.ProductionContext", [], ProductionContext, () => [["Cache", EffectsCache_$reflection()], ["Calendar", CalendarState_$reflection()], ["CalendarCtx", CalendarContext_$reflection()], ["SpaceManufacturingResearched", bool_type], ["VillageResProduction", lambda_type(string_type, float64_type)], ["HGScalingBonus", float64_type], ["SteamworksOn", int32_type], ["SteamworksEffectGlobal", lambda_type(string_type, option_type(float64_type))], ["ParagonProductionRatio", float64_type], ["WinterIsComingActive", bool_type], ["CatnipPollutionRatio", float64_type], ["LeaderRank", int32_type], ["MagnetoOn", int32_type], ["SolarRevolutionRatio", float64_type], ["DisableCMBR", bool_type], ["CMBRBonus", float64_type], ["VillageResConsumption", lambda_type(string_type, float64_type)], ["Kittens", int32_type], ["Happiness", float64_type], ["FreeKittens", int32_type]]);
+    return record_type("Game.Production.ProductionContext", [], ProductionContext, () => [["Cache", EffectsCache_$reflection()], ["Calendar", CalendarState_$reflection()], ["CalendarCtx", CalendarContext_$reflection()], ["SpaceManufacturingResearched", bool_type], ["VillageResProduction", lambda_type(string_type, float64_type)], ["HGScalingBonus", float64_type], ["SteamworksOn", int32_type], ["SteamworksEffectGlobal", lambda_type(string_type, option_type(float64_type))], ["ParagonProductionRatio", float64_type], ["WinterIsComingActive", bool_type], ["CatnipPollutionRatio", float64_type], ["LeaderRank", int32_type], ["MagnetoOn", int32_type], ["SolarRevolutionRatio", float64_type], ["SolarRevolutionPollution", float64_type], ["DisableCMBR", bool_type], ["CMBRBonus", float64_type], ["VillageResConsumption", lambda_type(string_type, float64_type)], ["Kittens", int32_type], ["Happiness", float64_type], ["FreeKittens", int32_type]]);
 }
 
 export function freshProductionContext(cache, cal, calCtx) {
-    return new ProductionContext(cache, cal, calCtx, false, (_arg) => 0, 1, 0, (_arg_1) => undefined, 0, false, 0, 0, 0, 0, false, 0, (_arg_2) => 0, 0, 1, 0);
+    return new ProductionContext(cache, cal, calCtx, false, (_arg) => 0, 1, 0, (_arg_1) => undefined, 0, false, 0, 0, 0, 0, 0, false, 0, (_arg_2) => 0, 0, 1, 0);
 }
 
 /**
@@ -57,6 +58,52 @@ export function fixFloatPointNumber(number) {
 }
 
 /**
+ * orig getResourcePerTickConvertion (game.js L4619-4623): fixFloat(PerTickCon
+ * − ambassadorConsumption), ambassadors not modeled at this slice (0).
+ */
+export function getResourcePerTickConvertion(ctx, resName) {
+    return fixFloatPointNumber(getEffect_1(ctx.Cache, resName + "PerTickCon"));
+}
+
+/**
+ * orig getResourcePerDay (game.js L4595-4601): PerDay effect; necrocorn adds
+ * the deficit-consumption modifier + corruptionPerTick × ticksPerDay.
+ */
+export function getResourcePerDay(getEffect, necrocornModifier, corruptionPerTick, ticksPerDay, resName) {
+    if (resName === "necrocorn") {
+        return (necrocornModifier * getEffect(resName + "PerDay")) + (corruptionPerTick * ticksPerDay);
+    }
+    else {
+        return getEffect(resName + "PerDay");
+    }
+}
+
+/**
+ * orig getResourceOnYearProduction (game.js L4605-4612): Production ×
+ * (1+PolicyRatio) × (1+pyramidPerYearRatio); antimatter gated on energy.
+ */
+export function getResourceOnYearProduction(getEffect, energyProd, energyCons, resName) {
+    if ((resName === "antimatter") && (energyProd < energyCons)) {
+        return 0;
+    }
+    else {
+        return (getEffect(resName + "Production") * (1 + getEffect(resName + "PolicyRatio"))) * (1 + getEffect("pyramidPerYearRatio"));
+    }
+}
+
+/**
+ * orig getCMBRBonus (game.js L4404-4406): isCMBREnabled ? 0.2 : 0
+ */
+export function getCMBRBonus(isCmbREnabled) {
+    if (isCmbREnabled) {
+        return 0.2;
+    }
+    else {
+        return 0;
+    }
+}
+
+/**
  * orig calcResourcePerTick(resName) — the full term chain in exact order.
  * The pool supplies the resource def (flags) and the sorrow value.
  */
@@ -70,7 +117,7 @@ export function calcResourcePerTick(ctx, pool, resName) {
         const r = matchValue;
         def = r.Def;
     }
-    const eff = (name) => getEffect(ctx.Cache, name);
+    const eff = (name) => getEffect_1(ctx.Cache, name);
     let perTick = eff(resName + "PerTickBase");
     const spaceRatio = 1 + eff("spaceRatio");
     if (ctx.SpaceManufacturingResearched && (resName !== "uranium")) {
@@ -115,7 +162,7 @@ export function calcResourcePerTick(ctx, pool, resName) {
         perTick = (perTick * (1 + eff("productionRatio")));
         paragonSpaceProductionRatio = (paragonSpaceProductionRatio + (paragonSpaceProductionRatio * eff("productionRatio")));
     }
-    const solarPollution = 0;
+    const solarPollution = ((resName === "wood") ? true : (resName === "catnip")) ? ctx.SolarRevolutionPollution : 0;
     perTick = (perTick * (1 + (ctx.SolarRevolutionRatio * (1 + solarPollution))));
     if (!ctx.DisableCMBR && (resName !== "coal")) {
         perTick = (perTick * (1 + ctx.CMBRBonus));

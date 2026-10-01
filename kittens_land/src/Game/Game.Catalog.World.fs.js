@@ -78,7 +78,7 @@ export function RUDef_$reflection() {
 }
 
 export class TUDef extends Record {
-    constructor(Name, Prices, Effects, PriceRatio, Unlocks, Upgrades) {
+    constructor(Name, Prices, Effects, PriceRatio, Unlocks, Upgrades, Tier, PriceRules) {
         super();
         this.Name = Name;
         this.Prices = Prices;
@@ -86,11 +86,13 @@ export class TUDef extends Record {
         this.PriceRatio = PriceRatio;
         this.Unlocks = Unlocks;
         this.Upgrades = Upgrades;
+        this.Tier = (Tier | 0);
+        this.PriceRules = PriceRules;
     }
 }
 
 export function TUDef_$reflection() {
-    return record_type("Game.Catalog.World.TUDef", [], TUDef, () => [["Name", string_type], ["Prices", list_type(Price_$reflection())], ["Effects", class_type("Microsoft.FSharp.Collections.FSharpMap`2", [string_type, float64_type])], ["PriceRatio", option_type(float64_type)], ["Unlocks", option_type(UnlockList_$reflection())], ["Upgrades", option_type(UnlockList_$reflection())]]);
+    return record_type("Game.Catalog.World.TUDef", [], TUDef, () => [["Name", string_type], ["Prices", list_type(Price_$reflection())], ["Effects", class_type("Microsoft.FSharp.Collections.FSharpMap`2", [string_type, float64_type])], ["PriceRatio", option_type(float64_type)], ["Unlocks", option_type(UnlockList_$reflection())], ["Upgrades", option_type(UnlockList_$reflection())], ["Tier", int32_type], ["PriceRules", bool_type]]);
 }
 
 export class PactDef extends Record {
@@ -472,27 +474,27 @@ export const ruDefs = ofArray([new RUDef("solarchant", singleton(new Price("fait
 
 export const tuDefs = ofArray([new TUDef("blackObelisk", singleton(new Price("relic", 100)), ofList(singleton(["solarRevolutionLimit", 0.05]), {
     Compare: (x, y) => (comparePrimitives(x, y) | 0),
-}), 1.15, undefined, undefined), new TUDef("blackNexus", singleton(new Price("relic", 5000)), ofList(singleton(["relicRefineRatio", 1]), {
+}), 1.15, undefined, undefined, 1, false), new TUDef("blackNexus", singleton(new Price("relic", 5000)), ofList(singleton(["relicRefineRatio", 1]), {
     Compare: (x_1, y_1) => (comparePrimitives(x_1, y_1) | 0),
-}), 1.15, undefined, new UnlockList(empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1())), new TUDef("blackCore", singleton(new Price("relic", 10000)), ofList(singleton(["blsLimit", 1]), {
+}), 1.15, undefined, new UnlockList(empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1()), 3, false), new TUDef("blackCore", singleton(new Price("relic", 10000)), ofList(singleton(["blsLimit", 1]), {
     Compare: (x_2, y_2) => (comparePrimitives(x_2, y_2) | 0),
-}), 1.15, undefined, undefined), new TUDef("singularity", singleton(new Price("relic", 25000)), ofList(singleton(["globalResourceRatio", 0.1]), {
+}), 1.15, undefined, undefined, 5, false), new TUDef("singularity", singleton(new Price("relic", 25000)), ofList(singleton(["globalResourceRatio", 0.1]), {
     Compare: (x_3, y_3) => (comparePrimitives(x_3, y_3) | 0),
-}), 1.15, undefined, undefined), new TUDef("blackLibrary", singleton(new Price("relic", 30000)), ofList(singleton(["compendiaTTBoostRatio", 0.02]), {
+}), 1.15, undefined, undefined, 7, false), new TUDef("blackLibrary", singleton(new Price("relic", 30000)), ofList(singleton(["compendiaTTBoostRatio", 0.02]), {
     Compare: (x_4, y_4) => (comparePrimitives(x_4, y_4) | 0),
-}), 1.15, undefined, undefined), new TUDef("blackRadiance", singleton(new Price("relic", 37500)), ofList(singleton(["blsCorruptionRatio", 0.0012]), {
+}), 1.15, undefined, undefined, 9, false), new TUDef("blackRadiance", singleton(new Price("relic", 37500)), ofList(singleton(["blsCorruptionRatio", 0.0012]), {
     Compare: (x_5, y_5) => (comparePrimitives(x_5, y_5) | 0),
-}), 1.15, undefined, undefined), new TUDef("blazar", singleton(new Price("relic", 50000)), ofList(ofArray([["timeRatio", 0.1], ["rrRatio", 0.02]]), {
+}), 1.15, undefined, undefined, 12, false), new TUDef("blazar", singleton(new Price("relic", 50000)), ofList(ofArray([["timeRatio", 0.1], ["rrRatio", 0.02]]), {
     Compare: (x_6, y_6) => (comparePrimitives(x_6, y_6) | 0),
-}), 1.15, new UnlockList(empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1()), new UnlockList(empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1())), new TUDef("darkNova", ofArray([new Price("relic", 75000), new Price("void", 7500)]), ofList(singleton(["energyProductionRatio", 0.02]), {
+}), 1.15, new UnlockList(empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1()), new UnlockList(empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1()), 15, false), new TUDef("darkNova", ofArray([new Price("relic", 75000), new Price("void", 7500)]), ofList(singleton(["energyProductionRatio", 0.02]), {
     Compare: (x_7, y_7) => (comparePrimitives(x_7, y_7) | 0),
-}), 1.15, undefined, undefined), new TUDef("mausoleum", ofArray([new Price("relic", 50000), new Price("void", 12500), new Price("necrocorn", 10)]), ofList(singleton(["pactsAvailable", 1]), {
+}), 1.15, undefined, undefined, 20, false), new TUDef("mausoleum", ofArray([new Price("relic", 50000), new Price("void", 12500), new Price("necrocorn", 10)]), ofList(singleton(["pactsAvailable", 1]), {
     Compare: (x_8, y_8) => (comparePrimitives(x_8, y_8) | 0),
-}), 1.15, new UnlockList(empty_1(), empty_1(), empty_1(), empty_1(), ofArray(["siphoning", "feedingFrenzy", "upfrontPayment"]), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1()), new UnlockList(empty_1(), empty_1(), empty_1(), empty_1(), singleton("feedingFrenzy"), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1())), new TUDef("holyGenocide", ofArray([new Price("relic", 100000), new Price("void", 25000)]), ofList(ofArray([["maxKittensRatio", -0.01], ["simScalingRatio", 0.02], ["activeHG", 0]]), {
+}), 1.15, new UnlockList(empty_1(), empty_1(), empty_1(), empty_1(), ofArray(["siphoning", "feedingFrenzy", "upfrontPayment"]), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1()), new UnlockList(empty_1(), empty_1(), empty_1(), empty_1(), singleton("feedingFrenzy"), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1()), 23, false), new TUDef("holyGenocide", ofArray([new Price("relic", 100000), new Price("void", 25000)]), ofList(ofArray([["maxKittensRatio", -0.01], ["simScalingRatio", 0.02], ["activeHG", 0]]), {
     Compare: (x_9, y_9) => (comparePrimitives(x_9, y_9) | 0),
-}), 1.15, new UnlockList(empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1()), new UnlockList(empty_1(), empty_1(), singleton("ambassador"), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1())), new TUDef("darkParacosm", ofArray([new Price("relic", 230000), new Price("void", 29000), new Price("paragon", 8)]), ofList(singleton(["milleninumParagon", 1]), {
+}), 1.15, new UnlockList(empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1()), new UnlockList(empty_1(), empty_1(), singleton("ambassador"), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1(), empty_1()), 25, false), new TUDef("darkParacosm", ofArray([new Price("relic", 230000), new Price("void", 29000), new Price("paragon", 8)]), ofList(singleton(["milleninumParagon", 1]), {
     Compare: (x_10, y_10) => (comparePrimitives(x_10, y_10) | 0),
-}), 1.75, undefined, undefined)]);
+}), 1.75, undefined, undefined, 27, true)]);
 
 export const pactDefs = ofArray([new PactDef("pactOfCleansing", singleton(new Price("relic", 100)), ofList(ofArray([["pactsAvailable", -1], ["necrocornPerDay", 0], ["pactDeficitRecoveryRatio", 0.003], ["pactGlobalResourceRatio", 0.0005]]), {
     Compare: (x, y) => (comparePrimitives(x, y) | 0),

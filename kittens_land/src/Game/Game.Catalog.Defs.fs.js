@@ -112,291 +112,291 @@ export const policyDefs = ofArray([new PolicyDef("liberty", singleton(new Price(
 
 export const upgradeDefs = ofArray([new UpgradeDef("mineralHoes", ofArray([new Price("minerals", 275), new Price("science", 100)]), ofList(singleton(["catnipJobRatio", 0.5]), {
     Compare: (x, y) => (comparePrimitives(x, y) | 0),
-})), new UpgradeDef("ironHoes", ofArray([new Price("iron", 25), new Price("science", 200)]), ofList(singleton(["catnipJobRatio", 0.3]), {
+}), true), new UpgradeDef("ironHoes", ofArray([new Price("iron", 25), new Price("science", 200)]), ofList(singleton(["catnipJobRatio", 0.3]), {
     Compare: (x_1, y_1) => (comparePrimitives(x_1, y_1) | 0),
-})), new UpgradeDef("mineralAxes", ofArray([new Price("minerals", 500), new Price("science", 100)]), ofList(singleton(["woodJobRatio", 0.7]), {
+}), true), new UpgradeDef("mineralAxes", ofArray([new Price("minerals", 500), new Price("science", 100)]), ofList(singleton(["woodJobRatio", 0.7]), {
     Compare: (x_2, y_2) => (comparePrimitives(x_2, y_2) | 0),
-})), new UpgradeDef("ironAxes", ofArray([new Price("iron", 50), new Price("science", 200)]), ofList(singleton(["woodJobRatio", 0.5]), {
+}), true), new UpgradeDef("ironAxes", ofArray([new Price("iron", 50), new Price("science", 200)]), ofList(singleton(["woodJobRatio", 0.5]), {
     Compare: (x_3, y_3) => (comparePrimitives(x_3, y_3) | 0),
-})), new UpgradeDef("steelAxe", ofArray([new Price("science", 20000), new Price("steel", 75)]), ofList(singleton(["woodJobRatio", 0.5]), {
+}), true), new UpgradeDef("steelAxe", ofArray([new Price("science", 20000), new Price("steel", 75)]), ofList(singleton(["woodJobRatio", 0.5]), {
     Compare: (x_4, y_4) => (comparePrimitives(x_4, y_4) | 0),
-})), new UpgradeDef("reinforcedSaw", ofArray([new Price("iron", 1000), new Price("science", 2500)]), ofList(singleton(["lumberMillRatio", 0.2]), {
+}), false), new UpgradeDef("reinforcedSaw", ofArray([new Price("iron", 1000), new Price("science", 2500)]), ofList(singleton(["lumberMillRatio", 0.2]), {
     Compare: (x_5, y_5) => (comparePrimitives(x_5, y_5) | 0),
-})), new UpgradeDef("steelSaw", ofArray([new Price("science", 52000), new Price("steel", 750)]), ofList(singleton(["lumberMillRatio", 0.2]), {
+}), false), new UpgradeDef("steelSaw", ofArray([new Price("science", 52000), new Price("steel", 750)]), ofList(singleton(["lumberMillRatio", 0.2]), {
     Compare: (x_6, y_6) => (comparePrimitives(x_6, y_6) | 0),
-})), new UpgradeDef("titaniumSaw", ofArray([new Price("titanium", 500), new Price("science", 70000)]), ofList(singleton(["lumberMillRatio", 0.15]), {
+}), false), new UpgradeDef("titaniumSaw", ofArray([new Price("titanium", 500), new Price("science", 70000)]), ofList(singleton(["lumberMillRatio", 0.15]), {
     Compare: (x_7, y_7) => (comparePrimitives(x_7, y_7) | 0),
-})), new UpgradeDef("alloySaw", ofArray([new Price("science", 85000), new Price("alloy", 75)]), ofList(singleton(["lumberMillRatio", 0.15]), {
+}), false), new UpgradeDef("alloySaw", ofArray([new Price("science", 85000), new Price("alloy", 75)]), ofList(singleton(["lumberMillRatio", 0.15]), {
     Compare: (x_8, y_8) => (comparePrimitives(x_8, y_8) | 0),
-})), new UpgradeDef("titaniumAxe", ofArray([new Price("titanium", 10), new Price("science", 38000)]), ofList(singleton(["woodJobRatio", 0.5]), {
+}), false), new UpgradeDef("titaniumAxe", ofArray([new Price("titanium", 10), new Price("science", 38000)]), ofList(singleton(["woodJobRatio", 0.5]), {
     Compare: (x_9, y_9) => (comparePrimitives(x_9, y_9) | 0),
-})), new UpgradeDef("alloyAxe", ofArray([new Price("science", 70000), new Price("alloy", 25)]), ofList(singleton(["woodJobRatio", 0.5]), {
+}), false), new UpgradeDef("alloyAxe", ofArray([new Price("science", 70000), new Price("alloy", 25)]), ofList(singleton(["woodJobRatio", 0.5]), {
     Compare: (x_10, y_10) => (comparePrimitives(x_10, y_10) | 0),
-})), new UpgradeDef("unobtainiumAxe", ofArray([new Price("unobtainium", 75), new Price("science", 125000)]), ofList(singleton(["woodJobRatio", 0.5]), {
+}), false), new UpgradeDef("unobtainiumAxe", ofArray([new Price("unobtainium", 75), new Price("science", 125000)]), ofList(singleton(["woodJobRatio", 0.5]), {
     Compare: (x_11, y_11) => (comparePrimitives(x_11, y_11) | 0),
-})), new UpgradeDef("unobtainiumSaw", ofArray([new Price("unobtainium", 125), new Price("science", 145000)]), ofList(singleton(["lumberMillRatio", 0.25]), {
+}), false), new UpgradeDef("unobtainiumSaw", ofArray([new Price("unobtainium", 125), new Price("science", 145000)]), ofList(singleton(["lumberMillRatio", 0.25]), {
     Compare: (x_12, y_12) => (comparePrimitives(x_12, y_12) | 0),
-})), new UpgradeDef("stoneBarns", ofArray([new Price("wood", 1000), new Price("minerals", 750), new Price("iron", 50), new Price("science", 500)]), ofList(singleton(["barnRatio", 0.75]), {
+}), false), new UpgradeDef("stoneBarns", ofArray([new Price("wood", 1000), new Price("minerals", 750), new Price("iron", 50), new Price("science", 500)]), ofList(singleton(["barnRatio", 0.75]), {
     Compare: (x_13, y_13) => (comparePrimitives(x_13, y_13) | 0),
-})), new UpgradeDef("reinforcedBarns", ofArray([new Price("iron", 100), new Price("science", 800), new Price("beam", 25), new Price("slab", 10)]), ofList(singleton(["barnRatio", 0.8]), {
+}), true), new UpgradeDef("reinforcedBarns", ofArray([new Price("iron", 100), new Price("science", 800), new Price("beam", 25), new Price("slab", 10)]), ofList(singleton(["barnRatio", 0.8]), {
     Compare: (x_14, y_14) => (comparePrimitives(x_14, y_14) | 0),
-})), new UpgradeDef("reinforcedWarehouses", ofArray([new Price("science", 15000), new Price("plate", 50), new Price("steel", 50), new Price("scaffold", 25)]), ofList(singleton(["warehouseRatio", 0.25]), {
+}), true), new UpgradeDef("reinforcedWarehouses", ofArray([new Price("science", 15000), new Price("plate", 50), new Price("steel", 50), new Price("scaffold", 25)]), ofList(singleton(["warehouseRatio", 0.25]), {
     Compare: (x_15, y_15) => (comparePrimitives(x_15, y_15) | 0),
-})), new UpgradeDef("titaniumBarns", ofArray([new Price("titanium", 25), new Price("science", 60000), new Price("steel", 200), new Price("scaffold", 250)]), ofList(singleton(["barnRatio", 1]), {
+}), false), new UpgradeDef("titaniumBarns", ofArray([new Price("titanium", 25), new Price("science", 60000), new Price("steel", 200), new Price("scaffold", 250)]), ofList(singleton(["barnRatio", 1]), {
     Compare: (x_16, y_16) => (comparePrimitives(x_16, y_16) | 0),
-})), new UpgradeDef("alloyBarns", ofArray([new Price("science", 75000), new Price("plate", 750), new Price("alloy", 20)]), ofList(singleton(["barnRatio", 1]), {
+}), false), new UpgradeDef("alloyBarns", ofArray([new Price("science", 75000), new Price("plate", 750), new Price("alloy", 20)]), ofList(singleton(["barnRatio", 1]), {
     Compare: (x_17, y_17) => (comparePrimitives(x_17, y_17) | 0),
-})), new UpgradeDef("concreteBarns", ofArray([new Price("titanium", 2000), new Price("science", 100000), new Price("concrate", 45)]), ofList(singleton(["barnRatio", 0.75]), {
+}), false), new UpgradeDef("concreteBarns", ofArray([new Price("titanium", 2000), new Price("science", 100000), new Price("concrate", 45)]), ofList(singleton(["barnRatio", 0.75]), {
     Compare: (x_18, y_18) => (comparePrimitives(x_18, y_18) | 0),
-})), new UpgradeDef("titaniumWarehouses", ofArray([new Price("titanium", 50), new Price("science", 70000), new Price("steel", 500), new Price("scaffold", 500)]), ofList(singleton(["warehouseRatio", 0.5]), {
+}), false), new UpgradeDef("titaniumWarehouses", ofArray([new Price("titanium", 50), new Price("science", 70000), new Price("steel", 500), new Price("scaffold", 500)]), ofList(singleton(["warehouseRatio", 0.5]), {
     Compare: (x_19, y_19) => (comparePrimitives(x_19, y_19) | 0),
-})), new UpgradeDef("alloyWarehouses", ofArray([new Price("titanium", 750), new Price("science", 90000), new Price("alloy", 50)]), ofList(singleton(["warehouseRatio", 0.45]), {
+}), false), new UpgradeDef("alloyWarehouses", ofArray([new Price("titanium", 750), new Price("science", 90000), new Price("alloy", 50)]), ofList(singleton(["warehouseRatio", 0.45]), {
     Compare: (x_20, y_20) => (comparePrimitives(x_20, y_20) | 0),
-})), new UpgradeDef("concreteWarehouses", ofArray([new Price("titanium", 1250), new Price("science", 100000), new Price("concrate", 35)]), ofList(singleton(["warehouseRatio", 0.35]), {
+}), false), new UpgradeDef("concreteWarehouses", ofArray([new Price("titanium", 1250), new Price("science", 100000), new Price("concrate", 35)]), ofList(singleton(["warehouseRatio", 0.35]), {
     Compare: (x_21, y_21) => (comparePrimitives(x_21, y_21) | 0),
-})), new UpgradeDef("storageBunkers", ofArray([new Price("unobtainium", 500), new Price("science", 25000), new Price("concrate", 1250)]), ofList(singleton(["warehouseRatio", 0.2]), {
+}), false), new UpgradeDef("storageBunkers", ofArray([new Price("unobtainium", 500), new Price("science", 25000), new Price("concrate", 1250)]), ofList(singleton(["warehouseRatio", 0.2]), {
     Compare: (x_22, y_22) => (comparePrimitives(x_22, y_22) | 0),
-})), new UpgradeDef("energyRifts", ofArray([new Price("titanium", 7500), new Price("uranium", 250), new Price("science", 200000)]), empty_1({
+}), false), new UpgradeDef("energyRifts", ofArray([new Price("titanium", 7500), new Price("uranium", 250), new Price("science", 200000)]), empty_1({
     Compare: (x_23, y_23) => (comparePrimitives(x_23, y_23) | 0),
-})), new UpgradeDef("stasisChambers", ofArray([new Price("uranium", 2000), new Price("science", 235000), new Price("timeCrystal", 1), new Price("alloy", 200)]), ofList(singleton(["acceleratorRatio", 0.95]), {
+}), false), new UpgradeDef("stasisChambers", ofArray([new Price("uranium", 2000), new Price("science", 235000), new Price("timeCrystal", 1), new Price("alloy", 200)]), ofList(singleton(["acceleratorRatio", 0.95]), {
     Compare: (x_24, y_24) => (comparePrimitives(x_24, y_24) | 0),
-})), new UpgradeDef("voidEnergy", ofArray([new Price("uranium", 2500), new Price("science", 275000), new Price("timeCrystal", 2), new Price("alloy", 250)]), ofList(singleton(["acceleratorRatio", 0.75]), {
+}), false), new UpgradeDef("voidEnergy", ofArray([new Price("uranium", 2500), new Price("science", 275000), new Price("timeCrystal", 2), new Price("alloy", 250)]), ofList(singleton(["acceleratorRatio", 0.75]), {
     Compare: (x_25, y_25) => (comparePrimitives(x_25, y_25) | 0),
-})), new UpgradeDef("darkEnergy", ofArray([new Price("science", 350000), new Price("timeCrystal", 3), new Price("eludium", 75)]), ofList(singleton(["acceleratorRatio", 2.5]), {
+}), false), new UpgradeDef("darkEnergy", ofArray([new Price("science", 350000), new Price("timeCrystal", 3), new Price("eludium", 75)]), ofList(singleton(["acceleratorRatio", 2.5]), {
     Compare: (x_26, y_26) => (comparePrimitives(x_26, y_26) | 0),
-})), new UpgradeDef("chronoforge", ofArray([new Price("science", 500000), new Price("timeCrystal", 10), new Price("relic", 5)]), empty_1({
+}), false), new UpgradeDef("chronoforge", ofArray([new Price("science", 500000), new Price("timeCrystal", 10), new Price("relic", 5)]), empty_1({
     Compare: (x_27, y_27) => (comparePrimitives(x_27, y_27) | 0),
-})), new UpgradeDef("tachyonModerator", ofArray([new Price("science", 16000), new Price("gear", 500), new Price("titanium", 250)]), empty_1({
+}), false), new UpgradeDef("tachyonModerator", ofArray([new Price("science", 16000), new Price("gear", 500), new Price("titanium", 250)]), empty_1({
     Compare: (x_28, y_28) => (comparePrimitives(x_28, y_28) | 0),
-})), new UpgradeDef("tachyonAccelerators", ofArray([new Price("science", 500000), new Price("timeCrystal", 10), new Price("eludium", 125)]), ofList(singleton(["acceleratorRatio", 5]), {
+}), false), new UpgradeDef("tachyonAccelerators", ofArray([new Price("science", 500000), new Price("timeCrystal", 10), new Price("eludium", 125)]), ofList(singleton(["acceleratorRatio", 5]), {
     Compare: (x_29, y_29) => (comparePrimitives(x_29, y_29) | 0),
-})), new UpgradeDef("fluxCondensator", ofArray([new Price("unobtainium", 5000), new Price("timeCrystal", 5), new Price("alloy", 250)]), empty_1({
+}), false), new UpgradeDef("fluxCondensator", ofArray([new Price("unobtainium", 5000), new Price("timeCrystal", 5), new Price("alloy", 250)]), empty_1({
     Compare: (x_30, y_30) => (comparePrimitives(x_30, y_30) | 0),
-})), new UpgradeDef("lhc", ofArray([new Price("unobtainium", 100), new Price("science", 250000), new Price("alloy", 150)]), empty_1({
+}), false), new UpgradeDef("lhc", ofArray([new Price("unobtainium", 100), new Price("science", 250000), new Price("alloy", 150)]), empty_1({
     Compare: (x_31, y_31) => (comparePrimitives(x_31, y_31) | 0),
-})), new UpgradeDef("photovoltaic", ofArray([new Price("titanium", 5000), new Price("science", 75000)]), ofList(singleton(["solarFarmRatio", 0.5]), {
+}), false), new UpgradeDef("photovoltaic", ofArray([new Price("titanium", 5000), new Price("science", 75000)]), ofList(singleton(["solarFarmRatio", 0.5]), {
     Compare: (x_32, y_32) => (comparePrimitives(x_32, y_32) | 0),
-})), new UpgradeDef("thinFilm", ofArray([new Price("uranium", 1000), new Price("unobtainium", 200), new Price("science", 125000)]), ofList(singleton(["solarFarmSeasonRatio", 1]), {
+}), false), new UpgradeDef("thinFilm", ofArray([new Price("uranium", 1000), new Price("unobtainium", 200), new Price("science", 125000)]), ofList(singleton(["solarFarmSeasonRatio", 1]), {
     Compare: (x_33, y_33) => (comparePrimitives(x_33, y_33) | 0),
-})), new UpgradeDef("qdot", ofArray([new Price("science", 175000), new Price("eludium", 200), new Price("thorium", 1000)]), ofList(singleton(["solarFarmSeasonRatio", 1]), {
+}), false), new UpgradeDef("qdot", ofArray([new Price("science", 175000), new Price("eludium", 200), new Price("thorium", 1000)]), ofList(singleton(["solarFarmSeasonRatio", 1]), {
     Compare: (x_34, y_34) => (comparePrimitives(x_34, y_34) | 0),
-})), new UpgradeDef("solarSatellites", ofArray([new Price("science", 225000), new Price("alloy", 750)]), empty_1({
+}), false), new UpgradeDef("solarSatellites", ofArray([new Price("science", 225000), new Price("alloy", 750)]), empty_1({
     Compare: (x_35, y_35) => (comparePrimitives(x_35, y_35) | 0),
-})), new UpgradeDef("cargoShips", ofArray([new Price("science", 55000), new Price("blueprint", 15)]), ofList(singleton(["harborRatio", 0.01]), {
+}), false), new UpgradeDef("cargoShips", ofArray([new Price("science", 55000), new Price("blueprint", 15)]), ofList(singleton(["harborRatio", 0.01]), {
     Compare: (x_36, y_36) => (comparePrimitives(x_36, y_36) | 0),
-})), new UpgradeDef("barges", ofArray([new Price("titanium", 1500), new Price("science", 100000), new Price("blueprint", 30)]), ofList(singleton(["harborCoalRatio", 0.5]), {
+}), false), new UpgradeDef("barges", ofArray([new Price("titanium", 1500), new Price("science", 100000), new Price("blueprint", 30)]), ofList(singleton(["harborCoalRatio", 0.5]), {
     Compare: (x_37, y_37) => (comparePrimitives(x_37, y_37) | 0),
-})), new UpgradeDef("reactorVessel", ofArray([new Price("titanium", 5000), new Price("uranium", 125), new Price("science", 135000)]), ofList(singleton(["shipLimit", 0.05]), {
+}), false), new UpgradeDef("reactorVessel", ofArray([new Price("titanium", 5000), new Price("uranium", 125), new Price("science", 135000)]), ofList(singleton(["shipLimit", 0.05]), {
     Compare: (x_38, y_38) => (comparePrimitives(x_38, y_38) | 0),
-})), new UpgradeDef("ironwood", ofArray([new Price("wood", 15000), new Price("iron", 3000), new Price("science", 30000)]), ofList(singleton(["hutPriceRatio", -0.5]), {
+}), false), new UpgradeDef("ironwood", ofArray([new Price("wood", 15000), new Price("iron", 3000), new Price("science", 30000)]), ofList(singleton(["hutPriceRatio", -0.5]), {
     Compare: (x_39, y_39) => (comparePrimitives(x_39, y_39) | 0),
-})), new UpgradeDef("concreteHuts", ofArray([new Price("titanium", 3000), new Price("science", 125000), new Price("concrate", 45)]), ofList(singleton(["hutPriceRatio", -0.3]), {
+}), false), new UpgradeDef("concreteHuts", ofArray([new Price("titanium", 3000), new Price("science", 125000), new Price("concrate", 45)]), ofList(singleton(["hutPriceRatio", -0.3]), {
     Compare: (x_40, y_40) => (comparePrimitives(x_40, y_40) | 0),
-})), new UpgradeDef("unobtainiumHuts", ofArray([new Price("titanium", 15000), new Price("unobtainium", 350), new Price("science", 200000)]), ofList(singleton(["hutPriceRatio", -0.25]), {
+}), false), new UpgradeDef("unobtainiumHuts", ofArray([new Price("titanium", 15000), new Price("unobtainium", 350), new Price("science", 200000)]), ofList(singleton(["hutPriceRatio", -0.25]), {
     Compare: (x_41, y_41) => (comparePrimitives(x_41, y_41) | 0),
-})), new UpgradeDef("eludiumHuts", ofArray([new Price("science", 275000), new Price("eludium", 125)]), ofList(singleton(["hutPriceRatio", -0.1]), {
+}), false), new UpgradeDef("eludiumHuts", ofArray([new Price("science", 275000), new Price("eludium", 125)]), ofList(singleton(["hutPriceRatio", -0.1]), {
     Compare: (x_42, y_42) => (comparePrimitives(x_42, y_42) | 0),
-})), new UpgradeDef("silos", ofArray([new Price("science", 50000), new Price("steel", 125), new Price("blueprint", 5)]), empty_1({
+}), false), new UpgradeDef("silos", ofArray([new Price("science", 50000), new Price("steel", 125), new Price("blueprint", 5)]), empty_1({
     Compare: (x_43, y_43) => (comparePrimitives(x_43, y_43) | 0),
-})), new UpgradeDef("refrigeration", ofArray([new Price("titanium", 2500), new Price("science", 125000), new Price("blueprint", 15)]), ofList(singleton(["catnipMaxRatio", 0.75]), {
+}), false), new UpgradeDef("refrigeration", ofArray([new Price("titanium", 2500), new Price("science", 125000), new Price("blueprint", 15)]), ofList(singleton(["catnipMaxRatio", 0.75]), {
     Compare: (x_44, y_44) => (comparePrimitives(x_44, y_44) | 0),
-})), new UpgradeDef("compositeBow", ofArray([new Price("wood", 200), new Price("iron", 100), new Price("science", 500)]), ofList(ofArray([["manpowerJobRatio", 0.5], ["manpowerMax", 0], ["explorerAtk", 5]]), {
+}), false), new UpgradeDef("compositeBow", ofArray([new Price("wood", 200), new Price("iron", 100), new Price("science", 500)]), ofList(ofArray([["manpowerJobRatio", 0.5], ["manpowerMax", 0], ["explorerAtk", 5]]), {
     Compare: (x_45, y_45) => (comparePrimitives(x_45, y_45) | 0),
-})), new UpgradeDef("crossbow", ofArray([new Price("iron", 1500), new Price("science", 12000)]), ofList(ofArray([["manpowerJobRatio", 0.25], ["explorerAtk", 10]]), {
+}), false), new UpgradeDef("crossbow", ofArray([new Price("iron", 1500), new Price("science", 12000)]), ofList(ofArray([["manpowerJobRatio", 0.25], ["explorerAtk", 10]]), {
     Compare: (x_46, y_46) => (comparePrimitives(x_46, y_46) | 0),
-})), new UpgradeDef("railgun", ofArray([new Price("titanium", 5000), new Price("science", 150000), new Price("blueprint", 25)]), ofList(ofArray([["manpowerJobRatio", 0.25], ["explorerAtk", 20]]), {
+}), false), new UpgradeDef("railgun", ofArray([new Price("titanium", 5000), new Price("science", 150000), new Price("blueprint", 25)]), ofList(ofArray([["manpowerJobRatio", 0.25], ["explorerAtk", 20]]), {
     Compare: (x_47, y_47) => (comparePrimitives(x_47, y_47) | 0),
-})), new UpgradeDef("bolas", ofArray([new Price("wood", 50), new Price("minerals", 250), new Price("science", 1000)]), ofList(ofArray([["hunterRatio", 1], ["explorerAtk", 2], ["manpowerMax", 0]]), {
+}), false), new UpgradeDef("bolas", ofArray([new Price("wood", 50), new Price("minerals", 250), new Price("science", 1000)]), ofList(ofArray([["hunterRatio", 1], ["explorerAtk", 2], ["manpowerMax", 0]]), {
     Compare: (x_48, y_48) => (comparePrimitives(x_48, y_48) | 0),
-})), new UpgradeDef("huntingArmor", ofArray([new Price("iron", 750), new Price("science", 2000)]), ofList(ofArray([["hunterRatio", 2], ["explorerDef", 2], ["manpowerMax", 0]]), {
+}), false), new UpgradeDef("huntingArmor", ofArray([new Price("iron", 750), new Price("science", 2000)]), ofList(ofArray([["hunterRatio", 2], ["explorerDef", 2], ["manpowerMax", 0]]), {
     Compare: (x_49, y_49) => (comparePrimitives(x_49, y_49) | 0),
-})), new UpgradeDef("steelArmor", ofArray([new Price("science", 10000), new Price("steel", 50)]), ofList(ofArray([["hunterRatio", 0.5], ["explorerDef", 5]]), {
+}), false), new UpgradeDef("steelArmor", ofArray([new Price("science", 10000), new Price("steel", 50)]), ofList(ofArray([["hunterRatio", 0.5], ["explorerDef", 5]]), {
     Compare: (x_50, y_50) => (comparePrimitives(x_50, y_50) | 0),
-})), new UpgradeDef("alloyArmor", ofArray([new Price("science", 50000), new Price("alloy", 25)]), ofList(ofArray([["hunterRatio", 0.5], ["explorerDef", 10]]), {
+}), false), new UpgradeDef("alloyArmor", ofArray([new Price("science", 50000), new Price("alloy", 25)]), ofList(ofArray([["hunterRatio", 0.5], ["explorerDef", 10]]), {
     Compare: (x_51, y_51) => (comparePrimitives(x_51, y_51) | 0),
-})), new UpgradeDef("nanosuits", ofArray([new Price("science", 185000), new Price("alloy", 250)]), ofList(ofArray([["hunterRatio", 0.5], ["explorerDef", 20]]), {
+}), false), new UpgradeDef("nanosuits", ofArray([new Price("science", 185000), new Price("alloy", 250)]), ofList(ofArray([["hunterRatio", 0.5], ["explorerDef", 20]]), {
     Compare: (x_52, y_52) => (comparePrimitives(x_52, y_52) | 0),
-})), new UpgradeDef("caravanserai", ofArray([new Price("gold", 250), new Price("science", 25000), new Price("ivory", 10000)]), empty_1({
+}), false), new UpgradeDef("caravanserai", ofArray([new Price("gold", 250), new Price("science", 25000), new Price("ivory", 10000)]), empty_1({
     Compare: (x_53, y_53) => (comparePrimitives(x_53, y_53) | 0),
-})), new UpgradeDef("freightfulExchange", ofArray([new Price("science", 450000), new Price("eludium", 100), new Price("titanium", 1000), new Price("tanker", 5000)]), empty_1({
+}), false), new UpgradeDef("freightfulExchange", ofArray([new Price("science", 450000), new Price("eludium", 100), new Price("titanium", 1000), new Price("tanker", 5000)]), empty_1({
     Compare: (x_54, y_54) => (comparePrimitives(x_54, y_54) | 0),
-})), new UpgradeDef("transportSuperposition", ofArray([new Price("science", 500000), new Price("eludium", 1500), new Price("thorium", 25000), new Price("tanker", 500000)]), empty_1({
+}), false), new UpgradeDef("transportSuperposition", ofArray([new Price("science", 500000), new Price("eludium", 1500), new Price("thorium", 25000), new Price("tanker", 500000)]), empty_1({
     Compare: (x_55, y_55) => (comparePrimitives(x_55, y_55) | 0),
-})), new UpgradeDef("advancedRefinement", ofArray([new Price("catnip", 5000), new Price("science", 500)]), empty_1({
+}), false), new UpgradeDef("advancedRefinement", ofArray([new Price("catnip", 5000), new Price("science", 500)]), empty_1({
     Compare: (x_56, y_56) => (comparePrimitives(x_56, y_56) | 0),
-})), new UpgradeDef("prospecting", ofArray([new Price("minerals", 1000), new Price("science", 1000)]), empty_1({
+}), false), new UpgradeDef("prospecting", ofArray([new Price("minerals", 1000), new Price("science", 1000)]), empty_1({
     Compare: (x_57, y_57) => (comparePrimitives(x_57, y_57) | 0),
-})), new UpgradeDef("goldOre", ofArray([new Price("minerals", 800), new Price("iron", 100), new Price("science", 1000)]), empty_1({
+}), false), new UpgradeDef("goldOre", ofArray([new Price("minerals", 800), new Price("iron", 100), new Price("science", 1000)]), empty_1({
     Compare: (x_58, y_58) => (comparePrimitives(x_58, y_58) | 0),
-})), new UpgradeDef("geodesy", ofArray([new Price("titanium", 250), new Price("science", 90000), new Price("starchart", 500)]), empty_1({
+}), false), new UpgradeDef("geodesy", ofArray([new Price("titanium", 250), new Price("science", 90000), new Price("starchart", 500)]), empty_1({
     Compare: (x_59, y_59) => (comparePrimitives(x_59, y_59) | 0),
-})), new UpgradeDef("register", ofArray([new Price("gold", 10), new Price("science", 500)]), empty_1({
+}), false), new UpgradeDef("register", ofArray([new Price("gold", 10), new Price("science", 500)]), empty_1({
     Compare: (x_60, y_60) => (comparePrimitives(x_60, y_60) | 0),
-})), new UpgradeDef("strenghtenBuild", ofArray([new Price("science", 100000), new Price("concrate", 50)]), ofList(ofArray([["barnRatio", 0.05], ["warehouseRatio", 0.05]]), {
+}), false), new UpgradeDef("strenghtenBuild", ofArray([new Price("science", 100000), new Price("concrate", 50)]), ofList(ofArray([["barnRatio", 0.05], ["warehouseRatio", 0.05]]), {
     Compare: (x_61, y_61) => (comparePrimitives(x_61, y_61) | 0),
-})), new UpgradeDef("miningDrill", ofArray([new Price("titanium", 1750), new Price("science", 100000), new Price("steel", 750)]), empty_1({
+}), false), new UpgradeDef("miningDrill", ofArray([new Price("titanium", 1750), new Price("science", 100000), new Price("steel", 750)]), empty_1({
     Compare: (x_62, y_62) => (comparePrimitives(x_62, y_62) | 0),
-})), new UpgradeDef("unobtainiumDrill", ofArray([new Price("unobtainium", 250), new Price("science", 250000), new Price("alloy", 1250)]), empty_1({
+}), false), new UpgradeDef("unobtainiumDrill", ofArray([new Price("unobtainium", 250), new Price("science", 250000), new Price("alloy", 1250)]), empty_1({
     Compare: (x_63, y_63) => (comparePrimitives(x_63, y_63) | 0),
-})), new UpgradeDef("coalFurnace", ofArray([new Price("minerals", 5000), new Price("iron", 2000), new Price("science", 5000), new Price("beam", 35)]), empty_1({
+}), false), new UpgradeDef("coalFurnace", ofArray([new Price("minerals", 5000), new Price("iron", 2000), new Price("science", 5000), new Price("beam", 35)]), empty_1({
     Compare: (x_64, y_64) => (comparePrimitives(x_64, y_64) | 0),
-})), new UpgradeDef("deepMining", ofArray([new Price("iron", 1200), new Price("science", 5000), new Price("beam", 50)]), empty_1({
+}), false), new UpgradeDef("deepMining", ofArray([new Price("iron", 1200), new Price("science", 5000), new Price("beam", 50)]), empty_1({
     Compare: (x_65, y_65) => (comparePrimitives(x_65, y_65) | 0),
-})), new UpgradeDef("pyrolysis", ofArray([new Price("science", 35000), new Price("compedium", 5)]), ofList(singleton(["coalSuperRatio", 0.2]), {
+}), false), new UpgradeDef("pyrolysis", ofArray([new Price("science", 35000), new Price("compedium", 5)]), ofList(singleton(["coalSuperRatio", 0.2]), {
     Compare: (x_66, y_66) => (comparePrimitives(x_66, y_66) | 0),
-})), new UpgradeDef("electrolyticSmelting", ofArray([new Price("titanium", 2000), new Price("science", 100000)]), ofList(singleton(["smelterRatio", 0.95]), {
+}), false), new UpgradeDef("electrolyticSmelting", ofArray([new Price("titanium", 2000), new Price("science", 100000)]), ofList(singleton(["smelterRatio", 0.95]), {
     Compare: (x_67, y_67) => (comparePrimitives(x_67, y_67) | 0),
-})), new UpgradeDef("oxidation", ofArray([new Price("science", 100000), new Price("steel", 5000)]), ofList(singleton(["calcinerRatio", 0.95]), {
+}), false), new UpgradeDef("oxidation", ofArray([new Price("science", 100000), new Price("steel", 5000)]), ofList(singleton(["calcinerRatio", 0.95]), {
     Compare: (x_68, y_68) => (comparePrimitives(x_68, y_68) | 0),
-})), new UpgradeDef("steelPlants", ofArray([new Price("titanium", 3500), new Price("science", 140000), new Price("gear", 750)]), ofList(singleton(["calcinerSteelRatio", 0.1]), {
+}), false), new UpgradeDef("steelPlants", ofArray([new Price("titanium", 3500), new Price("science", 140000), new Price("gear", 750)]), ofList(singleton(["calcinerSteelRatio", 0.1]), {
     Compare: (x_69, y_69) => (comparePrimitives(x_69, y_69) | 0),
-})), new UpgradeDef("automatedPlants", ofArray([new Price("science", 200000), new Price("alloy", 750)]), ofList(singleton(["calcinerSteelCraftRatio", 0.25]), {
+}), false), new UpgradeDef("automatedPlants", ofArray([new Price("science", 200000), new Price("alloy", 750)]), ofList(singleton(["calcinerSteelCraftRatio", 0.25]), {
     Compare: (x_70, y_70) => (comparePrimitives(x_70, y_70) | 0),
-})), new UpgradeDef("nuclearPlants", ofArray([new Price("uranium", 10000), new Price("science", 250000)]), ofList(singleton(["calcinerSteelReactorBonus", 0.02]), {
+}), false), new UpgradeDef("nuclearPlants", ofArray([new Price("uranium", 10000), new Price("science", 250000)]), ofList(singleton(["calcinerSteelReactorBonus", 0.02]), {
     Compare: (x_71, y_71) => (comparePrimitives(x_71, y_71) | 0),
-})), new UpgradeDef("rotaryKiln", ofArray([new Price("titanium", 5000), new Price("science", 145000), new Price("gear", 500)]), ofList(singleton(["calcinerRatio", 0.75]), {
+}), false), new UpgradeDef("rotaryKiln", ofArray([new Price("titanium", 5000), new Price("science", 145000), new Price("gear", 500)]), ofList(singleton(["calcinerRatio", 0.75]), {
     Compare: (x_72, y_72) => (comparePrimitives(x_72, y_72) | 0),
-})), new UpgradeDef("fluidizedReactors", ofArray([new Price("science", 175000), new Price("alloy", 200)]), ofList(singleton(["calcinerRatio", 1]), {
+}), false), new UpgradeDef("fluidizedReactors", ofArray([new Price("science", 175000), new Price("alloy", 200)]), ofList(singleton(["calcinerRatio", 1]), {
     Compare: (x_73, y_73) => (comparePrimitives(x_73, y_73) | 0),
-})), new UpgradeDef("nuclearSmelters", ofArray([new Price("uranium", 250), new Price("science", 165000)]), empty_1({
+}), false), new UpgradeDef("nuclearSmelters", ofArray([new Price("uranium", 250), new Price("science", 165000)]), empty_1({
     Compare: (x_74, y_74) => (comparePrimitives(x_74, y_74) | 0),
-})), new UpgradeDef("orbitalGeodesy", ofArray([new Price("oil", 35000), new Price("science", 150000), new Price("alloy", 1000)]), empty_1({
+}), false), new UpgradeDef("orbitalGeodesy", ofArray([new Price("oil", 35000), new Price("science", 150000), new Price("alloy", 1000)]), empty_1({
     Compare: (x_75, y_75) => (comparePrimitives(x_75, y_75) | 0),
-})), new UpgradeDef("printingPress", ofArray([new Price("science", 7500), new Price("gear", 45)]), empty_1({
+}), false), new UpgradeDef("printingPress", ofArray([new Price("science", 7500), new Price("gear", 45)]), empty_1({
     Compare: (x_76, y_76) => (comparePrimitives(x_76, y_76) | 0),
-})), new UpgradeDef("offsetPress", ofArray([new Price("oil", 15000), new Price("science", 100000), new Price("gear", 250)]), empty_1({
+}), false), new UpgradeDef("offsetPress", ofArray([new Price("oil", 15000), new Price("science", 100000), new Price("gear", 250)]), empty_1({
     Compare: (x_77, y_77) => (comparePrimitives(x_77, y_77) | 0),
-})), new UpgradeDef("photolithography", ofArray([new Price("oil", 50000), new Price("uranium", 250), new Price("science", 250000), new Price("alloy", 1250)]), empty_1({
+}), false), new UpgradeDef("photolithography", ofArray([new Price("oil", 50000), new Price("uranium", 250), new Price("science", 250000), new Price("alloy", 1250)]), empty_1({
     Compare: (x_78, y_78) => (comparePrimitives(x_78, y_78) | 0),
-})), new UpgradeDef("uplink", ofArray([new Price("science", 75000), new Price("alloy", 1750)]), ofList(ofArray([["uplinkDCRatio", 0.01], ["uplinkLabRatio", 0.01]]), {
+}), false), new UpgradeDef("uplink", ofArray([new Price("science", 75000), new Price("alloy", 1750)]), ofList(ofArray([["uplinkDCRatio", 0.01], ["uplinkLabRatio", 0.01]]), {
     Compare: (x_79, y_79) => (comparePrimitives(x_79, y_79) | 0),
-})), new UpgradeDef("starlink", ofArray([new Price("oil", 25000), new Price("science", 175000), new Price("alloy", 5000)]), ofList(singleton(["uplinkLabRatio", 0.01]), {
+}), false), new UpgradeDef("starlink", ofArray([new Price("oil", 25000), new Price("science", 175000), new Price("alloy", 5000)]), ofList(singleton(["uplinkLabRatio", 0.01]), {
     Compare: (x_80, y_80) => (comparePrimitives(x_80, y_80) | 0),
-})), new UpgradeDef("cryocomputing", ofArray([new Price("science", 125000), new Price("eludium", 15)]), empty_1({
+}), false), new UpgradeDef("cryocomputing", ofArray([new Price("science", 125000), new Price("eludium", 15)]), empty_1({
     Compare: (x_81, y_81) => (comparePrimitives(x_81, y_81) | 0),
-})), new UpgradeDef("machineLearning", ofArray([new Price("antimatter", 125), new Price("science", 175000), new Price("eludium", 25)]), ofList(singleton(["dataCenterAIRatio", 0.1]), {
+}), false), new UpgradeDef("machineLearning", ofArray([new Price("antimatter", 125), new Price("science", 175000), new Price("eludium", 25)]), ofList(singleton(["dataCenterAIRatio", 0.1]), {
     Compare: (x_82, y_82) => (comparePrimitives(x_82, y_82) | 0),
-})), new UpgradeDef("factoryAutomation", ofArray([new Price("science", 10000), new Price("gear", 25)]), empty_1({
+}), false), new UpgradeDef("factoryAutomation", ofArray([new Price("science", 10000), new Price("gear", 25)]), empty_1({
     Compare: (x_83, y_83) => (comparePrimitives(x_83, y_83) | 0),
-})), new UpgradeDef("advancedAutomation", ofArray([new Price("science", 100000), new Price("gear", 75), new Price("blueprint", 25)]), empty_1({
+}), false), new UpgradeDef("advancedAutomation", ofArray([new Price("science", 100000), new Price("gear", 75), new Price("blueprint", 25)]), empty_1({
     Compare: (x_84, y_84) => (comparePrimitives(x_84, y_84) | 0),
-})), new UpgradeDef("pneumaticPress", ofArray([new Price("science", 20000), new Price("gear", 30), new Price("blueprint", 5)]), empty_1({
+}), false), new UpgradeDef("pneumaticPress", ofArray([new Price("science", 20000), new Price("gear", 30), new Price("blueprint", 5)]), empty_1({
     Compare: (x_85, y_85) => (comparePrimitives(x_85, y_85) | 0),
-})), new UpgradeDef("combustionEngine", ofArray([new Price("science", 20000), new Price("gear", 25), new Price("blueprint", 5)]), ofList(singleton(["coalRatioGlobalReduction", 0.2]), {
+}), false), new UpgradeDef("combustionEngine", ofArray([new Price("science", 20000), new Price("gear", 25), new Price("blueprint", 5)]), ofList(singleton(["coalRatioGlobalReduction", 0.2]), {
     Compare: (x_86, y_86) => (comparePrimitives(x_86, y_86) | 0),
-})), new UpgradeDef("fuelInjectors", ofArray([new Price("oil", 20000), new Price("science", 100000), new Price("gear", 250)]), ofList(singleton(["coalRatioGlobalReduction", 0.2]), {
+}), false), new UpgradeDef("fuelInjectors", ofArray([new Price("oil", 20000), new Price("science", 100000), new Price("gear", 250)]), ofList(singleton(["coalRatioGlobalReduction", 0.2]), {
     Compare: (x_87, y_87) => (comparePrimitives(x_87, y_87) | 0),
-})), new UpgradeDef("factoryLogistics", ofArray([new Price("titanium", 2000), new Price("science", 100000), new Price("gear", 250)]), empty_1({
+}), false), new UpgradeDef("factoryLogistics", ofArray([new Price("titanium", 2000), new Price("science", 100000), new Price("gear", 250)]), empty_1({
     Compare: (x_88, y_88) => (comparePrimitives(x_88, y_88) | 0),
-})), new UpgradeDef("carbonSequestration", ofArray([new Price("titanium", 1250), new Price("science", 75000), new Price("gear", 125), new Price("steel", 4000), new Price("alloy", 1000)]), empty_1({
+}), false), new UpgradeDef("carbonSequestration", ofArray([new Price("titanium", 1250), new Price("science", 75000), new Price("gear", 125), new Price("steel", 4000), new Price("alloy", 1000)]), empty_1({
     Compare: (x_89, y_89) => (comparePrimitives(x_89, y_89) | 0),
-})), new UpgradeDef("factoryOptimization", ofArray([new Price("titanium", 1250), new Price("science", 75000), new Price("gear", 125)]), ofList(ofArray([["t1CraftRatio", 10], ["t2CraftRatio", 2], ["queueCap", 1]]), {
+}), false), new UpgradeDef("factoryOptimization", ofArray([new Price("titanium", 1250), new Price("science", 75000), new Price("gear", 125)]), ofList(ofArray([["t1CraftRatio", 10], ["t2CraftRatio", 2], ["queueCap", 1]]), {
     Compare: (x_90, y_90) => (comparePrimitives(x_90, y_90) | 0),
-})), new UpgradeDef("factoryRobotics", ofArray([new Price("titanium", 2500), new Price("science", 100000), new Price("gear", 250)]), ofList(ofArray([["t1CraftRatio", 10], ["t2CraftRatio", 5], ["t3CraftRatio", 2], ["queueCap", 2]]), {
+}), false), new UpgradeDef("factoryRobotics", ofArray([new Price("titanium", 2500), new Price("science", 100000), new Price("gear", 250)]), ofList(ofArray([["t1CraftRatio", 10], ["t2CraftRatio", 5], ["t3CraftRatio", 2], ["queueCap", 2]]), {
     Compare: (x_91, y_91) => (comparePrimitives(x_91, y_91) | 0),
-})), new UpgradeDef("spaceEngineers", ofArray([new Price("science", 225000), new Price("alloy", 500)]), ofList(ofArray([["t1CraftRatio", 10], ["t2CraftRatio", 5], ["t3CraftRatio", 2], ["t4CraftRatio", 2], ["queueCap", 2]]), {
+}), false), new UpgradeDef("spaceEngineers", ofArray([new Price("science", 225000), new Price("alloy", 500)]), ofList(ofArray([["t1CraftRatio", 10], ["t2CraftRatio", 5], ["t3CraftRatio", 2], ["t4CraftRatio", 2], ["queueCap", 2]]), {
     Compare: (x_92, y_92) => (comparePrimitives(x_92, y_92) | 0),
-})), new UpgradeDef("aiEngineers", ofArray([new Price("antimatter", 500), new Price("science", 35000), new Price("eludium", 50)]), ofList(ofArray([["t1CraftRatio", 10], ["t2CraftRatio", 5], ["t3CraftRatio", 5], ["t4CraftRatio", 2], ["t5CraftRatio", 2], ["queueCap", 3]]), {
+}), false), new UpgradeDef("aiEngineers", ofArray([new Price("antimatter", 500), new Price("science", 35000), new Price("eludium", 50)]), ofList(ofArray([["t1CraftRatio", 10], ["t2CraftRatio", 5], ["t3CraftRatio", 5], ["t4CraftRatio", 2], ["t5CraftRatio", 2], ["queueCap", 3]]), {
     Compare: (x_93, y_93) => (comparePrimitives(x_93, y_93) | 0),
-})), new UpgradeDef("chronoEngineers", ofArray([new Price("science", 500000), new Price("timeCrystal", 5), new Price("eludium", 100)]), ofList(ofArray([["t1CraftRatio", 10], ["t2CraftRatio", 5], ["t3CraftRatio", 2], ["t4CraftRatio", 2], ["t5CraftRatio", 2], ["queueCap", 3]]), {
+}), false), new UpgradeDef("chronoEngineers", ofArray([new Price("science", 500000), new Price("timeCrystal", 5), new Price("eludium", 100)]), ofList(ofArray([["t1CraftRatio", 10], ["t2CraftRatio", 5], ["t3CraftRatio", 2], ["t4CraftRatio", 2], ["t5CraftRatio", 2], ["queueCap", 3]]), {
     Compare: (x_94, y_94) => (comparePrimitives(x_94, y_94) | 0),
-})), new UpgradeDef("spaceManufacturing", ofArray([new Price("titanium", 125000), new Price("science", 250000)]), empty_1({
+}), false), new UpgradeDef("spaceManufacturing", ofArray([new Price("titanium", 125000), new Price("science", 250000)]), empty_1({
     Compare: (x_95, y_95) => (comparePrimitives(x_95, y_95) | 0),
-})), new UpgradeDef("celestialMechanics", singleton(new Price("science", 250)), empty_1({
+}), false), new UpgradeDef("celestialMechanics", singleton(new Price("science", 250)), empty_1({
     Compare: (x_96, y_96) => (comparePrimitives(x_96, y_96) | 0),
-})), new UpgradeDef("astrolabe", ofArray([new Price("titanium", 5), new Price("science", 25000), new Price("starchart", 75)]), empty_1({
+}), false), new UpgradeDef("astrolabe", ofArray([new Price("titanium", 5), new Price("science", 25000), new Price("starchart", 75)]), empty_1({
     Compare: (x_97, y_97) => (comparePrimitives(x_97, y_97) | 0),
-})), new UpgradeDef("titaniumMirrors", ofArray([new Price("titanium", 15), new Price("science", 20000), new Price("starchart", 20)]), ofList(singleton(["libraryRatio", 0.02]), {
+}), false), new UpgradeDef("titaniumMirrors", ofArray([new Price("titanium", 15), new Price("science", 20000), new Price("starchart", 20)]), ofList(singleton(["libraryRatio", 0.02]), {
     Compare: (x_98, y_98) => (comparePrimitives(x_98, y_98) | 0),
-})), new UpgradeDef("unobtainiumReflectors", ofArray([new Price("unobtainium", 75), new Price("science", 250000), new Price("starchart", 750)]), ofList(singleton(["libraryRatio", 0.02]), {
+}), false), new UpgradeDef("unobtainiumReflectors", ofArray([new Price("unobtainium", 75), new Price("science", 250000), new Price("starchart", 750)]), ofList(singleton(["libraryRatio", 0.02]), {
     Compare: (x_99, y_99) => (comparePrimitives(x_99, y_99) | 0),
-})), new UpgradeDef("eludiumReflectors", ofArray([new Price("science", 250000), new Price("eludium", 15)]), ofList(singleton(["libraryRatio", 0.02]), {
+}), false), new UpgradeDef("eludiumReflectors", ofArray([new Price("science", 250000), new Price("eludium", 15)]), ofList(singleton(["libraryRatio", 0.02]), {
     Compare: (x_100, y_100) => (comparePrimitives(x_100, y_100) | 0),
-})), new UpgradeDef("hydroPlantTurbines", ofArray([new Price("unobtainium", 125), new Price("science", 250000)]), ofList(singleton(["hydroPlantRatio", 0.15]), {
+}), false), new UpgradeDef("hydroPlantTurbines", ofArray([new Price("unobtainium", 125), new Price("science", 250000)]), ofList(singleton(["hydroPlantRatio", 0.15]), {
     Compare: (x_101, y_101) => (comparePrimitives(x_101, y_101) | 0),
-})), new UpgradeDef("amBases", ofArray([new Price("antimatter", 250), new Price("eludium", 15)]), empty_1({
+}), false), new UpgradeDef("amBases", ofArray([new Price("antimatter", 250), new Price("eludium", 15)]), empty_1({
     Compare: (x_102, y_102) => (comparePrimitives(x_102, y_102) | 0),
-})), new UpgradeDef("aiBases", ofArray([new Price("antimatter", 7500), new Price("science", 750000)]), empty_1({
+}), false), new UpgradeDef("aiBases", ofArray([new Price("antimatter", 7500), new Price("science", 750000)]), empty_1({
     Compare: (x_103, y_103) => (comparePrimitives(x_103, y_103) | 0),
-})), new UpgradeDef("amFission", ofArray([new Price("antimatter", 175), new Price("science", 525000), new Price("thorium", 7500)]), ofList(singleton(["eludiumAutomationBonus", 0.25]), {
+}), false), new UpgradeDef("amFission", ofArray([new Price("antimatter", 175), new Price("science", 525000), new Price("thorium", 7500)]), ofList(singleton(["eludiumAutomationBonus", 0.25]), {
     Compare: (x_104, y_104) => (comparePrimitives(x_104, y_104) | 0),
-})), new UpgradeDef("amReactors", ofArray([new Price("antimatter", 750), new Price("eludium", 35)]), ofList(singleton(["spaceScienceRatio", 0.95]), {
+}), false), new UpgradeDef("amReactors", ofArray([new Price("antimatter", 750), new Price("eludium", 35)]), ofList(singleton(["spaceScienceRatio", 0.95]), {
     Compare: (x_105, y_105) => (comparePrimitives(x_105, y_105) | 0),
-})), new UpgradeDef("amReactorsMK2", ofArray([new Price("antimatter", 1750), new Price("eludium", 70)]), ofList(singleton(["spaceScienceRatio", 1.5]), {
+}), false), new UpgradeDef("amReactorsMK2", ofArray([new Price("antimatter", 1750), new Price("eludium", 70)]), ofList(singleton(["spaceScienceRatio", 1.5]), {
     Compare: (x_106, y_106) => (comparePrimitives(x_106, y_106) | 0),
-})), new UpgradeDef("voidReactors", ofArray([new Price("antimatter", 2500), new Price("void", 250)]), ofList(singleton(["spaceScienceRatio", 4]), {
+}), false), new UpgradeDef("voidReactors", ofArray([new Price("antimatter", 2500), new Price("void", 250)]), ofList(singleton(["spaceScienceRatio", 4]), {
     Compare: (x_107, y_107) => (comparePrimitives(x_107, y_107) | 0),
-})), new UpgradeDef("relicStation", ofArray([new Price("antimatter", 5000), new Price("eludium", 100)]), ofList(singleton(["beaconRelicsPerDay", 0.01]), {
+}), false), new UpgradeDef("relicStation", ofArray([new Price("antimatter", 5000), new Price("eludium", 100)]), ofList(singleton(["beaconRelicsPerDay", 0.01]), {
     Compare: (x_108, y_108) => (comparePrimitives(x_108, y_108) | 0),
-})), new UpgradeDef("amDrive", ofArray([new Price("antimatter", 125), new Price("science", 450000)]), ofList(singleton(["routeSpeed", 25]), {
+}), false), new UpgradeDef("amDrive", ofArray([new Price("antimatter", 125), new Price("science", 450000)]), ofList(singleton(["routeSpeed", 25]), {
     Compare: (x_109, y_109) => (comparePrimitives(x_109, y_109) | 0),
-})), new UpgradeDef("pumpjack", ofArray([new Price("titanium", 250), new Price("science", 100000), new Price("gear", 125)]), ofList(singleton(["oilWellRatio", 0.45]), {
+}), false), new UpgradeDef("pumpjack", ofArray([new Price("titanium", 250), new Price("science", 100000), new Price("gear", 125)]), ofList(singleton(["oilWellRatio", 0.45]), {
     Compare: (x_110, y_110) => (comparePrimitives(x_110, y_110) | 0),
-})), new UpgradeDef("petri", ofArray([new Price("plastic", 250), new Price("science", 65000)]), empty_1({
+}), false), new UpgradeDef("petri", ofArray([new Price("plastic", 250), new Price("science", 65000)]), empty_1({
     Compare: (x_111, y_111) => (comparePrimitives(x_111, y_111) | 0),
-})), new UpgradeDef("biofuel", ofArray([new Price("titanium", 1250), new Price("science", 150000)]), empty_1({
+}), false), new UpgradeDef("biofuel", ofArray([new Price("titanium", 1250), new Price("science", 150000)]), empty_1({
     Compare: (x_112, y_112) => (comparePrimitives(x_112, y_112) | 0),
-})), new UpgradeDef("unicornSelection", ofArray([new Price("titanium", 1500), new Price("science", 175000)]), ofList(ofArray([["unicornsGlobalRatio", 0.25], ["unicornsMaxRatio", 0]]), {
+}), false), new UpgradeDef("unicornSelection", ofArray([new Price("titanium", 1500), new Price("science", 175000)]), ofList(ofArray([["unicornsGlobalRatio", 0.25], ["unicornsMaxRatio", 0]]), {
     Compare: (x_113, y_113) => (comparePrimitives(x_113, y_113) | 0),
-})), new UpgradeDef("alicornStable", ofArray([new Price("wood", 3000), new Price("gold", 100), new Price("alicorn", 20)]), ofList(singleton(["alicornMax", 0]), {
+}), false), new UpgradeDef("alicornStable", ofArray([new Price("wood", 3000), new Price("gold", 100), new Price("alicorn", 20)]), ofList(singleton(["alicornMax", 0]), {
     Compare: (x_114, y_114) => (comparePrimitives(x_114, y_114) | 0),
-})), new UpgradeDef("gmo", ofArray([new Price("catnip", 1000000), new Price("titanium", 1500), new Price("science", 175000)]), ofList(singleton(["biofuelRatio", 0.6]), {
+}), false), new UpgradeDef("gmo", ofArray([new Price("catnip", 1000000), new Price("titanium", 1500), new Price("science", 175000)]), ofList(singleton(["biofuelRatio", 0.6]), {
     Compare: (x_115, y_115) => (comparePrimitives(x_115, y_115) | 0),
-})), new UpgradeDef("cadSystems", ofArray([new Price("titanium", 750), new Price("science", 125000)]), ofList(singleton(["cadBlueprintCraftRatio", 0.01]), {
+}), false), new UpgradeDef("cadSystems", ofArray([new Price("titanium", 750), new Price("science", 125000)]), ofList(singleton(["cadBlueprintCraftRatio", 0.01]), {
     Compare: (x_116, y_116) => (comparePrimitives(x_116, y_116) | 0),
-})), new UpgradeDef("seti", ofArray([new Price("titanium", 250), new Price("science", 125000)]), empty_1({
+}), false), new UpgradeDef("seti", ofArray([new Price("titanium", 250), new Price("science", 125000)]), empty_1({
     Compare: (x_117, y_117) => (comparePrimitives(x_117, y_117) | 0),
-})), new UpgradeDef("logistics", ofArray([new Price("science", 100000), new Price("gear", 100), new Price("scaffold", 1000)]), ofList(singleton(["skillMultiplier", 0.15]), {
+}), false), new UpgradeDef("logistics", ofArray([new Price("science", 100000), new Price("gear", 100), new Price("scaffold", 1000)]), ofList(singleton(["skillMultiplier", 0.15]), {
     Compare: (x_118, y_118) => (comparePrimitives(x_118, y_118) | 0),
-})), new UpgradeDef("augumentation", ofArray([new Price("titanium", 5000), new Price("uranium", 50), new Price("science", 150000)]), ofList(singleton(["skillMultiplier", 1]), {
+}), false), new UpgradeDef("augumentation", ofArray([new Price("titanium", 5000), new Price("uranium", 50), new Price("science", 150000)]), ofList(singleton(["skillMultiplier", 1]), {
     Compare: (x_119, y_119) => (comparePrimitives(x_119, y_119) | 0),
-})), new UpgradeDef("internet", ofArray([new Price("titanium", 5000), new Price("uranium", 50), new Price("science", 150000)]), empty_1({
+}), false), new UpgradeDef("internet", ofArray([new Price("titanium", 5000), new Price("uranium", 50), new Price("science", 150000)]), empty_1({
     Compare: (x_120, y_120) => (comparePrimitives(x_120, y_120) | 0),
-})), new UpgradeDef("neuralNetworks", ofArray([new Price("titanium", 7500), new Price("science", 200000)]), empty_1({
+}), false), new UpgradeDef("neuralNetworks", ofArray([new Price("titanium", 7500), new Price("science", 200000)]), empty_1({
     Compare: (x_121, y_121) => (comparePrimitives(x_121, y_121) | 0),
-})), new UpgradeDef("assistance", ofArray([new Price("science", 100000), new Price("steel", 10000), new Price("gear", 250)]), ofList(singleton(["catnipDemandWorkerRatioGlobal", -0.25]), {
+}), false), new UpgradeDef("assistance", ofArray([new Price("science", 100000), new Price("steel", 10000), new Price("gear", 250)]), ofList(singleton(["catnipDemandWorkerRatioGlobal", -0.25]), {
     Compare: (x_122, y_122) => (comparePrimitives(x_122, y_122) | 0),
-})), new UpgradeDef("enrichedUranium", ofArray([new Price("titanium", 7500), new Price("uranium", 150), new Price("science", 175000)]), ofList(singleton(["uraniumRatio", 0.25]), {
+}), false), new UpgradeDef("enrichedUranium", ofArray([new Price("titanium", 7500), new Price("uranium", 150), new Price("science", 175000)]), ofList(singleton(["uraniumRatio", 0.25]), {
     Compare: (x_123, y_123) => (comparePrimitives(x_123, y_123) | 0),
-})), new UpgradeDef("coldFusion", ofArray([new Price("science", 200000), new Price("eludium", 25)]), ofList(singleton(["reactorEnergyRatio", 0.25]), {
+}), false), new UpgradeDef("coldFusion", ofArray([new Price("science", 200000), new Price("eludium", 25)]), ofList(singleton(["reactorEnergyRatio", 0.25]), {
     Compare: (x_124, y_124) => (comparePrimitives(x_124, y_124) | 0),
-})), new UpgradeDef("thoriumReactors", ofArray([new Price("science", 400000), new Price("thorium", 10000)]), ofList(ofArray([["reactorThoriumPerTick", -0.05], ["reactorEnergyRatio", 0.25]]), {
+}), false), new UpgradeDef("thoriumReactors", ofArray([new Price("science", 400000), new Price("thorium", 10000)]), ofList(ofArray([["reactorThoriumPerTick", -0.05], ["reactorEnergyRatio", 0.25]]), {
     Compare: (x_125, y_125) => (comparePrimitives(x_125, y_125) | 0),
-})), new UpgradeDef("enrichedThorium", ofArray([new Price("science", 500000), new Price("thorium", 12500)]), ofList(singleton(["reactorThoriumPerTick", 0.0125]), {
+}), false), new UpgradeDef("enrichedThorium", ofArray([new Price("science", 500000), new Price("thorium", 12500)]), ofList(singleton(["reactorThoriumPerTick", 0.0125]), {
     Compare: (x_126, y_126) => (comparePrimitives(x_126, y_126) | 0),
-})), new UpgradeDef("hubbleTelescope", ofArray([new Price("oil", 50000), new Price("science", 250000), new Price("alloy", 1250)]), ofList(singleton(["starchartGlobalRatio", 0.3]), {
+}), false), new UpgradeDef("hubbleTelescope", ofArray([new Price("oil", 50000), new Price("science", 250000), new Price("alloy", 1250)]), ofList(singleton(["starchartGlobalRatio", 0.3]), {
     Compare: (x_127, y_127) => (comparePrimitives(x_127, y_127) | 0),
-})), new UpgradeDef("satnav", ofArray([new Price("science", 200000), new Price("alloy", 750)]), ofList(singleton(["satnavRatio", 0.0125]), {
+}), false), new UpgradeDef("satnav", ofArray([new Price("science", 200000), new Price("alloy", 750)]), ofList(singleton(["satnavRatio", 0.0125]), {
     Compare: (x_128, y_128) => (comparePrimitives(x_128, y_128) | 0),
-})), new UpgradeDef("satelliteRadio", ofArray([new Price("science", 225000), new Price("alloy", 5000)]), ofList(singleton(["broadcastTowerRatio", 0.005]), {
+}), false), new UpgradeDef("satelliteRadio", ofArray([new Price("science", 225000), new Price("alloy", 5000)]), ofList(singleton(["broadcastTowerRatio", 0.005]), {
     Compare: (x_129, y_129) => (comparePrimitives(x_129, y_129) | 0),
-})), new UpgradeDef("astrophysicists", ofArray([new Price("unobtainium", 350), new Price("science", 250000)]), empty_1({
+}), false), new UpgradeDef("astrophysicists", ofArray([new Price("unobtainium", 350), new Price("science", 250000)]), empty_1({
     Compare: (x_130, y_130) => (comparePrimitives(x_130, y_130) | 0),
-})), new UpgradeDef("mWReactor", ofArray([new Price("science", 150000), new Price("eludium", 50)]), ofList(singleton(["lunarOutpostRatio", 0.75]), {
+}), false), new UpgradeDef("mWReactor", ofArray([new Price("science", 150000), new Price("eludium", 50)]), ofList(singleton(["lunarOutpostRatio", 0.75]), {
     Compare: (x_131, y_131) => (comparePrimitives(x_131, y_131) | 0),
-})), new UpgradeDef("eludiumCracker", ofArray([new Price("science", 275000), new Price("eludium", 250)]), ofList(singleton(["crackerRatio", 1]), {
+}), false), new UpgradeDef("eludiumCracker", ofArray([new Price("science", 275000), new Price("eludium", 250)]), ofList(singleton(["crackerRatio", 1]), {
     Compare: (x_132, y_132) => (comparePrimitives(x_132, y_132) | 0),
-})), new UpgradeDef("thoriumEngine", ofArray([new Price("science", 400000), new Price("gear", 40000), new Price("alloy", 2000), new Price("ship", 10000), new Price("thorium", 100000)]), ofList(singleton(["routeSpeed", 50]), {
+}), false), new UpgradeDef("thoriumEngine", ofArray([new Price("science", 400000), new Price("gear", 40000), new Price("alloy", 2000), new Price("ship", 10000), new Price("thorium", 100000)]), ofList(singleton(["routeSpeed", 50]), {
     Compare: (x_133, y_133) => (comparePrimitives(x_133, y_133) | 0),
-})), new UpgradeDef("spiceNavigation", ofArray([new Price("science", 350000), new Price("starchart", 500000)]), empty_1({
+}), false), new UpgradeDef("spiceNavigation", ofArray([new Price("science", 350000), new Price("starchart", 500000)]), empty_1({
     Compare: (x_134, y_134) => (comparePrimitives(x_134, y_134) | 0),
-})), new UpgradeDef("longRangeSpaceships", ofArray([new Price("science", 440000), new Price("gear", 90000), new Price("alloy", 3500), new Price("tanker", 500)]), empty_1({
+}), false), new UpgradeDef("longRangeSpaceships", ofArray([new Price("science", 440000), new Price("gear", 90000), new Price("alloy", 3500), new Price("tanker", 500)]), empty_1({
     Compare: (x_135, y_135) => (comparePrimitives(x_135, y_135) | 0),
-})), new UpgradeDef("oilRefinery", ofArray([new Price("titanium", 1250), new Price("science", 125000), new Price("gear", 500)]), ofList(singleton(["oilWellRatio", 0.35]), {
+}), false), new UpgradeDef("oilRefinery", ofArray([new Price("titanium", 1250), new Price("science", 125000), new Price("gear", 500)]), ofList(singleton(["oilWellRatio", 0.35]), {
     Compare: (x_136, y_136) => (comparePrimitives(x_136, y_136) | 0),
-})), new UpgradeDef("oilDistillation", ofArray([new Price("titanium", 5000), new Price("science", 175000)]), ofList(singleton(["oilWellRatio", 0.75]), {
+}), false), new UpgradeDef("oilDistillation", ofArray([new Price("titanium", 5000), new Price("science", 175000)]), ofList(singleton(["oilWellRatio", 0.75]), {
     Compare: (x_137, y_137) => (comparePrimitives(x_137, y_137) | 0),
-})), new UpgradeDef("factoryProcessing", ofArray([new Price("titanium", 7500), new Price("science", 195000), new Price("concrate", 125)]), ofList(singleton(["factoryRefineRatio", 0.05]), {
+}), false), new UpgradeDef("factoryProcessing", ofArray([new Price("titanium", 7500), new Price("science", 195000), new Price("concrate", 125)]), ofList(singleton(["factoryRefineRatio", 0.05]), {
     Compare: (x_138, y_138) => (comparePrimitives(x_138, y_138) | 0),
-})), new UpgradeDef("voidAspiration", ofArray([new Price("antimatter", 2000), new Price("timeCrystal", 15)]), empty_1({
+}), false), new UpgradeDef("voidAspiration", ofArray([new Price("antimatter", 2000), new Price("timeCrystal", 15)]), empty_1({
     Compare: (x_139, y_139) => (comparePrimitives(x_139, y_139) | 0),
-})), new UpgradeDef("distorsion", ofArray([new Price("antimatter", 2000), new Price("science", 300000), new Price("timeCrystal", 25), new Price("void", 1000)]), ofList(singleton(["temporalParadoxDayBonus", 2]), {
+}), false), new UpgradeDef("distorsion", ofArray([new Price("antimatter", 2000), new Price("science", 300000), new Price("timeCrystal", 25), new Price("void", 1000)]), ofList(singleton(["temporalParadoxDayBonus", 2]), {
     Compare: (x_140, y_140) => (comparePrimitives(x_140, y_140) | 0),
-})), new UpgradeDef("turnSmoothly", ofArray([new Price("unobtainium", 100000), new Price("temporalFlux", 6500), new Price("timeCrystal", 25), new Price("void", 750)]), ofList(singleton(["temporalFluxProductionChronosphere", 1]), {
+}), false), new UpgradeDef("turnSmoothly", ofArray([new Price("unobtainium", 100000), new Price("temporalFlux", 6500), new Price("timeCrystal", 25), new Price("void", 750)]), ofList(singleton(["temporalFluxProductionChronosphere", 1]), {
     Compare: (x_141, y_141) => (comparePrimitives(x_141, y_141) | 0),
-})), new UpgradeDef("invisibleBlackHand", ofArray([new Price("temporalFlux", 4096), new Price("timeCrystal", 128), new Price("void", 32), new Price("blackcoin", 64)]), empty_1({
+}), false), new UpgradeDef("invisibleBlackHand", ofArray([new Price("temporalFlux", 4096), new Price("timeCrystal", 128), new Price("void", 32), new Price("blackcoin", 64)]), empty_1({
     Compare: (x_142, y_142) => (comparePrimitives(x_142, y_142) | 0),
-}))]);
+}), false)]);
 
 export const craftDefs = ofArray([new CraftDef("wood", singleton(new Price("catnip", 100)), 1, true, 1, true), new CraftDef("beam", singleton(new Price("wood", 175)), 1, false, 1, true), new CraftDef("slab", singleton(new Price("minerals", 250)), 1, false, 1, true), new CraftDef("plate", singleton(new Price("iron", 125)), 1, false, 4, true), new CraftDef("steel", ofArray([new Price("coal", 100), new Price("iron", 100)]), 2, false, 4, false), new CraftDef("concrate", ofArray([new Price("slab", 2500), new Price("steel", 25)]), 4, false, 9, false), new CraftDef("gear", singleton(new Price("steel", 15)), 3, false, 5, true), new CraftDef("alloy", ofArray([new Price("titanium", 10), new Price("steel", 75)]), 4, false, 7, false), new CraftDef("eludium", ofArray([new Price("unobtainium", 1000), new Price("alloy", 2500)]), 5, false, 300, false), new CraftDef("scaffold", singleton(new Price("beam", 50)), 2, false, 2, true), new CraftDef("ship", ofArray([new Price("starchart", 25), new Price("plate", 150), new Price("scaffold", 100)]), 3, false, 20, false), new CraftDef("tanker", ofArray([new Price("alloy", 1250), new Price("ship", 200), new Price("blueprint", 5)]), 5, false, 20, false), new CraftDef("kerosene", singleton(new Price("oil", 7500)), 2, false, 5, false), new CraftDef("plastic", singleton(new Price("oil", 1000)), 2, false, 5, false), new CraftDef("microchip", ofArray([new Price("plastic", 50), new Price("gold", 1000), new Price("spice", 750)]), 3, false, 20, false), new CraftDef("parchment", singleton(new Price("furs", 175)), 1, false, 1, false), new CraftDef("manuscript", ofArray([new Price("culture", 400), new Price("parchment", 25)]), 2, false, 2, true), new CraftDef("compedium", ofArray([new Price("science", 9000), new Price("manuscript", 55)]), 3, false, 5, false), new CraftDef("blueprint", ofArray([new Price("science", 25000), new Price("compedium", 25)]), 3, false, 10, false), new CraftDef("thorium", singleton(new Price("uranium", 250)), 3, false, 5, false), new CraftDef("megalith", ofArray([new Price("beam", 25), new Price("slab", 50), new Price("plate", 5)]), 3, false, 5, true), new CraftDef("bloodstone", ofArray([new Price("timeCrystal", 5000), new Price("relic", 10000)]), 5, false, 7500, false), new CraftDef("tMythril", ofArray([new Price("bloodstone", 5), new Price("ivory", 1000), new Price("titanium", 500)]), 7, false, 10000, false)]);
 
