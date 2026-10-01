@@ -1,23 +1,23 @@
 
 import { Record } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Types.js";
-import { CraftState, ResPool, ResourceState, ResPool_$reflection } from "./Game/Game.Types.fs.js";
+import { UpgradeState, PolicyState, CraftState, ResPool, ResourceState, ResPool_$reflection } from "./Game/Game.Types.fs.js";
 import { getAllPrices, build, update as update_1, init as init_2, providerEffect, activeEffects, get$ as get$_1, PricingContext, freshPricing, BldPool_$reflection } from "./Game/Game.Buildings.fs.js";
-import { craftAll as craftAll_1, WorkshopPool, getResCraftRatio, craft as craft_1, buyUpgrade as buyUpgrade_1, getTech, research as research_1, Kitten, simAssignJob, assignJob as assignJob_1, unlock, craftByEngineers, getResProduction, CraftRatioContext, learnSkills, SkillContext, simUpdate, starvationStep, VillagePool, calculateMaxKittens, initVillage, initWorkshop, initScience, getFreeKittens, scienceGroup, workshopEffectsBase, VillagePool_$reflection, WorkshopPool_$reflection, SciencePool_$reflection } from "./Game/Game.Managers.fs.js";
-import { init as init_3, religionGroup, ReligionPool_$reflection } from "./Game/Game.Religion.fs.js";
-import { init as init_4, challengesGroup, ChallengePool_$reflection } from "./Game/Game.Challenges.fs.js";
-import { getBurnedParagonRatio, init as init_5, prestigeGroup, PrestigePool_$reflection } from "./Game/Game.Prestige.fs.js";
-import { init as init_6, DiplomacyPool_$reflection } from "./Game/Game.Diplomacy.fs.js";
-import { init as init_7, timeGroup as timeGroup_1, TimePool_$reflection } from "./Game/Game.Time.fs.js";
-import { init as init_8, spaceGroup, SpacePool_$reflection } from "./Game/Game.Space.fs.js";
+import { SciencePool, unlockRelations, craftAll as craftAll_1, WorkshopPool, getResCraftRatio, craft as craft_1, buyUpgrade as buyUpgrade_1, getTech, research as research_1, Kitten, simAssignJob, assignJob as assignJob_1, unlock, craftByEngineers, getResProduction, CraftRatioContext, learnSkills, SkillContext, simUpdate, starvationStep, VillagePool, calculateMaxKittens, initVillage, initWorkshop, initScience, getFreeKittens, scienceGroup, workshopEffectsBase, VillagePool_$reflection, WorkshopPool_$reflection, SciencePool_$reflection } from "./Game/Game.Managers.fs.js";
+import { getZU, getRU, getTU, buyZU as buyZU_1, freezeSolarRevolution, buyRU as buyRU_1, praise as praise_1, init as init_3, religionGroup, ReligionPool_$reflection } from "./Game/Game.Religion.fs.js";
+import { ChallengePool, ChallengeState, getTradeBonusEffect, init as init_4, challengesGroup, ChallengePool_$reflection } from "./Game/Game.Challenges.fs.js";
+import { getPerk, getBurnedParagonRatio, init as init_5, prestigeGroup, PrestigePool_$reflection } from "./Game/Game.Prestige.fs.js";
+import { buyEmbassies, tradeImpl, getTradeVolume, getGoldCost, getManpowerCost, update as update_2, DiplomacyContext, init as init_6, DiplomacyPool_$reflection } from "./Game/Game.Diplomacy.fs.js";
+import { vsuDef, buyVSU as buyVSU_1, cfuCalculate, TimePool, TimeMeta, cfuDef, buyCFU as buyCFU_1, TimeCalcContext, init as init_7, timeGroup as timeGroup_1, TimePool_$reflection } from "./Game/Game.Time.fs.js";
+import { getBuilding, getProgram, buyBuilding as buyBuilding_1, buyProgram as buyProgram_1, init as init_8, spaceGroup, SpacePool_$reflection } from "./Game/Game.Space.fs.js";
 import { bumpStat, init as init_9, StatsPool_$reflection } from "./Game/Game.Stats.fs.js";
-import { tick as tick_1, init as init_10, CalendarContext, CalendarState_$reflection } from "./Game/Game.Calendar.fs.js";
+import { cycleYearColors, tick as tick_1, seasons, init as init_10, CalendarContext, CalendarState_$reflection } from "./Game/Game.Calendar.fs.js";
 import { empty as empty_2, updateCaches, ManagerGroup, getEffect as getEffect_1, EffectsCache_$reflection } from "./Game/Game.Effects.fs.js";
 import { list_type, float64_type, string_type, record_type, bool_type, int32_type } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
 import { defaultArg } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Option.js";
-import { hasRes, addResEvent, updateMaxValueAll, update, UpdateContext, init as init_1, getEnergyDelta, CapContext, get$ } from "./Game/Game.Resources.fs.js";
+import { payPrices, hasRes, addResEvent, updateMaxValueAll, update, UpdateContext, init as init_1, getEnergyDelta, CapContext, get$ } from "./Game/Game.Resources.fs.js";
 import { ofList, add, FSharpMap__get_Item, map, filter, tryFind, empty } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Map.js";
-import { equals, comparePrimitives } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
-import { reverse, truncate, filter as filter_1, map as map_1, sumBy, length, ofArray, choose, empty as empty_1 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
+import { stringHash, equals, comparePrimitives } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
+import { append, isEmpty, fold, contains as contains_1, find, reverse, truncate, filter as filter_1, map as map_1, sumBy, item, length, ofArray, choose, empty as empty_1 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
 import { baseEffects, bldBase } from "./Game/Game.Catalog.BaseEffects.fs.js";
 import { calcResourcePerTick, fixFloatPointNumber, ProductionContext, freshProductionContext } from "./Game/Game.Production.fs.js";
 import { resourceDefs } from "./Game/Game.Catalog.Resources.fs.js";
@@ -28,7 +28,9 @@ import { union, contains, ofList as ofList_1, FSharpSet__Contains } from "../.el
 import { updateHappiness, HappinessContext, freshHappinessContext } from "./Game/Game.Happiness.fs.js";
 import { min } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Double.js";
 import { op_UnaryNegation_Int32 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Int32.js";
+import { buildingDefs as buildingDefs_1, programDefs } from "./Game/Game.Catalog.Space.fs.js";
 import { get$ as get$_2 } from "./Game.Labels.fs.js";
+import { ruDefs, raceDefs } from "./Game/Game.Catalog.World.fs.js";
 
 export class State extends Record {
     constructor(Pool, Bpool, Spool, Wpool, Vpool, Rpool, Cpool, Ppool, Dpool, Tpool, Spacep, Stpool, Calendar, Cache, CalendarDay, Ticks, IronWill) {
@@ -158,9 +160,24 @@ export function init() {
     return refreshCache(fresh);
 }
 
-/**
- * One game tick: effect/per-tick caches, production, caps, calendar.
- */
+export const browserRand = (() => {
+    const r = nonSeeded();
+    return () => r.NextDouble();
+})();
+
+export function dctxFor(s) {
+    return new DiplomacyContext((name) => getEffect_1(s.Cache, name), (name_1) => resValue(s, name_1), (n) => getResMax(s.Pool, n), (n_1) => {
+        const matchValue = get$(s.Pool, n_1);
+        if (matchValue == null) {
+            return false;
+        }
+        else {
+            const r = matchValue;
+            return r.Unlocked;
+        }
+    }, item(s.Calendar.Season, seasons).Name, false, false);
+}
+
 export function tick(s) {
     let option_1, matchValue_2, u, matchValue_3, u_1;
     const s1 = refreshCache(s);
@@ -213,9 +230,6 @@ export function tick(s) {
     const vpool1 = starvationStep(catnipVal, catnipPerTickTrue, 5, false, maxKittens, vpool0);
     const growthRate = starving ? 0 : kittensPerTick;
     const beforeBirths = length(vpool1.Kittens) | 0;
-    let browserRand;
-    const r_3 = nonSeeded();
-    browserRand = (() => r_3.NextDouble());
     const vpool2 = simUpdate(maxKittens, growthRate, 1, browserRand, vpool1);
     const skillCtx = new SkillContext(false, (matchValue_2 = tryFind("internet", s2.Wpool.Upgrades), (matchValue_2 == null) ? false : ((u = matchValue_2, u.Researched))), (matchValue_3 = tryFind("neuralNetworks", s2.Wpool.Upgrades), (matchValue_3 == null) ? false : ((u_1 = matchValue_3, u_1.Researched))), getEffect_1(s2.Cache, "skillXP"), getEffect_1(s2.Cache, "maxKittensRatio"), s2.CalendarDay, (n_1) => (defaultArg(tryFind(n_1, vpool2.JobValues), 0) | 0), (n_2) => FSharpSet__Contains(vpool2.JobUnlocked, n_2), 1);
     const vpool3 = learnSkills(skillCtx, vpool2);
@@ -229,13 +243,13 @@ export function tick(s) {
     bumped = bumpStat("kittensDead", preStarve - length(vpool3.Kittens), sp_1);
     stpool1 = bumped;
     const luxCount = sumBy((n_3) => {
-        let r_4;
+        let r_3;
         const matchValue_4 = get$(pool2, n_3);
-        let matchResult_1, r_5;
+        let matchResult_1, r_4;
         if (matchValue_4 != null) {
-            if ((r_4 = matchValue_4, (r_4.Def.Category !== "common") && (r_4.Value > 0))) {
+            if ((r_3 = matchValue_4, (r_3.Def.Category !== "common") && (r_3.Value > 0))) {
                 matchResult_1 = 0;
-                r_5 = matchValue_4;
+                r_4 = matchValue_4;
             }
             else {
                 matchResult_1 = 1;
@@ -271,7 +285,10 @@ export function tick(s) {
     const calCtx = new CalendarContext((name_4) => getEffect_1(s3.Cache, name_4), 0, false, false, false, false, false, false, false, false, false, () => 0.5, (st) => st, (st_1) => st_1, (st_4) => st_4, (st_2) => st_2, (_arg) => {
     }, (st_3) => st_3);
     const calendar1 = tick_1(calCtx, s3.Calendar);
-    const s4 = new State(pool4, s3.Bpool, s3.Spool, wpool1, s3.Vpool, s3.Rpool, s3.Cpool, s3.Ppool, s3.Dpool, s3.Tpool, s3.Spacep, s3.Stpool, calendar1, s3.Cache, ~~calendar1.Day, s3.Ticks + 1, s3.IronWill);
+    let dp1;
+    const dctx0 = dctxFor(s3);
+    dp1 = update_2(s3.Dpool, dctx0, s3.Calendar.Year, s3.Pool.KarmaKittens, browserRand)[0];
+    const s4 = new State(pool4, s3.Bpool, s3.Spool, wpool1, s3.Vpool, s3.Rpool, s3.Cpool, s3.Ppool, dp1, s3.Tpool, s3.Spacep, s3.Stpool, calendar1, s3.Cache, ~~calendar1.Day, s3.Ticks + 1, s3.IronWill);
     return refreshCache(s4);
 }
 
@@ -501,6 +518,222 @@ export function craftAll(name, s) {
     }
 }
 
+export function praise(s) {
+    let bind$0040_1;
+    const faithValue = getRes(s.Pool, "faith");
+    const rpool$0027 = praise_1(s.Rpool, faithValue);
+    let pool$0027;
+    const bind$0040 = s.Pool;
+    pool$0027 = (new ResPool(bind$0040.Order, add("faith", (bind$0040_1 = FSharpMap__get_Item(s.Pool.ByName, "faith"), new ResourceState(bind$0040_1.Def, 0.0001, bind$0040_1.Unlocked, bind$0040_1.MaxValue, bind$0040_1.PerTickCached)), s.Pool.ByName), bind$0040.KarmaKittens, bind$0040.EnergyProd, bind$0040.EnergyWinterProd, bind$0040.EnergyCons));
+    return new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, rpool$0027, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill);
+}
+
+export function buyRU(name, s) {
+    const patternInput = buyRU_1(s.CalendarDay, s.Cache, s.Pool, 1, name, s.Rpool);
+    const rpool$0027 = patternInput[0];
+    const res = patternInput[2];
+    const pool$0027 = patternInput[1];
+    if (res.Bought === 0) {
+        return s;
+    }
+    else {
+        const rpool2 = freezeSolarRevolution(s.Cache, rpool$0027);
+        const s1 = new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, rpool2, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill);
+        let s2;
+        const matchValue = res.UnlockFanOut;
+        if (matchValue == null) {
+            s2 = s1;
+        }
+        else {
+            const u = matchValue;
+            const patternInput_1 = unlock(u.Buildings, u.Tabs, u.Jobs, u.Tech, u.Policies, u.Upgrades, u.ZebraUpgrades, u.Crafts, s1.Bpool, s1.Spool, s1.Wpool);
+            const wp2 = patternInput_1[2];
+            const sp2 = patternInput_1[1];
+            const bp2 = patternInput_1[0];
+            s2 = (new State(s1.Pool, bp2, sp2, wp2, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill));
+        }
+        return refreshCache(s2);
+    }
+}
+
+export function buyZU(name, s) {
+    const patternInput = buyZU_1(s.CalendarDay, s.Cache, s.Pool, 1, name, s.Rpool);
+    const rpool$0027 = patternInput[0];
+    const res = patternInput[2];
+    const pool$0027 = patternInput[1];
+    if (res.Bought === 0) {
+        return s;
+    }
+    else {
+        const s1 = new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, rpool$0027, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill);
+        let s2;
+        const matchValue = res.UnlockFanOut;
+        if (matchValue == null) {
+            s2 = s1;
+        }
+        else {
+            const u = matchValue;
+            const patternInput_1 = unlock(u.Buildings, u.Tabs, u.Jobs, u.Tech, u.Policies, u.Upgrades, u.ZebraUpgrades, u.Crafts, s1.Bpool, s1.Spool, s1.Wpool);
+            const wp2 = patternInput_1[2];
+            const sp2 = patternInput_1[1];
+            const bp2 = patternInput_1[0];
+            s2 = (new State(s1.Pool, bp2, sp2, wp2, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill));
+        }
+        return refreshCache(s2);
+    }
+}
+
+export function trade(raceName, s) {
+    let option_1;
+    const dctx = dctxFor(s);
+    const raceState = FSharpMap__get_Item(s.Dpool.Races, raceName);
+    const manp = getManpowerCost(s.Dpool, dctx, 0, false);
+    const gold = getGoldCost(s.Dpool, dctx, 0, false);
+    const volume = getTradeVolume(dctx, empty({
+        Compare: (x, y) => (comparePrimitives(x, y) | 0),
+    }));
+    const buyPrice = item(0, raceState.Buys).Val * volume;
+    const cost = ofArray([["manpower", manp], ["gold", gold], [item(0, raceState.Buys).Resource, buyPrice]]);
+    if (!hasRes(s.Pool, cost, 0)) {
+        return s;
+    }
+    else {
+        const pool$0027 = payPrices(s.CalendarDay, s.Pool, cost);
+        const tradeBonus = getTradeBonusEffect(s.Cpool, (name) => getEffect_1(s.Cache, name), defaultArg((option_1 = get$_1(s.Bpool, "tradepost"), (option_1 != null) ? option_1.Val : undefined), 0));
+        const dp$0027 = tradeImpl(s.Dpool, dctx, browserRand, raceName, 1, empty({
+            Compare: (x_1, y_1) => (comparePrimitives(x_1, y_1) | 0),
+        }), getEffect_1(s.Cache, "standingRatio") * 0.015, false, getEffect_1(s.Cache, "neutralRaceEmbassyStanding"), tradeBonus, 0, false)[0];
+        return refreshCache(new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, dp$0027, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill));
+    }
+}
+
+export function buyEmbassy(raceName, s) {
+    const patternInput = buyEmbassies(s.CalendarDay, s.Dpool, dctxFor(s), s.Pool, 1, raceName);
+    const pool$0027 = patternInput[1];
+    const dp$0027 = patternInput[0];
+    const built = patternInput[2] | 0;
+    if (built === 0) {
+        return s;
+    }
+    else {
+        const s1 = new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, dp$0027, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill);
+        let s2;
+        if (getPerk(s.Ppool, "diplomacy").Researched) {
+            const spool$0027 = unlockRelations(true, (r) => (FSharpMap__get_Item(s1.Dpool.Races, r).EmbassyLevel | 0), s1.Spool)[0];
+            s2 = (new State(s1.Pool, s1.Bpool, spool$0027, s1.Wpool, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill));
+        }
+        else {
+            s2 = s1;
+        }
+        return refreshCache(s2);
+    }
+}
+
+export function buyProgram(name, s) {
+    let bind$0040;
+    const patternInput = buyProgram_1((name_1) => getEffect_1(s.Cache, name_1), false, s.CalendarDay, name, 1, s.Spacep, s.Pool);
+    const sp$0027 = patternInput[0];
+    const pool$0027 = patternInput[1];
+    const counter = patternInput[2] | 0;
+    if (counter === 0) {
+        return s;
+    }
+    else {
+        const s1 = new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, sp$0027, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill);
+        const def = find((d) => (d.Name === name), programDefs);
+        const spool2 = map((k, v) => {
+            if (contains_1(k, def.UnlocksPolicies, {
+                Equals: (x, y) => (x === y),
+                GetHashCode: (x) => (stringHash(x) | 0),
+            })) {
+                return new PolicyState(v.Def, true, v.Researched, v.Blocked, v.Effects);
+            }
+            else {
+                return v;
+            }
+        }, s1.Spool.Policies);
+        return refreshCache(new State(s1.Pool, s1.Bpool, (bind$0040 = s1.Spool, new SciencePool(bind$0040.TechOrder, bind$0040.Techs, bind$0040.PolicyOrder, spool2)), s1.Wpool, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill));
+    }
+}
+
+export function buySpaceBuilding(name, s) {
+    const patternInput = buyBuilding_1((name_1) => getEffect_1(s.Cache, name_1), false, s.CalendarDay, name, 1, s.Spacep, s.Pool);
+    const sp$0027 = patternInput[0];
+    const pool$0027 = patternInput[1];
+    const counter = patternInput[2] | 0;
+    if (counter === 0) {
+        return s;
+    }
+    else {
+        return refreshCache(new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, sp$0027, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill));
+    }
+}
+
+export function timeCalcCtxFor(s) {
+    return new TimeCalcContext((name) => getEffect_1(s.Cache, name), FSharpMap__get_Item(s.Cpool.Challenges, "1000Years").On, getTU(s.Rpool, "blazar").Val, length(cycleYearColors));
+}
+
+export function buyCFU(name, s) {
+    const patternInput = buyCFU_1((name_1) => getEffect_1(s.Cache, name_1), s.CalendarDay, name, 1, s.Tpool, s.Pool);
+    const tp$0027 = patternInput[0];
+    const pool$0027 = patternInput[1];
+    const counter = patternInput[2] | 0;
+    if (counter === 0) {
+        return s;
+    }
+    else {
+        const s1 = new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, tp$0027, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill);
+        const def = cfuDef(name);
+        const wp2 = fold((acc, up) => {
+            const matchValue = tryFind(up, acc.Upgrades);
+            if (matchValue == null) {
+                return acc;
+            }
+            else {
+                const u = matchValue;
+                return new WorkshopPool(acc.UpgradeOrder, add(up, new UpgradeState(u.Def, true, u.Researched), acc.Upgrades), acc.CraftOrder, acc.Crafts, acc.ZebraOrder, acc.ZebraUpgrades);
+            }
+        }, s1.Wpool, def.UnlocksUpgrades);
+        const tp2 = fold((acc_1, cfuName) => {
+            const m$0027 = FSharpMap__get_Item(acc_1.CFUs, cfuName);
+            return new TimePool(acc_1.Flux, acc_1.Heat, acc_1.IsAccelerated, acc_1.TestShatter, add(cfuName, new TimeMeta(m$0027.Val, m$0027.On, true, m$0027.Researched, m$0027.Heat, m$0027.DelayTicks, m$0027.IsAutomationEnabled, m$0027.Eff, m$0027.PriceRatioDyn), acc_1.CFUs), acc_1.CfuOrder, acc_1.VSUs, acc_1.VsuOrder);
+        }, s1.Tpool, def.UnlocksCFU);
+        const s2 = new State(s1.Pool, s1.Bpool, s1.Spool, wp2, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, tp2, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill);
+        const s3 = new State(s2.Pool, s2.Bpool, s2.Spool, s2.Wpool, s2.Vpool, s2.Rpool, s2.Cpool, s2.Ppool, s2.Dpool, cfuCalculate(timeCalcCtxFor(s2), name, s2.Tpool), s2.Spacep, s2.Stpool, s2.Calendar, s2.Cache, s2.CalendarDay, s2.Ticks, s2.IronWill);
+        return refreshCache(s3);
+    }
+}
+
+export function buyVSU(name, s) {
+    let bind$0040;
+    const burnRatio = getBurnedParagonRatio(resValue(s, "burnedParagon"));
+    const patternInput = buyVSU_1(s.CalendarDay, name, 1, burnRatio, s.Tpool, s.Pool);
+    const tp$0027 = patternInput[0];
+    const pool$0027 = patternInput[1];
+    const counter = patternInput[2] | 0;
+    if (counter === 0) {
+        return s;
+    }
+    else {
+        const s1 = new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, tp$0027, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill);
+        const s2 = equals(vsuDef(name).BreaksIronWill, true) ? (new State(s1.Pool, s1.Bpool, s1.Spool, s1.Wpool, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, false)) : s1;
+        let s3;
+        if (name === "cryochambers") {
+            const m$0027 = FSharpMap__get_Item(s2.Tpool.VSUs, "cryochambers");
+            s3 = (new State(s2.Pool, s2.Bpool, s2.Spool, s2.Wpool, s2.Vpool, s2.Rpool, s2.Cpool, s2.Ppool, s2.Dpool, (bind$0040 = s2.Tpool, new TimePool(bind$0040.Flux, bind$0040.Heat, bind$0040.IsAccelerated, bind$0040.TestShatter, bind$0040.CFUs, bind$0040.CfuOrder, add("cryochambers", new TimeMeta(m$0027.Val, m$0027.On, true, m$0027.Researched, m$0027.Heat, m$0027.DelayTicks, m$0027.IsAutomationEnabled, m$0027.Eff, m$0027.PriceRatioDyn), s2.Tpool.VSUs), bind$0040.VsuOrder)), s2.Spacep, s2.Stpool, s2.Calendar, s2.Cache, s2.CalendarDay, s2.Ticks, s2.IronWill));
+        }
+        else {
+            s3 = s2;
+        }
+        return refreshCache(s3);
+    }
+}
+
+export function toggleChallengePending(name, s) {
+    const c = FSharpMap__get_Item(s.Cpool.Challenges, name);
+    return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, new ChallengePool(add(name, new ChallengeState(c.Unlocked, !c.Pending, c.Active, c.Researched, c.On), s.Cpool.Challenges), s.Cpool.Order), s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill);
+}
+
 export class ResRow extends Record {
     constructor(Name, Value, Max, Show) {
         super();
@@ -703,6 +936,207 @@ export function craftRows(s) {
                 return undefined;
         }
     }, s.Wpool.CraftOrder);
+}
+
+export class RaceRow extends Record {
+    constructor(Name, Label, Unlocked, Standing, EmbassyLevel, Tradeable) {
+        super();
+        this.Name = Name;
+        this.Label = Label;
+        this.Unlocked = Unlocked;
+        this.Standing = Standing;
+        this.EmbassyLevel = (EmbassyLevel | 0);
+        this.Tradeable = Tradeable;
+    }
+}
+
+export function RaceRow_$reflection() {
+    return record_type("kittens_land.KittensState.RaceRow", [], RaceRow, () => [["Name", string_type], ["Label", string_type], ["Unlocked", bool_type], ["Standing", float64_type], ["EmbassyLevel", int32_type], ["Tradeable", bool_type]]);
+}
+
+export function raceRows(s) {
+    return map_1((n_1) => {
+        const def = find((r) => (r.Name === n_1), raceDefs);
+        return new RaceRow(n_1, get$_2("race." + n_1), true, find((r_1) => (r_1.Name === n_1), raceDefs).Standing, FSharpMap__get_Item(s.Dpool.Races, n_1).EmbassyLevel, !isEmpty(def.Buys));
+    }, filter_1((n) => FSharpMap__get_Item(s.Dpool.Races, n).Unlocked, s.Dpool.RaceOrder));
+}
+
+export class ReligionRow extends Record {
+    constructor(Name, Label, Kind, Val, Unlocked, Enabled) {
+        super();
+        this.Name = Name;
+        this.Label = Label;
+        this.Kind = Kind;
+        this.Val = (Val | 0);
+        this.Unlocked = Unlocked;
+        this.Enabled = Enabled;
+    }
+}
+
+export function ReligionRow_$reflection() {
+    return record_type("kittens_land.KittensState.ReligionRow", [], ReligionRow, () => [["Name", string_type], ["Label", string_type], ["Kind", string_type], ["Val", int32_type], ["Unlocked", bool_type], ["Enabled", bool_type]]);
+}
+
+export function religionRows(s) {
+    const ruRows = map_1((n_1) => {
+        const m_1 = getRU(s.Rpool, n_1);
+        return new ReligionRow(n_1, get$_2("ru." + n_1), "ru", m_1.Val, true, true);
+    }, filter_1((n) => {
+        let matchValue, f;
+        const def = find((d) => (d.Name === n), ruDefs);
+        const m = getRU(s.Rpool, n);
+        if ((def.FaithGate != null) && m.Unlocked) {
+            if (m.Val > 0) {
+                return true;
+            }
+            else {
+                return s.Rpool.Faith >= ((matchValue = def.FaithGate, (matchValue == null) ? 0 : ((f = matchValue, f))));
+            }
+        }
+        else {
+            return false;
+        }
+    }, s.Rpool.RuOrder));
+    const zuRows = map_1((n_3) => {
+        const m_2 = getZU(s.Rpool, n_3);
+        return new ReligionRow(n_3, get$_2("zu." + n_3), "zu", m_2.Val, true, true);
+    }, filter_1((n_2) => getZU(s.Rpool, n_2).Unlocked, s.Rpool.ZuOrder));
+    return append(zuRows, ruRows);
+}
+
+export class SpaceRow extends Record {
+    constructor(Name, Label, Kind, Val, Enabled) {
+        super();
+        this.Name = Name;
+        this.Label = Label;
+        this.Kind = Kind;
+        this.Val = (Val | 0);
+        this.Enabled = Enabled;
+    }
+}
+
+export function SpaceRow_$reflection() {
+    return record_type("kittens_land.KittensState.SpaceRow", [], SpaceRow, () => [["Name", string_type], ["Label", string_type], ["Kind", string_type], ["Val", int32_type], ["Enabled", bool_type]]);
+}
+
+export function spaceRows(s) {
+    const progRows = map_1((n_1) => {
+        const m = getProgram(s.Spacep, n_1);
+        const def = find((d) => (d.Name === n_1), programDefs);
+        const affordable = hasRes(s.Pool, map_1((p) => [p.Resource, p.Val], def.Prices), 0);
+        return new SpaceRow(n_1, get$_2("mission." + n_1), "mission", m.Val, affordable);
+    }, filter_1((n) => {
+        if (getProgram(s.Spacep, n).Unlocked) {
+            return getProgram(s.Spacep, n).Val === 0;
+        }
+        else {
+            return false;
+        }
+    }, s.Spacep.ProgramOrder));
+    const bldRows = map_1((n_3) => {
+        const m_1 = getBuilding(s.Spacep, n_3);
+        const def_1 = find((d_1) => (d_1.Name === n_3), buildingDefs_1);
+        const prices = map_1((p_1) => {
+            const ratio = Math.pow(1.05, m_1.Val);
+            return [p_1.Resource, p_1.Val * ratio];
+        }, def_1.Prices);
+        const affordable_1 = hasRes(s.Pool, prices, 0);
+        return new SpaceRow(n_3, get$_2("sbld." + n_3), "sbld", m_1.Val, affordable_1);
+    }, filter_1((n_2) => getBuilding(s.Spacep, n_2).Unlocked, s.Spacep.BuildingOrder));
+    return append(progRows, bldRows);
+}
+
+export class TimeRow extends Record {
+    constructor(Name, Label, Kind, Val, Enabled) {
+        super();
+        this.Name = Name;
+        this.Label = Label;
+        this.Kind = Kind;
+        this.Val = (Val | 0);
+        this.Enabled = Enabled;
+    }
+}
+
+export function TimeRow_$reflection() {
+    return record_type("kittens_land.KittensState.TimeRow", [], TimeRow, () => [["Name", string_type], ["Label", string_type], ["Kind", string_type], ["Val", int32_type], ["Enabled", bool_type]]);
+}
+
+export function timeRows(s) {
+    const cfuRows = map_1((n_1) => {
+        let lb;
+        const m = FSharpMap__get_Item(s.Tpool.CFUs, n_1);
+        const def = cfuDef(n_1);
+        let capped;
+        const matchValue = def.LimitBuild;
+        let matchResult, lb_1;
+        if (matchValue != null) {
+            if ((lb = (matchValue | 0), lb <= m.Val)) {
+                matchResult = 0;
+                lb_1 = matchValue;
+            }
+            else {
+                matchResult = 1;
+            }
+        }
+        else {
+            matchResult = 1;
+        }
+        switch (matchResult) {
+            case 0: {
+                capped = true;
+                break;
+            }
+            default:
+                capped = false;
+        }
+        let affordable;
+        if (capped) {
+            affordable = false;
+        }
+        else {
+            const ratio = Math.pow(def.PriceRatio, m.Val);
+            affordable = hasRes(s.Pool, map_1((p) => [p.Resource, p.Val * ratio], def.Prices), 0);
+        }
+        return new TimeRow(n_1, get$_2("cfu." + n_1), "cfu", m.Val, affordable && !capped);
+    }, filter_1((n) => FSharpMap__get_Item(s.Tpool.CFUs, n).Unlocked, s.Tpool.CfuOrder));
+    const vsuRows = map_1((n_3) => {
+        const m_1 = FSharpMap__get_Item(s.Tpool.VSUs, n_3);
+        const def_1 = vsuDef(n_3);
+        const affordable_1 = hasRes(s.Pool, map_1((p_1) => [p_1.Resource, p_1.Val], def_1.Prices), 0);
+        return new TimeRow(n_3, get$_2("vsu." + n_3), "vsu", m_1.Val, affordable_1);
+    }, filter_1((n_2) => {
+        if (n_2 !== "usedCryochambers") {
+            return FSharpMap__get_Item(s.Tpool.VSUs, n_2).Unlocked;
+        }
+        else {
+            return false;
+        }
+    }, s.Tpool.VsuOrder));
+    return append(cfuRows, vsuRows);
+}
+
+export class ChallengeRow extends Record {
+    constructor(Name, Label, Unlocked, Pending, Active, Researched, On) {
+        super();
+        this.Name = Name;
+        this.Label = Label;
+        this.Unlocked = Unlocked;
+        this.Pending = Pending;
+        this.Active = Active;
+        this.Researched = Researched;
+        this.On = (On | 0);
+    }
+}
+
+export function ChallengeRow_$reflection() {
+    return record_type("kittens_land.KittensState.ChallengeRow", [], ChallengeRow, () => [["Name", string_type], ["Label", string_type], ["Unlocked", bool_type], ["Pending", bool_type], ["Active", bool_type], ["Researched", bool_type], ["On", int32_type]]);
+}
+
+export function challengeRows(s) {
+    return map_1((n_1) => {
+        const c = FSharpMap__get_Item(s.Cpool.Challenges, n_1);
+        return new ChallengeRow(n_1, get$_2("challenge." + n_1), true, c.Pending, c.Active, c.Researched, c.On);
+    }, filter_1((n) => FSharpMap__get_Item(s.Cpool.Challenges, n).Unlocked, s.Cpool.Order));
 }
 
 export function buildingRows(s) {

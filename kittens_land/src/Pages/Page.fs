@@ -18,6 +18,16 @@ type Msg =
     | CraftOne of string
     | CraftAll of string
     | SetTab of string
+    | Praise
+    | BuyRU of string
+    | BuyZU of string
+    | Trade of string
+    | Embassy of string
+    | Mission of string
+    | SpaceBuy of string
+    | CFUBuy of string
+    | VSUBuy of string
+    | ChallengeToggle of string
     | LayoutMsg of Layout.Msg
 
 let tickCmd () =
@@ -44,6 +54,16 @@ let update (msg: Msg) (model: Model) =
     | CraftOne name -> { model with S = kittens_land.KittensState.craft name 1.0 model.S }, Command.none
     | CraftAll name -> { model with S = kittens_land.KittensState.craftAll name model.S }, Command.none
     | SetTab tab -> { model with Tab = tab }, Command.none
+    | Praise -> { model with S = kittens_land.KittensState.praise model.S }, Command.none
+    | BuyRU name -> { model with S = kittens_land.KittensState.buyRU name model.S }, Command.none
+    | BuyZU name -> { model with S = kittens_land.KittensState.buyZU name model.S }, Command.none
+    | Trade race -> { model with S = kittens_land.KittensState.trade race model.S }, Command.none
+    | Embassy race -> { model with S = kittens_land.KittensState.buyEmbassy race model.S }, Command.none
+    | Mission name -> { model with S = kittens_land.KittensState.buyProgram name model.S }, Command.none
+    | SpaceBuy name -> { model with S = kittens_land.KittensState.buySpaceBuilding name model.S }, Command.none
+    | CFUBuy name -> { model with S = kittens_land.KittensState.buyCFU name model.S }, Command.none
+    | VSUBuy name -> { model with S = kittens_land.KittensState.buyVSU name model.S }, Command.none
+    | ChallengeToggle name -> { model with S = kittens_land.KittensState.toggleChallengePending name model.S }, Command.none
     | LayoutMsg _ -> model, Command.none
 
 let fmt (v: float) =
@@ -236,8 +256,94 @@ let view (model: Model) (dispatch: Msg -> unit) =
 
     let kittens, maxKittens, happiness = kittens_land.KittensState.kittenSummary s
 
+    let buyRow (label: string) (btnText: string) (enabled: bool) (valText: string) (priceText: string) (key: string) (act: Msg) =
+        Html.div [
+            prop.key key
+            prop.style [
+                style.display.flex
+                style.alignItems.center
+                style.gap 10
+                style.marginBottom 6
+                style.opacity (if enabled then 1.0 else 0.45)
+            ]
+            prop.children [
+                Html.button [
+                    prop.style (btnStyle enabled)
+                    prop.disabled (not enabled)
+                    prop.onClick (fun _ -> dispatch act)
+                    prop.text btnText
+                ]
+                Html.span [
+                    prop.style [ style.fontSize 13; style.width 200 ]
+                    prop.text (label + valText)
+                ]
+                if priceText <> "" then
+                    Html.span [
+                        prop.style [ style.fontSize 12; style.color "#b0a480" ]
+                        prop.text priceText
+                    ]
+            ]
+        ]
+
+    let tabContentV3 =
+        match model.Tab with
+        | "Diplomacy" ->
+            [
+                yield Html.div [
+                    prop.style [ style.fontSize 13; style.marginBottom 8; style.color "#b0a480" ]
+                    prop.text "Races (trade needs manpower + gold; unlock rolls happen at year gates)"
+                ]
+                yield! (kittens_land.KittensState.raceRows s |> List.map (fun r ->
+                    buyRow r.Label "Trade" r.Tradeable (" — standing " + sprintf "%.2f" r.Standing + ", embassies " + string r.EmbassyLevel) "" ("race." + r.Name) (Trade r.Name)))
+                yield! (kittens_land.KittensState.raceRows s |> List.map (fun r ->
+                    buyRow r.Label "Embassy" r.Tradeable (" — level " + string r.EmbassyLevel) "" ("emb." + r.Name) (Embassy r.Name)))
+            ]
+        | "Religion" ->
+            [
+                yield Html.div [
+                    prop.style [ style.fontSize 14; style.marginBottom 10; style.color "#d4c290" ]
+                    prop.text ("Faith: " + fmt (kittens_land.KittensState.getRes s.Pool "faith") + " — worship: " + sprintf "%.1f" s.Rpool.Faith)
+                ]
+                yield Html.button [
+                    prop.style (btnStyle true @ [ style.marginBottom 10 ])
+                    prop.onClick (fun _ -> dispatch Praise)
+                    prop.text "Praise the sun!"
+                ]
+                yield! (kittens_land.KittensState.religionRows s |> List.map (fun r ->
+                    buyRow r.Label (if r.Kind = "zu" then "Build" else "Adore") r.Enabled (" (" + string r.Val + ")") "" ("rel." + r.Name) (if r.Kind = "zu" then BuyZU r.Name else BuyRU r.Name)))
+            ]
+        | "Space" ->
+            kittens_land.KittensState.spaceRows s |> List.map (fun r ->
+                buyRow r.Label (if r.Kind = "mission" then "Launch" else "Build") r.Enabled (" (" + string r.Val + ")") "" ("sp." + r.Name) (if r.Kind = "mission" then Mission r.Name else SpaceBuy r.Name))
+        | "Time" ->
+            [
+                yield Html.div [
+                    prop.style [ style.fontSize 13; style.marginBottom 8; style.color "#b0a480" ]
+                    prop.text ("Temporal flux: " + fmt s.Tpool.Flux + " — heat: " + fmt s.Tpool.Heat)
+                ]
+                yield! (kittens_land.KittensState.timeRows s |> List.map (fun r ->
+                    buyRow r.Label (if r.Kind = "cfu" then "Build" else "Buy") r.Enabled (" (" + string r.Val + ")") "" ("t." + r.Name) (if r.Kind = "cfu" then CFUBuy r.Name else VSUBuy r.Name)))
+            ]
+        | "Challenges" ->
+            [
+                yield Html.div [
+                    prop.style [ style.fontSize 13; style.marginBottom 8; style.color "#b0a480" ]
+                    prop.text "Marked challenges activate on the next reset"
+                ]
+                yield! (kittens_land.KittensState.challengeRows s |> List.map (fun c ->
+                    buyRow c.Label
+                        (if c.Pending then "Unmark" elif c.Active then "Active!" elif c.Researched then "Completed" else "Mark")
+                        (not c.Researched)
+                        (if c.On > 0 then " (x" + string c.On + ")" else "")
+                        ""
+                        ("ch." + c.Name)
+                        (ChallengeToggle c.Name)))
+            ]
+        | _ -> []
+
     let tabContent =
         match model.Tab with
+        | "Diplomacy" | "Religion" | "Space" | "Time" | "Challenges" -> tabContentV3
         | "Village" ->
             [
                 yield Html.div [
@@ -277,7 +383,7 @@ let view (model: Model) (dispatch: Msg -> unit) =
                 yield! List.map buildingRow (kittens_land.KittensState.buildingRows s)
             ]
 
-    let tabs = [ "Bonfire"; "Village"; "Science"; "Workshop" ]
+    let tabs = [ "Bonfire"; "Village"; "Science"; "Workshop"; "Diplomacy"; "Religion"; "Space"; "Time"; "Challenges" ]
 
     Html.div [
         prop.style [

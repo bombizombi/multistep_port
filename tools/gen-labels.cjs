@@ -17,6 +17,17 @@ for (const c of defs.crafts) add(`craft.${c.name}`, j[`crafts.${c.name}.title`] 
 for (const job of ["woodcutter","farmer","fisher","hunter","miner","scholar","priest","geologist","engineer","ambassador"]) {
   add(`job.${job}`, j[`village.jobs.${job}`] || job);
 }
+
+// V3 label sets
+for (const r of ["lizards","zebras","sharks","griffins","nagas","spiders","dragons","leviathans"]) add(`race.` + r, j[`trade.race.` + r] || r);
+for (const m of ["moonMission","orbitalLaunch","kuiperMission","outerPlanetaryMission","duneMission","piscineMission","terminusMission","kairoMission","rorschachMission","centaurusSystemMission","charonMission","focusMission","yarnMission","catnipMission","sunMission","forestMission","cruelMissions","umbrellaMission","kitchenMission","outerFlareMission","ellipseMission"]) { if (j[`space.` + m + `.label`]) add(`mission.` + m, j[`space.` + m + `.label`]); }
+for (const c of ["blastFurnace","timeBoiler","temporalAccelerator","temporalImpedance","temporalPress","temporalBattery","ressourceRetriever"]) add(`cfu.` + c, j[`time.cfu.` + c + `.label`] || c);
+for (const v of ["cryochambers","usedCryochambers","voidRift","tachyonParticleAccelerator","voidSpaceElevator"]) add(`vsu.` + v, j[`time.vsu.` + v + `.label`] || v);
+for (const c of ["ironWill","winterIsComing","anarchy","energy","atheism","1000Years","blackSky","pacifism","unicornTears","postApocalypse"]) add(`challenge.` + c, j[`challendge.` + c + `.label`] || c);
+for (const z of ["unicornTomb","ivoryTower","ivoryCitadel","skyPalace","unicornUtopia","sunspire","marker","unicornGraveyard","unicornNecropolis","blackPyramid","blackObelisk","blackNexus","blackCore","blackLibrary","blackRadiance","blazar","darkNova","mausoleum","holyGenocide","unicornmancy"]) add(`zu.` + z, j[`religion.zu.` + z + `.label`] || j[`religion.tu.` + z + `.label`] || z);
+for (const r of ["solarchant","sunAltar","stoneLazarus","basilica","goldenSpire","scholasticism","transcendence","apocripha","frescoes","solarRevolution","stainedGlass","standardizedBlessing","solarChant2","templature","holyFires","righteousFire"]){ if (j[`religion.ru.` + r + `.label`]) add(`ru.` + r, j[`religion.ru.` + r + `.label`]); }
+for (const s of ["moonOutpost","moonBase","spaceElevator","sattelite","spaceStation","hydroPlant","oilRig","moonWorkerStation","saplingPost","planetCracker","fuelRefinery","orbitalArray","moonReactor","crystalSpaceHeater","moltenSaltReactor","uraniumMine","spaceHub","reliquary"]){ if (j[`space.` + s + `.label`]) add(`sbld.` + s, j[`space.` + s + `.label`]); }
+
 const esc = (s) => String(s).split("\\").join("\\\\").split('"').join("\\\"");
 let out = [
   "// GENERATED from orig res/i18n/en.json by the V2 view slice — display labels",

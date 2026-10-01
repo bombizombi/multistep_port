@@ -1,16 +1,16 @@
 
 import { Union, Record } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Types.js";
 import { union_type, int32_type, record_type, string_type } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
-import { buildingRows, craftRows, upgradeRows, techRows, jobRows, kittenSummary, resRows, tick, craftAll, craft, buyUpgrade, research, unassignJob, assignJob, buyBuilding, gatherCatnip, init as init_1, State_$reflection } from "../KittensState.fs.js";
+import { buildingRows, craftRows, upgradeRows, techRows, jobRows, challengeRows, timeRows, spaceRows, religionRows, getRes, raceRows, kittenSummary, resRows, tick, toggleChallengePending, buyVSU, buyCFU, buySpaceBuilding, buyProgram, buyEmbassy, trade, buyZU, buyRU, praise, craftAll, craft, buyUpgrade, research, unassignJob, assignJob, buyBuilding, gatherCatnip, init as init_1, State_$reflection } from "../KittensState.fs.js";
 import { Msg_$reflection as Msg_$reflection_1 } from "./Layout.fs.js";
 import { Command_none, Command_batch, Command_ofAsync } from "../../.elmish-land/Base/Command.fs.js";
 import { singleton } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/AsyncBuilder.js";
 import { sleep } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Async.js";
-import { item, append as append_1, singleton as singleton_1, filter, map, ofArray } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
+import { item, empty as empty_1, append as append_1, singleton as singleton_1, filter, map, ofArray } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
 import { createObj, int32ToString } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
 import { join, printf, toText } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/String.js";
 import { HtmlHelper_createElement } from "../../.elmish-land/App/fable_modules/Feliz.3.3.3/./Html.fs.js";
-import { map as map_1, singleton as singleton_2, append, delay, toList } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Seq.js";
+import { map as map_1, empty, singleton as singleton_2, append, delay, toList } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Seq.js";
 import { seasons } from "../Game/Game.Calendar.fs.js";
 import { Page_from } from "../../.elmish-land/Base/Page.fs.js";
 
@@ -33,14 +33,15 @@ export class Msg extends Union {
         this.fields = fields;
     }
     cases() {
-        return ["Tick", "Gather", "Buy", "Assign", "Unassign", "Research", "Upgrade", "CraftOne", "CraftAll", "SetTab", "LayoutMsg"];
+        return ["Tick", "Gather", "Buy", "Assign", "Unassign", "Research", "Upgrade", "CraftOne", "CraftAll", "SetTab", "Praise", "BuyRU", "BuyZU", "Trade", "Embassy", "Mission", "SpaceBuy", "CFUBuy", "VSUBuy", "ChallengeToggle", "LayoutMsg"];
     }
     static Tick = new Msg(0, []);
     static Gather = new Msg(1, []);
+    static Praise = new Msg(10, []);
 }
 
 export function Msg_$reflection() {
-    return union_type("kittens_land.Pages.Page.Msg", [], Msg, () => [[], [], [["Item", string_type]], [["Item1", string_type], ["Item2", int32_type]], [["Item1", string_type], ["Item2", int32_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", Msg_$reflection_1()]]]);
+    return union_type("kittens_land.Pages.Page.Msg", [], Msg, () => [[], [], [["Item", string_type]], [["Item1", string_type], ["Item2", int32_type]], [["Item1", string_type], ["Item2", int32_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", Msg_$reflection_1()]]]);
 }
 
 export function tickCmd() {
@@ -90,6 +91,44 @@ export function update(msg, model) {
             return [new Model(tab, model.S), Command_none()];
         }
         case 10:
+            return [new Model(model.Tab, praise(model.S)), Command_none()];
+        case 11: {
+            const name_5 = msg.fields[0];
+            return [new Model(model.Tab, buyRU(name_5, model.S)), Command_none()];
+        }
+        case 12: {
+            const name_6 = msg.fields[0];
+            return [new Model(model.Tab, buyZU(name_6, model.S)), Command_none()];
+        }
+        case 13: {
+            const race = msg.fields[0];
+            return [new Model(model.Tab, trade(race, model.S)), Command_none()];
+        }
+        case 14: {
+            const race_1 = msg.fields[0];
+            return [new Model(model.Tab, buyEmbassy(race_1, model.S)), Command_none()];
+        }
+        case 15: {
+            const name_7 = msg.fields[0];
+            return [new Model(model.Tab, buyProgram(name_7, model.S)), Command_none()];
+        }
+        case 16: {
+            const name_8 = msg.fields[0];
+            return [new Model(model.Tab, buySpaceBuilding(name_8, model.S)), Command_none()];
+        }
+        case 17: {
+            const name_9 = msg.fields[0];
+            return [new Model(model.Tab, buyCFU(name_9, model.S)), Command_none()];
+        }
+        case 18: {
+            const name_10 = msg.fields[0];
+            return [new Model(model.Tab, buyVSU(name_10, model.S)), Command_none()];
+        }
+        case 19: {
+            const name_11 = msg.fields[0];
+            return [new Model(model.Tab, toggleChallengePending(name_11, model.S)), Command_none()];
+        }
+        case 20:
             return [model, Command_none()];
         default:
             return [new Model(model.Tab, tick(model.S)), Command_batch(ofArray([Command_none(), tickCmd()]))];
@@ -202,28 +241,87 @@ export function view(model, dispatch) {
     const maxKittens = patternInput[1] | 0;
     const kittens = patternInput[0] | 0;
     const happiness = patternInput[2];
-    let tabContent;
+    const buyRow = (label, btnText, enabled, valText, priceText_1, key_99, act) => HtmlHelper_createElement("div", ofArray([["key", key_99], ["style", {
+        display: "flex",
+        alignItems: "center",
+        gap: 10 + "px ",
+        marginBottom: 6,
+        opacity: enabled ? 1 : 0.45,
+    }], ["children", toList(delay(() => append(singleton_2(HtmlHelper_createElement("button", ofArray([["style", createObj(btnStyle(enabled))], ["disabled", !enabled], ["onClick", (_arg_7) => {
+        dispatch(act);
+    }], ["children", singleton_1(btnText)]]))), delay(() => append(singleton_2(HtmlHelper_createElement("span", ofArray([["style", {
+        fontSize: 13 + "px",
+        width: 200,
+    }], ["children", singleton_1(label + valText)]]))), delay(() => ((priceText_1 !== "") ? singleton_2(HtmlHelper_createElement("span", ofArray([["style", {
+        fontSize: 12 + "px",
+        color: "#b0a480",
+    }], ["children", singleton_1(priceText_1)]]))) : empty())))))))]]));
+    let tabContentV3;
     const matchValue = model.Tab;
-    tabContent = ((matchValue === "Village") ? toList(delay(() => {
-        let arg;
-        return append(singleton_2(HtmlHelper_createElement("div", ofArray([["style", {
-            fontSize: 14 + "px",
-            marginBottom: 10,
-            color: "#d4c290",
-        }], ["children", singleton_1((((("Kittens: " + int32ToString(kittens)) + "/") + int32ToString(maxKittens)) + " - happiness: ") + ((arg = (happiness * 100), toText(printf("%.0f%%"))(arg))))]]))), delay(() => map(jobRow, filter((j_1) => j_1.Unlocked, jobRows(s)))));
-    })) : ((matchValue === "Science") ? map(techRow, techRows(s)) : ((matchValue === "Workshop") ? toList(delay(() => append(singleton_2(HtmlHelper_createElement("div", ofArray([["style", {
+    tabContentV3 = ((matchValue === "Diplomacy") ? toList(delay(() => append(singleton_2(HtmlHelper_createElement("div", ofArray([["style", {
         fontSize: 13 + "px",
         marginBottom: 8,
         color: "#b0a480",
-    }], ["children", singleton_1("Upgrades")]]))), delay(() => append(map(upgradeRow, upgradeRows(s)), delay(() => append(singleton_2(HtmlHelper_createElement("div", ofArray([["style", {
+    }], ["children", singleton_1("Races (trade needs manpower + gold; unlock rolls happen at year gates)")]]))), delay(() => append(map((r_2) => buyRow(r_2.Label, "Trade", r_2.Tradeable, ((" — standing " + toText(printf("%.2f"))(r_2.Standing)) + ", embassies ") + int32ToString(r_2.EmbassyLevel), "", "race." + r_2.Name, new Msg(/* Trade */ 13, [r_2.Name])), raceRows(s)), delay(() => map((r_3) => buyRow(r_3.Label, "Embassy", r_3.Tradeable, " — level " + int32ToString(r_3.EmbassyLevel), "", "emb." + r_3.Name, new Msg(/* Embassy */ 14, [r_3.Name])), raceRows(s)))))))) : ((matchValue === "Religion") ? toList(delay(() => append(singleton_2(HtmlHelper_createElement("div", ofArray([["style", {
+        fontSize: 14 + "px",
+        marginBottom: 10,
+        color: "#d4c290",
+    }], ["children", singleton_1((("Faith: " + fmt(getRes(s.Pool, "faith"))) + " — worship: ") + toText(printf("%.1f"))(s.Rpool.Faith))]]))), delay(() => append(singleton_2(HtmlHelper_createElement("button", ofArray([["style", createObj(append_1(btnStyle(true), singleton_1(["marginBottom", 10])))], ["onClick", (_arg_8) => {
+        dispatch(Msg.Praise);
+    }], ["children", singleton_1("Praise the sun!")]]))), delay(() => map((r_4) => buyRow(r_4.Label, (r_4.Kind === "zu") ? "Build" : "Adore", r_4.Enabled, (" (" + int32ToString(r_4.Val)) + ")", "", "rel." + r_4.Name, (r_4.Kind === "zu") ? (new Msg(/* BuyZU */ 12, [r_4.Name])) : (new Msg(/* BuyRU */ 11, [r_4.Name]))), religionRows(s)))))))) : ((matchValue === "Space") ? map((r_5) => buyRow(r_5.Label, (r_5.Kind === "mission") ? "Launch" : "Build", r_5.Enabled, (" (" + int32ToString(r_5.Val)) + ")", "", "sp." + r_5.Name, (r_5.Kind === "mission") ? (new Msg(/* Mission */ 15, [r_5.Name])) : (new Msg(/* SpaceBuy */ 16, [r_5.Name]))), spaceRows(s)) : ((matchValue === "Time") ? toList(delay(() => append(singleton_2(HtmlHelper_createElement("div", ofArray([["style", {
         fontSize: 13 + "px",
         marginBottom: 8,
-        marginTop: 12,
         color: "#b0a480",
-    }], ["children", singleton_1("Crafts")]]))), delay(() => map(craftRow, craftRows(s)))))))))) : toList(delay(() => append(singleton_2(HtmlHelper_createElement("button", ofArray([["style", createObj(append_1(btnStyle(true), ofArray([["display", "block"], ["marginBottom", 10]])))], ["onClick", (_arg_7) => {
-        dispatch(Msg.Gather);
-    }], ["children", singleton_1("Gather catnip")]]))), delay(() => map(buildingRow, buildingRows(s)))))))));
-    const tabs = ofArray(["Bonfire", "Village", "Science", "Workshop"]);
+    }], ["children", singleton_1((("Temporal flux: " + fmt(s.Tpool.Flux)) + " — heat: ") + fmt(s.Tpool.Heat))]]))), delay(() => map((r_6) => buyRow(r_6.Label, (r_6.Kind === "cfu") ? "Build" : "Buy", r_6.Enabled, (" (" + int32ToString(r_6.Val)) + ")", "", "t." + r_6.Name, (r_6.Kind === "cfu") ? (new Msg(/* CFUBuy */ 17, [r_6.Name])) : (new Msg(/* VSUBuy */ 18, [r_6.Name]))), timeRows(s)))))) : ((matchValue === "Challenges") ? toList(delay(() => append(singleton_2(HtmlHelper_createElement("div", ofArray([["style", {
+        fontSize: 13 + "px",
+        marginBottom: 8,
+        color: "#b0a480",
+    }], ["children", singleton_1("Marked challenges activate on the next reset")]]))), delay(() => map((c_1) => buyRow(c_1.Label, c_1.Pending ? "Unmark" : (c_1.Active ? "Active!" : (c_1.Researched ? "Completed" : "Mark")), !c_1.Researched, (c_1.On > 0) ? ((" (x" + int32ToString(c_1.On)) + ")") : "", "", "ch." + c_1.Name, new Msg(/* ChallengeToggle */ 19, [c_1.Name])), challengeRows(s)))))) : empty_1())))));
+    let tabContent;
+    const matchValue_1 = model.Tab;
+    switch (matchValue_1) {
+        case "Diplomacy":
+        case "Religion":
+        case "Space":
+        case "Time":
+        case "Challenges": {
+            tabContent = tabContentV3;
+            break;
+        }
+        case "Village": {
+            tabContent = toList(delay(() => {
+                let arg_2;
+                return append(singleton_2(HtmlHelper_createElement("div", ofArray([["style", {
+                    fontSize: 14 + "px",
+                    marginBottom: 10,
+                    color: "#d4c290",
+                }], ["children", singleton_1((((("Kittens: " + int32ToString(kittens)) + "/") + int32ToString(maxKittens)) + " - happiness: ") + ((arg_2 = (happiness * 100), toText(printf("%.0f%%"))(arg_2))))]]))), delay(() => map(jobRow, filter((j_1) => j_1.Unlocked, jobRows(s)))));
+            }));
+            break;
+        }
+        case "Science": {
+            tabContent = map(techRow, techRows(s));
+            break;
+        }
+        case "Workshop": {
+            tabContent = toList(delay(() => append(singleton_2(HtmlHelper_createElement("div", ofArray([["style", {
+                fontSize: 13 + "px",
+                marginBottom: 8,
+                color: "#b0a480",
+            }], ["children", singleton_1("Upgrades")]]))), delay(() => append(map(upgradeRow, upgradeRows(s)), delay(() => append(singleton_2(HtmlHelper_createElement("div", ofArray([["style", {
+                fontSize: 13 + "px",
+                marginBottom: 8,
+                marginTop: 12,
+                color: "#b0a480",
+            }], ["children", singleton_1("Crafts")]]))), delay(() => map(craftRow, craftRows(s))))))))));
+            break;
+        }
+        default:
+            tabContent = toList(delay(() => append(singleton_2(HtmlHelper_createElement("button", ofArray([["style", createObj(append_1(btnStyle(true), ofArray([["display", "block"], ["marginBottom", 10]])))], ["onClick", (_arg_9) => {
+                dispatch(Msg.Gather);
+            }], ["children", singleton_1("Gather catnip")]]))), delay(() => map(buildingRow, buildingRows(s))))));
+    }
+    const tabs = ofArray(["Bonfire", "Village", "Science", "Workshop", "Diplomacy", "Religion", "Space", "Time", "Challenges"]);
     return HtmlHelper_createElement("div", ofArray([["style", {
         fontFamily: "monospace",
         padding: 20,
@@ -241,7 +339,7 @@ export function view(model, dispatch) {
         marginBottom: 14,
     }], ["children", map(resRow, rows)]])), HtmlHelper_createElement("div", ofArray([["style", {
         marginBottom: 14,
-    }], ["children", toList(delay(() => map_1((t_1) => HtmlHelper_createElement("button", ofArray([["key", t_1], ["style", createObj(tabStyle(model.Tab === t_1))], ["onClick", (_arg_8) => {
+    }], ["children", toList(delay(() => map_1((t_1) => HtmlHelper_createElement("button", ofArray([["key", t_1], ["style", createObj(tabStyle(model.Tab === t_1))], ["onClick", (_arg_10) => {
         dispatch(new Msg(/* SetTab */ 9, [t_1]));
     }], ["children", singleton_1(t_1)]])), tabs)))]])), HtmlHelper_createElement("div", ofArray([["style", {
         borderTop: (((1 + "px ") + "solid") + " ") + "#4a3c20",
@@ -250,6 +348,6 @@ export function view(model, dispatch) {
 }
 
 export function page(_shared, _route) {
-    return Page_from(init, update, view, undefined, (lm) => (new Msg(/* LayoutMsg */ 10, [lm])));
+    return Page_from(init, update, view, undefined, (lm) => (new Msg(/* LayoutMsg */ 20, [lm])));
 }
 
