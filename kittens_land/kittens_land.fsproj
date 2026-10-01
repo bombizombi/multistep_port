@@ -34,6 +34,7 @@
         <Compile Include="src/Game/Game.Stats.fs"/>
         <Compile Include="src/Game/Game.Achievements.fs"/>
         <Compile Include="src/Game/Game.Production.fs"/>
+        <Compile Include="src/Game.Labels.fs"/>
         <Compile Include="src/KittensState.fs"/>
         <Compile Include="src/Pages/NotFound.fs"/>
         <Compile Include="src/Pages/Layout.fs"/>

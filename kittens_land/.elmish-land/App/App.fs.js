@@ -2,11 +2,10 @@
 import { FSharpRef, Record, Union } from "./fable_modules/fable-library-js.5.17.0/Types.js";
 import { record_type, list_type, string_type, class_type, lambda_type, tuple_type, unit_type, union_type } from "./fable_modules/fable-library-js.5.17.0/Reflection.js";
 import { layout as layout_3, Msg_$reflection as Msg_$reflection_1 } from "../../src/Pages/Layout.fs.js";
-import { page, Msg_$reflection as Msg_$reflection_2 } from "../../src/Pages/Page.fs.js";
+import { page, Model_$reflection as Model_$reflection_1, Msg_$reflection as Msg_$reflection_2 } from "../../src/Pages/Page.fs.js";
 import { subscriptions, update as update_2, init as init_2, SharedMsg_$reflection } from "../../src/Shared.fs.js";
 import { RouteModule_parse, Route, Route_$reflection } from "../Base/Routes.fs.js";
 import { Command_none, Command_batch, Command_map, Command$3_$reflection } from "../Base/Command.fs.js";
-import { State_$reflection } from "../../src/KittensState.fs.js";
 import { Cmd_map, Cmd_none, Cmd_batch } from "./fable_modules/Fable.Elmish.5.0.2/cmd.fs.js";
 import { ofArray, singleton, map } from "./fable_modules/fable-library-js.5.17.0/List.js";
 import { equals, compare, uncurry2, curry2, Exception } from "./fable_modules/fable-library-js.5.17.0/Util.js";
@@ -136,7 +135,7 @@ export class PageModel extends Union {
 }
 
 export function PageModel_$reflection() {
-    return union_type("ElmishLand.kittens_land.App.PageModel", [], PageModel, () => [[["Item", State_$reflection()]], []]);
+    return union_type("ElmishLand.kittens_land.App.PageModel", [], PageModel, () => [[["Item", Model_$reflection_1()]], []]);
 }
 
 export class Page extends Union {
@@ -152,7 +151,7 @@ export class Page extends Union {
 }
 
 export function Page_$reflection() {
-    return union_type("ElmishLand.kittens_land.App.Page", [], Page, () => [[["Item", lambda_type(unit_type, MappedPage$4_$reflection(Msg_$reflection_2(), State_$reflection(), Msg_$reflection_1(), unit_type))]], []]);
+    return union_type("ElmishLand.kittens_land.App.Page", [], Page, () => [[["Item", lambda_type(unit_type, MappedPage$4_$reflection(Msg_$reflection_2(), Model_$reflection_1(), Msg_$reflection_1(), unit_type))]], []]);
 }
 
 export class Model extends Record {
