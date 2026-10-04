@@ -41,6 +41,7 @@ type State =
       CalendarDay: int
       Ticks: int
       IronWill: bool
+      Rand: unit -> float
       // V4/V5: console, queue, opts
       ConsoleMsgs: ConsoleMsg list
       ConsoleUnlocked: Set<string>
@@ -142,10 +143,25 @@ let refreshCache (s: State) : State =
               OnNewSeasonTail = fun st -> st
               OnNewDayTail = fun st -> st }
         let fresh = Game.Production.freshProductionContext s1.Cache s1.Calendar calCtx
+        let jobProd =
+            Game.Managers.getResProduction s1.Cache s1.Vpool
+                (Game.Catalog.Village.jobDefs |> List.map (fun j -> (j.Name, j)) |> Map.ofList) s1.Wpool
         { fresh with
             Happiness = s1.Vpool.Happiness
             Kittens = s1.Vpool.Kittens.Length
-            FreeKittens = Game.Managers.getFreeKittens s1.Vpool }
+            FreeKittens = Game.Managers.getFreeKittens s1.Vpool
+            // village.js getResProduction/getResConsumption (village-04):
+            // job-based ES production + kitten food/luxury demand
+            VillageResProduction = fun rn -> jobProd |> Map.tryFind rn |> Option.defaultValue 0.0
+            VillageResConsumption =
+                fun rn ->
+                    let count = s1.Vpool.Kittens.Length
+                    match rn with
+                    | "catnip" -> -0.85 * float count
+                    | "furs" -> -0.01 * float count
+                    | "ivory" -> -0.007 * float count
+                    | "spice" -> -0.001 * float count
+                    | _ -> 0.0 }
     let pool1 =
         { s1.Pool with
             ByName =
@@ -160,7 +176,32 @@ let refreshCache (s: State) : State =
                     else res) }
     { s1 with Pool = pool1 }
 
-let init () : State =
+let makeRand (seed: int64) : unit -> float =
+    let mutable z = uint32 (seed &&& 0xFFFFFFFFL)
+    let sm () =
+        z <- z + 0x9e3779b9u
+        let mutable t0 = z ^^^ (z >>> 16)
+        t0 <- t0 * 0x21f0aaadu
+        t0 <- t0 ^^^ (t0 >>> 15)
+        t0 <- t0 * 0x27d4eb2du
+        t0 <- t0 ^^^ (t0 >>> 15)
+        t0
+    let mutable a = sm ()
+    let mutable b = sm ()
+    let mutable c = sm ()
+    let mutable d = sm ()
+    fun () ->
+        let mutable t = a + b
+        a <- b ^^^ (b >>> 9)
+        b <- c + (c <<< 3)
+        c <- (c <<< 21) ||| (c >>> 11)
+        d <- d + 1u
+        t <- t + d
+        c <- c + t
+        float (t >>> 0) / 4294967296.0
+
+let browserRand = makeRand 20261002L
+let initSeeded (seed: int64) : State =
     let fresh =
         { Pool = Game.Resources.init Game.Catalog.Resources.resourceDefs
           Bpool = Game.Buildings.init Game.Catalog.Defs.buildingDefs
@@ -179,16 +220,17 @@ let init () : State =
           CalendarDay = 0
           Ticks = 0
           IronWill = true
+          Rand = makeRand seed
           ConsoleMsgs = []
           ConsoleUnlocked = Set.empty
           QueueItems = []
           Opts = Game.Settings.freshOpts () }
     fresh |> refreshCache
 
+let init () : State = initSeeded 20261002L
+
 /// One game tick: effect/per-tick caches, production, caps, calendar.
-let browserRand =
-    let r = System.Random()
-    fun () -> r.NextDouble()
+// splitmix32 -> sfc32 (the oracle RNG, ported for deterministic solver runs)
 
 let dctxFor (s: State) : Game.Diplomacy.DiplomacyContext =
     { GetEffect = Game.Effects.getEffect s.Cache
@@ -359,6 +401,7 @@ let resetGame (s: State) : State =
         Pool = pool2
         Cpool = cpool2
         Stpool = stpool2
+        Rand = s.Rand
         ConsoleMsgs = []
         Opts = s.Opts }
 
@@ -750,7 +793,7 @@ let trade (raceName: string) (s: State) : State =
             Game.Challenges.getTradeBonusEffect s.Cpool (Game.Effects.getEffect s.Cache)
                 (float (Game.Buildings.get s.Bpool "tradepost" |> Option.map (fun b -> b.Val) |> Option.defaultValue 0))
         let dp', _, _ =
-            Game.Diplomacy.tradeImpl s.Dpool dctx browserRand raceName 1.0 Map.empty
+            Game.Diplomacy.tradeImpl s.Dpool dctx s.Rand raceName 1.0 Map.empty
                 (Game.Effects.getEffect s.Cache "standingRatio" * 0.015)
                 false
                 (Game.Effects.getEffect s.Cache "neutralRaceEmbassyStanding")
@@ -882,7 +925,7 @@ let tick (s: State) : State =
     let vpool1 = Game.Managers.starvationStep catnipVal catnipPerTickTrue 5.0 false maxKittens vpool0
     let growthRate = if starving then 0.0 else kittensPerTick
     let beforeBirths = vpool1.Kittens.Length
-    let vpool2 = Game.Managers.simUpdate maxKittens growthRate 1 browserRand vpool1
+    let vpool2 = Game.Managers.simUpdate maxKittens growthRate 1 s.Rand vpool1
     let skillCtx : Game.Managers.SkillContext =
         { AnarchyActive = false
           InternetResearched = (match s2.Wpool.Upgrades |> Map.tryFind "internet" with Some u -> u.Researched | None -> false)
@@ -956,7 +999,7 @@ let tick (s: State) : State =
     // RNG is real Math.random so the draw-count seams don't apply here)
     let dp1 =
         let dctx0 = dctxFor s3
-        fst (Game.Diplomacy.update s3.Dpool dctx0 s3.Calendar.Year s3.Pool.KarmaKittens (fun () -> browserRand ()))
+        fst (Game.Diplomacy.update s3.Dpool dctx0 s3.Calendar.Year s3.Pool.KarmaKittens (fun () -> s.Rand ()))
     let s4 = { s3 with Pool = pool4; Wpool = wpool1; Dpool = dp1; Calendar = calendar1; Ticks = s3.Ticks + 1; CalendarDay = int calendar1.Day }
     let s5 = queueTick s4
     refreshCache s5

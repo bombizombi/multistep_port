@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net11.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="../kittens_land/src/Game/Game.Catalog.Policies.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Settings.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Types.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.LzString.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Math.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Calendar.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Catalog.BaseEffects.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Catalog.Village.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Catalog.Resources.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Catalog.Defs.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Catalog.World.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Effects.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Resources.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Catalog.Space.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Space.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Challenges.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Buildings.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Managers.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Village.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Happiness.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Religion.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Diplomacy.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Time.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Prestige.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Stats.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Achievements.fs"/>
+        <Compile Include="../kittens_land/src/Game/Game.Production.fs"/>
+        <Compile Include="../oracle/runner/fs-runner/QueueLabels.fs"/>
+        <Compile Include="../kittens_land/src/Game.Labels.fs"/>
+        <Compile Include="../kittens_land/src/KittensState.fs"/>
+        <Compile Include="Solver.fs"/>
+    </ItemGroup>
+
+</Project>
