@@ -25,7 +25,7 @@ import { jobDefs } from "./Game/Game.Catalog.Village.fs.js";
 import { op_BitwiseAnd, toInt64_unchecked, toUInt32_unchecked } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/BigInt.js";
 import { resourceDefs } from "./Game/Game.Catalog.Resources.fs.js";
 import { craftDefs, upgradeDefs, policyDefs, techDefs, buildingDefs } from "./Game/Game.Catalog.Defs.fs.js";
-import { union, contains as contains_1, ofList as ofList_1, add, FSharpSet__Contains, empty as empty_3 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Set.js";
+import { contains as contains_1, ofList as ofList_1, union, add, FSharpSet__Contains, empty as empty_3 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Set.js";
 import { parse, min } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Double.js";
 import { getLimitedDR } from "./Game/Game.Math.fs.js";
 import { StringBuilder__AppendLine_Z721C83C5, StringBuilder_$ctor } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/System.Text.js";
@@ -1070,6 +1070,7 @@ export function gatherCatnip(s) {
  * + unlocks/upgrades fan-out tail).
  */
 export function buyBuilding(name, s) {
+    let bind$0040;
     const matchValue = get$_1(s.Bpool, name);
     if (matchValue != null) {
         const patternInput = build(s.CalendarDay, s.Cache, pctx(s), s.Pool, 1, name, s.Bpool);
@@ -1089,11 +1090,13 @@ export function buyBuilding(name, s) {
             }
             else {
                 const u = matchValue_1;
-                const patternInput_1 = unlock(u.Buildings, u.Tabs, empty_1(), u.Tech, u.Policies, u.Upgrades, u.ZebraUpgrades, u.Crafts, s2.Bpool, s2.Spool, s2.Wpool);
+                const patternInput_1 = unlock(u.Buildings, u.Tabs, u.Jobs, u.Tech, u.Policies, u.Upgrades, u.ZebraUpgrades, u.Crafts, s2.Bpool, s2.Spool, s2.Wpool);
                 const wp2 = patternInput_1[2];
                 const sp2 = patternInput_1[1];
                 const bp2 = patternInput_1[0];
-                s3 = (new State(s2.Pool, bp2, sp2, wp2, s2.Vpool, s2.Rpool, s2.Cpool, s2.Ppool, s2.Dpool, s2.Tpool, s2.Spacep, s2.Stpool, s2.Calendar, s2.Cache, s2.CalendarDay, s2.Ticks, s2.IronWill, s2.Rand, s2.ConsoleMsgs, s2.ConsoleUnlocked, s2.QueueItems, s2.Opts));
+                s3 = (new State(s2.Pool, bp2, sp2, wp2, (bind$0040 = s2.Vpool, new VillagePool(bind$0040.Kittens, bind$0040.NextKittenProgress, bind$0040.MaxKittens, bind$0040.JobValues, union(ofList_1(u.Jobs, {
+                    Compare: (x, y) => (comparePrimitives(x, y) | 0),
+                }), s2.Vpool.JobUnlocked), bind$0040.Happiness, bind$0040.DeathTimeout, bind$0040.LeaderSeed, bind$0040.Traits)), s2.Rpool, s2.Cpool, s2.Ppool, s2.Dpool, s2.Tpool, s2.Spacep, s2.Stpool, s2.Calendar, s2.Cache, s2.CalendarDay, s2.Ticks, s2.IronWill, s2.Rand, s2.ConsoleMsgs, s2.ConsoleUnlocked, s2.QueueItems, s2.Opts));
             }
             let s4;
             const matchValue_2 = FSharpMap__get_Item(s2.Bpool.ByName, name).Def.Upgrades;

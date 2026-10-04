@@ -45,6 +45,7 @@ type Theta =
       JobFarmer: float // farmer fraction (rest: scholar when science unlocked, miner when mining)
       JobHunter: float // hunter fraction — the only gold/furs source
       JobScholar: float // scholar fraction — science is the temple bottleneck
+      JobMiner: float // miner fraction — minerals gate slabs + goldOre
       ScholarFrom: int // kittens needed before assigning scholars
       HuntWhen: float // hunt when manpower >= frac of cap
       CraftSlabAt: float // craft slabs when minerals >= x * 250
@@ -65,6 +66,7 @@ let defaultTheta : Theta =
       JobFarmer = 0.45
       JobHunter = 0.1
       JobScholar = 0.35
+      JobMiner = 0.3
       ScholarFrom = 2
       HuntWhen = 0.9
       CraftSlabAt = 1.2
@@ -107,7 +109,12 @@ let applyJobs (theta: Theta) (s: State) : State =
         let nHunter = if hunterUnlocked && rest >= 2 then max 1 (int (System.Math.Floor(float rest * theta.JobHunter))) else 0
         let nFarmer = min (rest - nHunter) (int (System.Math.Ceiling(float rest * theta.JobFarmer)))
         let nWood = max 0 (rest - nFarmer - nHunter)
-        let targets = [ "woodcutter", nWood; "farmer", nFarmer; "hunter", nHunter; "scholar", max 0 nScholar ]
+        let nMiner =
+            if s.Vpool.JobUnlocked.Contains "miner" && kittens >= 6 then
+                min 8 (int (System.Math.Floor(float kittens * theta.JobMiner)))
+            else 0
+        let targets =
+            [ "woodcutter", nWood; "farmer", nFarmer; "hunter", nHunter; "miner", nMiner; "scholar", max 0 nScholar ]
         // pass 1: unassign everywhere first (frees kittens for pass 2)
         let s1 =
             targets
@@ -129,9 +136,11 @@ let applyPolicy (theta: Theta) (s: State) : State * PlanAction list =
     let log (action: string) (args: string list) = acts.Add({ Tick = t; Action = action; Args = args })
 
     let policyBuild (sCur: State) (name: string) : State =
+        let traceIt = sCur.Ticks >= 40000 && sCur.Ticks < 40100 && name = "smelter"
         match Game.Buildings.get sCur.Bpool name with
         | Some b when b.Unlocked ->
             let prices = Game.Buildings.getAllPrices sCur.Cache (pctx sCur) b
+            if traceIt then printfn "TRACE smelter: prices=%A minerals=%f hasRes=%b" (prices |> List.map (fun p0 -> (p0.Resource, p0.Val))) (getRes sCur.Pool "minerals") (Game.Resources.hasRes sCur.Pool (prices |> List.map (fun p0 -> (p0.Resource, p0.Val))) 0.0)
             if Game.Resources.hasRes sCur.Pool (prices |> List.map (fun p -> (p.Resource, p.Val))) 0.0 then
                 let s1 = buyBuilding name sCur
                 if s1.Bpool.ByName.[name].Val > sCur.Bpool.ByName.[name].Val then
@@ -198,13 +207,23 @@ let applyPolicy (theta: Theta) (s: State) : State * PlanAction list =
             let sC = if kittens >= theta.BuildAmphitheatreAt then policyBuild sB "amphitheatre" else sB
             let sD = if kittens >= theta.BuildWorkshopAt then policyBuild sC "workshop" else sC
             let sE = if kittens >= theta.BuildTradepostAt then policyBuild sD "tradepost" else sD
-            let sF = if kittens >= theta.BuildMineAt then policyBuild sE "mine" else sE
+            let sF = policyBuild sE "mine" // cheap (wood 100), unlocks miner job
             let smelters = (Game.Buildings.get sF.Bpool "smelter" |> Option.map (fun b -> b.Val) |> Option.defaultValue 0)
             // smelters are the gold engine once goldOre is researched
+            // smelters are the iron engine (0.02/t each) — iron gates plates
+            // AND the goldOre upgrade itself, so build them from metal tech on
             let sG =
-                if goldOreDone && smelters < 10 then policyBuild sF "smelter" else sF
-            let fields = (Game.Buildings.get sG.Bpool "field" |> Option.map (fun b -> b.Val) |> Option.defaultValue 0)
-            let sH = if fields < theta.FieldTarget then policyBuild sG "field" else sH2 sG
+                if smelters < 10 then
+                    let smeltPrice = 200.0 * 1.15 ** float smelters
+                    if getRes sF.Pool "minerals" >= smeltPrice then policyBuild sF "smelter" else sF
+                else sF
+            // barns: wood/mineral caps gate everything — build while near cap
+            let sG2 =
+                let woodCap = getResMax sG.Pool "wood"
+                let woodNow = getRes sG.Pool "wood"
+                if woodCap > 0.0 && woodNow >= woodCap * 0.8 then policyBuild sG "barn" else sG
+            let fields = (Game.Buildings.get sG2.Bpool "field" |> Option.map (fun b -> b.Val) |> Option.defaultValue 0)
+            let sH = if fields < theta.FieldTarget then policyBuild sG2 "field" else sH2 sG2
             sH)
         // goldOre upgrade gates the whole gold chain
         |> (fun s0 ->
@@ -247,7 +266,8 @@ let applyPolicy (theta: Theta) (s: State) : State * PlanAction list =
             let sA =
                 // slabs toward the 25 needed (keep a 250-minerals buffer for building)
                 let slabs = getRes s0.Pool "slab"
-                if slabs < 25.0 && minerals >= 250.0 * theta.CraftSlabAt then craftOne s0 "slab" else s0
+                let smeltersN = (Game.Buildings.get s0.Bpool "smelter" |> Option.map (fun b -> b.Val) |> Option.defaultValue 0)
+                if slabs < 25.0 && minerals >= 250.0 * theta.CraftSlabAt && smeltersN >= 4 then craftOne s0 "slab" else s0
             let iron = getRes sA.Pool "iron"
             let plates = getRes sA.Pool "plate"
             let sB =
@@ -312,6 +332,7 @@ let jitterTheta (theta: Theta) (dim: int) (direction: int) : Theta =
     | 1 -> { theta with JobFarmer = clamp01 (theta.JobFarmer + 0.05 * float direction) }
     | 10 -> { theta with JobHunter = clamp01 (theta.JobHunter + 0.05 * float direction) }
     | 11 -> { theta with JobScholar = clamp01 (theta.JobScholar + 0.05 * float direction) }
+    | 12 -> { theta with JobMiner = clamp01 (theta.JobMiner + 0.05 * float direction) }
     | 2 -> { theta with ScholarFrom = max 4 (theta.ScholarFrom + 2 * direction) }
     | 3 -> { theta with HuntWhen = clamp01 (theta.HuntWhen + 0.05 * float direction) }
     | 4 -> { theta with CraftSlabAt = max 1.0 (theta.CraftSlabAt + 0.1 * float direction) }
@@ -334,7 +355,7 @@ let level1 (goal: Goal) (seeds: int64 list) (maxTicks: int) : Theta * float =
     let mutable best = defaultTheta
     let mutable bestScore = fitness goal seeds best maxTicks
     printfn "L1 baseline: %.0f ticks" bestScore
-    let dims = 12
+    let dims = 13
     let mutable step = 1
     while step >= -1 do
         let mutable dim = 0
@@ -558,6 +579,38 @@ let main argv =
         System.IO.File.WriteAllText("../oracle/scenarios/temple-solver.cat", emitCat "temple-solver" (int bestSeed) plan)
         printfn "plan written (%d actions)" plan.Length
         0
+    | "probe" ->
+        let mutable cur = initSeeded 42L
+        let mutable lastLog = 0
+        while cur.Ticks < 60000 do
+            if cur.Ticks % 10 = 0 then cur <- fst (applyPolicy defaultTheta cur)
+            cur <- tick cur
+            if cur.Ticks - lastLog >= 10000 then
+                lastLog <- cur.Ticks
+                let mine = Game.Buildings.get cur.Bpool "mine" |> Option.map (fun b -> sprintf "v%d" b.Val) |> Option.defaultValue "?"
+                let minerJob = cur.Vpool.JobValues |> Map.tryFind "miner" |> Option.defaultValue 0
+                let minerUnlocked = cur.Vpool.JobUnlocked.Contains "miner"
+                let sm = Game.Buildings.get cur.Bpool "smelter" |> Option.get
+                let smelt = sprintf "v%d unl=%b unlockable=%b" sm.Val sm.Unlocked sm.Unlockable
+                printfn "t=%d mine=%s minerJob=%d minerUnl=%b smelter=%s minerals=%.1f iron=%.1f woodCap=%.0f"
+                    cur.Ticks mine minerJob minerUnlocked smelt (getRes cur.Pool "minerals") (getRes cur.Pool "iron") (getResMax cur.Pool "wood")
+        0
+    | "temple" ->
+        // single full-length run with the default policy: where does it stall?
+        let gstart = System.Diagnostics.Stopwatch.StartNew()
+        let ticks, plan, final = runPolicyTo Temple defaultTheta 42L 600000 (initSeeded 42L)
+        gstart.Stop()
+        printfn "temple run: ticks=%d wall=%.0f s actions=%d" ticks gstart.Elapsed.TotalSeconds plan.Length
+        let lib = Game.Buildings.get final.Bpool "library" |> Option.map (fun b -> b.Val) |> Option.defaultValue 0
+        let sciMax = Game.Effects.getEffect final.Cache "scienceMax"
+        let goldOre = (match final.Wpool.Upgrades |> Map.tryFind "goldOre" with Some u -> u.Researched | None -> false)
+        let smelters = (Game.Buildings.get final.Bpool "smelter" |> Option.map (fun b -> b.Val) |> Option.defaultValue 0)
+        printfn "libraries=%d sciMax=%.0f sci=%.0f goldOre=%b smelters=%d gold=%.1f" lib sciMax (getRes final.Pool "science") goldOre smelters (getRes final.Pool "gold")
+        printfn "researched=%A" (final.Spool.TechOrder |> List.filter (fun n -> final.Spool.Techs.[n].Researched))
+        if ticks >= 0 then
+            System.IO.File.WriteAllText("../oracle/scenarios/temple-solver.cat", emitCat "temple-solver" 42 plan)
+            printfn "plan written (%d actions)" plan.Length
+        0
     | "debug" ->
         // single seed, verbose state dump every 2000 ticks
         let theta = defaultTheta
@@ -582,6 +635,11 @@ let main argv =
                         | Some t0 -> t0.Unlocked && not t0.Researched && t0.Def.Prices |> List.exists (fun p -> p.Resource = "science")
                         | None -> false)
                 printfn "PROBE research: nextRF=%A nextFB=%A sci=%f" nextRF nextFB (getRes s0.Pool "science")
+            // probe: force-buy smelter at t=40001
+            if cur.Ticks = 40001 then
+                let before = Game.Buildings.get cur.Bpool "smelter" |> Option.map (fun b -> b.Val) |> Option.defaultValue -1
+                let cur2 = buyBuilding "smelter" cur
+                printfn "PROBE smelter force-buy: before=%d after=%d minerals=%f" before (Game.Buildings.get cur2.Bpool "smelter" |> Option.map (fun b -> b.Val) |> Option.defaultValue -1) (getRes cur2.Pool "minerals")
             // probe at t=2001: force-buy a hut and see what happens
             if cur.Ticks = 2001 then
                 let hut = Game.Buildings.get cur.Bpool "hut" |> Option.get

@@ -627,9 +627,14 @@ let buyBuilding (name: string) (s: State) : State =
                 match s2.Bpool.ByName.[name].Def.Unlocks with
                 | Some u ->
                     let bp2, sp2, wp2 =
-                        Game.Managers.unlock u.Buildings u.Tabs [] u.Tech u.Policies u.Upgrades u.ZebraUpgrades u.Crafts
+                        Game.Managers.unlock u.Buildings u.Tabs u.Jobs u.Tech u.Policies u.Upgrades u.ZebraUpgrades u.Crafts
                             s2.Bpool s2.Spool s2.Wpool
-                    { s2 with Bpool = bp2; Spool = sp2; Wpool = wp2 }
+                    // job unlocks land on the village pool (mine -> miner etc.)
+                    { s2 with
+                        Bpool = bp2
+                        Spool = sp2
+                        Wpool = wp2
+                        Vpool = { s2.Vpool with JobUnlocked = s2.Vpool.JobUnlocked |> Set.union (Set.ofList u.Jobs) } }
                 | None -> s2
             let s4 =
                 match s2.Bpool.ByName.[name].Def.Upgrades with
