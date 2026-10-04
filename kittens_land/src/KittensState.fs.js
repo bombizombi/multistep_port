@@ -2064,7 +2064,7 @@ export function buildingRows(s) {
         const matchValue = get$_1(s.Bpool, n);
         if (matchValue != null) {
             const b = matchValue;
-            if (!b.Unlocked) {
+            if (!b.Unlocked && !b.Def.DefaultUnlockable) {
                 return undefined;
             }
             else {
