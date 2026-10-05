@@ -1,17 +1,17 @@
 
 import { Union, Record } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Types.js";
-import { union_type, int32_type, record_type, list_type, tuple_type, bool_type, float64_type, option_type, string_type } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
-import { calendarText, tabVisible, buildingRows, challengeRows, timeRows, spaceRows, religionRows, raceRows, upgradeRows, techRows, jobRows, jobLimit, queueLength, queueCap as queueCap_1, kittenSummary, craftRows, resRows, getRes, tick, resetGame, setNotation, setBoolOption, removeFromQueue, addToQueue, consoleClear, applyLoaded, parseSave, buildSaveString, saveKey, setShowHiddenRes, toggleResHidden, toggleChallengePending, buyVSU, buyCFU, buySpaceBuilding, buyProgram, buyEmbassy, trade, buyZU, buyRU, praise, craftAll, craft, buyUpgrade, research, unassignJob, assignJob, buyBuilding, refineCatnip, gatherCatnip, init as init_1, State_$reflection } from "../KittensState.fs.js";
+import { union_type, bool_type, tuple_type, int32_type, float64_type, record_type, list_type, option_type, string_type } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
+import { calendarText, tabVisible, buildingRows, PriceRow, challengeRows, timeRows, spaceRows, religionRows, getRes, raceRows, upgradeRows, techRows, jobRows, jobLimit, queueLength, queueCap as queueCap_1, kittenSummary, craftRows, resRows, priceLines, tick, resetGame, setNotation, setBoolOption, removeFromQueue, addToQueue, consoleClear, applyLoaded, parseSave, buildSaveString, saveKey, setShowHiddenRes, toggleResHidden, toggleChallengePending, buyVSU, buyCFU, buySpaceBuilding, buyProgram, buyEmbassy, trade, buyZU, buyRU, praise, craftAll, craft, buyUpgrade, research, unassignJob, assignJob, buyBuilding, refineCatnip, gatherCatnip, init as init_1, State_$reflection, TipPriceLine_$reflection } from "../KittensState.fs.js";
 import { Msg_$reflection as Msg_$reflection_1 } from "./Layout.fs.js";
 import { Command_none, Command_batch, Command_ofAsync } from "../../.elmish-land/Base/Command.fs.js";
 import { singleton } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/AsyncBuilder.js";
 import { sleep } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Async.js";
-import { mapIndexed, indexed, length, contains, filter, collect, empty as empty_1, singleton as singleton_2, map, ofArray } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
+import { mapIndexed, indexed, length, contains, filter, collect, empty as empty_1, map, singleton as singleton_2, ofArray } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
 import { stringHash, int32ToString, defaultOf } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
 import { FSharpMap__get_Item } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Map.js";
-import { join, printf, toText } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/String.js";
+import { replicate, join, printf, toText } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/String.js";
 import { get$ } from "../Game.Labels.fs.js";
-import { defaultArg, value as value_593 } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Option.js";
+import { defaultArg, value as value_595 } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Option.js";
 import { HtmlHelper_createElement } from "../../.elmish-land/App/fable_modules/Feliz.3.3.3/./Html.fs.js";
 import { map as map_1, collect as collect_1, empty, singleton as singleton_1, append, delay, toList } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Seq.js";
 import { defaultOf as defaultOf_1 } from "../../.elmish-land/App/fable_modules/Feliz.3.3.3/../../../../src/Pages/../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
@@ -32,7 +32,7 @@ export class TipData extends Record {
 }
 
 export function TipData_$reflection() {
-    return record_type("kittens_land.Pages.Page.TipData", [], TipData, () => [["Desc", string_type], ["Flavor", option_type(string_type)], ["Prices", list_type(tuple_type(string_type, float64_type, bool_type))]]);
+    return record_type("kittens_land.Pages.Page.TipData", [], TipData, () => [["Desc", string_type], ["Flavor", option_type(string_type)], ["Prices", list_type(TipPriceLine_$reflection())]]);
 }
 
 export class Model extends Record {
@@ -259,7 +259,7 @@ export function fmt(v) {
 }
 
 export function view(model, dispatch) {
-    let option_5, value_513;
+    let option_5, value_515;
     const s = model.S;
     const cal = s.Calendar;
     const fmtSigned = (v) => (((v > 0) ? "+" : "") + fmt(v));
@@ -277,7 +277,7 @@ export function view(model, dispatch) {
     }]]);
     const pricesTip = (desc, flavorKey, prices) => {
         let option_3, option_1, f;
-        return new TipData(desc, (option_3 = ((option_1 = flavorKey, (option_1 != null) ? get$(option_1) : undefined)), (option_3 != null) ? (((f = option_3, (f !== "") && (f !== value_593(flavorKey)))) ? option_3 : undefined) : undefined), map((p) => [get$("res." + p.Resource), p.Val, getRes(s.Pool, p.Resource) >= p.Val], prices));
+        return new TipData(desc, (option_3 = ((option_1 = flavorKey, (option_1 != null) ? get$(option_1) : undefined)), (option_3 != null) ? (((f = option_3, (f !== "") && (f !== value_595(flavorKey)))) ? option_3 : undefined) : undefined), priceLines(s, false, prices));
     };
     const bldTip = (name, prices_1) => pricesTip(get$(("bld." + name) + ".desc"), ("bld." + name) + ".flavor", prices_1);
     const modernBtn = (key_3, label, amtText, enabled, tip_1, onClick) => HtmlHelper_createElement("div", toList(delay(() => append(singleton_1(["key", key_3]), delay(() => append(singleton_1(["className", enabled ? "btn nosel modern" : "btn nosel modern disabled"]), delay(() => append(singleton_1(["style", {
@@ -285,7 +285,7 @@ export function view(model, dispatch) {
         display: "inline-block",
         marginRight: 8,
         marginBottom: 8,
-    }]), delay(() => append(singleton_1(["tabIndex", 0]), delay(() => append((tip_1 != null) ? tipHandlers(value_593(tip_1)) : empty(), delay(() => append(singleton_1(["onClick", (_arg_1) => {
+    }]), delay(() => append(singleton_1(["tabIndex", 0]), delay(() => append((tip_1 != null) ? tipHandlers(value_595(tip_1)) : empty(), delay(() => append(singleton_1(["onClick", (_arg_1) => {
         if (enabled) {
             onClick();
         }
@@ -317,7 +317,7 @@ export function view(model, dispatch) {
     const workshopBuilt = defaultArg((option_5 = get$_1(s.Bpool, "workshop"), (option_5 != null) ? option_5.On : undefined), 0) > 0;
     const craftRow = (c) => {
         const shortcut = (amount, labelText, cssClass) => {
-            const canCraft = hasRes(s.Pool, map((p_1) => [p_1.Resource, p_1.Val * amount], c.Prices), 0);
+            const canCraft = hasRes(s.Pool, map((p) => [p.Resource, p.Val * amount], c.Prices), 0);
             if (!canCraft) {
                 return defaultOf_1();
             }
@@ -386,7 +386,7 @@ export function view(model, dispatch) {
                 display: "inline-block",
                 marginRight: 8,
                 marginBottom: 8,
-            }]), delay(() => append(singleton_1(["tabIndex", 0]), delay(() => append((tip_2 != null) ? tipHandlers(value_593(tip_2)) : empty(), delay(() => append(singleton_1(["onClick", (ev_4) => {
+            }]), delay(() => append(singleton_1(["tabIndex", 0]), delay(() => append((tip_2 != null) ? tipHandlers(value_595(tip_2)) : empty(), delay(() => append(singleton_1(["onClick", (ev_4) => {
                 if (canAssign) {
                     dispatch(ev_4.ctrlKey ? (new Msg(/* Assign */ 4, [j.Name, 10])) : (new Msg(/* Assign */ 4, [j.Name, 1])));
                 }
@@ -442,7 +442,7 @@ export function view(model, dispatch) {
         dispatch(Msg.Gather);
     })), delay(() => {
         const refinePrice = 100;
-        return append(singleton_1(modernBtn("refine", get$("bld.refineCatnip"), "", getRes(s.Pool, "catnip") >= refinePrice, new TipData(get$("bld.refineCatnip.desc"), undefined, singleton_2([get$("res.catnip"), refinePrice, getRes(s.Pool, "catnip") >= refinePrice])), () => {
+        return append(singleton_1(modernBtn("refine", get$("bld.refineCatnip"), "", getRes(s.Pool, "catnip") >= refinePrice, new TipData(get$("bld.refineCatnip.desc"), undefined, priceLines(s, false, singleton_2(new PriceRow("catnip", refinePrice)))), () => {
             dispatch(Msg.Refine);
         })), delay(() => map(buildingRow, buildingRows(s))));
     }))))))))))));
@@ -511,34 +511,31 @@ export function view(model, dispatch) {
             paddingBottom: 8,
         }]) : empty(), delay(() => singleton_1(["dangerouslySetInnerHTML", {
             __html: tip_3.Desc,
-        }]))))))))) : empty(), delay(() => append(collect_1((matchValue_3) => {
-            const v_2 = matchValue_3[1][1];
-            const title_1 = matchValue_3[1][0];
-            const ok = matchValue_3[1][2];
-            const i_2 = matchValue_3[0] | 0;
-            return singleton_1(HtmlHelper_createElement("div", ofArray([["key", "price" + int32ToString(i_2)], ["className", "price-block"], ["style", {
+        }]))))))))) : empty(), delay(() => {
+            const renderLine = (l) => HtmlHelper_createElement("div", ofArray([["key", ("price" + int32ToString(l.Indent)) + l.Title], ["className", "price-block"], ["style", {
                 overflow: "hidden",
                 clear: "both",
-            }], ["children", [HtmlHelper_createElement("span", ofArray([["style", {
+            }], ["children", toList(delay(() => append(singleton_1(HtmlHelper_createElement("span", ofArray([["className", (l.Indent > 0) ? "rawRes" : ""], ["style", {
                 float: "left",
                 paddingRight: 10,
-            }], ["children", singleton_2(title_1)]])), HtmlHelper_createElement("span", ofArray([["className", ok ? "" : "noRes"], ["style", {
+            }], ["children", singleton_2(replicate(l.Indent * 3, " ") + l.Title)]]))), delay(() => append(singleton_1(HtmlHelper_createElement("span", ofArray([["className", l.HasRes ? "" : "noRes"], ["style", {
                 float: "right",
-            }], ["children", singleton_2(fmt(v_2))]]))]]])));
-        }, indexed(tip_3.Prices)), delay(() => {
-            const matchValue_4 = tip_3.Flavor;
-            if (matchValue_4 == null) {
-                return empty();
-            }
-            else {
-                const flavor_1 = matchValue_4;
-                return singleton_1(HtmlHelper_createElement("div", ofArray([["className", "flavor"], ["style", {
-                    paddingTop: 20,
-                    fontSize: 12 + "px",
-                    fontStyle: "italic",
-                }], ["children", singleton_2(flavor_1)]])));
-            }
-        }))))))]]));
+            }], ["children", singleton_2(l.DisplayValue)]]))), delay(() => map(renderLine, l.Children)))))))]]));
+            return append(map_1(renderLine, tip_3.Prices), delay(() => {
+                const matchValue_3 = tip_3.Flavor;
+                if (matchValue_3 == null) {
+                    return empty();
+                }
+                else {
+                    const flavor_1 = matchValue_3;
+                    return singleton_1(HtmlHelper_createElement("div", ofArray([["className", "flavor"], ["style", {
+                        paddingTop: 20,
+                        fontSize: 12 + "px",
+                        fontStyle: "italic",
+                    }], ["children", singleton_2(flavor_1)]])));
+                }
+            }));
+        }))))]]));
     }
     else {
         tooltip = defaultOf_1();
@@ -585,7 +582,7 @@ export function view(model, dispatch) {
         fontSize: 12 + "px",
         marginTop: 8,
         color: "#666",
-    }], (value_513 = "Save stores to this browser\'s localStorage under its own key - the original game\'s saves are untouched.", ["children", singleton_2(value_513)])]))]]]));
+    }], (value_515 = "Save stores to this browser\'s localStorage under its own key - the original game\'s saves are untouched.", ["children", singleton_2(value_515)])]))]]]));
     const topBar = HtmlHelper_createElement("div", ofArray([["id", "topBar"], ["children", [HtmlHelper_createElement("div", ofArray([["style", {
         paddingLeft: 10,
         minWidth: 0,

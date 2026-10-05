@@ -14,8 +14,8 @@ import { bumpStat, init as init_9, StatsPool_$reflection } from "./Game/Game.Sta
 import { tick as tick_1, cycleYearColors, CalendarState, seasons, init as init_10, CalendarContext, CalendarState_$reflection } from "./Game/Game.Calendar.fs.js";
 import { empty as empty_2, updateCaches, ManagerGroup, getEffect as getEffect_1, EffectsCache_$reflection } from "./Game/Game.Effects.fs.js";
 import { settingsArr, OptsState, setBool, freshOpts, OptsState_$reflection } from "./Game/Game.Settings.fs.js";
-import { defaultArg } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Option.js";
-import { updateMaxValueAll, update, UpdateContext, hasRes, payPrices, addResEvent, init as init_1, getEnergyDelta, CapContext, get$ } from "./Game/Game.Resources.fs.js";
+import { toArray, defaultArg } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Option.js";
+import { updateMaxValueAll, update, UpdateContext, hasRes as hasRes_1, payPrices, addResEvent, init as init_1, getEnergyDelta, CapContext, get$ } from "./Game/Game.Resources.fs.js";
 import { toList, add as add_1, FSharpMap__get_Item, map as map_1, ofList, filter, tryFind, empty } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Map.js";
 import { equals, disposeSafe, getEnumerator, int32ToString, round, stringHash, comparePrimitives } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
 import { filter as filter_1, find, fold, tryFind as tryFind_1, updateAt, removeAt, tryLast, contains, sumBy, tail, singleton, append, head, isEmpty, item, length, map, ofArray, choose, empty as empty_1 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
@@ -35,7 +35,7 @@ import { parse as parse_1 } from "../.elmish-land/App/fable_modules/fable-librar
 import { List_countBy } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Seq2.js";
 import { buildingDefs as buildingDefs_1, programDefs } from "./Game/Game.Catalog.Space.fs.js";
 import { updateHappiness, HappinessContext, freshHappinessContext } from "./Game/Game.Happiness.fs.js";
-import { toList as toList_2 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Seq.js";
+import { exists, toList as toList_2 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Seq.js";
 import { rangeDouble } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Range.js";
 import { get$ as get$_2 } from "./Game.Labels.fs.js";
 import { ruDefs, raceDefs } from "./Game/Game.Catalog.World.fs.js";
@@ -1475,7 +1475,7 @@ export function trade(raceName, s) {
     }));
     const buyPrice = item(0, raceState.Buys).Val * volume;
     const cost = ofArray([["manpower", manp], ["gold", gold], [item(0, raceState.Buys).Resource, buyPrice]]);
-    if (!hasRes(s.Pool, cost, 0)) {
+    if (!hasRes_1(s.Pool, cost, 0)) {
         return s;
     }
     else {
@@ -1827,6 +1827,98 @@ export function PriceRow_$reflection() {
     return record_type("kittens_land.KittensState.PriceRow", [], PriceRow, () => [["Resource", string_type], ["Val", float64_type]]);
 }
 
+export class TipPriceLine extends Record {
+    constructor(Title, DisplayValue, HasRes, Indent, Children) {
+        super();
+        this.Title = Title;
+        this.DisplayValue = DisplayValue;
+        this.HasRes = HasRes;
+        this.Indent = (Indent | 0);
+        this.Children = Children;
+    }
+}
+
+export function TipPriceLine_$reflection() {
+    return record_type("kittens_land.KittensState.TipPriceLine", [], TipPriceLine, () => [["Title", string_type], ["DisplayValue", string_type], ["HasRes", bool_type], ["Indent", int32_type], ["Children", list_type(TipPriceLine_$reflection())]]);
+}
+
+export function priceLines(s, simplePrices, prices) {
+    const ticksPerSecondUI = 10;
+    const fmtV = (v) => {
+        if (v === ~~v) {
+            return int32ToString(~~v);
+        }
+        else {
+            return toText(printf("%.1f"))(v);
+        }
+    };
+    const titleOf = (r) => get$_2("res." + r);
+    const line = (resource, val_, baseVal, indent) => {
+        let c;
+        const res = get$(s.Pool, resource);
+        let patternInput;
+        if (res == null) {
+            patternInput = [0, 0, 0, false];
+        }
+        else {
+            const r_1 = res;
+            patternInput = [r_1.Value, r_1.MaxValue, r_1.Def.CalculatePerTick ? r_1.PerTickCached : 0, r_1.Def.Craftable];
+        }
+        const value = patternInput[0];
+        const perTick = patternInput[2];
+        const maxValue = patternInput[1];
+        const craftable = patternInput[3];
+        const hasRes = value >= val_;
+        const limitIssue = (maxValue > 0) && (((indent === 0) && (val_ > maxValue)) ? true : exists((bv) => (bv > maxValue), toArray(baseVal)));
+        const asterisk = limitIssue ? "*" : "";
+        let displayValue = (hasRes ? true : simplePrices) ? fmtV(val_) : (((fmtV(value) + " / ") + fmtV(val_)) + asterisk);
+        const eta = ((!hasRes && (perTick > 0)) && !simplePrices) ? ((val_ - value) / (perTick * ticksPerSecondUI)) : 0;
+        if (eta >= 1) {
+            displayValue = (((displayValue + " (") + toDisplaySeconds(eta)) + ")");
+        }
+        let children;
+        if (((!hasRes && craftable) && (resource !== "wood")) && !simplePrices) {
+            const matchValue = tryFind(resource, s.Wpool.Crafts);
+            let matchResult, c_1;
+            if (matchValue != null) {
+                if ((c = matchValue, c.Unlocked && null)) {
+                    matchResult = 0;
+                    c_1 = matchValue;
+                }
+                else {
+                    matchResult = 1;
+                }
+            }
+            else {
+                matchResult = 1;
+            }
+            switch (matchResult) {
+                case 0: {
+                    const diff = val_ - value;
+                    const ratio = getResCraftRatio(s.Cache, crCtxFor(s), resource);
+                    children = map((comp) => {
+                        let v_1 = Math.ceil((comp.Val * diff) / (1 + ratio));
+                        const rem = v_1 % comp.Val;
+                        if ((rem !== 0) && null) {
+                            v_1 = ((v_1 + comp.Val) - rem);
+                        }
+                        return line(comp.Resource, v_1, comp.Val, indent + 1);
+                    }, c_1.Def.Prices);
+                    break;
+                }
+                default:
+                    children = empty_1();
+            }
+        }
+        else {
+            children = empty_1();
+        }
+        const title = titleOf(resource);
+        return new TipPriceLine(isEmpty(children) ? title : ("+ " + title), displayValue, hasRes, indent, children);
+    };
+    return map((p) => line(p.Resource, p.Val, undefined, 0), prices);
+}
+
 export class BuildingRow extends Record {
     constructor(Name, Label, Visible, Enabled, Val, Prices) {
         super();
@@ -1933,7 +2025,7 @@ export function techRows(s) {
         switch (matchResult) {
             case 0: {
                 const prices = map((p) => (new PriceRow(p.Resource, p.Val)), t_1.Def.Prices);
-                const affordable = hasRes(s.Pool, map((p_1) => [p_1.Resource, p_1.Val], t_1.Def.Prices), 0);
+                const affordable = hasRes_1(s.Pool, map((p_1) => [p_1.Resource, p_1.Val], t_1.Def.Prices), 0);
                 return new TechRow(n, get$_2("tech." + n), prices, true, t_1.Researched, affordable && !t_1.Researched);
             }
             default:
@@ -1962,7 +2054,7 @@ export function upgradeRows(s) {
         switch (matchResult) {
             case 0: {
                 const prices = map((p) => (new PriceRow(p.Resource, p.Val)), u_1.Def.Prices);
-                const affordable = hasRes(s.Pool, map((p_1) => [p_1.Resource, p_1.Val], u_1.Def.Prices), 0);
+                const affordable = hasRes_1(s.Pool, map((p_1) => [p_1.Resource, p_1.Val], u_1.Def.Prices), 0);
                 return new UpgradeRow(n, get$_2("up." + n), prices, true, u_1.Researched, affordable && !u_1.Researched);
             }
             default:
@@ -2090,7 +2182,7 @@ export function spaceRows(s) {
     const progRows = map((n_1) => {
         const m = getProgram(s.Spacep, n_1);
         const def = find((d) => (d.Name === n_1), programDefs);
-        const affordable = hasRes(s.Pool, map((p) => [p.Resource, p.Val], def.Prices), 0);
+        const affordable = hasRes_1(s.Pool, map((p) => [p.Resource, p.Val], def.Prices), 0);
         return new SpaceRow(n_1, get$_2("mission." + n_1), "mission", m.Val, affordable);
     }, filter_1((n) => {
         if (getProgram(s.Spacep, n).Unlocked) {
@@ -2107,7 +2199,7 @@ export function spaceRows(s) {
             const ratio = Math.pow(1.05, m_1.Val);
             return [p_1.Resource, p_1.Val * ratio];
         }, def_1.Prices);
-        const affordable_1 = hasRes(s.Pool, prices, 0);
+        const affordable_1 = hasRes_1(s.Pool, prices, 0);
         return new SpaceRow(n_3, get$_2("sbld." + n_3), "sbld", m_1.Val, affordable_1);
     }, filter_1((n_2) => getBuilding(s.Spacep, n_2).Unlocked, s.Spacep.BuildingOrder));
     return append(progRows, bldRows);
@@ -2162,14 +2254,14 @@ export function timeRows(s) {
         }
         else {
             const ratio = Math.pow(def.PriceRatio, m.Val);
-            affordable = hasRes(s.Pool, map((p) => [p.Resource, p.Val * ratio], def.Prices), 0);
+            affordable = hasRes_1(s.Pool, map((p) => [p.Resource, p.Val * ratio], def.Prices), 0);
         }
         return new TimeRow(n_1, get$_2("cfu." + n_1), "cfu", m.Val, affordable && !capped);
     }, filter_1((n) => FSharpMap__get_Item(s.Tpool.CFUs, n).Unlocked, s.Tpool.CfuOrder));
     const vsuRows = map((n_3) => {
         const m_1 = FSharpMap__get_Item(s.Tpool.VSUs, n_3);
         const def_1 = vsuDef(n_3);
-        const affordable_1 = hasRes(s.Pool, map((p_1) => [p_1.Resource, p_1.Val], def_1.Prices), 0);
+        const affordable_1 = hasRes_1(s.Pool, map((p_1) => [p_1.Resource, p_1.Val], def_1.Prices), 0);
         return new TimeRow(n_3, get$_2("vsu." + n_3), "vsu", m_1.Val, affordable_1);
     }, filter_1((n_2) => {
         if (n_2 !== "usedCryochambers") {
@@ -2216,7 +2308,7 @@ export function buildingRows(s) {
             }
             else {
                 const prices = getAllPrices(s.Cache, pctx(s), b);
-                const affordable = hasRes(s.Pool, map((p) => [p.Resource, p.Val], prices), 0);
+                const affordable = hasRes_1(s.Pool, map((p) => [p.Resource, p.Val], prices), 0);
                 return new BuildingRow(n, get$_2("bld." + n), true, affordable, b.Val, map((p_1) => (new PriceRow(p_1.Resource, p_1.Val)), prices));
             }
         }

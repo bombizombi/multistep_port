@@ -8,7 +8,7 @@ open kittens_land.KittensState
 type TipData =
     { Desc: string
       Flavor: string option
-      Prices: (string * float * bool) list }
+      Prices: kittens_land.KittensState.TipPriceLine list }
 
 type Model =
     { Tab: string
@@ -172,10 +172,7 @@ let view (model: Model) (dispatch: Msg -> unit) =
     let pricesTip (desc: string) (flavorKey: string option) (prices: kittens_land.KittensState.PriceRow list) : TipData =
         { Desc = desc
           Flavor = flavorKey |> Option.map Game.Labels.get |> Option.filter (fun f -> f <> "" && f <> flavorKey.Value)
-          Prices =
-            prices
-            |> List.map (fun p ->
-                (Game.Labels.get ("res." + p.Resource), p.Val, getRes s.Pool p.Resource >= p.Val)) }
+          Prices = kittens_land.KittensState.priceLines s false prices }
 
     let bldTip (name: string) (prices: kittens_land.KittensState.PriceRow list) =
         pricesTip
@@ -517,7 +514,7 @@ let view (model: Model) (dispatch: Msg -> unit) =
                 let refinePrice = 100.0
                 modernBtn "refine" (Game.Labels.get "bld.refineCatnip") "" (getRes s.Pool "catnip" >= refinePrice)
                     (Some { Desc = Game.Labels.get "bld.refineCatnip.desc"; Flavor = None;
-                            Prices = [ (Game.Labels.get "res.catnip", refinePrice, getRes s.Pool "catnip" >= refinePrice) ] })
+                            Prices = kittens_land.KittensState.priceLines s false [ { Resource = "catnip"; Val = refinePrice } ] })
                     (fun () -> dispatch Refine)
                 yield! List.map buildingRow (kittens_land.KittensState.buildingRows s)
             ]
@@ -690,20 +687,31 @@ let view (model: Model) (dispatch: Msg -> unit) =
                                 prop.style [ style.borderBottom(1, borderStyle.solid, "gray"); style.paddingBottom 8 ]
                             prop.dangerouslySetInnerHTML tip.Desc
                         ]
-                    for i, (title, v, ok) in List.indexed tip.Prices do
+                    // orig ButtonModernHelper._renderPriceLine: children are
+                    // indented with nbsp triples and marked rawRes; missing
+                    // resources get the noRes class; displayValue carries the
+                    // " (eta)" suffix computed in priceLines
+                    let rec renderLine (l: kittens_land.KittensState.TipPriceLine) =
                         Html.div [
-                            prop.key ("price" + string i)
+                            prop.key ("price" + string l.Indent + l.Title)
                             prop.className "price-block"
                             prop.style [ style.overflow.hidden; style.custom ("clear", "both") ]
                             prop.children [
-                                Html.span [ prop.style [ style.float'.left; style.paddingRight 10 ]; prop.text title ]
                                 Html.span [
-                                    prop.className (if ok then "" else "noRes")
-                                    prop.style [ style.float'.right ]
-                                    prop.text (fmt v)
+                                    prop.className (if l.Indent > 0 then "rawRes" else "")
+                                    prop.style [ style.float'.left; style.paddingRight 10 ]
+                                    prop.text (String.replicate (l.Indent * 3) "\u00A0" + l.Title)
                                 ]
+                                Html.span [
+                                    prop.className (if l.HasRes then "" else "noRes")
+                                    prop.style [ style.float'.right ]
+                                    prop.text l.DisplayValue
+                                ]
+                                yield! (l.Children |> List.map renderLine)
                             ]
                         ]
+                    for p in tip.Prices do
+                        renderLine p
                     match tip.Flavor with
                     | Some flavor ->
                         Html.div [

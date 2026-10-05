@@ -1120,6 +1120,75 @@ let resRows (s: State) : ResRow list =
 
 type PriceRow = { Resource: string; Val: float }
 
+// --- orig _createPriceLineModel (core.js L1324): tooltip price lines with
+// per-resource availability timers, unrolled recursively into craft
+// ingredients for missing craftable resources (wood excepted, by orig rule) ---
+
+type TipPriceLine =
+    { Title: string        // resource title; "+ Beam" when unrolled into children
+      DisplayValue: string // "175", "55 / 175*" when missing, plus " (3m 20s)" ETA
+      HasRes: bool
+      Indent: int
+      Children: TipPriceLine list }
+
+// toDisplaySeconds is already ported (game-12 verified) further up this module
+
+let priceLines (s: State) (simplePrices: bool) (prices: PriceRow list) : TipPriceLine list =
+    // the port ticks at 100ms, so per-tick rates convert at 10 per second
+    let ticksPerSecondUI = 10.0
+    let fmtV (v: float) =
+        if v = float (int v) then string (int v) else sprintf "%.1f" v
+    let titleOf r = Game.Labels.get ("res." + r)
+    let rec line (resource: string) (val_: float) (baseVal: float option) (indent: int) : TipPriceLine =
+        let res = Game.Resources.get s.Pool resource
+        let value, maxValue, perTick, craftable =
+            match res with
+            | Some r ->
+                r.Value, r.MaxValue,
+                (if r.Def.CalculatePerTick then r.PerTickCached else 0.0),
+                r.Def.Craftable
+            | None -> 0.0, 0.0, 0.0, false
+        let hasRes = value >= val_
+        let limitIssue =
+            maxValue > 0.0
+            && ((indent = 0 && val_ > maxValue)
+                || (baseVal |> Option.exists (fun bv -> bv > maxValue)))
+        let asterisk = if limitIssue then "*" else ""
+        let mutable displayValue =
+            if hasRes || simplePrices then fmtV val_
+            else fmtV value + " / " + fmtV val_ + asterisk
+        let eta =
+            if not hasRes && perTick > 0.0 && not simplePrices then
+                (val_ - value) / (perTick * ticksPerSecondUI)
+            else 0.0
+        if eta >= 1.0 then
+            displayValue <- displayValue + " (" + toDisplaySeconds eta + ")"
+
+        // unroll missing craftables into their craft ingredients, rounded up to
+        // whole crafts; wood is excluded by orig rule (it has no craft recipe)
+        let children =
+            if not hasRes && craftable && resource <> "wood" && not simplePrices then
+                match s.Wpool.Crafts |> Map.tryFind resource with
+                | Some c when c.Unlocked && System.Double.IsFinite(val_ - value) ->
+                    let diff = val_ - value
+                    let ratio = Game.Managers.getResCraftRatio s.Cache (crCtxFor s) resource
+                    c.Def.Prices
+                    |> List.map (fun comp ->
+                        let mutable v = System.Math.Ceiling(comp.Val * diff / (1.0 + ratio))
+                        let rem = v % comp.Val
+                        if rem <> 0.0 && System.Double.IsFinite(rem) then v <- v + comp.Val - rem
+                        line comp.Resource v (Some comp.Val) (indent + 1))
+                | _ -> []
+            else []
+
+        let title = titleOf resource
+        { Title = (if children.IsEmpty then title else "+ " + title)
+          DisplayValue = displayValue
+          HasRes = hasRes
+          Indent = indent
+          Children = children }
+    prices |> List.map (fun p -> line p.Resource p.Val None 0)
+
 type BuildingRow =
     { Name: string; Label: string; Visible: bool; Enabled: bool; Val: int; Prices: PriceRow list }
 
