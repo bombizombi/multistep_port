@@ -612,6 +612,18 @@ let parseSave (text: string) : State option =
 
 let applyLoaded (loaded: State) (old: State) : State =
     let s1 = { loaded with ConsoleMsgs = old.ConsoleMsgs; ConsoleUnlocked = old.ConsoleUnlocked }
+    // repair job counters inflated by legacy saves (pre-963037c the minus
+    // button freed kittens without decrementing the counter, so job| lines
+    // could exceed the population) — derive them from actual kitten jobs
+    let repairedJobs =
+        let counts =
+            s1.Vpool.Kittens
+            |> List.choose (fun k -> k.Job)
+            |> List.countBy id
+            |> Map.ofList
+        s1.Vpool.JobValues
+        |> Map.map (fun name _ -> counts |> Map.tryFind name |> Option.defaultValue 0)
+    let s1 = { s1 with Vpool = { s1.Vpool with JobValues = repairedJobs } }
     // rebuild maxKittens + kittens resource from the loaded village
     let maxKittens = Game.Managers.calculateMaxKittens s1.Cache s1.Vpool
     let s2 = { s1 with Vpool = { s1.Vpool with MaxKittens = maxKittens } }

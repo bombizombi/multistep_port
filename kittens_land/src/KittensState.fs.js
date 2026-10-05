@@ -32,6 +32,7 @@ import { StringBuilder__AppendLine_Z721C83C5, StringBuilder_$ctor } from "../.el
 import { replace, split, join, printf, toText } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/String.js";
 import { item as item_1 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Array.js";
 import { parse as parse_1 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Int32.js";
+import { List_countBy } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Seq2.js";
 import { buildingDefs as buildingDefs_1, programDefs } from "./Game/Game.Catalog.Space.fs.js";
 import { updateHappiness, HappinessContext, freshHappinessContext } from "./Game/Game.Happiness.fs.js";
 import { toList as toList_2 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Seq.js";
@@ -1102,14 +1103,23 @@ export function parseSave(text) {
 }
 
 export function applyLoaded(loaded, old) {
-    let bind$0040;
+    let bind$0040, bind$0040_1;
     const s1 = new State(loaded.Pool, loaded.Bpool, loaded.Spool, loaded.Wpool, loaded.Vpool, loaded.Rpool, loaded.Cpool, loaded.Ppool, loaded.Dpool, loaded.Tpool, loaded.Spacep, loaded.Stpool, loaded.Calendar, loaded.Cache, loaded.CalendarDay, loaded.Ticks, loaded.IronWill, loaded.Rand, old.ConsoleMsgs, old.ConsoleUnlocked, loaded.QueueItems, loaded.Opts, loaded.ResHidden, loaded.ShowHiddenRes, loaded.TabsUnlocked);
-    const maxKittens = calculateMaxKittens(s1.Cache, s1.Vpool) | 0;
-    const s2 = new State(s1.Pool, s1.Bpool, s1.Spool, s1.Wpool, (bind$0040 = s1.Vpool, new VillagePool(bind$0040.Kittens, bind$0040.NextKittenProgress, maxKittens, bind$0040.JobValues, bind$0040.JobUnlocked, bind$0040.Happiness, bind$0040.DeathTimeout, bind$0040.LeaderSeed, bind$0040.Traits)), s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.TabsUnlocked);
+    let repairedJobs;
+    const counts = ofList(List_countBy((x) => x, choose((k) => k.Job, s1.Vpool.Kittens), {
+        Equals: (x_1, y) => (x_1 === y),
+        GetHashCode: (x_1) => (stringHash(x_1) | 0),
+    }), {
+        Compare: (x_2, y_1) => (comparePrimitives(x_2, y_1) | 0),
+    });
+    repairedJobs = map_1((name, _arg) => (defaultArg(tryFind(name, counts), 0) | 0), s1.Vpool.JobValues);
+    const s1_1 = new State(s1.Pool, s1.Bpool, s1.Spool, s1.Wpool, (bind$0040 = s1.Vpool, new VillagePool(bind$0040.Kittens, bind$0040.NextKittenProgress, bind$0040.MaxKittens, repairedJobs, bind$0040.JobUnlocked, bind$0040.Happiness, bind$0040.DeathTimeout, bind$0040.LeaderSeed, bind$0040.Traits)), s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.TabsUnlocked);
+    const maxKittens = calculateMaxKittens(s1_1.Cache, s1_1.Vpool) | 0;
+    const s2 = new State(s1_1.Pool, s1_1.Bpool, s1_1.Spool, s1_1.Wpool, (bind$0040_1 = s1_1.Vpool, new VillagePool(bind$0040_1.Kittens, bind$0040_1.NextKittenProgress, maxKittens, bind$0040_1.JobValues, bind$0040_1.JobUnlocked, bind$0040_1.Happiness, bind$0040_1.DeathTimeout, bind$0040_1.LeaderSeed, bind$0040_1.Traits)), s1_1.Rpool, s1_1.Cpool, s1_1.Ppool, s1_1.Dpool, s1_1.Tpool, s1_1.Spacep, s1_1.Stpool, s1_1.Calendar, s1_1.Cache, s1_1.CalendarDay, s1_1.Ticks, s1_1.IronWill, s1_1.Rand, s1_1.ConsoleMsgs, s1_1.ConsoleUnlocked, s1_1.QueueItems, s1_1.Opts, s1_1.ResHidden, s1_1.ShowHiddenRes, s1_1.TabsUnlocked);
     const kittensRes = FSharpMap__get_Item(s2.Pool.ByName, "kittens");
     let pool2;
-    const bind$0040_1 = s2.Pool;
-    pool2 = (new ResPool(bind$0040_1.Order, add_1("kittens", new ResourceState(kittensRes.Def, length(s2.Vpool.Kittens), length(s2.Vpool.Kittens) > 0, s2.Vpool.MaxKittens, kittensRes.PerTickCached), s2.Pool.ByName), bind$0040_1.KarmaKittens, bind$0040_1.EnergyProd, bind$0040_1.EnergyWinterProd, bind$0040_1.EnergyCons));
+    const bind$0040_2 = s2.Pool;
+    pool2 = (new ResPool(bind$0040_2.Order, add_1("kittens", new ResourceState(kittensRes.Def, length(s2.Vpool.Kittens), length(s2.Vpool.Kittens) > 0, s2.Vpool.MaxKittens, kittensRes.PerTickCached), s2.Pool.ByName), bind$0040_2.KarmaKittens, bind$0040_2.EnergyProd, bind$0040_2.EnergyWinterProd, bind$0040_2.EnergyCons));
     return refreshCache(new State(pool2, s2.Bpool, s2.Spool, s2.Wpool, s2.Vpool, s2.Rpool, s2.Cpool, s2.Ppool, s2.Dpool, s2.Tpool, s2.Spacep, s2.Stpool, s2.Calendar, s2.Cache, s2.CalendarDay, s2.Ticks, s2.IronWill, s2.Rand, s2.ConsoleMsgs, s2.ConsoleUnlocked, s2.QueueItems, s2.Opts, s2.ResHidden, s2.ShowHiddenRes, s2.TabsUnlocked));
 }
 
