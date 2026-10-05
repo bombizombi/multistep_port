@@ -70,6 +70,16 @@ for (const job of ["woodcutter","farmer","fisher","hunter","miner","scholar","pr
   }
 }
 
+// resource panel tooltip strings
+for (const [k, v] of Object.entries({
+  "res.stack.production": "Production",
+  "res.stack.village": "Village",
+  "res.stack.weather": "Weather",
+  "res.toZero": "To zero",
+  "res.toCap": "To cap",
+  "res.toNextKitten": "To next kitten"
+})) add(k, v);
+
 const esc = (s) => String(s).split("\\").join("\\\\").split('"').join("\\\"");
 let out = [
   "// GENERATED from orig res/i18n/en.json by the V2 view slice — display labels",

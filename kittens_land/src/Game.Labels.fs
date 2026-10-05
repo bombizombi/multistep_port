@@ -860,6 +860,12 @@ let labels : Map<string, string> =
     ("job.geologist.desc", "+{0} coal per second (may be upgraded)");
     ("job.engineer.desc", "Engineers can automate resource crafting (once per 10 minute). Every factory unlocks one engineer slot");
     ("job.ambassador.desc", "Improves various aspects of trade with other races.  Consumes some resources to do so.");
+    ("res.stack.production", "Production");
+    ("res.stack.village", "Village");
+    ("res.stack.weather", "Weather");
+    ("res.toZero", "To zero");
+    ("res.toCap", "To cap");
+    ("res.toNextKitten", "To next kitten");
   ]
 
 let get (key: string) : string = labels |> Map.tryFind key |> Option.defaultValue key

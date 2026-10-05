@@ -29,7 +29,7 @@ import { ofList as ofList_1, union, FSharpSet__Add, FSharpSet__Remove, ofArray a
 import { parse, min } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Double.js";
 import { getLimitedDR } from "./Game/Game.Math.fs.js";
 import { StringBuilder__AppendLine_Z721C83C5, StringBuilder_$ctor } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/System.Text.js";
-import { replace, split, join, printf, toText } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/String.js";
+import { trimEnd, replace, split, join, printf, toText } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/String.js";
 import { item as item_1 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Array.js";
 import { parse as parse_1 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Int32.js";
 import { List_countBy } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Seq2.js";
@@ -1840,6 +1840,64 @@ export class TipPriceLine extends Record {
 
 export function TipPriceLine_$reflection() {
     return record_type("kittens_land.KittensState.TipPriceLine", [], TipPriceLine, () => [["Title", string_type], ["DisplayValue", string_type], ["HasRes", bool_type], ["Indent", int32_type], ["Children", list_type(TipPriceLine_$reflection())]]);
+}
+
+/**
+ * resource-panel value display: small per-tick rates (0.018) need real digits,
+ * the old one-decimal fmt rendered them as "0.0"
+ */
+export function fmtRes(v) {
+    const absV = Math.abs(v);
+    const s = (absV === 0) ? "0" : ((absV >= 1000) ? int32ToString(~~round(v)) : ((absV >= 100) ? toText(printf("%.1f"))(v) : ((absV >= 10) ? toText(printf("%.2f"))(v) : toText(printf("%.3f"))(v))));
+    if (s.indexOf(".") >= 0) {
+        return trimEnd(trimEnd(s, "0"), ".");
+    }
+    else {
+        return s;
+    }
+}
+
+/**
+ * orig village.getResProduction: per-tick job production per resource
+ */
+export function jobProduction(s) {
+    return getResProduction(s.Cache, s.Vpool, ofList(map((j) => [j.Name, j], jobDefs), {
+        Compare: (x, y) => (comparePrimitives(x, y) | 0),
+    }), s.Wpool);
+}
+
+/**
+ * orig getDetailedResMap numbers for the resource tooltip:
+ * (base building production, village job production, net per tick)
+ */
+export function productionBreakdown(s, name) {
+    let r;
+    const baseProd = getEffect_1(s.Cache, name + "PerTickBase");
+    const village = defaultArg(tryFind(name, jobProduction(s)), 0);
+    let net;
+    const matchValue = get$(s.Pool, name);
+    let matchResult, r_1;
+    if (matchValue != null) {
+        if ((r = matchValue, r.Def.CalculatePerTick)) {
+            matchResult = 0;
+            r_1 = matchValue;
+        }
+        else {
+            matchResult = 1;
+        }
+    }
+    else {
+        matchResult = 1;
+    }
+    switch (matchResult) {
+        case 0: {
+            net = r_1.PerTickCached;
+            break;
+        }
+        default:
+            net = 0;
+    }
+    return [baseProd, village, net];
 }
 
 export function priceLines(s, simplePrices, prices) {

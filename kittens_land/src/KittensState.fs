@@ -1133,6 +1133,34 @@ type TipPriceLine =
 
 // toDisplaySeconds is already ported (game-12 verified) further up this module
 
+/// resource-panel value display: small per-tick rates (0.018) need real digits,
+/// the old one-decimal fmt rendered them as "0.0"
+let fmtRes (v: float) : string =
+    let absV = abs v
+    let s =
+        if absV = 0.0 then "0"
+        elif absV >= 1000.0 then string (int (round v))
+        elif absV >= 100.0 then sprintf "%.1f" v
+        elif absV >= 10.0 then sprintf "%.2f" v
+        else sprintf "%.3f" v
+    if s.Contains "." then s.TrimEnd('0').TrimEnd('.') else s
+
+/// orig village.getResProduction: per-tick job production per resource
+let jobProduction (s: State) : Map<string, float> =
+    Game.Managers.getResProduction s.Cache s.Vpool
+        (Game.Catalog.Village.jobDefs |> List.map (fun j -> (j.Name, j)) |> Map.ofList) s.Wpool
+
+/// orig getDetailedResMap numbers for the resource tooltip:
+/// (base building production, village job production, net per tick)
+let productionBreakdown (s: State) (name: string) : float * float * float =
+    let baseProd = Game.Effects.getEffect s.Cache (name + "PerTickBase")
+    let village = jobProduction s |> Map.tryFind name |> Option.defaultValue 0.0
+    let net =
+        match Game.Resources.get s.Pool name with
+        | Some r when r.Def.CalculatePerTick -> r.PerTickCached
+        | _ -> 0.0
+    baseProd, village, net
+
 let priceLines (s: State) (simplePrices: bool) (prices: PriceRow list) : TipPriceLine list =
     // the port ticks at 100ms, so per-tick rates convert at 10 per second
     let ticksPerSecondUI = 10.0

@@ -226,14 +226,46 @@ let view (model: Model) (dispatch: Msg -> unit) =
 
     // --- left column: resource + craft tables --------------------------------
 
+    // per-second rates: the port ticks at 100ms, and with the (default-on)
+    // usePerSecondValues opt the panel shows perTick x 10 with a "/s" suffix
+    let usePerSecond = s.Opts.Bools.["usePerSecondValues"]
+    let rateDisplay (perTick: float) =
+        let v = if usePerSecond then perTick * 10.0 else perTick
+        if v <> 0.0 then kittens_land.KittensState.fmtRes v + (if usePerSecond then "/s" else "")
+        else ""
+
+    let resTip (r: kittens_land.KittensState.ResRow) : TipData =
+        // orig getDetailedResMap: production breakdown + to-zero/to-cap timers;
+        // kittens get next-kitten progress instead
+        let baseProd, village, net = kittens_land.KittensState.productionBreakdown s r.Name
+        let line label (v: float) =
+            "<div>" + label + ": " + (if v >= 0.0 then "+" else "") + kittens_land.KittensState.fmtRes v + "</div>"
+        let body =
+            if r.Name = "kittens" then
+                let progress = s.Vpool.NextKittenProgress
+                let perTickKittens = 0.01 * (1.0 + getEffect s "kittenGrowthRatio")
+                "<div>[" + sprintf "%.0f" (progress * 100.0) + "%]</div>"
+                + "<div>" + Game.Labels.get "res.toNextKitten" + ": "
+                + kittens_land.KittensState.toDisplaySeconds ((1.0 - progress) / (perTickKittens * 10.0)) + "</div>"
+            else
+                (if baseProd <> 0.0 then line (Game.Labels.get "res.stack.production") baseProd else "")
+                + (if village <> 0.0 then line (Game.Labels.get "res.stack.village") village else "")
+                + (if net < 0.0 then
+                        "<div>" + Game.Labels.get "res.toZero" + ": "
+                        + kittens_land.KittensState.toDisplaySeconds (r.Value / (-net * 10.0)) + "</div>"
+                   elif net > 0.0 && r.Max > 0.0 && r.Value < r.Max then
+                        "<div>" + Game.Labels.get "res.toCap" + ": "
+                        + kittens_land.KittensState.toDisplaySeconds ((r.Max - r.Value) / (net * 10.0)) + "</div>"
+                   else "")
+        { Desc = body; Flavor = None; Prices = [] }
+
     let resRow (r: kittens_land.KittensState.ResRow) =
         // hidden resources show only in edit mode or when "show hidden" is on
         if not r.Show then Html.none
         elif r.Hidden && not model.ResEditMode && not s.ShowHiddenRes then Html.none
         else
-            let perTick =
-                if r.PerTick <> 0.0 then fmtSigned r.PerTick
-                else ""
+            let perTick = rateDisplay r.PerTick
+            let tip = resTip r
             Html.div [
                 prop.key r.Name
                 prop.role "row"
@@ -254,11 +286,11 @@ let view (model: Model) (dispatch: Msg -> unit) =
                         ]
                     Html.div [
                         prop.className "res-cell resource-name"
-                        prop.title (r.Title + " " + fmt r.Value + " " + perTick)
+                        if tip.Desc <> "" then yield! tipHandlers tip
                         prop.text r.Title
                     ]
-                    Html.div [ prop.className "res-cell resAmount"; prop.text (fmt r.Value) ]
-                    Html.div [ prop.className "res-cell maxRes"; prop.text (if r.Max > 0.0 then "/" + fmt r.Max else "") ]
+                    Html.div [ prop.className "res-cell resAmount"; prop.text (kittens_land.KittensState.fmtRes r.Value) ]
+                    Html.div [ prop.className "res-cell maxRes"; prop.text (if r.Max > 0.0 then "/" + kittens_land.KittensState.fmtRes r.Max else "") ]
                     Html.div [ prop.className "res-cell resPerTick"; prop.text perTick ]
                     Html.div [ prop.className "res-cell" ]
                 ]
