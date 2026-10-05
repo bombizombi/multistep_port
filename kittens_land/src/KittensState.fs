@@ -260,8 +260,16 @@ let consoleMsg (tag: string option) (text: string) (s: State) : State =
     if not unlocked then s
     else
         let hasCal = s.Spool.Techs["calendar"].Researched
+        // ids mint from the MAX existing id: messages are appended (oldest
+        // first), and multi-message operations (e.g. two kittens born in the
+        // same tick) would otherwise mint colliding ids off the stale head —
+        // surfacing as React duplicate-key crashes that kill the view loop
+        let nextId =
+            match s.ConsoleMsgs with
+            | [] -> 0
+            | msgs -> (msgs |> List.maxBy (fun m -> m.CmId)).CmId + 1
         let msg =
-            { CmId = (match s.ConsoleMsgs with m :: _ -> m.CmId + 1 | [] -> 0)
+            { CmId = nextId
               CmText = text
               CmTag = tag
               CmHasCal = hasCal

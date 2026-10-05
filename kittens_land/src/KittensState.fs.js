@@ -18,7 +18,7 @@ import { toArray, defaultArg } from "../.elmish-land/App/fable_modules/fable-lib
 import { updateMaxValueAll, update, UpdateContext, hasRes as hasRes_1, payPrices, addResEvent, init as init_1, getEnergyDelta, CapContext, get$ } from "./Game/Game.Resources.fs.js";
 import { toList, add as add_1, FSharpMap__get_Item, map as map_1, ofList, filter, tryFind, empty } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Map.js";
 import { equals, disposeSafe, getEnumerator, int32ToString, round, stringHash, comparePrimitives } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
-import { filter as filter_1, find, fold, tryFind as tryFind_1, updateAt, removeAt, tryLast, contains, sumBy, tail, singleton, append, head, isEmpty, item, length, map, ofArray, choose, empty as empty_1 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
+import { filter as filter_1, find, head, fold, tryFind as tryFind_1, updateAt, removeAt, tryLast, contains, sumBy, tail, singleton, append, maxBy, isEmpty, item, length, map, ofArray, choose, empty as empty_1 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
 import { baseEffects, bldBase } from "./Game/Game.Catalog.BaseEffects.fs.js";
 import { calcResourcePerTick, fixFloatPointNumber, ProductionContext, freshProductionContext } from "./Game/Game.Production.fs.js";
 import { jobDefs } from "./Game/Game.Catalog.Village.fs.js";
@@ -285,7 +285,6 @@ export function dctxFor(s) {
 }
 
 export function consoleMsg(tag, text, s) {
-    let matchValue, m;
     let unlocked;
     if (tag == null) {
         unlocked = true;
@@ -299,9 +298,20 @@ export function consoleMsg(tag, text, s) {
     }
     else {
         const hasCal = FSharpMap__get_Item(s.Spool.Techs, "calendar").Researched;
-        const msg = new ConsoleMsg((matchValue = s.ConsoleMsgs, isEmpty(matchValue) ? 0 : ((m = head(matchValue), m.CmId + 1))), text, tag, hasCal, ~~s.Calendar.Year + 1, ~~s.Calendar.Day + 1, item(s.Calendar.Season, seasons).Name);
-        const msgs = append(s.ConsoleMsgs, singleton(msg));
-        return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, (length(msgs) > 40) ? tail(msgs) : msgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.TabsUnlocked);
+        let nextId;
+        const matchValue = s.ConsoleMsgs;
+        if (isEmpty(matchValue)) {
+            nextId = 0;
+        }
+        else {
+            const msgs = matchValue;
+            nextId = (maxBy((m) => (m.CmId | 0), msgs, {
+                Compare: (x, y) => (comparePrimitives(x, y) | 0),
+            }).CmId + 1);
+        }
+        const msg = new ConsoleMsg(nextId, text, tag, hasCal, ~~s.Calendar.Year + 1, ~~s.Calendar.Day + 1, item(s.Calendar.Season, seasons).Name);
+        const msgs_1 = append(s.ConsoleMsgs, singleton(msg));
+        return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, (length(msgs_1) > 40) ? tail(msgs_1) : msgs_1, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.TabsUnlocked);
     }
 }
 
