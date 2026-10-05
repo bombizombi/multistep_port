@@ -1123,6 +1123,18 @@ export function applyLoaded(loaded, old) {
     return refreshCache(new State(pool2, s2.Bpool, s2.Spool, s2.Wpool, s2.Vpool, s2.Rpool, s2.Cpool, s2.Ppool, s2.Dpool, s2.Tpool, s2.Spacep, s2.Stpool, s2.Calendar, s2.Cache, s2.CalendarDay, s2.Ticks, s2.IronWill, s2.Rand, s2.ConsoleMsgs, s2.ConsoleUnlocked, s2.QueueItems, s2.Opts, s2.ResHidden, s2.ShowHiddenRes, s2.TabsUnlocked));
 }
 
+/**
+ * orig village.clearJobs(hard) (js/village.js L581): zero every job counter
+ * and free all kittens (sim.clearJobs)
+ */
+export function clearAllJobs(s) {
+    let vpool$0027;
+    const bind$0040 = s.Vpool;
+    const JobValues = map_1((_arg, _arg_1) => 0, s.Vpool.JobValues);
+    vpool$0027 = (new VillagePool(map((k) => (new Kitten(k.Name, k.Surname, undefined, k.Rank, k.Exp, k.Seed, k.Trait, k.Age, k.Color, k.Variety, k.Rarity, k.IsLeader, k.Skills, k.EngineerSpeciality)), s.Vpool.Kittens), bind$0040.NextKittenProgress, bind$0040.MaxKittens, JobValues, bind$0040.JobUnlocked, bind$0040.Happiness, bind$0040.DeathTimeout, bind$0040.LeaderSeed, bind$0040.Traits));
+    return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, vpool$0027, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.TabsUnlocked);
+}
+
 export function gatherCatnip(s) {
     const pool1 = addResEvent(s.CalendarDay, "catnip", 1, s.Pool)[0];
     return new State(pool1, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.TabsUnlocked);

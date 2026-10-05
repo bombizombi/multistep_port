@@ -19,6 +19,7 @@ type Model =
       Tooltip: (float * float * TipData) option
       OptionsOpen: bool
       ResEditMode: bool
+      JobsPanelCollapsed: bool
       RightTab: string }
 
 type Msg =
@@ -48,11 +49,13 @@ type Msg =
     | SetTip of (float * float * TipData) option
     | ToggleOptions
     | ToggleResEditMode
+    | ToggleJobsPanel
     | ToggleResHidden of string
     | SetShowHiddenRes of bool
     | SaveGame
     | LoadGame
     | ClearConsole
+    | ClearAllJobs
     | QAdd of string * string
     | QRemove of int
     | ToggleOption of string
@@ -78,6 +81,7 @@ let init () =
       Tooltip = None
       OptionsOpen = false
       ResEditMode = false
+      JobsPanelCollapsed = false
       RightTab = "Log" },
     Command.batch [ Command.none; tickCmd 1.0 1 ]
 
@@ -111,6 +115,7 @@ let update (msg: Msg) (model: Model) =
     | SetSpeed mult -> { model with Speed = mult }, Command.none
     | SetTip tip -> { model with Tooltip = tip }, Command.none
     | ToggleOptions -> { model with OptionsOpen = not model.OptionsOpen }, Command.none
+    | ToggleJobsPanel -> { model with JobsPanelCollapsed = not model.JobsPanelCollapsed }, Command.none
     | ToggleResEditMode -> { model with ResEditMode = not model.ResEditMode }, Command.none
     | ToggleResHidden name -> { model with S = kittens_land.KittensState.toggleResHidden name model.S }, Command.none
     | SetShowHiddenRes v -> { model with S = kittens_land.KittensState.setShowHiddenRes v model.S }, Command.none
@@ -127,6 +132,7 @@ let update (msg: Msg) (model: Model) =
                 Command.batch [ Command.none; tickCmd model.Speed (model.LoopGen + 1) ]
             | None -> { model with Toast = "Load failed: unrecognizable save" }, Command.none
     | ClearConsole -> { model with S = kittens_land.KittensState.consoleClear model.S }, Command.none
+    | ClearAllJobs -> { model with S = kittens_land.KittensState.clearAllJobs model.S }, Command.none
     | QAdd (name, qtype) -> { model with S = kittens_land.KittensState.addToQueue name qtype model.S }, Command.none
     | QRemove idx -> { model with S = kittens_land.KittensState.removeFromQueue idx model.S }, Command.none
     | ToggleOption name -> { model with S = kittens_land.KittensState.setBoolOption name (not model.S.Opts.Bools.[name]) model.S }, Command.none
@@ -451,7 +457,8 @@ let view (model: Model) (dispatch: Msg -> unit) =
             Html.div [
                 prop.key j.Name
                 prop.className (if canAssign then "btn nosel modern" else "btn nosel modern disabled")
-                prop.style [ style.position.relative; style.display.inlineBlock; style.marginRight 8; style.marginBottom 8 ]
+                // orig Button.render: display block -> single column of buttons
+                prop.style [ style.position.relative; style.display.block; style.marginBottom 8; style.width 264 ]
                 prop.tabIndex 0
                 if tip.IsSome then yield! tipHandlers tip.Value
                 prop.onClick (fun ev ->
@@ -487,7 +494,29 @@ let view (model: Model) (dispatch: Msg -> unit) =
                     prop.style [ style.marginBottom 10 ]
                     prop.text ("Kittens: " + string kittens + "/" + string maxKittens + " - happiness: " + sprintf "%.0f%%" (happiness * 100.0))
                 ]
-                yield! (kittens_land.KittensState.jobRows s |> List.map jobRow)
+                // orig com.nuclearunicorn.game.ui.Panel: bordered panel with a
+                // title and a +/- collapse toggle, content padded 10px
+                Html.div [
+                    prop.className "panelContainer"
+                    prop.children [
+                        Html.div [
+                            prop.className "toggle"
+                            prop.style [ style.float'.right ]
+                            prop.onClick (fun _ -> dispatch ToggleJobsPanel)
+                            prop.text (if model.JobsPanelCollapsed then "+" else "-")
+                        ]
+                        Html.div [ prop.className "title"; prop.text "Jobs" ]
+                        if not model.JobsPanelCollapsed then
+                            Html.div [
+                                prop.className "container"
+                                prop.children [
+                                    yield! (kittens_land.KittensState.jobRows s |> List.map jobRow)
+                                    // orig: Clear button after the job buttons
+                                    plainBtn "clearJobs" "Clear" (fun () -> dispatch ClearAllJobs)
+                                ]
+                            ]
+                    ]
+                ]
             ]
         | "Science" -> List.map techRow (kittens_land.KittensState.techRows s)
         | "Workshop" -> List.map upgradeRow (kittens_land.KittensState.upgradeRows s)

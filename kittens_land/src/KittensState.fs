@@ -639,6 +639,15 @@ let applyLoaded (loaded: State) (old: State) : State =
                         Unlocked = s2.Vpool.Kittens.Length > 0 } }
     refreshCache { s2 with Pool = pool2 }
 
+/// orig village.clearJobs(hard) (js/village.js L581): zero every job counter
+/// and free all kittens (sim.clearJobs)
+let clearAllJobs (s: State) : State =
+    let vpool' =
+        { s.Vpool with
+            JobValues = s.Vpool.JobValues |> Map.map (fun _ _ -> 0)
+            Kittens = s.Vpool.Kittens |> List.map (fun k -> { k with Job = None }) }
+    { s with Vpool = vpool' }
+
 let gatherCatnip (s: State) : State =
     let pool1, _ = Game.Resources.addResEvent s.CalendarDay "catnip" 1.0 s.Pool
     { s with Pool = pool1 }
