@@ -1,6 +1,6 @@
 
 import { Union, Record } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Types.js";
-import { union_type, int32_type, record_type, float64_type, string_type } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
+import { union_type, record_type, int32_type, float64_type, string_type } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
 import { buildingRows, challengeRows, timeRows, spaceRows, religionRows, getRes, raceRows, craftRows, upgradeRows, techRows, jobRows, queueLength, queueCap as queueCap_1, kittenSummary, resRows, tick, resetGame, setNotation, setBoolOption, removeFromQueue, addToQueue, consoleClear, applyLoaded, parseSave, buildSaveString, saveKey, toggleChallengePending, buyVSU, buyCFU, buySpaceBuilding, buyProgram, buyEmbassy, trade, buyZU, buyRU, praise, craftAll, craft, buyUpgrade, research, unassignJob, assignJob, buyBuilding, gatherCatnip, init as init_1, State_$reflection } from "../KittensState.fs.js";
 import { Msg_$reflection as Msg_$reflection_1 } from "./Layout.fs.js";
 import { Command_none, Command_batch, Command_ofAsync } from "../../.elmish-land/Base/Command.fs.js";
@@ -17,17 +17,18 @@ import { seasons } from "../Game/Game.Calendar.fs.js";
 import { Page_from } from "../../.elmish-land/Base/Page.fs.js";
 
 export class Model extends Record {
-    constructor(Tab, S, Speed, Toast) {
+    constructor(Tab, S, Speed, LoopGen, Toast) {
         super();
         this.Tab = Tab;
         this.S = S;
         this.Speed = Speed;
+        this.LoopGen = (LoopGen | 0);
         this.Toast = Toast;
     }
 }
 
 export function Model_$reflection() {
-    return record_type("kittens_land.Pages.Page.Model", [], Model, () => [["Tab", string_type], ["S", State_$reflection()], ["Speed", float64_type], ["Toast", string_type]]);
+    return record_type("kittens_land.Pages.Page.Model", [], Model, () => [["Tab", string_type], ["S", State_$reflection()], ["Speed", float64_type], ["LoopGen", int32_type], ["Toast", string_type]]);
 }
 
 export class Msg extends Union {
@@ -39,7 +40,6 @@ export class Msg extends Union {
     cases() {
         return ["Tick", "Gather", "Buy", "Assign", "Unassign", "Research", "Upgrade", "CraftOne", "CraftAll", "Praise", "BuyRU", "BuyZU", "Trade", "Embassy", "Mission", "SpaceBuy", "CFUBuy", "VSUBuy", "ChallengeToggle", "SetTab", "SetSpeed", "SaveGame", "LoadGame", "ClearConsole", "QAdd", "QRemove", "ToggleOption", "SetNotation", "ResetGame", "LayoutMsg"];
     }
-    static Tick = new Msg(0, []);
     static Gather = new Msg(1, []);
     static Praise = new Msg(9, []);
     static SaveGame = new Msg(21, []);
@@ -49,144 +49,151 @@ export class Msg extends Union {
 }
 
 export function Msg_$reflection() {
-    return union_type("kittens_land.Pages.Page.Msg", [], Msg, () => [[], [], [["Item", string_type]], [["Item1", string_type], ["Item2", int32_type]], [["Item1", string_type], ["Item2", int32_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", float64_type]], [], [], [], [["Item1", string_type], ["Item2", string_type]], [["Item", int32_type]], [["Item", string_type]], [["Item", string_type]], [], [["Item", Msg_$reflection_1()]]]);
+    return union_type("kittens_land.Pages.Page.Msg", [], Msg, () => [[["Item", int32_type]], [], [["Item", string_type]], [["Item1", string_type], ["Item2", int32_type]], [["Item1", string_type], ["Item2", int32_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", float64_type]], [], [], [], [["Item1", string_type], ["Item2", string_type]], [["Item", int32_type]], [["Item", string_type]], [["Item", string_type]], [], [["Item", Msg_$reflection_1()]]]);
 }
 
-export function tickCmd() {
-    return Command_ofAsync(() => singleton.Delay(() => singleton.Bind(sleep(100), () => singleton.Return(undefined))), undefined, () => Msg.Tick);
+export function tickCmd(speed, gen) {
+    return Command_ofAsync((g) => singleton.Delay(() => singleton.Bind(sleep(~~(100 / speed)), () => singleton.Return(g))), gen, (g_1) => (new Msg(/* Tick */ 0, [g_1])));
 }
 
 export function init() {
-    return [new Model("Bonfire", init_1(), 1, ""), Command_batch(ofArray([Command_none(), tickCmd()]))];
+    return [new Model("Bonfire", init_1(), 1, 1, ""), Command_batch(ofArray([Command_none(), tickCmd(1, 1)]))];
 }
 
 export function update(msg, model) {
     switch (msg.tag) {
         case 1:
-            return [new Model(model.Tab, gatherCatnip(model.S), model.Speed, model.Toast), Command_none()];
+            return [new Model(model.Tab, gatherCatnip(model.S), model.Speed, model.LoopGen, model.Toast), Command_none()];
         case 2: {
             const name = msg.fields[0];
-            return [new Model(model.Tab, buyBuilding(name, model.S), model.Speed, model.Toast), Command_none()];
+            return [new Model(model.Tab, buyBuilding(name, model.S), model.Speed, model.LoopGen, model.Toast), Command_none()];
         }
         case 3: {
             const n = msg.fields[1] | 0;
             const job = msg.fields[0];
-            return [new Model(model.Tab, assignJob(job, n, model.S), model.Speed, model.Toast), Command_none()];
+            return [new Model(model.Tab, assignJob(job, n, model.S), model.Speed, model.LoopGen, model.Toast), Command_none()];
         }
         case 4: {
             const n_1 = msg.fields[1] | 0;
             const job_1 = msg.fields[0];
-            return [new Model(model.Tab, unassignJob(job_1, n_1, model.S), model.Speed, model.Toast), Command_none()];
+            return [new Model(model.Tab, unassignJob(job_1, n_1, model.S), model.Speed, model.LoopGen, model.Toast), Command_none()];
         }
         case 5: {
             const name_1 = msg.fields[0];
-            return [new Model(model.Tab, research(name_1, model.S), model.Speed, model.Toast), Command_none()];
+            return [new Model(model.Tab, research(name_1, model.S), model.Speed, model.LoopGen, model.Toast), Command_none()];
         }
         case 6: {
             const name_2 = msg.fields[0];
-            return [new Model(model.Tab, buyUpgrade(name_2, model.S), model.Speed, model.Toast), Command_none()];
+            return [new Model(model.Tab, buyUpgrade(name_2, model.S), model.Speed, model.LoopGen, model.Toast), Command_none()];
         }
         case 7: {
             const name_3 = msg.fields[0];
-            return [new Model(model.Tab, craft(name_3, 1, model.S), model.Speed, model.Toast), Command_none()];
+            return [new Model(model.Tab, craft(name_3, 1, model.S), model.Speed, model.LoopGen, model.Toast), Command_none()];
         }
         case 8: {
             const name_4 = msg.fields[0];
-            return [new Model(model.Tab, craftAll(name_4, model.S), model.Speed, model.Toast), Command_none()];
+            return [new Model(model.Tab, craftAll(name_4, model.S), model.Speed, model.LoopGen, model.Toast), Command_none()];
         }
         case 9:
-            return [new Model(model.Tab, praise(model.S), model.Speed, model.Toast), Command_none()];
+            return [new Model(model.Tab, praise(model.S), model.Speed, model.LoopGen, model.Toast), Command_none()];
         case 10: {
             const name_5 = msg.fields[0];
-            return [new Model(model.Tab, buyRU(name_5, model.S), model.Speed, model.Toast), Command_none()];
+            return [new Model(model.Tab, buyRU(name_5, model.S), model.Speed, model.LoopGen, model.Toast), Command_none()];
         }
         case 11: {
             const name_6 = msg.fields[0];
-            return [new Model(model.Tab, buyZU(name_6, model.S), model.Speed, model.Toast), Command_none()];
+            return [new Model(model.Tab, buyZU(name_6, model.S), model.Speed, model.LoopGen, model.Toast), Command_none()];
         }
         case 12: {
             const race = msg.fields[0];
-            return [new Model(model.Tab, trade(race, model.S), model.Speed, model.Toast), Command_none()];
+            return [new Model(model.Tab, trade(race, model.S), model.Speed, model.LoopGen, model.Toast), Command_none()];
         }
         case 13: {
             const race_1 = msg.fields[0];
-            return [new Model(model.Tab, buyEmbassy(race_1, model.S), model.Speed, model.Toast), Command_none()];
+            return [new Model(model.Tab, buyEmbassy(race_1, model.S), model.Speed, model.LoopGen, model.Toast), Command_none()];
         }
         case 14: {
             const name_7 = msg.fields[0];
-            return [new Model(model.Tab, buyProgram(name_7, model.S), model.Speed, model.Toast), Command_none()];
+            return [new Model(model.Tab, buyProgram(name_7, model.S), model.Speed, model.LoopGen, model.Toast), Command_none()];
         }
         case 15: {
             const name_8 = msg.fields[0];
-            return [new Model(model.Tab, buySpaceBuilding(name_8, model.S), model.Speed, model.Toast), Command_none()];
+            return [new Model(model.Tab, buySpaceBuilding(name_8, model.S), model.Speed, model.LoopGen, model.Toast), Command_none()];
         }
         case 16: {
             const name_9 = msg.fields[0];
-            return [new Model(model.Tab, buyCFU(name_9, model.S), model.Speed, model.Toast), Command_none()];
+            return [new Model(model.Tab, buyCFU(name_9, model.S), model.Speed, model.LoopGen, model.Toast), Command_none()];
         }
         case 17: {
             const name_10 = msg.fields[0];
-            return [new Model(model.Tab, buyVSU(name_10, model.S), model.Speed, model.Toast), Command_none()];
+            return [new Model(model.Tab, buyVSU(name_10, model.S), model.Speed, model.LoopGen, model.Toast), Command_none()];
         }
         case 18: {
             const name_11 = msg.fields[0];
-            return [new Model(model.Tab, toggleChallengePending(name_11, model.S), model.Speed, model.Toast), Command_none()];
+            return [new Model(model.Tab, toggleChallengePending(name_11, model.S), model.Speed, model.LoopGen, model.Toast), Command_none()];
         }
         case 19: {
             const tab = msg.fields[0];
-            return [new Model(tab, model.S, model.Speed, model.Toast), Command_none()];
+            return [new Model(tab, model.S, model.Speed, model.LoopGen, model.Toast), Command_none()];
         }
         case 20: {
             const mult = msg.fields[0];
-            return [new Model(model.Tab, model.S, mult, model.Toast), Command_ofAsync(() => singleton.Delay(() => singleton.Bind(sleep(~~(100 / mult)), () => singleton.Return(undefined))), undefined, () => Msg.Tick)];
+            return [new Model(model.Tab, model.S, mult, model.LoopGen, model.Toast), Command_none()];
         }
         case 21: {
             window.localStorage.setItem(saveKey, buildSaveString(model.S));
-            return [new Model(model.Tab, model.S, model.Speed, "Game saved"), Command_none()];
+            return [new Model(model.Tab, model.S, model.Speed, model.LoopGen, "Game saved"), Command_none()];
         }
         case 22: {
             const stored = window.localStorage.getItem(saveKey);
             if (stored === defaultOf()) {
-                return [new Model(model.Tab, model.S, model.Speed, "No saved game found"), Command_none()];
+                return [new Model(model.Tab, model.S, model.Speed, model.LoopGen, "No saved game found"), Command_none()];
             }
             else {
                 const matchValue = parseSave(stored);
                 if (matchValue == null) {
-                    return [new Model(model.Tab, model.S, model.Speed, "Load failed: unrecognizable save"), Command_none()];
+                    return [new Model(model.Tab, model.S, model.Speed, model.LoopGen, "Load failed: unrecognizable save"), Command_none()];
                 }
                 else {
                     const loaded = matchValue;
-                    return [new Model(model.Tab, applyLoaded(loaded, model.S), model.Speed, "Game loaded"), Command_batch(ofArray([Command_none(), tickCmd()]))];
+                    return [new Model(model.Tab, applyLoaded(loaded, model.S), model.Speed, model.LoopGen + 1, "Game loaded"), Command_batch(ofArray([Command_none(), tickCmd(model.Speed, model.LoopGen + 1)]))];
                 }
             }
         }
         case 23:
-            return [new Model(model.Tab, consoleClear(model.S), model.Speed, model.Toast), Command_none()];
+            return [new Model(model.Tab, consoleClear(model.S), model.Speed, model.LoopGen, model.Toast), Command_none()];
         case 24: {
             const qtype = msg.fields[1];
             const name_12 = msg.fields[0];
-            return [new Model(model.Tab, addToQueue(name_12, qtype, model.S), model.Speed, model.Toast), Command_none()];
+            return [new Model(model.Tab, addToQueue(name_12, qtype, model.S), model.Speed, model.LoopGen, model.Toast), Command_none()];
         }
         case 25: {
             const idx = msg.fields[0] | 0;
-            return [new Model(model.Tab, removeFromQueue(idx, model.S), model.Speed, model.Toast), Command_none()];
+            return [new Model(model.Tab, removeFromQueue(idx, model.S), model.Speed, model.LoopGen, model.Toast), Command_none()];
         }
         case 26: {
             const name_13 = msg.fields[0];
-            return [new Model(model.Tab, setBoolOption(name_13, !FSharpMap__get_Item(model.S.Opts.Bools, name_13), model.S), model.Speed, model.Toast), Command_none()];
+            return [new Model(model.Tab, setBoolOption(name_13, !FSharpMap__get_Item(model.S.Opts.Bools, name_13), model.S), model.Speed, model.LoopGen, model.Toast), Command_none()];
         }
         case 27: {
             const n_2 = msg.fields[0];
-            return [new Model(model.Tab, setNotation(n_2, model.S), model.Speed, model.Toast), Command_none()];
+            return [new Model(model.Tab, setNotation(n_2, model.S), model.Speed, model.LoopGen, model.Toast), Command_none()];
         }
         case 28: {
             const s$0027 = resetGame(model.S);
-            return [new Model(model.Tab, s$0027, model.Speed, "Game reset"), Command_batch(ofArray([Command_none(), tickCmd()]))];
+            return [new Model(model.Tab, s$0027, model.Speed, model.LoopGen + 1, "Game reset"), Command_batch(ofArray([Command_none(), tickCmd(model.Speed, model.LoopGen + 1)]))];
         }
         case 29:
             return [model, Command_none()];
-        default:
-            return [new Model(model.Tab, tick(model.S), model.Speed, model.Toast), Command_none()];
+        default: {
+            const gen = msg.fields[0] | 0;
+            if (gen === model.LoopGen) {
+                return [new Model(model.Tab, tick(model.S), model.Speed, model.LoopGen, model.Toast), tickCmd(model.Speed, gen)];
+            }
+            else {
+                return [model, Command_none()];
+            }
+        }
     }
 }
 

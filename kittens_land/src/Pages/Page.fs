@@ -9,10 +9,11 @@ type Model =
     { Tab: string
       S: kittens_land.KittensState.State
       Speed: float
+      LoopGen: int
       Toast: string }
 
 type Msg =
-    | Tick
+    | Tick of int
     | Gather
     | Buy of string
     | Assign of string * int
@@ -43,25 +44,29 @@ type Msg =
     | ResetGame
     | LayoutMsg of Layout.Msg
 
-let tickCmd () =
+let tickCmd (speed: float) (gen: int) =
     Command.ofAsync
-        (fun () -> async {
-            do! Async.Sleep 100
-            return ()
+        (fun g -> async {
+            do! Async.Sleep (int (100.0 / speed))
+            return g
         })
-        ()
-        (fun _ -> Tick)
+        gen
+        (fun g -> Tick g)
 
 let init () =
     { Tab = "Bonfire"
       S = kittens_land.KittensState.init ()
       Speed = 1.0
+      LoopGen = 1
       Toast = "" },
-    Command.batch [ Command.none; tickCmd () ]
+    Command.batch [ Command.none; tickCmd 1.0 1 ]
 
 let update (msg: Msg) (model: Model) =
     match msg with
-    | Tick -> { model with S = kittens_land.KittensState.tick model.S }, Command.none
+    | Tick gen ->
+        if gen = model.LoopGen then
+            { model with S = kittens_land.KittensState.tick model.S }, tickCmd model.Speed gen
+        else model, Command.none
     | Gather -> { model with S = kittens_land.KittensState.gatherCatnip model.S }, Command.none
     | Buy name -> { model with S = kittens_land.KittensState.buyBuilding name model.S }, Command.none
     | Assign (job, n) -> { model with S = kittens_land.KittensState.assignJob job n model.S }, Command.none
@@ -81,15 +86,7 @@ let update (msg: Msg) (model: Model) =
     | VSUBuy name -> { model with S = kittens_land.KittensState.buyVSU name model.S }, Command.none
     | ChallengeToggle name -> { model with S = kittens_land.KittensState.toggleChallengePending name model.S }, Command.none
     | SetTab tab -> { model with Tab = tab }, Command.none
-    | SetSpeed mult ->
-        { model with Speed = mult },
-        Command.ofAsync
-            (fun () -> async {
-                do! Async.Sleep (int (100.0 / mult))
-                return ()
-            })
-            ()
-            (fun _ -> Tick)
+    | SetSpeed mult -> { model with Speed = mult }, Command.none
     | SaveGame ->
         Browser.Dom.window.localStorage.setItem(kittens_land.KittensState.saveKey, kittens_land.KittensState.buildSaveString model.S)
         { model with Toast = "Game saved" }, Command.none
@@ -99,8 +96,8 @@ let update (msg: Msg) (model: Model) =
         else
             match kittens_land.KittensState.parseSave stored with
             | Some loaded ->
-                { model with S = kittens_land.KittensState.applyLoaded loaded model.S; Toast = "Game loaded" },
-                Command.batch [ Command.none; tickCmd () ]
+                { model with S = kittens_land.KittensState.applyLoaded loaded model.S; LoopGen = model.LoopGen + 1; Toast = "Game loaded" },
+                Command.batch [ Command.none; tickCmd model.Speed (model.LoopGen + 1) ]
             | None -> { model with Toast = "Load failed: unrecognizable save" }, Command.none
     | ClearConsole -> { model with S = kittens_land.KittensState.consoleClear model.S }, Command.none
     | QAdd (name, qtype) -> { model with S = kittens_land.KittensState.addToQueue name qtype model.S }, Command.none
@@ -109,7 +106,8 @@ let update (msg: Msg) (model: Model) =
     | SetNotation n -> { model with S = kittens_land.KittensState.setNotation n model.S }, Command.none
     | ResetGame ->
         let s' = kittens_land.KittensState.resetGame model.S
-        { model with S = s'; Toast = "Game reset" }, Command.batch [ Command.none; tickCmd () ]
+        { model with S = s'; LoopGen = model.LoopGen + 1; Toast = "Game reset" },
+        Command.batch [ Command.none; tickCmd model.Speed (model.LoopGen + 1) ]
     | LayoutMsg _ -> model, Command.none
 
 let fmt (v: float) =
