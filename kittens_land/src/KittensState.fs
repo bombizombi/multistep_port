@@ -727,19 +727,12 @@ let assignJob (jobName: string) (n: int) (s: State) : State =
     else s
 
 let unassignJob (jobName: string) (n: int) (s: State) : State =
-    // orig unassignJob: job value decrements and the last-assigned kittens go
-    // back to free (job = None), newest first
+    // orig JobButtonController.unassignJobs: clamp amt to the job counter, then
+    // sim.removeJob frees the newest-assigned kittens and decrements the counter
     let before = s.Vpool.JobValues |> Map.tryFind jobName |> Option.defaultValue 0
     let amt = min n before
     if amt <= 0 then s
-    else
-        let vpool1 = Game.Managers.assignJob jobName (-amt) (jobLimit s jobName) s.Vpool
-        let assignedKittens = vpool1.Kittens |> List.filter (fun k -> k.Job = Some jobName)
-        let releaseSet = List.rev assignedKittens |> List.truncate amt |> List.map (fun k -> k.Seed) |> Set.ofList
-        let kittens' =
-            vpool1.Kittens
-            |> List.map (fun k -> if Set.contains k.Seed releaseSet then { k with Job = None } else k)
-        { s with Vpool = { vpool1 with Kittens = kittens' } }
+    else { s with Vpool = Game.Managers.simRemoveJobs jobName amt s.Vpool }
 
 let research (name: string) (s: State) : State =
     let pool', spool', ok = Game.Managers.research s.CalendarDay name s.Pool s.Spool

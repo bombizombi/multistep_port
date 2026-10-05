@@ -388,26 +388,65 @@ let view (model: Model) (dispatch: Msg -> unit) =
             (Some(pricesTip (Game.Labels.get ("up." + u.Name + ".desc")) (Some("up." + u.Name + ".flavor")) u.Prices))
             (fun () -> dispatch (Upgrade u.Name))
 
+    // orig village tab job button (com.nuclearunicorn.game.ui.JobButton): a
+    // btn.nosel.modern titled "Woodcutter (3)" with [-]/[+] link strips on the
+    // right edge; the button body assigns 1 (ctrl = 10, like orig), links
+    // unassign/assign and stop propagation so the body handler doesn't fire
     let jobRow (j: kittens_land.KittensState.JobRow) =
         if not j.Unlocked then Html.none
         else
+            let free = Game.Managers.getFreeKittens s.Vpool
+            let limit = kittens_land.KittensState.jobLimit s j.Name
+            let canAssign = free > 0 && j.Assigned < limit
+            let descKey = "job." + j.Name + ".desc"
+            let flavorKey = "job." + j.Name + ".flavor"
+            let desc = Game.Labels.get descKey
+            let flavor = Game.Labels.get flavorKey
+            let tip =
+                if desc <> "" && desc <> descKey then
+                    Some { Desc = desc
+                           Flavor = (if flavor <> "" && flavor <> flavorKey then Some flavor else None)
+                           Prices = [] }
+                else None
+            let jobLink (title: string) (msg: Msg) =
+                Html.a [
+                    prop.key (j.Name + title)
+                    prop.href "#"
+                    prop.className (if title.Length > 4 then "small" else "")
+                    prop.style [ style.paddingLeft 2; style.float'.right; style.cursor "pointer" ]
+                    prop.onClick (fun ev ->
+                        ev.stopPropagation ()
+                        dispatch msg)
+                    prop.text title
+                ]
             Html.div [
                 prop.key j.Name
-                prop.style [ style.marginBottom 4 ]
+                prop.className (if canAssign then "btn nosel modern" else "btn nosel modern disabled")
+                prop.style [ style.position.relative; style.display.inlineBlock; style.marginRight 8; style.marginBottom 8 ]
+                prop.tabIndex 0
+                if tip.IsSome then yield! tipHandlers tip.Value
+                prop.onClick (fun ev ->
+                    if canAssign then
+                        dispatch (if ev.ctrlKey then Assign (j.Name, 10) else Assign (j.Name, 1)))
                 prop.children [
-                    Html.a [
-                        prop.className "link"
-                        prop.style [ style.paddingRight 8; style.cursor "pointer" ]
-                        prop.onClick (fun _ -> dispatch (Unassign (j.Name, 1)))
-                        prop.text "-"
+                    Html.div [
+                        prop.className "btnContent"
+                        prop.children [
+                            Html.span [
+                                prop.className "btnTitle"
+                                prop.text (j.Label + " (" + string j.Assigned + ")")
+                            ]
+                            Html.div [
+                                prop.style [ style.float'.right ]
+                                prop.children [
+                                    if j.Assigned > 0 then jobLink "[-]" (Unassign (j.Name, 1))
+                                    if j.Assigned > 0 then jobLink "[-all]" (Unassign (j.Name, j.Assigned))
+                                    jobLink "[+]" (Assign (j.Name, 1))
+                                    if free > 1 then jobLink "[+all]" (Assign (j.Name, free))
+                                ]
+                            ]
+                        ]
                     ]
-                    Html.a [
-                        prop.className "link"
-                        prop.style [ style.paddingRight 8; style.cursor "pointer" ]
-                        prop.onClick (fun _ -> dispatch (Assign (j.Name, 1)))
-                        prop.text "+"
-                    ]
-                    Html.span [ prop.text (j.Label + " (" + string j.Assigned + ")") ]
                 ]
             ]
 

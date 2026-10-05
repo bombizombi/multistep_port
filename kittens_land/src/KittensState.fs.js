@@ -3,7 +3,7 @@ import { toString, Record } from "../.elmish-land/App/fable_modules/fable-librar
 import { class_type, list_type, lambda_type, float64_type, unit_type, record_type, bool_type, option_type, string_type, int32_type } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
 import { CraftState, UpgradeState, PolicyState, ResearchState, BuildingState, ResPool, ResourceState, ResPool_$reflection } from "./Game/Game.Types.fs.js";
 import { getAllPrices, update as update_1, build, BldPool, init as init_2, providerEffect, activeEffects, get$ as get$_1, PricingContext, freshPricing, BldPool_$reflection } from "./Game/Game.Buildings.fs.js";
-import { getCraftAllCount, craftByEngineers, learnSkills, SkillContext, simUpdate, starvationStep, unlockRelations, craftAll as craftAll_1, craft as craft_1, buyUpgrade as buyUpgrade_1, getTech, research as research_1, simAssignJob, assignJob as assignJob_1, unlock, CraftRatioContext, getResCraftRatio, calculateMaxKittens, VillagePool, Kitten, kittenFromSeed, WorkshopPool, SciencePool, initVillage, initWorkshop, initScience, getFreeKittens, getResProduction, scienceGroup, workshopEffectsBase, VillagePool_$reflection, WorkshopPool_$reflection, SciencePool_$reflection } from "./Game/Game.Managers.fs.js";
+import { getCraftAllCount, craftByEngineers, learnSkills, SkillContext, simUpdate, starvationStep, unlockRelations, craftAll as craftAll_1, craft as craft_1, buyUpgrade as buyUpgrade_1, getTech, research as research_1, simRemoveJobs, simAssignJob, assignJob as assignJob_1, unlock, CraftRatioContext, getResCraftRatio, calculateMaxKittens, VillagePool, Kitten, kittenFromSeed, WorkshopPool, SciencePool, initVillage, initWorkshop, initScience, getFreeKittens, getResProduction, scienceGroup, workshopEffectsBase, VillagePool_$reflection, WorkshopPool_$reflection, SciencePool_$reflection } from "./Game/Game.Managers.fs.js";
 import { getTU, buyZU as buyZU_1, freezeSolarRevolution, buyRU as buyRU_1, praise as praise_1, ReligionMeta, ReligionPool, getRU, getZU, init as init_3, religionGroup, ReligionPool_$reflection } from "./Game/Game.Religion.fs.js";
 import { getTradeBonusEffect, ChallengePool, ChallengeState, init as init_4, challengesGroup, ChallengePool_$reflection } from "./Game/Game.Challenges.fs.js";
 import { getPerk, getBurnedParagonRatio, init as init_5, prestigeGroup, PrestigePool_$reflection } from "./Game/Game.Prestige.fs.js";
@@ -18,20 +18,20 @@ import { defaultArg } from "../.elmish-land/App/fable_modules/fable-library-js.5
 import { updateMaxValueAll, update, UpdateContext, hasRes, payPrices, addResEvent, init as init_1, getEnergyDelta, CapContext, get$ } from "./Game/Game.Resources.fs.js";
 import { toList, add as add_1, FSharpMap__get_Item, map as map_1, ofList, filter, tryFind, empty } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Map.js";
 import { equals, disposeSafe, getEnumerator, int32ToString, round, stringHash, comparePrimitives } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
-import { find, reverse, truncate, filter as filter_1, fold, tryFind as tryFind_1, updateAt, removeAt, tryLast, contains, sumBy, tail, singleton, append, head, isEmpty, item, length, map, ofArray, choose, empty as empty_1 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
+import { filter as filter_1, find, fold, tryFind as tryFind_1, updateAt, removeAt, tryLast, contains, sumBy, tail, singleton, append, head, isEmpty, item, length, map, ofArray, choose, empty as empty_1 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
 import { baseEffects, bldBase } from "./Game/Game.Catalog.BaseEffects.fs.js";
 import { calcResourcePerTick, fixFloatPointNumber, ProductionContext, freshProductionContext } from "./Game/Game.Production.fs.js";
 import { jobDefs } from "./Game/Game.Catalog.Village.fs.js";
 import { op_BitwiseAnd, toInt64_unchecked, toUInt32_unchecked } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/BigInt.js";
 import { resourceDefs } from "./Game/Game.Catalog.Resources.fs.js";
 import { craftDefs, upgradeDefs, policyDefs, techDefs, buildingDefs } from "./Game/Game.Catalog.Defs.fs.js";
-import { contains as contains_1, ofList as ofList_1, union, FSharpSet__Add, FSharpSet__Remove, ofArray as ofArray_1, toList as toList_1, FSharpSet__get_IsEmpty, add, FSharpSet__Contains, empty as empty_3 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Set.js";
+import { ofList as ofList_1, union, FSharpSet__Add, FSharpSet__Remove, ofArray as ofArray_1, toList as toList_1, FSharpSet__get_IsEmpty, add, FSharpSet__Contains, empty as empty_3 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Set.js";
 import { parse, min } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Double.js";
 import { getLimitedDR } from "./Game/Game.Math.fs.js";
 import { StringBuilder__AppendLine_Z721C83C5, StringBuilder_$ctor } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/System.Text.js";
 import { replace, split, join, printf, toText } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/String.js";
 import { item as item_1 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Array.js";
-import { op_UnaryNegation_Int32, parse as parse_1 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Int32.js";
+import { parse as parse_1 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Int32.js";
 import { buildingDefs as buildingDefs_1, programDefs } from "./Game/Game.Catalog.Space.fs.js";
 import { updateHappiness, HappinessContext, freshHappinessContext } from "./Game/Game.Happiness.fs.js";
 import { toList as toList_2 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Seq.js";
@@ -1268,20 +1268,7 @@ export function unassignJob(jobName, n, s) {
         return s;
     }
     else {
-        const vpool1 = assignJob_1(jobName, op_UnaryNegation_Int32(amt), jobLimit(s, jobName), s.Vpool);
-        const assignedKittens = filter_1((k) => equals(k.Job, jobName), vpool1.Kittens);
-        const releaseSet = ofList_1(map((k_1) => (k_1.Seed | 0), truncate(amt, reverse(assignedKittens))), {
-            Compare: (x, y) => (comparePrimitives(x, y) | 0),
-        });
-        const kittens$0027 = map((k_2) => {
-            if (contains_1(k_2.Seed, releaseSet)) {
-                return new Kitten(k_2.Name, k_2.Surname, undefined, k_2.Rank, k_2.Exp, k_2.Seed, k_2.Trait, k_2.Age, k_2.Color, k_2.Variety, k_2.Rarity, k_2.IsLeader, k_2.Skills, k_2.EngineerSpeciality);
-            }
-            else {
-                return k_2;
-            }
-        }, vpool1.Kittens);
-        return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, new VillagePool(kittens$0027, vpool1.NextKittenProgress, vpool1.MaxKittens, vpool1.JobValues, vpool1.JobUnlocked, vpool1.Happiness, vpool1.DeathTimeout, vpool1.LeaderSeed, vpool1.Traits), s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.TabsUnlocked);
+        return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, simRemoveJobs(jobName, amt, s.Vpool), s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.TabsUnlocked);
     }
 }
 

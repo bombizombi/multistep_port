@@ -62,6 +62,14 @@ add("bld.gatherCatnip.desc", j["buildings.gatherCatnip.desc"] || "");
 add("bld.refineCatnip", j["buildings.refineCatnip.label"] || "Refine catnip");
 add("bld.refineCatnip.desc", j["buildings.refineCatnip.desc"] || "");
 
+// job tooltips (desc/flavor); woodcutter's flavor lives at village.woodcutter.*
+for (const job of ["woodcutter","farmer","fisher","hunter","miner","scholar","priest","geologist","engineer","ambassador"]) {
+  for (const suffix of ["desc", "flavor"]) {
+    const v = j[`village.job.${job}.${suffix}`] || j[`village.${job}.${suffix}`];
+    if (v) add(`job.${job}.${suffix}`, v);
+  }
+}
+
 const esc = (s) => String(s).split("\\").join("\\\\").split('"').join("\\\"");
 let out = [
   "// GENERATED from orig res/i18n/en.json by the V2 view slice — display labels",

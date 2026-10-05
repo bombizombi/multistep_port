@@ -2,7 +2,7 @@
 import { Record } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Types.js";
 import { option_type, lambda_type, float64_type, int32_type, bool_type, record_type, class_type, list_type, string_type } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
 import { BuildingState, Price, UpgradeState, UpgradeDef, CraftState, mkUpgrade, CraftState_$reflection, UpgradeState_$reflection, PolicyState, mkPolicy, ResearchState, mkResearch, PolicyState_$reflection, ResearchState_$reflection } from "./Game.Types.fs.js";
-import { updateAt, tail, head, isEmpty, indexed, sortWith, forAll, skip, take, singleton, append, contains, length, item, filter, reverse, cons, find, tryFind as tryFind_1, fold, exists, empty as empty_1, sumBy, choose, ofArray, map } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
+import { updateAt, tail, head, isEmpty, sortWith, forAll, skip, take, truncate, indexed, singleton, append, contains, length, item, filter, reverse, cons, find, tryFind as tryFind_1, fold, exists, empty as empty_1, sumBy, choose, ofArray, map } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
 import { change, toList, FSharpMap__get_IsEmpty, FSharpMap__get_Item, tryFind, map as map_1, empty, add, ofList } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Map.js";
 import { stringHash, disposeSafe, getEnumerator, equals, comparePrimitives } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
 import { max, min } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Double.js";
@@ -1220,6 +1220,45 @@ export function simUpdate(maxKittens, kittensPerTick, times, rand, pool) {
         }
     }
     return [new VillagePool(pool_1.Kittens, pool_1.NextKittenProgress, pool_1.MaxKittens, pool_1.JobValues, pool_1.JobUnlocked, pool_1.Happiness, pool_1.DeathTimeout, pool_1.LeaderSeed, pool_1.Traits), born];
+}
+
+/**
+ * orig sim.removeJob (js/village.js L3520): free the amt most-recently-assigned
+ * kittens of a job (reversed collect + shift), decrementing the job counter per
+ * freed kitten (village.unassignJob). The register-perk optimize sort is out of
+ * scope (not researched at this slice).
+ */
+export function simRemoveJobs(job, amt, vpool) {
+    let vpool_1 = vpool;
+    let assignedIds;
+    const list_4 = reverse(map((tuple) => (tuple[0] | 0), filter((tupledArg) => {
+        const k = tupledArg[1];
+        return equals(k.Job, job);
+    }, indexed(vpool_1.Kittens))));
+    assignedIds = truncate(max(1, amt), list_4);
+    const enumerator = getEnumerator(assignedIds);
+    try {
+        while (enumerator["System.Collections.IEnumerator.MoveNext"]()) {
+            const id = enumerator["System.Collections.Generic.IEnumerator`1.get_Current"]() | 0;
+            const seed = item(id, vpool_1.Kittens).Seed | 0;
+            vpool_1 = (new VillagePool(map((kk) => {
+                if (kk.Seed === seed) {
+                    return new Kitten(kk.Name, kk.Surname, undefined, kk.Rank, kk.Exp, kk.Seed, kk.Trait, kk.Age, kk.Color, kk.Variety, kk.Rarity, kk.IsLeader, kk.Skills, kk.EngineerSpeciality);
+                }
+                else {
+                    return kk;
+                }
+            }, vpool_1.Kittens), vpool_1.NextKittenProgress, vpool_1.MaxKittens, vpool_1.JobValues, vpool_1.JobUnlocked, vpool_1.Happiness, vpool_1.DeathTimeout, vpool_1.LeaderSeed, vpool_1.Traits));
+        }
+    }
+    finally {
+        disposeSafe(enumerator);
+    }
+    const current = defaultArg(tryFind(job, vpool_1.JobValues), 0) | 0;
+    let JobValues;
+    const table_1 = vpool_1.JobValues;
+    JobValues = add(job, max(0, current - length(assignedIds)), table_1);
+    return new VillagePool(vpool_1.Kittens, vpool_1.NextKittenProgress, vpool_1.MaxKittens, JobValues, vpool_1.JobUnlocked, vpool_1.Happiness, vpool_1.DeathTimeout, vpool_1.LeaderSeed, vpool_1.Traits);
 }
 
 /**

@@ -848,6 +848,18 @@ let labels : Map<string, string> =
     ("bld.gatherCatnip.desc", "Gather some catnip in the forest");
     ("bld.refineCatnip", "Refine catnip");
     ("bld.refineCatnip.desc", "Refine catnip into catnip wood");
+    ("job.woodcutter.desc", "+0.09 wood per second");
+    ("job.woodcutter.flavor", "Must. Not. Scratch.");
+    ("job.farmer.desc", "+5 catnip per second");
+    ("job.hunter.desc", "+0.3 catpower per second");
+    ("job.hunter.flavor", "We're so cute we purr at our prey until it dies");
+    ("job.miner.desc", "+0.25 mineral per second");
+    ("job.miner.flavor", "I don't really understand how can I hold a pick with my paws");
+    ("job.scholar.desc", "+0.175 science per second");
+    ("job.priest.desc", "+0.0075 faith per second");
+    ("job.geologist.desc", "+{0} coal per second (may be upgraded)");
+    ("job.engineer.desc", "Engineers can automate resource crafting (once per 10 minute). Every factory unlocks one engineer slot");
+    ("job.ambassador.desc", "Improves various aspects of trade with other races.  Consumes some resources to do so.");
   ]
 
 let get (key: string) : string = labels |> Map.tryFind key |> Option.defaultValue key

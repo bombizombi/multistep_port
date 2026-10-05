@@ -1,23 +1,24 @@
 
 import { Union, Record } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Types.js";
 import { union_type, int32_type, record_type, list_type, tuple_type, bool_type, float64_type, option_type, string_type } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
-import { calendarText, tabVisible, buildingRows, challengeRows, timeRows, spaceRows, religionRows, raceRows, upgradeRows, techRows, jobRows, queueLength, queueCap as queueCap_1, kittenSummary, craftRows, resRows, getRes, tick, resetGame, setNotation, setBoolOption, removeFromQueue, addToQueue, consoleClear, applyLoaded, parseSave, buildSaveString, saveKey, setShowHiddenRes, toggleResHidden, toggleChallengePending, buyVSU, buyCFU, buySpaceBuilding, buyProgram, buyEmbassy, trade, buyZU, buyRU, praise, craftAll, craft, buyUpgrade, research, unassignJob, assignJob, buyBuilding, refineCatnip, gatherCatnip, init as init_1, State_$reflection } from "../KittensState.fs.js";
+import { calendarText, tabVisible, buildingRows, challengeRows, timeRows, spaceRows, religionRows, raceRows, upgradeRows, techRows, jobRows, jobLimit, queueLength, queueCap as queueCap_1, kittenSummary, craftRows, resRows, getRes, tick, resetGame, setNotation, setBoolOption, removeFromQueue, addToQueue, consoleClear, applyLoaded, parseSave, buildSaveString, saveKey, setShowHiddenRes, toggleResHidden, toggleChallengePending, buyVSU, buyCFU, buySpaceBuilding, buyProgram, buyEmbassy, trade, buyZU, buyRU, praise, craftAll, craft, buyUpgrade, research, unassignJob, assignJob, buyBuilding, refineCatnip, gatherCatnip, init as init_1, State_$reflection } from "../KittensState.fs.js";
 import { Msg_$reflection as Msg_$reflection_1 } from "./Layout.fs.js";
 import { Command_none, Command_batch, Command_ofAsync } from "../../.elmish-land/Base/Command.fs.js";
 import { singleton } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/AsyncBuilder.js";
 import { sleep } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Async.js";
-import { mapIndexed, indexed, length, contains, filter, empty as empty_1, collect, singleton as singleton_2, map, ofArray } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
+import { mapIndexed, indexed, length, contains, filter, collect, empty as empty_1, singleton as singleton_2, map, ofArray } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
 import { stringHash, int32ToString, defaultOf } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
 import { FSharpMap__get_Item } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Map.js";
 import { join, printf, toText } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/String.js";
 import { get$ } from "../Game.Labels.fs.js";
-import { defaultArg, value as value_582 } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Option.js";
+import { defaultArg, value as value_593 } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Option.js";
 import { HtmlHelper_createElement } from "../../.elmish-land/App/fable_modules/Feliz.3.3.3/./Html.fs.js";
 import { map as map_1, collect as collect_1, empty, singleton as singleton_1, append, delay, toList } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Seq.js";
 import { defaultOf as defaultOf_1 } from "../../.elmish-land/App/fable_modules/Feliz.3.3.3/../../../../src/Pages/../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
 import { get$ as get$_1 } from "../Game/Game.Buildings.fs.js";
 import { hasRes } from "../Game/Game.Resources.fs.js";
 import { max } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Double.js";
+import { getFreeKittens } from "../Game/Game.Managers.fs.js";
 import { settingsArr } from "../Game/Game.Settings.fs.js";
 import { Page_from } from "../../.elmish-land/Base/Page.fs.js";
 
@@ -258,7 +259,7 @@ export function fmt(v) {
 }
 
 export function view(model, dispatch) {
-    let option_5, value_502;
+    let option_5, value_513;
     const s = model.S;
     const cal = s.Calendar;
     const fmtSigned = (v) => (((v > 0) ? "+" : "") + fmt(v));
@@ -276,7 +277,7 @@ export function view(model, dispatch) {
     }]]);
     const pricesTip = (desc, flavorKey, prices) => {
         let option_3, option_1, f;
-        return new TipData(desc, (option_3 = ((option_1 = flavorKey, (option_1 != null) ? get$(option_1) : undefined)), (option_3 != null) ? (((f = option_3, (f !== "") && (f !== value_582(flavorKey)))) ? option_3 : undefined) : undefined), map((p) => [get$("res." + p.Resource), p.Val, getRes(s.Pool, p.Resource) >= p.Val], prices));
+        return new TipData(desc, (option_3 = ((option_1 = flavorKey, (option_1 != null) ? get$(option_1) : undefined)), (option_3 != null) ? (((f = option_3, (f !== "") && (f !== value_593(flavorKey)))) ? option_3 : undefined) : undefined), map((p) => [get$("res." + p.Resource), p.Val, getRes(s.Pool, p.Resource) >= p.Val], prices));
     };
     const bldTip = (name, prices_1) => pricesTip(get$(("bld." + name) + ".desc"), ("bld." + name) + ".flavor", prices_1);
     const modernBtn = (key_3, label, amtText, enabled, tip_1, onClick) => HtmlHelper_createElement("div", toList(delay(() => append(singleton_1(["key", key_3]), delay(() => append(singleton_1(["className", enabled ? "btn nosel modern" : "btn nosel modern disabled"]), delay(() => append(singleton_1(["style", {
@@ -284,7 +285,7 @@ export function view(model, dispatch) {
         display: "inline-block",
         marginRight: 8,
         marginBottom: 8,
-    }]), delay(() => append(singleton_1(["tabIndex", 0]), delay(() => append((tip_1 != null) ? tipHandlers(value_582(tip_1)) : empty(), delay(() => append(singleton_1(["onClick", (_arg_1) => {
+    }]), delay(() => append(singleton_1(["tabIndex", 0]), delay(() => append((tip_1 != null) ? tipHandlers(value_593(tip_1)) : empty(), delay(() => append(singleton_1(["onClick", (_arg_1) => {
         if (enabled) {
             onClick();
         }
@@ -364,19 +365,34 @@ export function view(model, dispatch) {
             return defaultOf_1();
         }
         else {
-            return HtmlHelper_createElement("div", ofArray([["key", j.Name], ["style", {
-                marginBottom: 4,
-            }], ["children", [HtmlHelper_createElement("a", ofArray([["className", "link"], ["style", {
-                paddingRight: 8,
+            const free = getFreeKittens(s.Vpool) | 0;
+            const limit = jobLimit(s, j.Name) | 0;
+            const canAssign = (free > 0) && (j.Assigned < limit);
+            const descKey = ("job." + j.Name) + ".desc";
+            const flavorKey_1 = ("job." + j.Name) + ".flavor";
+            const desc_1 = get$(descKey);
+            const flavor = get$(flavorKey_1);
+            const tip_2 = ((desc_1 !== "") && (desc_1 !== descKey)) ? (new TipData(desc_1, ((flavor !== "") && (flavor !== flavorKey_1)) ? flavor : undefined, empty_1())) : undefined;
+            const jobLink = (title, msg) => HtmlHelper_createElement("a", ofArray([["key", j.Name + title], ["href", "#"], ["className", (title.length > 4) ? "small" : ""], ["style", {
+                paddingLeft: 2,
+                float: "right",
                 cursor: "pointer",
-            }], ["onClick", (_arg_7) => {
-                dispatch(new Msg(/* Unassign */ 5, [j.Name, 1]));
-            }], ["children", singleton_2("-")]])), HtmlHelper_createElement("a", ofArray([["className", "link"], ["style", {
-                paddingRight: 8,
-                cursor: "pointer",
-            }], ["onClick", (_arg_8) => {
-                dispatch(new Msg(/* Assign */ 4, [j.Name, 1]));
-            }], ["children", singleton_2("+")]])), HtmlHelper_createElement("span", singleton_2(["children", singleton_2(((j.Label + " (") + int32ToString(j.Assigned)) + ")")]))]]]));
+            }], ["onClick", (ev_3) => {
+                ev_3.stopPropagation();
+                dispatch(msg);
+            }], ["children", singleton_2(title)]]));
+            return HtmlHelper_createElement("div", toList(delay(() => append(singleton_1(["key", j.Name]), delay(() => append(singleton_1(["className", canAssign ? "btn nosel modern" : "btn nosel modern disabled"]), delay(() => append(singleton_1(["style", {
+                position: "relative",
+                display: "inline-block",
+                marginRight: 8,
+                marginBottom: 8,
+            }]), delay(() => append(singleton_1(["tabIndex", 0]), delay(() => append((tip_2 != null) ? tipHandlers(value_593(tip_2)) : empty(), delay(() => append(singleton_1(["onClick", (ev_4) => {
+                if (canAssign) {
+                    dispatch(ev_4.ctrlKey ? (new Msg(/* Assign */ 4, [j.Name, 10])) : (new Msg(/* Assign */ 4, [j.Name, 1])));
+                }
+            }]), delay(() => singleton_1(["children", [HtmlHelper_createElement("div", ofArray([["className", "btnContent"], ["children", [HtmlHelper_createElement("span", ofArray([["className", "btnTitle"], ["children", singleton_2(((j.Label + " (") + int32ToString(j.Assigned)) + ")")]])), HtmlHelper_createElement("div", ofArray([["style", {
+                float: "right",
+            }], ["children", toList(delay(() => append((j.Assigned > 0) ? singleton_1(jobLink("[-]", new Msg(/* Unassign */ 5, [j.Name, 1]))) : empty(), delay(() => append((j.Assigned > 0) ? singleton_1(jobLink("[-all]", new Msg(/* Unassign */ 5, [j.Name, j.Assigned]))) : empty(), delay(() => append(singleton_1(jobLink("[+]", new Msg(/* Assign */ 4, [j.Name, 1]))), delay(() => ((free > 1) ? singleton_1(jobLink("[+all]", new Msg(/* Assign */ 4, [j.Name, free]))) : empty())))))))))]]))]]]))]]))))))))))))))));
         }
     };
     let tabContent;
@@ -441,7 +457,7 @@ export function view(model, dispatch) {
         const i = matchValue_1[0] | 0;
         return append(singleton_1(HtmlHelper_createElement("a", ofArray([["key", t_1], ["className", (t_1 === activeTab) ? (("tab " + t_1) + " activeTab") : ("tab " + t_1)], ["href", "#"], ["style", {
             whiteSpace: "nowrap",
-        }], ["onClick", (_arg_9) => {
+        }], ["onClick", (_arg_7) => {
             dispatch(new Msg(/* SetTab */ 20, [t_1]));
         }], ["children", singleton_2(get$("tab." + t_1))]]))), delay(() => ((i < (length(visibleTabs) - 1)) ? singleton_1(HtmlHelper_createElement("span", ofArray([["key", "sep" + t_1], ["children", singleton_2(" | ")]]))) : empty())));
     }, indexed(visibleTabs))))]])), HtmlHelper_createElement("div", ofArray([["className", "tabInner " + activeTab], ["children", tabContent]]))]]]));
@@ -454,16 +470,16 @@ export function view(model, dispatch) {
     }], ["children", [HtmlHelper_createElement("a", ofArray([["className", "link"], ["style", {
         paddingRight: 8,
         cursor: "pointer",
-    }], ["onClick", (_arg_10) => {
+    }], ["onClick", (_arg_8) => {
         dispatch(new Msg(/* QRemove */ 32, [i_1]));
     }], ["children", singleton_2("[x]")]])), HtmlHelper_createElement("span", singleton_2(["children", singleton_2((((q.QName + " (") + q.QType) + ") x") + int32ToString(q.QValue))]))]]])), s.QueueItems);
     const rightColumn = HtmlHelper_createElement("div", ofArray([["id", "rightColumn"], ["className", "column"], ["style", {
         paddingLeft: 15,
         paddingRight: 15,
         width: 300,
-    }], ["children", toList(delay(() => append(singleton_1(HtmlHelper_createElement("div", singleton_2(["children", [HtmlHelper_createElement("span", singleton_2(["id", "calendarSign"])), HtmlHelper_createElement("span", ofArray([["id", "calendarDiv"], ["children", singleton_2(calendarText(s))]]))]]))), delay(() => append(singleton_1(HtmlHelper_createElement("div", ofArray([["className", "right-tab-header"], ["children", toList(delay(() => append(singleton_1(HtmlHelper_createElement("a", ofArray([["id", "logLink"], ["className", (model.RightTab === "Log") ? "active" : ""], ["href", "#"], ["onClick", (_arg_11) => {
+    }], ["children", toList(delay(() => append(singleton_1(HtmlHelper_createElement("div", singleton_2(["children", [HtmlHelper_createElement("span", singleton_2(["id", "calendarSign"])), HtmlHelper_createElement("span", ofArray([["id", "calendarDiv"], ["children", singleton_2(calendarText(s))]]))]]))), delay(() => append(singleton_1(HtmlHelper_createElement("div", ofArray([["className", "right-tab-header"], ["children", toList(delay(() => append(singleton_1(HtmlHelper_createElement("a", ofArray([["id", "logLink"], ["className", (model.RightTab === "Log") ? "active" : ""], ["href", "#"], ["onClick", (_arg_9) => {
         dispatch(new Msg(/* SetRightTab */ 21, ["Log"]));
-    }], ["children", singleton_2("Log")]]))), delay(() => (tabVisible(s, "Queue") ? singleton_1(HtmlHelper_createElement("a", ofArray([["id", "queueLink"], ["className", "queueLink" + ((model.RightTab === "Queue") ? " active" : "")], ["href", "#"], ["onClick", (_arg_12) => {
+    }], ["children", singleton_2("Log")]]))), delay(() => (tabVisible(s, "Queue") ? singleton_1(HtmlHelper_createElement("a", ofArray([["id", "queueLink"], ["className", "queueLink" + ((model.RightTab === "Queue") ? " active" : "")], ["href", "#"], ["onClick", (_arg_10) => {
         dispatch(new Msg(/* SetRightTab */ 21, ["Queue"]));
     }], ["children", singleton_2("Queue")]]))) : empty())))))]]))), delay(() => ((model.RightTab === "Queue") ? singleton_1(HtmlHelper_createElement("div", ofArray([["className", "right-tab"], ["id", "rightTabQueue"], ["children", toList(delay(() => append(singleton_1(HtmlHelper_createElement("div", ofArray([["style", {
         marginBottom: 6,
@@ -474,7 +490,7 @@ export function view(model, dispatch) {
         borderTop: (((1 + "px ") + "solid") + " ") + "gray",
     }], ["children", singleton_2(get$("console.intro"))]])), HtmlHelper_createElement("span", ofArray([["id", "clearLog"], ["style", {
         paddingTop: 5,
-    }], ["children", [HtmlHelper_createElement("a", ofArray([["id", "clearLogHref"], ["href", "#"], ["onClick", (_arg_13) => {
+    }], ["children", [HtmlHelper_createElement("a", ofArray([["id", "clearLogHref"], ["href", "#"], ["onClick", (_arg_11) => {
         dispatch(Msg.ClearConsole);
     }], ["children", singleton_2("Clear log")]]))]]]))]])), HtmlHelper_createElement("div", ofArray([["id", "gameLog"], ["style", {
         overflowY: "auto",
@@ -486,18 +502,18 @@ export function view(model, dispatch) {
     if (matchValue_2 != null) {
         const y_1 = matchValue_2[1];
         const x_1 = matchValue_2[0];
-        const tip_2 = matchValue_2[2];
+        const tip_3 = matchValue_2[2];
         tooltip = HtmlHelper_createElement("div", ofArray([["id", "tooltip"], ["className", "button_tooltip"], ["style", {
             top: y_1 + "px",
             left: x_1 + "px",
-        }], ["children", toList(delay(() => append(((tip_2.Desc !== "") && (tip_2.Desc !== "-")) ? singleton_1(HtmlHelper_createElement("div", toList(delay(() => append(singleton_1(["className", "desc"]), delay(() => append((length(tip_2.Prices) > 0) ? singleton_1(["style", {
+        }], ["children", toList(delay(() => append(((tip_3.Desc !== "") && (tip_3.Desc !== "-")) ? singleton_1(HtmlHelper_createElement("div", toList(delay(() => append(singleton_1(["className", "desc"]), delay(() => append((length(tip_3.Prices) > 0) ? singleton_1(["style", {
             borderBottom: (((1 + "px ") + "solid") + " ") + "gray",
             paddingBottom: 8,
         }]) : empty(), delay(() => singleton_1(["dangerouslySetInnerHTML", {
-            __html: tip_2.Desc,
+            __html: tip_3.Desc,
         }]))))))))) : empty(), delay(() => append(collect_1((matchValue_3) => {
             const v_2 = matchValue_3[1][1];
-            const title = matchValue_3[1][0];
+            const title_1 = matchValue_3[1][0];
             const ok = matchValue_3[1][2];
             const i_2 = matchValue_3[0] | 0;
             return singleton_1(HtmlHelper_createElement("div", ofArray([["key", "price" + int32ToString(i_2)], ["className", "price-block"], ["style", {
@@ -506,21 +522,21 @@ export function view(model, dispatch) {
             }], ["children", [HtmlHelper_createElement("span", ofArray([["style", {
                 float: "left",
                 paddingRight: 10,
-            }], ["children", singleton_2(title)]])), HtmlHelper_createElement("span", ofArray([["className", ok ? "" : "noRes"], ["style", {
+            }], ["children", singleton_2(title_1)]])), HtmlHelper_createElement("span", ofArray([["className", ok ? "" : "noRes"], ["style", {
                 float: "right",
             }], ["children", singleton_2(fmt(v_2))]]))]]])));
-        }, indexed(tip_2.Prices)), delay(() => {
-            const matchValue_4 = tip_2.Flavor;
+        }, indexed(tip_3.Prices)), delay(() => {
+            const matchValue_4 = tip_3.Flavor;
             if (matchValue_4 == null) {
                 return empty();
             }
             else {
-                const flavor = matchValue_4;
+                const flavor_1 = matchValue_4;
                 return singleton_1(HtmlHelper_createElement("div", ofArray([["className", "flavor"], ["style", {
                     paddingTop: 20,
                     fontSize: 12 + "px",
                     fontStyle: "italic",
-                }], ["children", singleton_2(flavor)]])));
+                }], ["children", singleton_2(flavor_1)]])));
             }
         }))))))]]));
     }
@@ -533,12 +549,12 @@ export function view(model, dispatch) {
         position: "absolute",
         top: 10,
         right: 15,
-    }], ["onClick", (_arg_14) => {
+    }], ["onClick", (_arg_12) => {
         dispatch(Msg.ToggleOptions);
     }], ["children", singleton_2("close")]])), HtmlHelper_createElement("div", ofArray([["style", {
         marginBottom: 10,
-    }], ["children", [HtmlHelper_createElement("label", ofArray([["htmlFor", "notationSelector"], ["children", singleton_2("Notation:")]])), HtmlHelper_createElement("br", empty_1()), HtmlHelper_createElement("select", ofArray([["id", "notationSelector"], ["value", s.Opts.Notation], ["onChange", (ev_3) => {
-        dispatch(new Msg(/* SetNotation */ 34, [ev_3.target.value]));
+    }], ["children", [HtmlHelper_createElement("label", ofArray([["htmlFor", "notationSelector"], ["children", singleton_2("Notation:")]])), HtmlHelper_createElement("br", empty_1()), HtmlHelper_createElement("select", ofArray([["id", "notationSelector"], ["value", s.Opts.Notation], ["onChange", (ev_5) => {
+        dispatch(new Msg(/* SetNotation */ 34, [ev_5.target.value]));
     }], ["children", toList(delay(() => map_1((n) => HtmlHelper_createElement("option", ofArray([["key", n], ["value", n], ["children", singleton_2(n)]])), ["si", "e", "sie"])))]]))]]])), HtmlHelper_createElement("div", ofArray([["style", {
         marginBottom: 10,
     }], ["children", toList(delay(() => {
@@ -547,29 +563,29 @@ export function view(model, dispatch) {
         return map_1((mult) => HtmlHelper_createElement("button", ofArray([["key", mult.toString()], ["style", {
             marginRight: 6,
             cursor: "pointer",
-        }], ["onClick", (_arg_15) => {
+        }], ["onClick", (_arg_13) => {
             dispatch(new Msg(/* SetSpeed */ 22, [mult]));
         }], ["children", singleton_2(mult.toString() + "x")]])), [1, 3, 10]);
     }))]])), HtmlHelper_createElement("div", ofArray([["style", {
         marginBottom: 10,
     }], ["children", toList(delay(() => map_1((o) => HtmlHelper_createElement("div", ofArray([["key", o.Name], ["style", {
         marginBottom: 2,
-    }], ["children", [HtmlHelper_createElement("input", ofArray([["type", "checkbox"], ["checked", FSharpMap__get_Item(s.Opts.Bools, o.Name)], ["onChange", (ev_4) => {
-        ev_4.target.checked;
+    }], ["children", [HtmlHelper_createElement("input", ofArray([["type", "checkbox"], ["checked", FSharpMap__get_Item(s.Opts.Bools, o.Name)], ["onChange", (ev_6) => {
+        ev_6.target.checked;
         dispatch(new Msg(/* ToggleOption */ 33, [o.Name]));
     }]])), HtmlHelper_createElement("label", ofArray([["style", {
         marginLeft: 6,
-    }], ["children", singleton_2(o.Name)]]))]]])), settingsArr)))]])), HtmlHelper_createElement("div", singleton_2(["children", [HtmlHelper_createElement("input", ofArray([["type", "button"], ["value", "Save"], ["onClick", (_arg_17) => {
+    }], ["children", singleton_2(o.Name)]]))]]])), settingsArr)))]])), HtmlHelper_createElement("div", singleton_2(["children", [HtmlHelper_createElement("input", ofArray([["type", "button"], ["value", "Save"], ["onClick", (_arg_15) => {
         dispatch(Msg.SaveGame);
     }]])), HtmlHelper_createElement("input", ofArray([["type", "button"], ["value", "Load"], ["style", {
         marginLeft: 8,
-    }], ["onClick", (_arg_18) => {
+    }], ["onClick", (_arg_16) => {
         dispatch(Msg.LoadGame);
     }]]))]])), HtmlHelper_createElement("div", ofArray([["style", {
         fontSize: 12 + "px",
         marginTop: 8,
         color: "#666",
-    }], (value_502 = "Save stores to this browser\'s localStorage under its own key - the original game\'s saves are untouched.", ["children", singleton_2(value_502)])]))]]]));
+    }], (value_513 = "Save stores to this browser\'s localStorage under its own key - the original game\'s saves are untouched.", ["children", singleton_2(value_513)])]))]]]));
     const topBar = HtmlHelper_createElement("div", ofArray([["id", "topBar"], ["children", [HtmlHelper_createElement("div", ofArray([["style", {
         paddingLeft: 10,
         minWidth: 0,
@@ -580,11 +596,11 @@ export function view(model, dispatch) {
         paddingTop: 3,
         display: "inline-flex",
         paddingRight: 10,
-    }], ["children", [HtmlHelper_createElement("a", ofArray([["id", "save-link"], ["href", "#"], ["onClick", (_arg_19) => {
+    }], ["children", [HtmlHelper_createElement("a", ofArray([["id", "save-link"], ["href", "#"], ["onClick", (_arg_17) => {
         dispatch(Msg.SaveGame);
-    }], ["children", singleton_2("Save")]])), HtmlHelper_createElement("span", singleton_2(["children", singleton_2(" | ")])), HtmlHelper_createElement("a", ofArray([["id", "options-link"], ["href", "#"], ["onClick", (_arg_20) => {
+    }], ["children", singleton_2("Save")]])), HtmlHelper_createElement("span", singleton_2(["children", singleton_2(" | ")])), HtmlHelper_createElement("a", ofArray([["id", "options-link"], ["href", "#"], ["onClick", (_arg_18) => {
         dispatch(Msg.ToggleOptions);
-    }], ["children", singleton_2("Options")]])), HtmlHelper_createElement("span", singleton_2(["children", singleton_2(" | ")])), HtmlHelper_createElement("a", ofArray([["id", "reset-link"], ["href", "#"], ["onClick", (_arg_21) => {
+    }], ["children", singleton_2("Options")]])), HtmlHelper_createElement("span", singleton_2(["children", singleton_2(" | ")])), HtmlHelper_createElement("a", ofArray([["id", "reset-link"], ["href", "#"], ["onClick", (_arg_19) => {
         if (window.confirm("Are you sure you want to reset the game? All your progress will be lost.")) {
             dispatch(Msg.ResetGame);
         }

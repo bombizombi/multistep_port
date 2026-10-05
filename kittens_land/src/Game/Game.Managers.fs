@@ -742,6 +742,29 @@ let simUpdate (maxKittens: int) (kittensPerTick: float) (times: int) (rand: unit
     // maxKittens <= 10 && times == 1)
     { pool with Kittens = pool.Kittens }, born
 
+/// orig sim.removeJob (js/village.js L3520): free the amt most-recently-assigned
+/// kittens of a job (reversed collect + shift), decrementing the job counter per
+/// freed kitten (village.unassignJob). The register-perk optimize sort is out of
+/// scope (not researched at this slice).
+let simRemoveJobs (job: string) (amt: int) (vpool: VillagePool) : VillagePool =
+    let mutable vpool = vpool
+    let assignedIds =
+        vpool.Kittens
+        |> List.indexed
+        |> List.filter (fun (_, k) -> k.Job = Some job)
+        |> List.map fst
+        |> List.rev
+        |> List.truncate (max 1 amt)
+    for id in assignedIds do
+        let seed = vpool.Kittens.[id].Seed
+        vpool <-
+            { vpool with
+                Kittens =
+                    vpool.Kittens
+                    |> List.map (fun kk -> if kk.Seed = seed then { kk with Job = None } else kk) }
+    let current = vpool.JobValues |> Map.tryFind job |> Option.defaultValue 0
+    { vpool with JobValues = vpool.JobValues |> Map.add job (max 0 (current - List.length assignedIds)) }
+
 /// orig village.assignJob (manager level): amt capped by free kittens and the
 /// job limit (manager default 100000 here); the counter bumps by the capped amt
 /// — which can still over-count vs actual sim assignments (OBS-2 orig quirk).
