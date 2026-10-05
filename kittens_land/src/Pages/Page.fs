@@ -5,22 +5,31 @@ open ElmishLand
 open kittens_land.Shared
 open kittens_land.KittensState
 
+type TipData =
+    { Desc: string
+      Flavor: string option
+      Prices: (string * float * bool) list }
+
 type Model =
     { Tab: string
       S: kittens_land.KittensState.State
       Speed: float
       LoopGen: int
-      Toast: string }
+      Toast: string
+      Tooltip: (float * float * TipData) option
+      OptionsOpen: bool
+      RightTab: string }
 
 type Msg =
     | Tick of int
     | Gather
+    | Refine
     | Buy of string
     | Assign of string * int
     | Unassign of string * int
     | Research of string
     | Upgrade of string
-    | CraftOne of string
+    | Craft of string * float
     | CraftAll of string
     | Praise
     | BuyRU of string
@@ -33,7 +42,10 @@ type Msg =
     | VSUBuy of string
     | ChallengeToggle of string
     | SetTab of string
+    | SetRightTab of string
     | SetSpeed of float
+    | SetTip of (float * float * TipData) option
+    | ToggleOptions
     | SaveGame
     | LoadGame
     | ClearConsole
@@ -58,7 +70,10 @@ let init () =
       S = kittens_land.KittensState.init ()
       Speed = 1.0
       LoopGen = 1
-      Toast = "" },
+      Toast = ""
+      Tooltip = None
+      OptionsOpen = false
+      RightTab = "Log" },
     Command.batch [ Command.none; tickCmd 1.0 1 ]
 
 let update (msg: Msg) (model: Model) =
@@ -68,12 +83,13 @@ let update (msg: Msg) (model: Model) =
             { model with S = kittens_land.KittensState.tick model.S }, tickCmd model.Speed gen
         else model, Command.none
     | Gather -> { model with S = kittens_land.KittensState.gatherCatnip model.S }, Command.none
+    | Refine -> { model with S = kittens_land.KittensState.refineCatnip model.S }, Command.none
     | Buy name -> { model with S = kittens_land.KittensState.buyBuilding name model.S }, Command.none
     | Assign (job, n) -> { model with S = kittens_land.KittensState.assignJob job n model.S }, Command.none
     | Unassign (job, n) -> { model with S = kittens_land.KittensState.unassignJob job n model.S }, Command.none
     | Research name -> { model with S = kittens_land.KittensState.research name model.S }, Command.none
     | Upgrade name -> { model with S = kittens_land.KittensState.buyUpgrade name model.S }, Command.none
-    | CraftOne name -> { model with S = kittens_land.KittensState.craft name 1.0 model.S }, Command.none
+    | Craft (name, amt) -> { model with S = kittens_land.KittensState.craft name amt model.S }, Command.none
     | CraftAll name -> { model with S = kittens_land.KittensState.craftAll name model.S }, Command.none
     | Praise -> { model with S = kittens_land.KittensState.praise model.S }, Command.none
     | BuyRU name -> { model with S = kittens_land.KittensState.buyRU name model.S }, Command.none
@@ -86,7 +102,10 @@ let update (msg: Msg) (model: Model) =
     | VSUBuy name -> { model with S = kittens_land.KittensState.buyVSU name model.S }, Command.none
     | ChallengeToggle name -> { model with S = kittens_land.KittensState.toggleChallengePending name model.S }, Command.none
     | SetTab tab -> { model with Tab = tab }, Command.none
+    | SetRightTab tab -> { model with RightTab = tab }, Command.none
     | SetSpeed mult -> { model with Speed = mult }, Command.none
+    | SetTip tip -> { model with Tooltip = tip }, Command.none
+    | ToggleOptions -> { model with OptionsOpen = not model.OptionsOpen }, Command.none
     | SaveGame ->
         Browser.Dom.window.localStorage.setItem(kittens_land.KittensState.saveKey, kittens_land.KittensState.buildSaveString model.S)
         { model with Toast = "Game saved" }, Command.none
@@ -106,7 +125,11 @@ let update (msg: Msg) (model: Model) =
     | SetNotation n -> { model with S = kittens_land.KittensState.setNotation n model.S }, Command.none
     | ResetGame ->
         let s' = kittens_land.KittensState.resetGame model.S
-        { model with S = s'; LoopGen = model.LoopGen + 1; Toast = "Game reset" },
+        { model with
+            S = s'
+            LoopGen = model.LoopGen + 1
+            Tab = "Bonfire"
+            Toast = "Game reset" },
         Command.batch [ Command.none; tickCmd model.Speed (model.LoopGen + 1) ]
     | LayoutMsg _ -> model, Command.none
 
@@ -115,545 +138,648 @@ let fmt (v: float) =
     elif v = float (int v) then string (int v)
     else sprintf "%.1f" v
 
+// ----------------------------------------------------------------------------
+// orig-styled view (cage CSS classes: #topBar / .column / .tabsContainer /
+// .btn.nosel.modern / .res-table / #tooltip.button_tooltip)
+// ----------------------------------------------------------------------------
+
 let view (model: Model) (dispatch: Msg -> unit) =
     let s = model.S
-    let rows = kittens_land.KittensState.resRows s |> List.filter (fun r -> r.Show)
     let cal = s.Calendar
 
-    let tabStyle (active: bool) =
-        [
-            style.paddingTop 4
-            style.paddingBottom 4
-            style.paddingLeft 14
-            style.paddingRight 14
-            style.marginRight 6
-            style.fontFamily "monospace"
-            style.fontSize 14
-            style.cursor "pointer"
-            style.border(1, borderStyle.solid, "#6a5830")
-            style.backgroundColor (if active then "#6a5830" else "#3a2f18")
-            style.color "#e8e0c8"
-        ]
+    let fmtSigned (v: float) = (if v > 0.0 then "+" else "") + fmt v
 
-    let btnStyle (enabled: bool) =
-        [
-            style.paddingTop 4
-            style.paddingBottom 4
-            style.paddingLeft 12
-            style.paddingRight 12
-            style.fontFamily "monospace"
-            style.fontSize 13
-            style.backgroundColor "#3a2f18"
-            style.color "#e8e0c8"
-            style.border(1, borderStyle.solid, "#6a5830")
-            style.cursor (if enabled then "pointer" else "default")
-        ]
+    let gameLeft () =
+        let rect = Browser.Dom.document.getElementById("game").getBoundingClientRect()
+        (rect.left, rect.top)
 
-    let priceText (prices: kittens_land.KittensState.PriceRow list) =
-        prices |> List.map (fun p0 -> p0.Resource + " " + fmt p0.Val) |> String.concat "; "
+    // --- tooltip plumbing ----------------------------------------------------
 
-    let buyRow (label: string) (btnText: string) (enabled: bool) (valText: string) (priceText: string) (key: string) (act: Msg) =
+    let tipHandlers (tip: TipData) =
+        [ prop.onMouseEnter (fun ev ->
+            let gl, gt = gameLeft ()
+            dispatch (SetTip(Some(ev.clientX - gl + 12.0, ev.clientY - gt + 12.0, tip))))
+          prop.onMouseLeave (fun _ -> dispatch (SetTip None)) ]
+
+    let pricesTip (desc: string) (flavorKey: string option) (prices: kittens_land.KittensState.PriceRow list) : TipData =
+        { Desc = desc
+          Flavor = flavorKey |> Option.map Game.Labels.get |> Option.filter (fun f -> f <> "" && f <> flavorKey.Value)
+          Prices =
+            prices
+            |> List.map (fun p ->
+                (Game.Labels.get ("res." + p.Resource), p.Val, getRes s.Pool p.Resource >= p.Val)) }
+
+    let bldTip (name: string) (prices: kittens_land.KittensState.PriceRow list) =
+        pricesTip
+            (Game.Labels.get ("bld." + name + ".desc"))
+            (Some("bld." + name + ".flavor"))
+            prices
+
+    // --- orig modern button --------------------------------------------------
+
+    let modernBtn (key: string) (label: string) (amtText: string) (enabled: bool) (tip: TipData option) (onClick: unit -> unit) =
         Html.div [
             prop.key key
-            prop.style [
-                style.display.flex
-                style.alignItems.center
-                style.gap 10
-                style.marginBottom 6
-                style.opacity (if enabled then 1.0 else 0.45)
-            ]
+            prop.className (if enabled then "btn nosel modern" else "btn nosel modern disabled")
+            prop.style [ style.position.relative; style.display.inlineBlock; style.marginRight 8; style.marginBottom 8 ]
+            prop.tabIndex 0
+            if tip.IsSome then yield! tipHandlers tip.Value
+            prop.onClick (fun _ -> if enabled then onClick ())
             prop.children [
-                Html.button [
-                    prop.style (btnStyle enabled)
-                    prop.disabled (not enabled)
-                    prop.onClick (fun _ -> dispatch act)
-                    prop.text btnText
+                Html.div [
+                    prop.className "btnContent"
+                    prop.children [
+                        Html.span [
+                            prop.className "btnTitle"
+                            prop.children [
+                                Html.div [
+                                    prop.className "label"
+                                    prop.children [ Html.span [ prop.className "label-content"; prop.text label ] ]
+                                ]
+                                if amtText <> "" then
+                                    Html.div [ prop.className "amt"; prop.text amtText ]
+                            ]
+                        ]
+                    ]
                 ]
-                Html.span [
-                    prop.style [ style.fontSize 13; style.width 220 ]
-                    prop.text (label + valText)
+            ]
+        ]
+
+    let plainBtn (key: string) (label: string) (onClick: unit -> unit) =
+        Html.div [
+            prop.key key
+            prop.className "btn nosel"
+            prop.style [ style.display.inlineBlock; style.marginBottom 8; style.cursor "pointer" ]
+            prop.onClick (fun _ -> onClick ())
+            prop.children [
+                Html.div [
+                    prop.className "btnContent"
+                    prop.children [ Html.span [ prop.className "btnTitle"; prop.text label ] ]
                 ]
-                if priceText <> "" then
-                    Html.span [
-                        prop.style [ style.fontSize 12; style.color "#b0a480" ]
-                        prop.text priceText
+            ]
+        ]
+
+    // --- left column: resource + craft tables --------------------------------
+
+    let resRow (r: kittens_land.KittensState.ResRow) =
+        if not r.Show then Html.none
+        else
+            let perTick =
+                if r.PerTick <> 0.0 then fmtSigned r.PerTick
+                elif r.Name = "kittens" then ""
+                else ""
+            Html.div [
+                prop.key r.Name
+                prop.role "row"
+                prop.className ("res-row resource_" + r.Name)
+                prop.children [
+                    Html.div [
+                        prop.className "res-cell resource-name"
+                        prop.title (r.Title + " " + fmt r.Value + " " + perTick)
+                        prop.text r.Title
+                    ]
+                    Html.div [ prop.className "res-cell resAmount"; prop.text (fmt r.Value) ]
+                    Html.div [ prop.className "res-cell maxRes"; prop.text (if r.Max > 0.0 then "/" + fmt r.Max else "") ]
+                    Html.div [ prop.className "res-cell resPerTick"; prop.text perTick ]
+                    Html.div [ prop.className "res-cell" ]
+                ]
+            ]
+
+    let workshopBuilt =
+        (Game.Buildings.get s.Bpool "workshop" |> Option.map (fun b -> b.On) |> Option.defaultValue 0) > 0
+
+    let craftRow (c: kittens_land.KittensState.CraftRow) =
+        let shortcut (amount: float) (labelText: string) (cssClass: string) =
+            let canCraft = Game.Resources.hasRes s.Pool (c.Prices |> List.map (fun p -> (p.Resource, p.Val * amount))) 0.0
+            if not canCraft then Html.none
+            else
+                Html.div [
+                    prop.key (c.Name + cssClass)
+                    prop.className ("res-cell craft-link " + cssClass)
+                    prop.title ("+" + labelText)
+                    prop.onClick (fun _ -> dispatch (Craft (c.Name, amount)))
+                    prop.text ("+" + labelText)
+                ]
+        Html.div [
+            prop.key c.Name
+            prop.className ("res-row craft resource_" + c.Name)
+            prop.children [
+                Html.div [ prop.className "res-cell resource-name"; prop.text c.Label ]
+                Html.div [ prop.className "res-cell resource-value"; prop.text (fmt c.Value) ]
+                shortcut 1.0 (fmt 1.0) "craft-1pc"
+                shortcut (max 25.0 (float (c.AllCount * 5 / 100))) (string (max 25 (c.AllCount * 5 / 100))) "craft-5pc"
+                shortcut (max 100.0 (float (c.AllCount * 10 / 100))) (string (max 100 (c.AllCount * 10 / 100))) "craft-10pc"
+                Html.div [
+                    prop.key (c.Name + "all")
+                    prop.className "res-cell craft-link all"
+                    prop.title ("+" + string c.AllCount)
+                    prop.onClick (fun _ -> dispatch (CraftAll c.Name))
+                    prop.text "all"
+                ]
+            ]
+        ]
+
+    let leftColumn =
+        Html.div [
+            prop.id "leftColumn"
+            prop.className "column"
+            prop.children [
+                Html.div [
+                    prop.style [ style.marginTop 15 ]
+                    prop.children [
+                        Html.div [
+                            prop.className "res-table"
+                            prop.role "grid"
+                            prop.children (kittens_land.KittensState.resRows s |> List.map resRow)
+                        ]
+                    ]
+                ]
+                if workshopBuilt then
+                    Html.div [
+                        prop.className "sidebar-section"
+                        prop.style [ style.marginTop 15 ]
+                        prop.children [
+                            Html.div [
+                                prop.className "res-table craftTable"
+                                prop.children (kittens_land.KittensState.craftRows s |> List.map craftRow)
+                            ]
+                        ]
                     ]
             ]
         ]
 
-    let resRow (r: kittens_land.KittensState.ResRow) =
-        Html.div [
-            prop.key r.Name
-            prop.style [ style.fontSize 14 ]
-            prop.text (r.Name + ": " + fmt r.Value + (if r.Max > 0.0 && r.Max < 1e6 then "/" + fmt r.Max else ""))
-        ]
-
-    let buildingRow (b: kittens_land.KittensState.BuildingRow) =
-        Html.div [
-            prop.key b.Name
-            prop.style [
-                style.display.flex
-                style.alignItems.center
-                style.gap 10
-                style.marginBottom 6
-                style.opacity (if b.Enabled then 1.0 else 0.45)
-            ]
-            prop.children [
-                Html.button [
-                    prop.style (btnStyle b.Enabled)
-                    prop.disabled (not b.Enabled)
-                    prop.onClick (fun _ -> dispatch (Buy b.Name))
-                    prop.text (b.Label + if b.Val > 0 then " (" + string b.Val + ")" else "")
-                ]
-                Html.span [
-                    prop.style [ style.fontSize 12; style.color "#b0a480" ]
-                    prop.text (priceText b.Prices)
-                ]
-            ]
-        ]
-
-    let jobRow (j: kittens_land.KittensState.JobRow) =
-        Html.div [
-            prop.key j.Name
-            prop.style [
-                style.display.flex
-                style.alignItems.center
-                style.gap 8
-                style.marginBottom 6
-            ]
-            prop.children [
-                Html.button [
-                    prop.style (btnStyle (j.Assigned > 0))
-                    prop.disabled (j.Assigned = 0)
-                    prop.onClick (fun _ -> dispatch (Unassign (j.Name, 1)))
-                    prop.text "-"
-                ]
-                Html.button [
-                    prop.style (btnStyle true)
-                    prop.onClick (fun _ -> dispatch (Assign (j.Name, 1)))
-                    prop.text "+"
-                ]
-                Html.span [
-                    prop.style [ style.fontSize 13; style.width 110 ]
-                    prop.text (j.Label + " (" + string j.Assigned + ")")
-                ]
-            ]
-        ]
-
-    let techRow (t: kittens_land.KittensState.TechRow) =
-        Html.div [
-            prop.key t.Name
-            prop.style [
-                style.display.flex
-                style.alignItems.center
-                style.gap 10
-                style.marginBottom 6
-                style.opacity (if t.Researched then 0.6 elif t.Enabled then 1.0 else 0.45)
-            ]
-            prop.children [
-                Html.button [
-                    prop.style (btnStyle (t.Enabled || t.Researched))
-                    prop.disabled (not t.Enabled)
-                    prop.onClick (fun _ -> dispatch (Research t.Name))
-                    prop.text (if t.Researched then "done" else "Research")
-                ]
-                Html.span [
-                    prop.style [ style.fontSize 13; style.width 170 ]
-                    prop.text t.Label
-                ]
-                Html.span [
-                    prop.style [ style.fontSize 12; style.color "#b0a480" ]
-                    prop.text (priceText t.Prices)
-                ]
-            ]
-        ]
-
-    let upgradeRow (u: kittens_land.KittensState.UpgradeRow) =
-        Html.div [
-            prop.key u.Name
-            prop.style [
-                style.display.flex
-                style.alignItems.center
-                style.gap 10
-                style.marginBottom 6
-                style.opacity (if u.Researched then 0.6 elif u.Enabled then 1.0 else 0.45)
-            ]
-            prop.children [
-                Html.button [
-                    prop.style (btnStyle (u.Enabled || u.Researched))
-                    prop.disabled (not u.Enabled)
-                    prop.onClick (fun _ -> dispatch (Upgrade u.Name))
-                    prop.text (if u.Researched then "done" else "Buy")
-                ]
-                Html.span [
-                    prop.style [ style.fontSize 13; style.width 200 ]
-                    prop.text u.Label
-                ]
-                Html.span [
-                    prop.style [ style.fontSize 12; style.color "#b0a480" ]
-                    prop.text (priceText u.Prices)
-                ]
-            ]
-        ]
-
-    let craftRow (c: kittens_land.KittensState.CraftRow) =
-        Html.div [
-            prop.key c.Name
-            prop.style [
-                style.display.flex
-                style.alignItems.center
-                style.gap 10
-                style.marginBottom 6
-            ]
-            prop.children [
-                Html.button [
-                    prop.style (btnStyle true)
-                    prop.onClick (fun _ -> dispatch (CraftOne c.Name))
-                    prop.text "Craft"
-                ]
-                Html.button [
-                    prop.style (btnStyle true)
-                    prop.onClick (fun _ -> dispatch (CraftAll c.Name))
-                    prop.text "All"
-                ]
-                Html.span [
-                    prop.style [ style.fontSize 13; style.width 130 ]
-                    prop.text (c.Label + " (" + fmt c.Value + ")")
-                ]
-                Html.span [
-                    prop.style [ style.fontSize 12; style.color "#b0a480" ]
-                    prop.text (priceText c.Prices)
-                ]
-            ]
-        ]
+    // --- tab content ---------------------------------------------------------
 
     let kittens, maxKittens, happiness = kittens_land.KittensState.kittenSummary s
     let queueCap = kittens_land.KittensState.queueCap s
     let queueLen = kittens_land.KittensState.queueLength s
 
-    let queueRows =
-        s.QueueItems
-        |> List.mapi (fun i q ->
+    let buildingRow (b: kittens_land.KittensState.BuildingRow) =
+        modernBtn
+            ("bld." + b.Name)
+            b.Label
+            (if b.Val > 0 then "(" + string b.Val + ")" else "")
+            b.Enabled
+            (Some(bldTip b.Name b.Prices))
+            (fun () -> dispatch (Buy b.Name))
+
+    let techRow (t: kittens_land.KittensState.TechRow) =
+        modernBtn
+            ("tech." + t.Name)
+            t.Label
+            ""
+            t.Enabled
+            (Some(pricesTip (Game.Labels.get ("tech." + t.Name + ".desc")) (Some("tech." + t.Name + ".flavor")) t.Prices))
+            (fun () -> dispatch (Research t.Name))
+
+    let upgradeRow (u: kittens_land.KittensState.UpgradeRow) =
+        modernBtn
+            ("up." + u.Name)
+            u.Label
+            ""
+            u.Enabled
+            (Some(pricesTip (Game.Labels.get ("up." + u.Name + ".desc")) (Some("up." + u.Name + ".flavor")) u.Prices))
+            (fun () -> dispatch (Upgrade u.Name))
+
+    let jobRow (j: kittens_land.KittensState.JobRow) =
+        if not j.Unlocked then Html.none
+        else
             Html.div [
-                prop.key (string i + q.QName)
-                prop.style [
-                    style.display.flex
-                    style.alignItems.center
-                    style.gap 10
-                    style.marginBottom 6
-                ]
+                prop.key j.Name
+                prop.style [ style.marginBottom 4 ]
                 prop.children [
-                    Html.button [
-                        prop.style (btnStyle true)
-                        prop.onClick (fun _ -> dispatch (QRemove i))
-                        prop.text "x"
+                    Html.a [
+                        prop.className "link"
+                        prop.style [ style.paddingRight 8; style.cursor "pointer" ]
+                        prop.onClick (fun _ -> dispatch (Unassign (j.Name, 1)))
+                        prop.text "-"
                     ]
-                    Html.span [
-                        prop.style [ style.fontSize 13 ]
-                        prop.text (q.QName + " (" + q.QType + ") x" + string q.QValue)
+                    Html.a [
+                        prop.className "link"
+                        prop.style [ style.paddingRight 8; style.cursor "pointer" ]
+                        prop.onClick (fun _ -> dispatch (Assign (j.Name, 1)))
+                        prop.text "+"
+                    ]
+                    Html.span [ prop.text (j.Label + " (" + string j.Assigned + ")") ]
+                ]
+            ]
+
+    let tabContent =
+        match model.Tab with
+        | "Village" ->
+            [
+                Html.div [
+                    prop.style [ style.marginBottom 10 ]
+                    prop.text ("Kittens: " + string kittens + "/" + string maxKittens + " - happiness: " + sprintf "%.0f%%" (happiness * 100.0))
+                ]
+                yield! (kittens_land.KittensState.jobRows s |> List.map jobRow)
+            ]
+        | "Science" -> List.map techRow (kittens_land.KittensState.techRows s)
+        | "Workshop" -> List.map upgradeRow (kittens_land.KittensState.upgradeRows s)
+        | "Trade" ->
+            kittens_land.KittensState.raceRows s
+            |> List.collect (fun r ->
+                [ modernBtn ("race." + r.Name) ("Trade with " + r.Label) "" r.Tradeable None (fun () -> dispatch (Trade r.Name))
+                  modernBtn ("emb." + r.Name) ("Embassy of " + r.Label) ("(" + string r.EmbassyLevel + ")") r.Tradeable None (fun () -> dispatch (Embassy r.Name)) ])
+        | "Religion" ->
+            [
+                Html.div [
+                    prop.style [ style.marginBottom 10 ]
+                    prop.text ("Faith: " + fmt (getRes s.Pool "faith") + " - worship: " + sprintf "%.1f" s.Rpool.Faith)
+                ]
+                plainBtn "praise" "Praise the sun!" (fun () -> dispatch Praise)
+                yield! (kittens_land.KittensState.religionRows s |> List.map (fun r ->
+                    modernBtn ("rel." + r.Name) r.Label
+                        (if r.Val > 0 then "(" + string r.Val + ")" else "")
+                        r.Enabled None
+                        (fun () -> if r.Kind = "zu" then dispatch (BuyZU r.Name) else dispatch (BuyRU r.Name))))
+            ]
+        | "Space" ->
+            kittens_land.KittensState.spaceRows s
+            |> List.map (fun r ->
+                modernBtn ("sp." + r.Name) r.Label
+                    (if r.Val > 0 then "(" + string r.Val + ")" else "")
+                    r.Enabled None
+                    (fun () -> if r.Kind = "mission" then dispatch (Mission r.Name) else dispatch (SpaceBuy r.Name)))
+        | "Time" ->
+            [
+                Html.div [
+                    prop.style [ style.marginBottom 10 ]
+                    prop.text ("Temporal flux: " + fmt s.Tpool.Flux + " - heat: " + fmt s.Tpool.Heat)
+                ]
+                yield! (kittens_land.KittensState.timeRows s |> List.map (fun r ->
+                    modernBtn ("t." + r.Name) r.Label
+                        (if r.Val > 0 then "(" + string r.Val + ")" else "")
+                        r.Enabled None
+                        (fun () -> if r.Kind = "cfu" then dispatch (CFUBuy r.Name) else dispatch (VSUBuy r.Name))))
+            ]
+        | "Challenges" ->
+            kittens_land.KittensState.challengeRows s
+            |> List.map (fun c ->
+                let action =
+                    if c.Pending then "Unmark"
+                    elif c.Active then "Active!"
+                    elif c.Researched then "Completed"
+                    else "Mark"
+                modernBtn ("ch." + c.Name) c.Label action (not c.Researched) None
+                    (fun () -> dispatch (ChallengeToggle c.Name)))
+        | _ ->
+            [
+                modernBtn "gather" (Game.Labels.get "bld.gatherCatnip") "" true
+                    (Some { Desc = Game.Labels.get "bld.gatherCatnip.desc"; Flavor = None; Prices = [] })
+                    (fun () -> dispatch Gather)
+                let refinePrice = 100.0
+                modernBtn "refine" (Game.Labels.get "bld.refineCatnip") "" (getRes s.Pool "catnip" >= refinePrice)
+                    (Some { Desc = Game.Labels.get "bld.refineCatnip.desc"; Flavor = None;
+                            Prices = [ (Game.Labels.get "res.catnip", refinePrice, getRes s.Pool "catnip" >= refinePrice) ] })
+                    (fun () -> dispatch Refine)
+                yield! List.map buildingRow (kittens_land.KittensState.buildingRows s)
+            ]
+
+    // --- mid column ----------------------------------------------------------
+
+    let midTabIds = [ "Bonfire"; "Village"; "Science"; "Workshop"; "Trade"; "Religion"; "Space"; "Time"; "Challenges" ]
+    let visibleTabs = midTabIds |> List.filter (kittens_land.KittensState.tabVisible s)
+    let activeTab = if visibleTabs |> List.contains model.Tab then model.Tab else "Bonfire"
+
+    let midColumn =
+        Html.div [
+            prop.id "midColumn"
+            prop.className "column"
+            prop.children [
+                Html.div [
+                    prop.className "tabsContainer"
+                    prop.children [
+                        for i, t in List.indexed visibleTabs do
+                            Html.a [
+                                prop.key t
+                                prop.className (if t = activeTab then "tab " + t + " activeTab" else "tab " + t)
+                                prop.href "#"
+                                prop.style [ style.whitespace.nowrap ]
+                                prop.onClick (fun _ -> dispatch (SetTab t))
+                                prop.text (Game.Labels.get ("tab." + t))
+                            ]
+                            if i < List.length visibleTabs - 1 then
+                                Html.span [ prop.key ("sep" + t); prop.text " | " ]
                     ]
                 ]
-            ])
+                Html.div [
+                    prop.className ("tabInner " + activeTab)
+                    prop.children tabContent
+                ]
+            ]
+        ]
+
+    // --- right column --------------------------------------------------------
 
     let consoleRows =
         s.ConsoleMsgs
         |> List.map (fun m ->
             Html.div [
                 prop.key (string m.CmId)
-                prop.style [ style.fontSize 12; style.marginBottom 4; style.color "#c8b890" ]
+                prop.className "msg"
                 prop.children [
                     if m.CmHasCal then
                         Html.span [
-                            prop.style [ style.color "#8a7850"; style.marginRight 8 ]
+                            prop.style [ style.color "#ff7f50"; style.marginRight 8 ]
                             prop.text ("Y" + string m.CmYear + " D" + string m.CmDay + " " + m.CmSeason + " - ")
                         ]
                     Html.span [ prop.text m.CmText ]
                 ]
             ])
 
-    let optRow (name: string) =
-        let v = s.Opts.Bools.[name]
+    let queueRows =
+        s.QueueItems
+        |> List.mapi (fun i q ->
+            Html.div [
+                prop.key (string i + q.QName)
+                prop.style [ style.marginBottom 4 ]
+                prop.children [
+                    Html.a [
+                        prop.className "link"
+                        prop.style [ style.paddingRight 8; style.cursor "pointer" ]
+                        prop.onClick (fun _ -> dispatch (QRemove i))
+                        prop.text "[x]"
+                    ]
+                    Html.span [ prop.text (q.QName + " (" + q.QType + ") x" + string q.QValue) ]
+                ]
+            ])
+
+    let rightColumn =
         Html.div [
-            prop.key name
-            prop.style [
-                style.display.flex
-                style.alignItems.center
-                style.gap 10
-                style.marginBottom 6
-            ]
+            prop.id "rightColumn"
+            prop.className "column"
+            prop.style [ style.paddingLeft 15; style.paddingRight 15; style.width 300 ]
             prop.children [
-                Html.button [
-                    prop.style (btnStyle true)
-                    prop.onClick (fun _ -> dispatch (ToggleOption name))
-                    prop.text (if v then "on" else "off")
+                Html.div [
+                    prop.children [
+                        Html.span [ prop.id "calendarSign" ]
+                        Html.span [ prop.id "calendarDiv"; prop.text (kittens_land.KittensState.calendarText s) ]
+                    ]
                 ]
-                Html.span [
-                    prop.style [ style.fontSize 13 ]
-                    prop.text name
+                Html.div [
+                    prop.className "right-tab-header"
+                    prop.children [
+                        Html.a [
+                            prop.id "logLink"
+                            prop.className (if model.RightTab = "Log" then "active" else "")
+                            prop.href "#"
+                            prop.onClick (fun _ -> dispatch (SetRightTab "Log"))
+                            prop.text "Log"
+                        ]
+                        if kittens_land.KittensState.tabVisible s "Queue" then
+                            Html.a [
+                                prop.id "queueLink"
+                                prop.className ("queueLink" + (if model.RightTab = "Queue" then " active" else ""))
+                                prop.href "#"
+                                prop.onClick (fun _ -> dispatch (SetRightTab "Queue"))
+                                prop.text "Queue"
+                            ]
+                    ]
                 ]
+                if model.RightTab = "Queue" then
+                    Html.div [
+                        prop.className "right-tab"
+                        prop.id "rightTabQueue"
+                        prop.children [
+                            Html.div [
+                                prop.style [ style.marginBottom 6 ]
+                                prop.text ("Queue " + string queueLen + "/" + string queueCap)
+                            ]
+                            yield! queueRows
+                            plainBtn "qhut" "Queue a Hut" (fun () -> dispatch (QAdd ("hut", "buildings")))
+                        ]
+                    ]
+                else
+                    Html.div [
+                        prop.className "right-tab"
+                        prop.id "rightTabLog"
+                        prop.children [
+                            Html.div [
+                                prop.children [
+                                    Html.div [
+                                        prop.className "console-intro"
+                                        prop.style [ style.paddingTop 10; style.borderTop(1, borderStyle.solid, "gray") ]
+                                        prop.text (Game.Labels.get "console.intro")
+                                    ]
+                                    Html.span [
+                                        prop.id "clearLog"
+                                        prop.style [ style.paddingTop 5 ]
+                                        prop.children [
+                                            Html.a [
+                                                prop.id "clearLogHref"
+                                                prop.href "#"
+                                                prop.onClick (fun _ -> dispatch ClearConsole)
+                                                prop.text "Clear log"
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                            Html.div [
+                                prop.id "gameLog"
+                                prop.style [ style.overflowY.auto; style.paddingTop 10; style.height (length.percent 100) ]
+                                prop.children consoleRows
+                            ]
+                        ]
+                    ]
             ]
         ]
 
-    let tabContent =
-        match model.Tab with
-        | "Village" ->
-            [
-                yield Html.div [
-                    prop.style [ style.fontSize 14; style.marginBottom 10; style.color "#d4c290" ]
-                    prop.text (
-                        "Kittens: "
-                        + string kittens
-                        + "/"
-                        + string maxKittens
-                        + " - happiness: "
-                        + sprintf "%.0f%%" (happiness * 100.0)
-                    )
-                ]
-                yield! (kittens_land.KittensState.jobRows s |> List.filter (fun j -> j.Unlocked) |> List.map jobRow)
-            ]
-        | "Science" -> List.map techRow (kittens_land.KittensState.techRows s)
-        | "Workshop" ->
-            [
-                yield Html.div [
-                    prop.style [ style.fontSize 13; style.marginBottom 8; style.color "#b0a480" ]
-                    prop.text "Upgrades"
-                ]
-                yield! List.map upgradeRow (kittens_land.KittensState.upgradeRows s)
-                yield Html.div [
-                    prop.style [ style.fontSize 13; style.marginBottom 8; style.marginTop 12; style.color "#b0a480" ]
-                    prop.text "Crafts"
-                ]
-                yield! List.map craftRow (kittens_land.KittensState.craftRows s)
-            ]
-        | "Diplomacy" ->
-            [
-                yield Html.div [
-                    prop.style [ style.fontSize 13; style.marginBottom 8; style.color "#b0a480" ]
-                    prop.text "Races (unlock rolls happen at year gates; trade needs manpower + gold)"
-                ]
-                yield! (kittens_land.KittensState.raceRows s |> List.map (fun r ->
-                    buyRow r.Label "Trade" r.Tradeable
-                        (" - standing " + sprintf "%.2f" r.Standing + ", embassies " + string r.EmbassyLevel)
-                        "" ("race." + r.Name) (Trade r.Name)))
-                yield! (kittens_land.KittensState.raceRows s |> List.map (fun r ->
-                    buyRow r.Label "Embassy" r.Tradeable (" - level " + string r.EmbassyLevel) "" ("emb." + r.Name) (Embassy r.Name)))
-            ]
-        | "Religion" ->
-            [
-                yield Html.div [
-                    prop.style [ style.fontSize 14; style.marginBottom 10; style.color "#d4c290" ]
-                    prop.text ("Faith: " + fmt (kittens_land.KittensState.getRes s.Pool "faith") + " - worship: " + sprintf "%.1f" s.Rpool.Faith)
-                ]
-                yield Html.button [
-                    prop.style (btnStyle true @ [ style.marginBottom 10 ])
-                    prop.onClick (fun _ -> dispatch Praise)
-                    prop.text "Praise the sun!"
-                ]
-                yield! (kittens_land.KittensState.religionRows s |> List.map (fun r ->
-                    buyRow r.Label (if r.Kind = "zu" then "Build" else "Adore") r.Enabled
-                        (" (" + string r.Val + ")") "" ("rel." + r.Name)
-                        (if r.Kind = "zu" then BuyZU r.Name else BuyRU r.Name)))
-            ]
-        | "Space" ->
-            kittens_land.KittensState.spaceRows s
-            |> List.map (fun r ->
-                buyRow r.Label (if r.Kind = "mission" then "Launch" else "Build") r.Enabled
-                    (" (" + string r.Val + ")") "" ("sp." + r.Name)
-                    (if r.Kind = "mission" then Mission r.Name else SpaceBuy r.Name))
-        | "Time" ->
-            [
-                yield Html.div [
-                    prop.style [ style.fontSize 13; style.marginBottom 8; style.color "#b0a480" ]
-                    prop.text ("Temporal flux: " + fmt s.Tpool.Flux + " - heat: " + fmt s.Tpool.Heat)
-                ]
-                yield! (kittens_land.KittensState.timeRows s |> List.map (fun r ->
-                    buyRow r.Label (if r.Kind = "cfu" then "Build" else "Buy") r.Enabled
-                        (" (" + string r.Val + ")") "" ("t." + r.Name)
-                        (if r.Kind = "cfu" then CFUBuy r.Name else VSUBuy r.Name)))
-            ]
-        | "Challenges" ->
-            [
-                yield Html.div [
-                    prop.style [ style.fontSize 13; style.marginBottom 8; style.color "#b0a480" ]
-                    prop.text "Marked challenges activate on the next reset (Settings tab)"
-                ]
-                yield! (kittens_land.KittensState.challengeRows s |> List.map (fun c ->
-                    buyRow c.Label
-                        (if c.Pending then "Unmark" elif c.Active then "Active!" elif c.Researched then "Completed" else "Mark")
-                        (not c.Researched)
-                        (if c.On > 0 then " (x" + string c.On + ")" else "")
-                        ""
-                        ("ch." + c.Name)
-                        (ChallengeToggle c.Name)))
-            ]
-        | "Queue" ->
-            [
-                yield Html.div [
-                    prop.style [ style.fontSize 13; style.marginBottom 8; style.color "#b0a480" ]
-                    prop.text ("Queue " + string queueLen + "/" + string queueCap + " - the head item is attempted every 10 ticks")
-                ]
-                yield! queueRows
-                yield Html.button [
-                    prop.style (btnStyle true)
-                    prop.onClick (fun _ -> dispatch (QAdd ("hut", "buildings")))
-                    prop.text "Queue a Hut"
-                ]
-            ]
-        | "Settings" ->
-            [
-                yield Html.div [
-                    prop.style [ style.fontSize 13; style.marginBottom 8; style.color "#b0a480" ]
-                    prop.text ("Notation: " + s.Opts.Notation)
-                ]
-                yield Html.div [
-                    prop.style [ style.display.flex; style.gap 8; style.marginBottom 12 ]
-                    prop.children [
-                        for n in [ "si"; "e"; "sie" ] ->
-                            Html.button [
-                                prop.key n
-                                prop.style (btnStyle (s.Opts.Notation = n))
-                                prop.onClick (fun _ -> dispatch (SetNotation n))
-                                prop.text n
+    // --- tooltip -------------------------------------------------------------
+
+    let tooltip =
+        match model.Tooltip with
+        | None -> Html.none
+        | Some (x, y, tip) ->
+            Html.div [
+                prop.id "tooltip"
+                prop.className "button_tooltip"
+                prop.style [ style.top (length.px y); style.left (length.px x) ]
+                prop.children [
+                    if tip.Desc <> "" && tip.Desc <> "-" then
+                        Html.div [
+                            prop.className "desc"
+                            if tip.Prices.Length > 0 then
+                                prop.style [ style.borderBottom(1, borderStyle.solid, "gray"); style.paddingBottom 8 ]
+                            prop.dangerouslySetInnerHTML tip.Desc
+                        ]
+                    for i, (title, v, ok) in List.indexed tip.Prices do
+                        Html.div [
+                            prop.key ("price" + string i)
+                            prop.className "price-block"
+                            prop.style [ style.overflow.hidden; style.custom ("clear", "both") ]
+                            prop.children [
+                                Html.span [ prop.style [ style.float'.left; style.paddingRight 10 ]; prop.text title ]
+                                Html.span [
+                                    prop.className (if ok then "" else "noRes")
+                                    prop.style [ style.float'.right ]
+                                    prop.text (fmt v)
+                                ]
                             ]
+                        ]
+                    match tip.Flavor with
+                    | Some flavor ->
+                        Html.div [
+                            prop.className "flavor"
+                            prop.style [ style.paddingTop 20; style.fontSize 12; style.fontStyle.italic ]
+                            prop.text flavor
+                        ]
+                    | None -> ()
+                ]
+            ]
+
+    // --- options dialog ------------------------------------------------------
+
+    let optionsDialog =
+        if not model.OptionsOpen then Html.none
+        else
+            Html.div [
+                prop.id "optionsDiv"
+                prop.className "dialog help"
+                prop.style [ style.display.block ]
+                prop.children [
+                    Html.a [
+                        prop.id "dialogClose"
+                        prop.className "close"
+                        prop.href "#"
+                        prop.style [ style.position.absolute; style.top 10; style.right 15 ]
+                        prop.onClick (fun _ -> dispatch ToggleOptions)
+                        prop.text "close"
+                    ]
+                    Html.div [
+                        prop.style [ style.marginBottom 10 ]
+                        prop.children [
+                            Html.label [ prop.htmlFor "notationSelector"; prop.text "Notation:" ]
+                            Html.br []
+                            Html.select [
+                                prop.id "notationSelector"
+                                prop.value s.Opts.Notation
+                                prop.onChange (fun (v: string) -> dispatch (SetNotation v))
+                                prop.children [
+                                    for n in [ "si"; "e"; "sie" ] ->
+                                        Html.option [ prop.key n; prop.value n; prop.text n ]
+                                ]
+                            ]
+                        ]
+                    ]
+                    Html.div [
+                        prop.style [ style.marginBottom 10 ]
+                        prop.children [
+                            Html.label [ prop.text ("Game speed: " + string model.Speed + "x") ]
+                            Html.br []
+                            for mult in [ 1.0; 3.0; 10.0 ] ->
+                                Html.button [
+                                    prop.key (string mult)
+                                    prop.style [ style.marginRight 6; style.cursor "pointer" ]
+                                    prop.onClick (fun _ -> dispatch (SetSpeed mult))
+                                    prop.text (string mult + "x")
+                                ]
+                        ]
+                    ]
+                    Html.div [
+                        prop.style [ style.marginBottom 10 ]
+                        prop.children [
+                            for o in Game.Settings.settingsArr ->
+                                Html.div [
+                                    prop.key o.Name
+                                    prop.style [ style.marginBottom 2 ]
+                                    prop.children [
+                                        Html.input [
+                                            prop.type'.checkbox
+                                            prop.isChecked s.Opts.Bools.[o.Name]
+                                            prop.onChange (fun (_: bool) -> dispatch (ToggleOption o.Name))
+                                        ]
+                                        Html.label [ prop.style [ style.marginLeft 6 ]; prop.text o.Name ]
+                                    ]
+                                ]
+                        ]
+                    ]
+                    Html.div [
+                        prop.children [
+                            Html.input [
+                                prop.type'.button
+                                prop.value "Save"
+                                prop.onClick (fun _ -> dispatch SaveGame)
+                            ]
+                            Html.input [
+                                prop.type'.button
+                                prop.value "Load"
+                                prop.style [ style.marginLeft 8 ]
+                                prop.onClick (fun _ -> dispatch LoadGame)
+                            ]
+                        ]
+                    ]
+                    Html.div [
+                        prop.style [ style.fontSize 12; style.marginTop 8; style.color "#666" ]
+                        prop.text "Save stores to this browser's localStorage under its own key - the original game's saves are untouched."
                     ]
                 ]
-                yield Html.div [
-                    prop.style [ style.fontSize 13; style.marginBottom 8; style.color "#b0a480" ]
-                    prop.text ("Game speed: " + string model.Speed + "x")
-                ]
-                yield Html.div [
-                    prop.style [ style.display.flex; style.gap 8; style.marginBottom 12 ]
-                    prop.children [
-                        for mult in [ 1.0; 3.0; 10.0 ] ->
-                            Html.button [
-                                prop.key (string mult)
-                                prop.style (btnStyle (model.Speed = mult))
-                                prop.onClick (fun _ -> dispatch (SetSpeed mult))
-                                prop.text (string mult + "x")
-                            ]
+            ]
+
+    // --- top bar -------------------------------------------------------------
+
+    let topBar =
+        Html.div [
+            prop.id "topBar"
+            prop.children [
+                Html.div [
+                    prop.style [
+                        style.paddingLeft 10
+                        style.minWidth 0
+                        style.maxWidth 400
+                        style.overflow.hidden
+                        style.textOverflow.ellipsis
                     ]
+                    prop.children [ Html.span [ prop.className "gameTitle"; prop.text "Kittens Game" ] ]
                 ]
-                yield Html.div [
-                    prop.style [ style.fontSize 13; style.marginBottom 8; style.color "#b0a480" ]
-                    prop.text "Options"
-                ]
-                yield! (Game.Settings.settingsArr |> List.map (fun o -> optRow o.Name))
-                yield Html.div [
-                    prop.style [ style.fontSize 13; style.marginBottom 8; style.marginTop 12; style.color "#b0a480" ]
-                    prop.text "Save / load"
-                ]
-                yield Html.div [
-                    prop.style [ style.display.flex; style.gap 8 ]
+                Html.div [
+                    prop.className "links-block"
+                    prop.style [ style.paddingTop 3; style.display.inlineFlex; style.paddingRight 10 ]
                     prop.children [
-                        Html.button [
-                            prop.style (btnStyle true)
+                        Html.a [
+                            prop.id "save-link"
+                            prop.href "#"
                             prop.onClick (fun _ -> dispatch SaveGame)
                             prop.text "Save"
                         ]
-                        Html.button [
-                            prop.style (btnStyle true)
-                            prop.onClick (fun _ -> dispatch LoadGame)
-                            prop.text "Load"
+                        Html.span [ prop.text " | " ]
+                        Html.a [
+                            prop.id "options-link"
+                            prop.href "#"
+                            prop.onClick (fun _ -> dispatch ToggleOptions)
+                            prop.text "Options"
                         ]
-                        Html.button [
-                            prop.style (btnStyle true)
-                            prop.onClick (fun _ -> dispatch ResetGame)
+                        Html.span [ prop.text " | " ]
+                        Html.a [
+                            prop.id "reset-link"
+                            prop.href "#"
+                            prop.onClick (fun _ ->
+                                if Browser.Dom.window.confirm "Are you sure you want to reset the game? All your progress will be lost."
+                                then dispatch ResetGame)
                             prop.text "Reset"
                         ]
                     ]
                 ]
-                yield Html.div [
-                    prop.style [ style.fontSize 11; style.marginTop 6; style.color "#8a7850" ]
-                    prop.text "Save stores to this browser's localStorage under its own key - the original game's saves are untouched."
-                ]
-            ]
-        | _ ->
-            [
-                yield Html.button [
-                    prop.style (btnStyle true @ [ style.display.block; style.marginBottom 10 ])
-                    prop.onClick (fun _ -> dispatch Gather)
-                    prop.text "Gather catnip"
-                ]
-                yield! List.map buildingRow (kittens_land.KittensState.buildingRows s)
-            ]
-
-    let tabs = [ "Bonfire"; "Village"; "Science"; "Workshop"; "Diplomacy"; "Religion"; "Space"; "Time"; "Challenges"; "Queue"; "Settings" ]
-
-    let consolePanel =
-        Html.div [
-            prop.style [
-                style.borderTop(1, borderStyle.solid, "#4a3c20")
-                style.marginTop 16
-                style.paddingTop 10
-            ]
-            prop.children [
-                Html.div [
-                    prop.style [ style.display.flex; style.justifyContent.spaceBetween; style.marginBottom 6 ]
-                    prop.children [
-                        Html.span [
-                            prop.style [ style.fontSize 13; style.color "#d4c290" ]
-                            prop.text "Log"
-                        ]
-                        Html.button [
-                            prop.style (btnStyle true)
-                            prop.onClick (fun _ -> dispatch ClearConsole)
-                            prop.text "Clear log"
-                        ]
-                    ]
-                ]
-                yield! consoleRows
             ]
         ]
+
+    // --- shell ---------------------------------------------------------------
 
     Html.div [
-        prop.style [
-            style.fontFamily "monospace"
-            style.padding 20
-            style.backgroundColor "#1a1408"
-            style.color "#e8e0c8"
-            style.minHeight (length.vh 100)
-        ]
+        prop.id "gamePageContainer"
         prop.children [
+            topBar
             Html.div [
-                prop.style [ style.fontSize 18; style.marginBottom 10; style.color "#d4c290" ]
-                prop.text (
-                    "Year "
-                    + string (int cal.Year + 1)
-                    + ", Day "
-                    + string (int cal.Day + 1)
-                    + " - "
-                    + Game.Calendar.seasons.[cal.Season].Name.ToUpper()
-                )
-            ]
-            Html.div [
-                prop.style [
-                    style.display.flex
-                    style.flexWrap.wrap
-                    style.gap 18
-                    style.marginBottom 14
-                ]
-                prop.children (rows |> List.map resRow)
-            ]
-            Html.div [
-                prop.style [ style.marginBottom 14 ]
+                prop.id "game"
                 prop.children [
-                    for t in tabs ->
-                        Html.button [
-                            prop.key t
-                            prop.style (tabStyle (model.Tab = t))
-                            prop.onClick (fun _ -> dispatch (SetTab t))
-                            prop.text t
-                        ]
+                    leftColumn
+                    midColumn
+                    rightColumn
+                    tooltip
                 ]
             ]
-            Html.div [
-                prop.style [
-                    style.borderTop(1, borderStyle.solid, "#4a3c20")
-                    style.paddingTop 12
-                ]
-                prop.children tabContent
-            ]
-            consolePanel
+            optionsDialog
             if model.Toast <> "" then
                 Html.div [
                     prop.style [
@@ -664,8 +790,9 @@ let view (model: Model) (dispatch: Msg -> unit) =
                         style.paddingBottom 8
                         style.paddingLeft 14
                         style.paddingRight 14
-                        style.backgroundColor "#6a5830"
-                        style.color "#f0e8d0"
+                        style.backgroundColor "#eee"
+                        style.border(1, borderStyle.solid, "#888")
+                        style.color "black"
                         style.fontSize 13
                     ]
                     prop.text model.Toast

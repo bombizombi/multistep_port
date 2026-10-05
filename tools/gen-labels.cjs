@@ -28,6 +28,40 @@ for (const z of ["unicornTomb","ivoryTower","ivoryCitadel","skyPalace","unicornU
 for (const r of ["solarchant","sunAltar","stoneLazarus","basilica","goldenSpire","scholasticism","transcendence","apocripha","frescoes","solarRevolution","stainedGlass","standardizedBlessing","solarChant2","templature","holyFires","righteousFire"]){ if (j[`religion.ru.` + r + `.label`]) add(`ru.` + r, j[`religion.ru.` + r + `.label`]); }
 for (const s of ["moonOutpost","moonBase","spaceElevator","sattelite","spaceStation","hydroPlant","oilRig","moonWorkerStation","saplingPost","planetCracker","fuelRefinery","orbitalArray","moonReactor","crystalSpaceHeater","moltenSaltReactor","uraniumMine","spaceHub","reliquary"]){ if (j[`space.` + s + `.label`]) add(`sbld.` + s, j[`space.` + s + `.label`]); }
 
+// V6 tooltip + shell strings: descriptions, flavors, effect texts, tab titles
+for (const b of defs.buildings) {
+  for (const suffix of ["desc", "flavor", "effectDesc"]) {
+    const v = j[`buildings.${b.name}.${suffix}`];
+    if (v) add(`bld.${b.name}.${suffix}`, v);
+  }
+}
+for (const t of defs.techs) {
+  for (const suffix of ["desc", "flavor", "effectDesc"]) {
+    const v = j[`science.${t.name}.${suffix}`];
+    if (v) add(`tech.${t.name}.${suffix}`, v);
+  }
+}
+for (const u of defs.upgrades) {
+  for (const suffix of ["desc", "flavor", "effectDesc", "hint"]) {
+    const v = j[`workshop.${u.name}.${suffix}`];
+    if (v) add(`up.${u.name}.${suffix}`, v);
+  }
+}
+add("tab.Bonfire", j["buildings.tabName"] || "Bonfire");
+add("tab.Village", j["village.tab.title.smallvillage"] || "Village");
+for (const t of ["science","workshop","trade","religion","space","time","challenges","stats","achievements","queue"]) {
+  if (j[`tab.name.` + t]) add(`tab.${t[0].toUpperCase() + t.slice(1)}`, j[`tab.name.` + t]);
+}
+add("calendar.year.full", j["calendar.year.full"] || "Year {0} - {1}, day {2}");
+for (const s of ["spring","summer","autumn","winter"]) {
+  if (j[`calendar.season.` + s]) add(`season.${s}`, j[`calendar.season.` + s]);
+}
+add("console.intro", j["console.intro"] || "You are a kitten in a catnip forest.");
+add("bld.gatherCatnip", j["buildings.gatherCatnip.label"] || "Gather catnip");
+add("bld.gatherCatnip.desc", j["buildings.gatherCatnip.desc"] || "");
+add("bld.refineCatnip", j["buildings.refineCatnip.label"] || "Refine catnip");
+add("bld.refineCatnip.desc", j["buildings.refineCatnip.desc"] || "");
+
 const esc = (s) => String(s).split("\\").join("\\\\").split('"').join("\\\"");
 let out = [
   "// GENERATED from orig res/i18n/en.json by the V2 view slice — display labels",

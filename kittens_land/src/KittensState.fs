@@ -46,7 +46,9 @@ type State =
       ConsoleMsgs: ConsoleMsg list
       ConsoleUnlocked: Set<string>
       QueueItems: QueueItem list
-      Opts: Game.Settings.OptsState }
+      Opts: Game.Settings.OptsState
+      // orig game.tabs visible flags — lowercase tabIds unlocked via unlock({tabs:[...]})
+      TabsUnlocked: Set<string> }
 
 let getRes (pool: Game.Types.ResPool) (name: string) : float =
     (Game.Resources.get pool name |> Option.map (fun r -> r.Value) |> Option.defaultValue 0.0)
@@ -224,7 +226,8 @@ let initSeeded (seed: int64) : State =
           ConsoleMsgs = []
           ConsoleUnlocked = Set.empty
           QueueItems = []
-          Opts = Game.Settings.freshOpts () }
+          Opts = Game.Settings.freshOpts ()
+          TabsUnlocked = Set.empty }
     fresh |> refreshCache
 
 let init () : State = initSeeded 20261002L
@@ -464,6 +467,8 @@ let buildSaveString (s: State) : string =
     for q in s.QueueItems do
         line (sprintf "q|%s|%s|%d" q.QType q.QName q.QValue)
     line (sprintf "opts|%s|%g" s.Opts.Notation s.Opts.BatchSize)
+    if not s.TabsUnlocked.IsEmpty then
+        line ("tabs|" + (s.TabsUnlocked |> Set.toList |> String.concat ","))
     for b in Game.Settings.settingsArr do
         line (sprintf "opt|%s|%d" b.Name (if s.Opts.Bools.[b.Name] then 1 else 0))
     sb.ToString()
@@ -583,6 +588,8 @@ let parseSave (text: string) : State option =
                     { s0 with QueueItems = s0.QueueItems @ [ { QType = parts.[1]; QName = parts.[2]; QValue = int parts.[3] } ] }
                 | "opts" when parts.Length >= 3 ->
                     { s0 with Opts = { s0.Opts with Notation = parts.[1]; BatchSize = float parts.[2] } }
+                | "tabs" when parts.Length >= 2 ->
+                    { s0 with TabsUnlocked = parts.[1].Split(',') |> Set.ofArray }
                 | "opt" when parts.Length >= 3 ->
                     { s0 with Opts = { s0.Opts with Bools = s0.Opts.Bools |> Map.add parts.[1] (parts.[2] = "1") } }
                 | _ -> s0)
@@ -611,6 +618,29 @@ let gatherCatnip (s: State) : State =
     let pool1, _ = Game.Resources.addResEvent s.CalendarDay "catnip" 1.0 s.Pool
     { s with Pool = pool1 }
 
+/// orig bld.refineCatnip + RefineCatnipButtonController: pay 100 catnip
+/// (50 with advancedRefinement), gain 1 wood x craft ratio
+let refineCatnip (s: State) : State =
+    let enriched =
+        (match s.Wpool.Upgrades |> Map.tryFind "advancedRefinement" with
+         | Some u -> u.Researched
+         | None -> false)
+    let price = if enriched then 50.0 else 100.0
+    if getRes s.Pool "catnip" < price then s
+    else
+        let ratio =
+            Game.Managers.getResCraftRatio s.Cache
+                { IronWill = s.IronWill
+                  LeaderTrait = None
+                  BurnedParagonRatio = Game.Prestige.getBurnedParagonRatio (resValue s "burnedParagon")
+                  MonarchyResearched =
+                    (match s.Spool.Policies |> Map.tryFind "monarchy" with Some p -> p.Researched | None -> false)
+                  BldVal = fun n -> (Game.Buildings.get s.Bpool n |> Option.map (fun b -> b.Val) |> Option.defaultValue 0) }
+                "wood"
+        let pool1 = Game.Resources.payPrices s.CalendarDay s.Pool [ ("catnip", price) ]
+        let pool2, _ = Game.Resources.addResEvent s.CalendarDay "wood" (1.0 + ratio) pool1
+        refreshCache { s with Pool = pool2 }
+
 /// Buy one unit of a building through the verified build path (pay + increment
 /// + unlocks/upgrades fan-out tail).
 let buyBuilding (name: string) (s: State) : State =
@@ -634,7 +664,8 @@ let buyBuilding (name: string) (s: State) : State =
                         Bpool = bp2
                         Spool = sp2
                         Wpool = wp2
-                        Vpool = { s2.Vpool with JobUnlocked = s2.Vpool.JobUnlocked |> Set.union (Set.ofList u.Jobs) } }
+                        Vpool = { s2.Vpool with JobUnlocked = s2.Vpool.JobUnlocked |> Set.union (Set.ofList u.Jobs) }
+                        TabsUnlocked = s2.TabsUnlocked |> Set.union (Set.ofList u.Tabs) }
                 | None -> s2
             let s4 =
                 match s2.Bpool.ByName.[name].Def.Upgrades with
@@ -704,7 +735,8 @@ let research (name: string) (s: State) : State =
                         Game.Managers.unlock u.Buildings u.Tabs u.Jobs u.Tech u.Policies u.Upgrades u.ZebraUpgrades u.Crafts
                             s2.Bpool s2.Spool s2.Wpool
                     { s2 with Bpool = bp2; Spool = sp2; Wpool = wp2;
-                              Vpool = { s2.Vpool with JobUnlocked = s2.Vpool.JobUnlocked |> Set.union (Set.ofList u.Jobs) } }
+                              Vpool = { s2.Vpool with JobUnlocked = s2.Vpool.JobUnlocked |> Set.union (Set.ofList u.Jobs) };
+                              TabsUnlocked = s2.TabsUnlocked |> Set.union (Set.ofList u.Tabs) }
                 | None -> s2
             | None -> s2
         refreshCache s3
@@ -763,7 +795,7 @@ let buyRU (name: string) (s: State) : State =
                 let bp2, sp2, wp2 =
                     Game.Managers.unlock u.Buildings u.Tabs u.Jobs u.Tech u.Policies u.Upgrades u.ZebraUpgrades u.Crafts
                         s1.Bpool s1.Spool s1.Wpool
-                { s1 with Bpool = bp2; Spool = sp2; Wpool = wp2 }
+                { s1 with Bpool = bp2; Spool = sp2; Wpool = wp2; TabsUnlocked = s1.TabsUnlocked |> Set.union (Set.ofList u.Tabs) }
             | None -> s1
         refreshCache s2
 
@@ -778,7 +810,7 @@ let buyZU (name: string) (s: State) : State =
                 let bp2, sp2, wp2 =
                     Game.Managers.unlock u.Buildings u.Tabs u.Jobs u.Tech u.Policies u.Upgrades u.ZebraUpgrades u.Crafts
                         s1.Bpool s1.Spool s1.Wpool
-                { s1 with Bpool = bp2; Spool = sp2; Wpool = wp2 }
+                { s1 with Bpool = bp2; Spool = sp2; Wpool = wp2; TabsUnlocked = s1.TabsUnlocked |> Set.union (Set.ofList u.Tabs) }
             | None -> s1
         refreshCache s2
 
@@ -1006,21 +1038,44 @@ let tick (s: State) : State =
         let dctx0 = dctxFor s3
         fst (Game.Diplomacy.update s3.Dpool dctx0 s3.Calendar.Year s3.Pool.KarmaKittens (fun () -> s.Rand ()))
     let s4 = { s3 with Pool = pool4; Wpool = wpool1; Dpool = dp1; Calendar = calendar1; Ticks = s3.Ticks + 1; CalendarDay = int calendar1.Day }
+    // orig tab-reveal side conditions: religion tab on first faith produced
+    // (religion.update), trade tab on first race contact (unlockRandomRace)
+    let s4 =
+        { s4 with
+            TabsUnlocked =
+                s4.TabsUnlocked
+                |> (fun tabs ->
+                    if getRes s4.Pool "faith" > 0.0 then tabs |> Set.add "religion" else tabs)
+                |> (fun tabs ->
+                    if Game.Diplomacy.hasUnlockedRaces s4.Dpool then tabs |> Set.add "trade" else tabs) }
     let s5 = queueTick s4
     refreshCache s5
 
 // --- view model -------------------------------------------------------------
 
-type ResRow = { Name: string; Value: float; Max: float; Show: bool }
+type ResRow = { Name: string; Title: string; Value: float; Max: float; PerTick: float; Show: bool }
 
 let resRows (s: State) : ResRow list =
     s.Pool.Order
-    |> List.truncate 10
     |> List.map (fun n ->
-        { Name = n
-          Value = getRes s.Pool n
-          Max = getResMax s.Pool n
-          Show = (match Game.Resources.get s.Pool n with Some r -> r.Unlocked || r.Value > 0.0 || r.Def.Name = "catnip" | None -> false) })
+        match Game.Resources.get s.Pool n with
+        | None -> { Name = n; Title = n; Value = 0.0; Max = 0.0; PerTick = 0.0; Show = false }
+        | Some r ->
+            // orig WResourceRow.getIsResInMainTable: unlocked (kittens also when
+            // it has a max), skip resources once their craft recipe is unlocked
+            // (they move to the craft table)
+            let inCraftTable =
+                (match s.Wpool.Crafts |> Map.tryFind n with
+                 | Some c -> c.Unlocked
+                 | None -> false)
+            let hasVisibility = r.Unlocked || (n = "kittens" && r.MaxValue > 0.0)
+            let perTick = if r.Def.CalculatePerTick then r.PerTickCached else 0.0
+            { Name = n
+              Title = Game.Labels.get ("res." + n)
+              Value = r.Value
+              Max = r.MaxValue
+              PerTick = perTick
+              Show = hasVisibility && not inCraftTable })
 
 type PriceRow = { Resource: string; Val: float }
 
@@ -1037,7 +1092,7 @@ type UpgradeRow =
     { Name: string; Label: string; Prices: PriceRow list; Unlocked: bool; Researched: bool; Enabled: bool }
 
 type CraftRow =
-    { Name: string; Label: string; Prices: PriceRow list; Value: float; Unlocked: bool }
+    { Name: string; Label: string; Prices: PriceRow list; Value: float; Unlocked: bool; AllCount: int }
 
 let jobRows (s: State) : JobRow list =
     Game.Catalog.Village.jobDefs
@@ -1076,7 +1131,9 @@ let craftRows (s: State) : CraftRow list =
         match s.Wpool.Crafts |> Map.tryFind n with
         | Some c when c.Unlocked ->
             let prices = c.Def.Prices |> List.map (fun p -> { Resource = p.Resource; Val = p.Val })
-            Some { Name = n; Label = Game.Labels.get ("craft." + n); Prices = prices; Value = c.Value; Unlocked = true }
+            let allCount =
+                Game.Managers.getCraftAllCount s.Cache (traditionResearched s) (resValue s) s.Wpool n |> int
+            Some { Name = n; Label = Game.Labels.get ("craft." + n); Prices = prices; Value = c.Value; Unlocked = true; AllCount = allCount }
         | _ -> None)
 
 type RaceRow =
@@ -1203,4 +1260,40 @@ let buildingRows (s: State) : BuildingRow list =
                 ))
 
 // --- display formatters (game-12 verification port) ------------------------
+
+/// orig game.tabs visible flags — which mid-column tabs the player sees
+/// (Bonfire always; others revealed via unlock({tabs}) or side conditions)
+let tabVisible (s: State) (tabId: string) : bool =
+    match tabId with
+    | "Bonfire" -> true
+    | "Village" -> s.TabsUnlocked.Contains "village"
+    | "Science" -> s.TabsUnlocked.Contains "science"
+    | "Workshop" -> s.TabsUnlocked.Contains "workshop"
+    | "Trade" -> s.TabsUnlocked.Contains "trade"
+    | "Religion" -> s.TabsUnlocked.Contains "religion"
+    | "Space" -> s.TabsUnlocked.Contains "space"
+    | "Time" -> s.TabsUnlocked.Contains "time"
+    // right-column queue tab unlocks with agriculture (orig tech "agriculture")
+    | "Queue" -> s.TabsUnlocked.Contains "queue"
+    // orig: adjustmentBureau perk researched or reserved
+    | "Challenges" ->
+        (match s.Ppool.Perks |> Map.tryFind "adjustmentBureau" with
+         | Some p -> p.Researched
+         | None -> false)
+    | _ -> false
+
+/// orig ui.updateCalendar: season title only until the "calendar" tech is
+/// researched, then "Year {0} - {1}, day {2}" (raw 0-based values, like orig)
+let calendarText (s: State) : string =
+    let seasonTitle = Game.Labels.get ("season." + Game.Calendar.seasons.[s.Calendar.Season].Name)
+    let hasCalendarTech =
+        (match s.Spool.Techs |> Map.tryFind "calendar" with
+         | Some t -> t.Researched
+         | None -> false)
+    if hasCalendarTech then
+        (Game.Labels.get "calendar.year.full")
+            .Replace("{0}", string (int s.Calendar.Year))
+            .Replace("{1}", seasonTitle)
+            .Replace("{2}", string (int s.Calendar.Day))
+    else seasonTitle
 
