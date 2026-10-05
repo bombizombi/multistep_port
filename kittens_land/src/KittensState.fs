@@ -1244,9 +1244,11 @@ let buildingRows (s: State) : BuildingRow list =
         match Game.Buildings.get s.Bpool n with
         | None -> None
         | Some b ->
-            // show unlocked buildings; default-unlockable ones (field, hut,
-            // library...) stay visible grayed out so the player sees the goals
-            if not b.Unlocked && not b.Def.DefaultUnlockable then None
+            // orig BuildingBtnController.updateVisible (core.js L1987):
+            // model.visible = meta.unlocked — no defaultUnlockable override.
+            // Buttons appear when Game.Buildings.update (run every tick)
+            // flips Unlocked once stock reaches price x unlockRatio.
+            if not b.Unlocked then None
             else
                 let prices = Game.Buildings.getAllPrices s.Cache (pctx s) b
                 let affordable = Game.Resources.hasRes s.Pool (prices |> List.map (fun p -> (p.Resource, p.Val))) 0.0
