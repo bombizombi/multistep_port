@@ -192,7 +192,10 @@ let view (model: Model) (dispatch: Msg -> unit) =
         Html.div [
             prop.key key
             prop.className (if enabled then "btn nosel modern" else "btn nosel modern disabled")
-            prop.style [ style.position.relative; style.display.inlineBlock; style.marginRight 8; style.marginBottom 8 ]
+            // orig Button.render: display block, fixed 264px — tabs are single
+            // column unless the tab's renderer splits into left/right rows
+            // (Bonfire's "all" group does; see bldTopContainer below)
+            prop.style [ style.position.relative; style.display.block; style.marginBottom 8; style.width 264 ]
             prop.tabIndex 0
             if tip.IsSome then yield! tipHandlers tip.Value
             prop.onClick (fun _ -> if enabled then onClick ())
@@ -569,15 +572,43 @@ let view (model: Model) (dispatch: Msg -> unit) =
                     (fun () -> dispatch (ChallengeToggle c.Name)))
         | _ ->
             [
-                modernBtn "gather" (Game.Labels.get "bld.gatherCatnip") "" true
-                    (Some { Desc = Game.Labels.get "bld.gatherCatnip.desc"; Flavor = None; Prices = [] })
-                    (fun () -> dispatch Gather)
-                let refinePrice = 100.0
-                modernBtn "refine" (Game.Labels.get "bld.refineCatnip") "" (getRes s.Pool "catnip" >= refinePrice)
-                    (Some { Desc = Game.Labels.get "bld.refineCatnip.desc"; Flavor = None;
-                            Prices = kittens_land.KittensState.priceLines s false [ { Resource = "catnip"; Val = refinePrice } ] })
-                    (fun () -> dispatch Refine)
-                yield! List.map buildingRow (kittens_land.KittensState.buildingRows s)
+                // orig BonfireTab: the "all" group renders with twoRows = true —
+                // a table with left/right cells, buttons alternating even/odd
+                // (initRenderer + getElementContainer, buildings.js L3690)
+                let btns =
+                    [
+                        yield modernBtn "gather" (Game.Labels.get "bld.gatherCatnip") "" true
+                                (Some { Desc = Game.Labels.get "bld.gatherCatnip.desc"; Flavor = None; Prices = [] })
+                                (fun () -> dispatch Gather)
+                        let refinePrice = 100.0
+                        yield modernBtn "refine" (Game.Labels.get "bld.refineCatnip") "" (getRes s.Pool "catnip" >= refinePrice)
+                                (Some { Desc = Game.Labels.get "bld.refineCatnip.desc"; Flavor = None;
+                                        Prices = kittens_land.KittensState.priceLines s false [ { Resource = "catnip"; Val = refinePrice } ] })
+                                (fun () -> dispatch Refine)
+                        yield! List.map buildingRow (kittens_land.KittensState.buildingRows s)
+                    ]
+                let left = btns |> List.indexed |> List.filter (fun (i, _) -> i % 2 = 0) |> List.map snd
+                let right = btns |> List.indexed |> List.filter (fun (i, _) -> i % 2 = 1) |> List.map snd
+                Html.div [
+                    prop.className "bldTopContainer"
+                    prop.children [
+                        Html.table [
+                            prop.style [ style.width (length.percent 100); style.borderCollapse.collapse; style.custom ("cellSpacing", "0") ]
+                            prop.children [
+                                Html.tr [
+                                    Html.td [
+                                        prop.style [ style.verticalAlign.top ]
+                                        prop.children left
+                                    ]
+                                    Html.td [
+                                        prop.style [ style.verticalAlign.top ]
+                                        prop.children right
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
             ]
 
     // --- mid column ----------------------------------------------------------
