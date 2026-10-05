@@ -866,6 +866,28 @@ let labels : Map<string, string> =
     ("res.toZero", "To zero");
     ("res.toCap", "To cap");
     ("res.toNextKitten", "To next kitten");
+    ("vtab.outpost", "Outpost");
+    ("vtab.smallvillage", "Small Village");
+    ("vtab.village", "Village");
+    ("vtab.settlement", "Settlement");
+    ("vtab.smalltown", "Small Town");
+    ("vtab.town", "Town");
+    ("vtab.city", "City");
+    ("vtab.metropolis", "Metropolis");
+    ("vtab.megapolis", "Megapolis");
+    ("vtab.empire", "Empire");
+    ("vtab.imperium", "Imperium");
+    ("vtab.dominion", "Dominion");
+    ("vtab.hegemony", "Hegemony");
+    ("vtab.federation", "Federation");
+    ("vtab.reich", "Reich");
+    ("vtab.society", "Society");
+    ("vtab.civilisation", "Civilisation");
+    ("vtab.consortium", "Consortium");
+    ("vtab.council", "Planetary Council");
+    ("vtab.union", "Galactic Union");
+    ("vtab.elders", "Elders");
+    ("vtab.deities", "Deities");
   ]
 
 let get (key: string) : string = labels |> Map.tryFind key |> Option.defaultValue key

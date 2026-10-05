@@ -80,6 +80,20 @@ for (const [k, v] of Object.entries({
   "res.toNextKitten": "To next kitten"
 })) add(k, v);
 
+// village tab title ladder (village.js getVillageTitle)
+for (const [k, v] of Object.entries({
+  outpost: "Outpost", smallvillage: "Small Village", village: "Village",
+  settlement: "Settlement", smalltown: "Small Town", town: "Town",
+  city: "City", metropolis: "Metropolis", megapolis: "Megapolis",
+  empire: "Empire", imperium: "Imperium", dominion: "Dominion",
+  hegemony: "Hegemony", federation: "Federation", reich: "Reich",
+  society: "Society", civilisation: "Civilisation", consortium: "Consortium",
+  council: "Planetary Council", union: "Galactic Union", elders: "Elders",
+  deities: "Deities"
+})) {
+  if (j[`village.tab.title.` + k]) add(`vtab.` + k, j[`village.tab.title.` + k]);
+}
+
 const esc = (s) => String(s).split("\\").join("\\\\").split('"').join("\\\"");
 let out = [
   "// GENERATED from orig res/i18n/en.json by the V2 view slice — display labels",

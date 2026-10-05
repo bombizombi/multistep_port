@@ -1133,6 +1133,40 @@ type TipPriceLine =
 
 // toDisplaySeconds is already ported (game-12 verified) further up this module
 
+/// orig village.getVillageTitle (js/village.js L5977): tab title by population
+let villageTitle (kittens: int) : string =
+    let key =
+        match kittens with
+        | k when k > 10000 -> "deities"
+        | k when k > 5000 -> "elders"
+        | k when k > 2000 -> "union"
+        | k when k > 1500 -> "council"
+        | k when k > 1200 -> "consortium"
+        | k when k > 1000 -> "civilisation"
+        | k when k > 900 -> "society"
+        | k when k > 800 -> "reich"
+        | k when k > 700 -> "federation"
+        | k when k > 600 -> "hegemony"
+        | k when k > 500 -> "dominion"
+        | k when k > 400 -> "imperium"
+        | k when k > 300 -> "empire"
+        | k when k > 250 -> "megapolis"
+        | k when k > 200 -> "metropolis"
+        | k when k > 150 -> "city"
+        | k when k > 100 -> "town"
+        | k when k > 50 -> "smalltown"
+        | k when k > 30 -> "settlement"
+        | k when k > 15 -> "village"
+        | k when k > 0 -> "smallvillage"
+        | _ -> "outpost"
+    Game.Labels.get ("vtab." + key)
+
+/// orig villageTab.updateTab: title plus " (N)" free-kitten warning
+let villageTabLabel (s: State) : string * int =
+    let kittens = s.Vpool.Kittens.Length
+    let free = Game.Managers.getFreeKittens s.Vpool
+    (villageTitle kittens, (if free > 0 then free else 0))
+
 /// resource-panel value display: small per-tick rates (0.018) need real digits,
 /// the old one-decimal fmt rendered them as "0.0"
 let fmtRes (v: float) : string =

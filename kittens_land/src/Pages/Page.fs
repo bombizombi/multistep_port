@@ -566,13 +566,27 @@ let view (model: Model) (dispatch: Msg -> unit) =
                     prop.className "tabsContainer"
                     prop.children [
                         for i, t in List.indexed visibleTabs do
+                            // orig villageTab.updateTab: dynamic title ladder +
+                            // red " (N)" free-kittens warning span
+                            let label =
+                                if t = "Village" then
+                                    let title, free = kittens_land.KittensState.villageTabLabel s
+                                    if free > 0 then
+                                        Html.span [
+                                            prop.children [
+                                                Html.span [ prop.text title ]
+                                                Html.span [ prop.className "genericWarning"; prop.text ("(" + string free + ")") ]
+                                            ]
+                                        ]
+                                    else Html.span [ prop.text title ]
+                                else Html.span [ prop.text (Game.Labels.get ("tab." + t)) ]
                             Html.a [
                                 prop.key t
                                 prop.className (if t = activeTab then "tab " + t + " activeTab" else "tab " + t)
                                 prop.href "#"
                                 prop.style [ style.whitespace.nowrap ]
                                 prop.onClick (fun _ -> dispatch (SetTab t))
-                                prop.text (Game.Labels.get ("tab." + t))
+                                prop.children [ label ]
                             ]
                             if i < List.length visibleTabs - 1 then
                                 Html.span [ prop.key ("sep" + t); prop.text " | " ]

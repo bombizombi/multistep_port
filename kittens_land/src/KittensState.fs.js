@@ -1843,6 +1843,111 @@ export function TipPriceLine_$reflection() {
 }
 
 /**
+ * orig village.getVillageTitle (js/village.js L5977): tab title by population
+ */
+export function villageTitle(kittens) {
+    let k, k_1, k_2, k_3, k_4, k_5, k_6, k_7, k_8, k_9, k_10, k_11, k_12, k_13, k_14, k_15, k_16, k_17, k_18, k_19, k_20;
+    let key;
+    if ((k = (kittens | 0), k > 10000)) {
+        const k_21 = kittens | 0;
+        key = "deities";
+    }
+    else if ((k_1 = (kittens | 0), k_1 > 5000)) {
+        const k_22 = kittens | 0;
+        key = "elders";
+    }
+    else if ((k_2 = (kittens | 0), k_2 > 2000)) {
+        const k_23 = kittens | 0;
+        key = "union";
+    }
+    else if ((k_3 = (kittens | 0), k_3 > 1500)) {
+        const k_24 = kittens | 0;
+        key = "council";
+    }
+    else if ((k_4 = (kittens | 0), k_4 > 1200)) {
+        const k_25 = kittens | 0;
+        key = "consortium";
+    }
+    else if ((k_5 = (kittens | 0), k_5 > 1000)) {
+        const k_26 = kittens | 0;
+        key = "civilisation";
+    }
+    else if ((k_6 = (kittens | 0), k_6 > 900)) {
+        const k_27 = kittens | 0;
+        key = "society";
+    }
+    else if ((k_7 = (kittens | 0), k_7 > 800)) {
+        const k_28 = kittens | 0;
+        key = "reich";
+    }
+    else if ((k_8 = (kittens | 0), k_8 > 700)) {
+        const k_29 = kittens | 0;
+        key = "federation";
+    }
+    else if ((k_9 = (kittens | 0), k_9 > 600)) {
+        const k_30 = kittens | 0;
+        key = "hegemony";
+    }
+    else if ((k_10 = (kittens | 0), k_10 > 500)) {
+        const k_31 = kittens | 0;
+        key = "dominion";
+    }
+    else if ((k_11 = (kittens | 0), k_11 > 400)) {
+        const k_32 = kittens | 0;
+        key = "imperium";
+    }
+    else if ((k_12 = (kittens | 0), k_12 > 300)) {
+        const k_33 = kittens | 0;
+        key = "empire";
+    }
+    else if ((k_13 = (kittens | 0), k_13 > 250)) {
+        const k_34 = kittens | 0;
+        key = "megapolis";
+    }
+    else if ((k_14 = (kittens | 0), k_14 > 200)) {
+        const k_35 = kittens | 0;
+        key = "metropolis";
+    }
+    else if ((k_15 = (kittens | 0), k_15 > 150)) {
+        const k_36 = kittens | 0;
+        key = "city";
+    }
+    else if ((k_16 = (kittens | 0), k_16 > 100)) {
+        const k_37 = kittens | 0;
+        key = "town";
+    }
+    else if ((k_17 = (kittens | 0), k_17 > 50)) {
+        const k_38 = kittens | 0;
+        key = "smalltown";
+    }
+    else if ((k_18 = (kittens | 0), k_18 > 30)) {
+        const k_39 = kittens | 0;
+        key = "settlement";
+    }
+    else if ((k_19 = (kittens | 0), k_19 > 15)) {
+        const k_40 = kittens | 0;
+        key = "village";
+    }
+    else if ((k_20 = (kittens | 0), k_20 > 0)) {
+        const k_41 = kittens | 0;
+        key = "smallvillage";
+    }
+    else {
+        key = "outpost";
+    }
+    return get$_2("vtab." + key);
+}
+
+/**
+ * orig villageTab.updateTab: title plus " (N)" free-kitten warning
+ */
+export function villageTabLabel(s) {
+    const kittens = length(s.Vpool.Kittens) | 0;
+    const free = getFreeKittens(s.Vpool) | 0;
+    return [villageTitle(kittens), (free > 0) ? free : 0];
+}
+
+/**
  * resource-panel value display: small per-tick rates (0.018) need real digits,
  * the old one-decimal fmt rendered them as "0.0"
  */
