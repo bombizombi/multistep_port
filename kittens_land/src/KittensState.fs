@@ -47,6 +47,9 @@ type State =
       ConsoleUnlocked: Set<string>
       QueueItems: QueueItem list
       Opts: Game.Settings.OptsState
+      // orig res.isHidden toggles (resource settings edit mode) + showHiddenResources
+      ResHidden: Set<string>
+      ShowHiddenRes: bool
       // orig game.tabs visible flags — lowercase tabIds unlocked via unlock({tabs:[...]})
       TabsUnlocked: Set<string> }
 
@@ -227,6 +230,8 @@ let initSeeded (seed: int64) : State =
           ConsoleUnlocked = Set.empty
           QueueItems = []
           Opts = Game.Settings.freshOpts ()
+          ResHidden = Set.empty
+          ShowHiddenRes = false
           TabsUnlocked = Set.empty }
     fresh |> refreshCache
 
@@ -469,6 +474,9 @@ let buildSaveString (s: State) : string =
     line (sprintf "opts|%s|%g" s.Opts.Notation s.Opts.BatchSize)
     if not s.TabsUnlocked.IsEmpty then
         line ("tabs|" + (s.TabsUnlocked |> Set.toList |> String.concat ","))
+    if not s.ResHidden.IsEmpty then
+        line ("reshid|" + (s.ResHidden |> Set.toList |> String.concat ","))
+    line (sprintf "shh|%d" (if s.ShowHiddenRes then 1 else 0))
     for b in Game.Settings.settingsArr do
         line (sprintf "opt|%s|%d" b.Name (if s.Opts.Bools.[b.Name] then 1 else 0))
     sb.ToString()
@@ -590,6 +598,10 @@ let parseSave (text: string) : State option =
                     { s0 with Opts = { s0.Opts with Notation = parts.[1]; BatchSize = float parts.[2] } }
                 | "tabs" when parts.Length >= 2 ->
                     { s0 with TabsUnlocked = parts.[1].Split(',') |> Set.ofArray }
+                | "reshid" when parts.Length >= 2 ->
+                    { s0 with ResHidden = parts.[1].Split(',') |> Set.ofArray }
+                | "shh" when parts.Length >= 2 ->
+                    { s0 with ShowHiddenRes = parts.[1] = "1" }
                 | "opt" when parts.Length >= 3 ->
                     { s0 with Opts = { s0.Opts with Bools = s0.Opts.Bools |> Map.add parts.[1] (parts.[2] = "1") } }
                 | _ -> s0)
@@ -617,6 +629,17 @@ let applyLoaded (loaded: State) (old: State) : State =
 let gatherCatnip (s: State) : State =
     let pool1, _ = Game.Resources.addResEvent s.CalendarDay "catnip" 1.0 s.Pool
     { s with Pool = pool1 }
+
+/// orig resPool.setResourceIsHidden: per-resource visibility toggle (the gear
+/// icon edit mode in the resource panel)
+let toggleResHidden (name: string) (s: State) : State =
+    if s.ResHidden.Contains name
+    then { s with ResHidden = s.ResHidden.Remove name }
+    else { s with ResHidden = s.ResHidden.Add name }
+
+/// orig resPool.showHiddenResources toggle ("show hidden" checkbox in edit mode)
+let setShowHiddenRes (v: bool) (s: State) : State =
+    { s with ShowHiddenRes = v }
 
 /// orig bld.refineCatnip + RefineCatnipButtonController: pay 100 catnip
 /// (50 with advancedRefinement), gain 1 wood x craft ratio
@@ -1053,21 +1076,25 @@ let tick (s: State) : State =
 
 // --- view model -------------------------------------------------------------
 
-type ResRow = { Name: string; Title: string; Value: float; Max: float; PerTick: float; Show: bool }
+type ResRow =
+    { Name: string; Title: string; Value: float; Max: float; PerTick: float; Hidden: bool; Show: bool }
 
 let resRows (s: State) : ResRow list =
     s.Pool.Order
     |> List.map (fun n ->
         match Game.Resources.get s.Pool n with
-        | None -> { Name = n; Title = n; Value = 0.0; Max = 0.0; PerTick = 0.0; Show = false }
+        | None -> { Name = n; Title = n; Value = 0.0; Max = 0.0; PerTick = 0.0; Hidden = false; Show = false }
         | Some r ->
             // orig WResourceRow.getIsResInMainTable: unlocked (kittens also when
-            // it has a max), skip resources once their craft recipe is unlocked
-            // (they move to the craft table)
-            let inCraftTable =
-                (match s.Wpool.Crafts |> Map.tryFind n with
-                 | Some c -> c.Unlocked
-                 | None -> false)
+            // it has a max); craftable resources migrate to the craft table once
+            // their recipe is unlocked — EXCEPT wood, which by orig rule
+            // (isNormalCraftableResource: craftable && name != "wood") appears
+            // in BOTH the main table and the craft table
+            let craftMigrated =
+                r.Def.Craftable && n <> "wood"
+                && (match s.Wpool.Crafts |> Map.tryFind n with
+                    | Some c -> c.Unlocked
+                    | None -> false)
             let hasVisibility = r.Unlocked || (n = "kittens" && r.MaxValue > 0.0)
             let perTick = if r.Def.CalculatePerTick then r.PerTickCached else 0.0
             { Name = n
@@ -1075,7 +1102,8 @@ let resRows (s: State) : ResRow list =
               Value = r.Value
               Max = r.MaxValue
               PerTick = perTick
-              Show = hasVisibility && not inCraftTable })
+              Hidden = s.ResHidden.Contains n
+              Show = hasVisibility && not craftMigrated })
 
 type PriceRow = { Resource: string; Val: float }
 
@@ -1131,9 +1159,13 @@ let craftRows (s: State) : CraftRow list =
         match s.Wpool.Crafts |> Map.tryFind n with
         | Some c when c.Unlocked ->
             let prices = c.Def.Prices |> List.map (fun p -> { Resource = p.Resource; Val = p.Val })
-            let allCount =
-                Game.Managers.getCraftAllCount s.Cache (traditionResearched s) (resValue s) s.Wpool n |> int
-            Some { Name = n; Label = Game.Labels.get ("craft." + n); Prices = prices; Value = c.Value; Unlocked = true; AllCount = allCount }
+            // orig WCraftRow: hidden resources drop out of the craft table too,
+            // except wood which is toggled separately (isHiddenFromCrafting)
+            if s.ResHidden.Contains n && n <> "wood" then None
+            else
+                let allCount =
+                    Game.Managers.getCraftAllCount s.Cache (traditionResearched s) (resValue s) s.Wpool n |> int
+                Some { Name = n; Label = Game.Labels.get ("craft." + n); Prices = prices; Value = c.Value; Unlocked = true; AllCount = allCount }
         | _ -> None)
 
 type RaceRow =

@@ -18,6 +18,7 @@ type Model =
       Toast: string
       Tooltip: (float * float * TipData) option
       OptionsOpen: bool
+      ResEditMode: bool
       RightTab: string }
 
 type Msg =
@@ -46,6 +47,9 @@ type Msg =
     | SetSpeed of float
     | SetTip of (float * float * TipData) option
     | ToggleOptions
+    | ToggleResEditMode
+    | ToggleResHidden of string
+    | SetShowHiddenRes of bool
     | SaveGame
     | LoadGame
     | ClearConsole
@@ -73,6 +77,7 @@ let init () =
       Toast = ""
       Tooltip = None
       OptionsOpen = false
+      ResEditMode = false
       RightTab = "Log" },
     Command.batch [ Command.none; tickCmd 1.0 1 ]
 
@@ -106,6 +111,9 @@ let update (msg: Msg) (model: Model) =
     | SetSpeed mult -> { model with Speed = mult }, Command.none
     | SetTip tip -> { model with Tooltip = tip }, Command.none
     | ToggleOptions -> { model with OptionsOpen = not model.OptionsOpen }, Command.none
+    | ToggleResEditMode -> { model with ResEditMode = not model.ResEditMode }, Command.none
+    | ToggleResHidden name -> { model with S = kittens_land.KittensState.toggleResHidden name model.S }, Command.none
+    | SetShowHiddenRes v -> { model with S = kittens_land.KittensState.setShowHiddenRes v model.S }, Command.none
     | SaveGame ->
         Browser.Dom.window.localStorage.setItem(kittens_land.KittensState.saveKey, kittens_land.KittensState.buildSaveString model.S)
         { model with Toast = "Game saved" }, Command.none
@@ -222,17 +230,31 @@ let view (model: Model) (dispatch: Msg -> unit) =
     // --- left column: resource + craft tables --------------------------------
 
     let resRow (r: kittens_land.KittensState.ResRow) =
+        // hidden resources show only in edit mode or when "show hidden" is on
         if not r.Show then Html.none
+        elif r.Hidden && not model.ResEditMode && not s.ShowHiddenRes then Html.none
         else
             let perTick =
                 if r.PerTick <> 0.0 then fmtSigned r.PerTick
-                elif r.Name = "kittens" then ""
                 else ""
             Html.div [
                 prop.key r.Name
                 prop.role "row"
-                prop.className ("res-row resource_" + r.Name)
+                prop.className ("res-row resource_" + r.Name + (if r.Hidden then " hidden" else ""))
                 prop.children [
+                    if model.ResEditMode then
+                        Html.div [
+                            prop.className "res-cell"
+                            prop.children [
+                                Html.input [
+                                    prop.type'.checkbox
+                                    prop.isChecked (not r.Hidden)
+                                    prop.title ("Toggle " + r.Title)
+                                    prop.style [ style.display.inlineBlock ]
+                                    prop.onChange (fun (_: bool) -> dispatch (ToggleResHidden r.Name))
+                                ]
+                            ]
+                        ]
                     Html.div [
                         prop.className "res-cell resource-name"
                         prop.title (r.Title + " " + fmt r.Value + " " + perTick)
@@ -288,10 +310,35 @@ let view (model: Model) (dispatch: Msg -> unit) =
                     prop.style [ style.marginTop 15 ]
                     prop.children [
                         Html.div [
+                            prop.className "res-toolbar right"
+                            prop.style [ style.textAlign.right; style.marginBottom 4 ]
+                            prop.children [
+                                Html.a [
+                                    prop.className (if model.ResEditMode then "link toggled" else "link")
+                                    prop.title "Resource settings"
+                                    prop.href "#"
+                                    prop.onClick (fun _ -> dispatch ToggleResEditMode)
+                                    prop.children [ Html.div [ prop.className "svg-icon gear" ] ]
+                                ]
+                            ]
+                        ]
+                        Html.div [
                             prop.className "res-table"
                             prop.role "grid"
                             prop.children (kittens_land.KittensState.resRows s |> List.map resRow)
                         ]
+                        if model.ResEditMode then
+                            Html.div [
+                                prop.className "res-toggle-hidden"
+                                prop.children [
+                                    Html.input [
+                                        prop.type'.checkbox
+                                        prop.isChecked s.ShowHiddenRes
+                                        prop.onChange (fun (v: bool) -> dispatch (SetShowHiddenRes v))
+                                    ]
+                                    Html.label [ prop.style [ style.marginLeft 6 ]; prop.text "show hidden resources" ]
+                                ]
+                            ]
                     ]
                 ]
                 if workshopBuilt then
