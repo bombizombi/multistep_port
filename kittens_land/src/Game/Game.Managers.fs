@@ -721,8 +721,9 @@ let learnSkills (ctx: SkillContext) (pool: VillagePool) : VillagePool =
     { pool with Kittens = updated }
 
 /// orig sim.update(kittensPerTick, times): births from progress accumulation.
-let simUpdate (maxKittens: int) (kittensPerTick: float) (times: int) (rand: unit -> float) (pool: VillagePool) : VillagePool =
+let simUpdate (maxKittens: int) (kittensPerTick: float) (times: int) (rand: unit -> float) (pool: VillagePool) : VillagePool * int =
     let mutable pool = pool
+    let mutable born = 0
     if pool.Kittens.Length < maxKittens then
         pool <- { pool with NextKittenProgress = pool.NextKittenProgress + float times * kittensPerTick }
         if pool.NextKittenProgress >= 1.0 then
@@ -731,11 +732,15 @@ let simUpdate (maxKittens: int) (kittensPerTick: float) (times: int) (rand: unit
             for _ in 1..kittensToAdd do
                 if pool.Kittens.Length < maxKittens then
                     pool <- addKitten rand pool
+                    born <- born + 1
             if pool.Kittens.Length >= maxKittens then
                 pool <- { pool with NextKittenProgress = 0.0 }
     // skill learning lives in learnSkills (village-10/12) — the runner calls
-    // it after simUpdate with the full context (exp, NN spread, engineer gate)
-    { pool with Kittens = pool.Kittens }
+    // it after simUpdate with the full context (exp, NN spread, engineer gate);
+    // returns the birth count so the runner can post orig's
+    // "village.msg.kitten.has.joined" message (fired per kitten while
+    // maxKittens <= 10 && times == 1)
+    { pool with Kittens = pool.Kittens }, born
 
 /// orig village.assignJob (manager level): amt capped by free kittens and the
 /// job limit (manager default 100000 here); the counter bumps by the capped amt

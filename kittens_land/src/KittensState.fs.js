@@ -34,6 +34,8 @@ import { item as item_1 } from "../.elmish-land/App/fable_modules/fable-library-
 import { op_UnaryNegation_Int32, parse as parse_1 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Int32.js";
 import { buildingDefs as buildingDefs_1, programDefs } from "./Game/Game.Catalog.Space.fs.js";
 import { updateHappiness, HappinessContext, freshHappinessContext } from "./Game/Game.Happiness.fs.js";
+import { toList as toList_2 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Seq.js";
+import { rangeDouble } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Range.js";
 import { get$ as get$_2 } from "./Game.Labels.fs.js";
 import { ruDefs, raceDefs } from "./Game/Game.Catalog.World.fs.js";
 
@@ -1022,7 +1024,7 @@ export function parseSave(text) {
                 }
                 switch (matchResult_1) {
                     case 0:
-                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, (bind$0040 = s0.Calendar, new CalendarState(parse(item_1(1, parts)), bind$0040.Day, bind$0040.Season, bind$0040.Weather, bind$0040.Cycle, bind$0040.CycleYear, bind$0040.EventChance, parse_1(item_1(3, parts), 511, false, 32), bind$0040.CryptoPrice, bind$0040.ObserveRemainingTime)), s0.Cache, s0.CalendarDay, (parts.length > 4) ? parse_1(item_1(4, parts), 511, false, 32) : 0, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.TabsUnlocked);
+                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, (bind$0040 = s0.Calendar, new CalendarState(parse(item_1(1, parts)), bind$0040.Day, parse_1(item_1(2, parts), 511, false, 32), bind$0040.Weather, bind$0040.Cycle, bind$0040.CycleYear, bind$0040.EventChance, parse_1(item_1(3, parts), 511, false, 32), bind$0040.CryptoPrice, bind$0040.ObserveRemainingTime)), s0.Cache, s0.CalendarDay, (parts.length > 4) ? parse_1(item_1(4, parts), 511, false, 32) : 0, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.TabsUnlocked);
                     case 1:
                         return new State((bind$0040_1 = s0.Pool, new ResPool(bind$0040_1.Order, add_1(item_1(1, parts), (bind$0040_2 = FSharpMap__get_Item(s0.Pool.ByName, item_1(1, parts)), new ResourceState(bind$0040_2.Def, parse(item_1(2, parts)), item_1(3, parts) === "1", bind$0040_2.MaxValue, bind$0040_2.PerTickCached)), s0.Pool.ByName), bind$0040_1.KarmaKittens, bind$0040_1.EnergyProd, bind$0040_1.EnergyWinterProd, bind$0040_1.EnergyCons)), s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.TabsUnlocked);
                     case 2:
@@ -1703,7 +1705,9 @@ export function tick(s) {
     const vpool1 = starvationStep(catnipVal, catnipPerTickTrue, 5, false, maxKittens, vpool0);
     const growthRate = starving ? 0 : kittensPerTick;
     const beforeBirths = length(vpool1.Kittens) | 0;
-    const vpool2 = simUpdate(maxKittens, growthRate, 1, s.Rand, vpool1);
+    const patternInput = simUpdate(maxKittens, growthRate, 1, s.Rand, vpool1);
+    const vpool2 = patternInput[0];
+    const births = patternInput[1] | 0;
     const skillCtx = new SkillContext(false, (matchValue_2 = tryFind("internet", s2.Wpool.Upgrades), (matchValue_2 == null) ? false : ((u = matchValue_2, u.Researched))), (matchValue_3 = tryFind("neuralNetworks", s2.Wpool.Upgrades), (matchValue_3 == null) ? false : ((u_1 = matchValue_3, u_1.Researched))), getEffect_1(s2.Cache, "skillXP"), getEffect_1(s2.Cache, "maxKittensRatio"), s2.CalendarDay, (n_1) => (defaultArg(tryFind(n_1, vpool2.JobValues), 0) | 0), (n_2) => FSharpSet__Contains(vpool2.JobUnlocked, n_2), 1);
     const vpool3 = learnSkills(skillCtx, vpool2);
     const kittensRes = FSharpMap__get_Item(s2.Pool.ByName, "kittens");
@@ -1744,24 +1748,25 @@ export function tick(s) {
     const hctx = new HappinessContext((name_2) => getEffect_1(s2.Cache, name_2), freshHappinessContext.FascismResearched, s2.Calendar.FestivalDays, freshHappinessContext.Karma, freshHappinessContext.UpfrontPaymentResearched, luxCount, 0, freshHappinessContext.ElderBoxWithPaper, freshHappinessContext.ConsumableLuxuryCount);
     const vpool4 = new VillagePool(vpool3.Kittens, vpool3.NextKittenProgress, vpool3.MaxKittens, vpool3.JobValues, vpool3.JobUnlocked, updateHappiness(hctx, length(vpool3.Kittens), vpool3.MaxKittens), vpool3.DeathTimeout, vpool3.LeaderSeed, vpool3.Traits);
     const s3 = new State(pool2, s2.Bpool, s2.Spool, s2.Wpool, vpool4, s2.Rpool, s2.Cpool, s2.Ppool, s2.Dpool, s2.Tpool, s2.Spacep, stpool1, s2.Calendar, s2.Cache, s2.CalendarDay, s2.Ticks, s2.IronWill, s2.Rand, s2.ConsoleMsgs, s2.ConsoleUnlocked, s2.QueueItems, s2.Opts, s2.ResHidden, s2.ShowHiddenRes, s2.TabsUnlocked);
-    const crCtx = new CraftRatioContext(s3.IronWill, undefined, 0, false, (n_4) => {
+    const s3_1 = ((maxKittens <= 10) && (births > 0)) ? fold((st, _arg) => consoleMsg(undefined, "A kitten has joined your village", st), s3, toList_2(rangeDouble(1, 1, births))) : s3;
+    const crCtx = new CraftRatioContext(s3_1.IronWill, undefined, 0, false, (n_4) => {
         let option_5;
-        return defaultArg((option_5 = get$_1(s3.Bpool, n_4), (option_5 != null) ? option_5.Val : undefined), 0) | 0;
+        return defaultArg((option_5 = get$_1(s3_1.Bpool, n_4), (option_5 != null) ? option_5.Val : undefined), 0) | 0;
     });
-    const prod = getResProduction(s3.Cache, s3.Vpool, ofList(map((j) => [j.Name, j], jobDefs), {
+    const prod = getResProduction(s3_1.Cache, s3_1.Vpool, ofList(map((j) => [j.Name, j], jobDefs), {
         Compare: (x_1, y_1) => (comparePrimitives(x_1, y_1) | 0),
-    }), s3.Wpool);
-    const patternInput = craftByEngineers(s3.CalendarDay, s3.Cache, false, crCtx, (name_3) => resValue(s3, name_3), prod, false, 1, s3.Pool, s3.Wpool);
-    const wpool1 = patternInput[1];
-    const pool3 = patternInput[0];
-    const pool4 = updateMaxValueAll(capCtx(s3), pool3);
-    const calCtx = new CalendarContext((name_4) => getEffect_1(s3.Cache, name_4), 0, false, false, false, false, false, false, false, false, false, () => 0.5, (st) => st, (st_1) => st_1, (st_4) => st_4, (st_2) => st_2, (_arg) => {
-    }, (st_3) => st_3);
-    const calendar1 = tick_1(calCtx, s3.Calendar);
+    }), s3_1.Wpool);
+    const patternInput_1 = craftByEngineers(s3_1.CalendarDay, s3_1.Cache, false, crCtx, (name_3) => resValue(s3_1, name_3), prod, false, 1, s3_1.Pool, s3_1.Wpool);
+    const wpool1 = patternInput_1[1];
+    const pool3 = patternInput_1[0];
+    const pool4 = updateMaxValueAll(capCtx(s3_1), pool3);
+    const calCtx = new CalendarContext((name_4) => getEffect_1(s3_1.Cache, name_4), 0, false, false, false, false, false, false, false, false, false, () => 0.5, (st_1) => st_1, (st_2) => st_2, (st_5) => st_5, (st_3) => st_3, (_arg_1) => {
+    }, (st_4) => st_4);
+    const calendar1 = tick_1(calCtx, s3_1.Calendar);
     let dp1;
-    const dctx0 = dctxFor(s3);
-    dp1 = update_2(s3.Dpool, dctx0, s3.Calendar.Year, s3.Pool.KarmaKittens, () => s.Rand())[0];
-    const s4 = new State(pool4, s3.Bpool, s3.Spool, wpool1, s3.Vpool, s3.Rpool, s3.Cpool, s3.Ppool, dp1, s3.Tpool, s3.Spacep, s3.Stpool, calendar1, s3.Cache, ~~calendar1.Day, s3.Ticks + 1, s3.IronWill, s3.Rand, s3.ConsoleMsgs, s3.ConsoleUnlocked, s3.QueueItems, s3.Opts, s3.ResHidden, s3.ShowHiddenRes, s3.TabsUnlocked);
+    const dctx0 = dctxFor(s3_1);
+    dp1 = update_2(s3_1.Dpool, dctx0, s3_1.Calendar.Year, s3_1.Pool.KarmaKittens, () => s.Rand())[0];
+    const s4 = new State(pool4, s3_1.Bpool, s3_1.Spool, wpool1, s3_1.Vpool, s3_1.Rpool, s3_1.Cpool, s3_1.Ppool, dp1, s3_1.Tpool, s3_1.Spacep, s3_1.Stpool, calendar1, s3_1.Cache, ~~calendar1.Day, s3_1.Ticks + 1, s3_1.IronWill, s3_1.Rand, s3_1.ConsoleMsgs, s3_1.ConsoleUnlocked, s3_1.QueueItems, s3_1.Opts, s3_1.ResHidden, s3_1.ShowHiddenRes, s3_1.TabsUnlocked);
     const s4_1 = new State(s4.Pool, s4.Bpool, s4.Spool, s4.Wpool, s4.Vpool, s4.Rpool, s4.Cpool, s4.Ppool, s4.Dpool, s4.Tpool, s4.Spacep, s4.Stpool, s4.Calendar, s4.Cache, s4.CalendarDay, s4.Ticks, s4.IronWill, s4.Rand, s4.ConsoleMsgs, s4.ConsoleUnlocked, s4.QueueItems, s4.Opts, s4.ResHidden, s4.ShowHiddenRes, (tabs_1 = ((tabs = s4.TabsUnlocked, (getRes(s4.Pool, "faith") > 0) ? add("religion", tabs) : tabs)), hasUnlockedRaces(s4.Dpool) ? add("trade", tabs_1) : tabs_1));
     const s5 = queueTick(s4_1);
     return refreshCache(s5);

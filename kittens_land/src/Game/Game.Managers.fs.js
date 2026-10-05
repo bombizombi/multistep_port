@@ -1202,6 +1202,7 @@ export function learnSkills(ctx, pool) {
 export function simUpdate(maxKittens, kittensPerTick, times, rand, pool) {
     let NextKittenProgress, NextKittenProgress_1;
     let pool_1 = pool;
+    let born = 0;
     if (length(pool_1.Kittens) < maxKittens) {
         pool_1 = ((NextKittenProgress = (pool_1.NextKittenProgress + (times * kittensPerTick)), new VillagePool(pool_1.Kittens, NextKittenProgress, pool_1.MaxKittens, pool_1.JobValues, pool_1.JobUnlocked, pool_1.Happiness, pool_1.DeathTimeout, pool_1.LeaderSeed, pool_1.Traits)));
         if (pool_1.NextKittenProgress >= 1) {
@@ -1210,6 +1211,7 @@ export function simUpdate(maxKittens, kittensPerTick, times, rand, pool) {
             for (let forLoopVar = 1; forLoopVar <= kittensToAdd; forLoopVar++) {
                 if (length(pool_1.Kittens) < maxKittens) {
                     pool_1 = addKitten(rand, pool_1);
+                    born = ((born + 1) | 0);
                 }
             }
             if (length(pool_1.Kittens) >= maxKittens) {
@@ -1217,7 +1219,7 @@ export function simUpdate(maxKittens, kittensPerTick, times, rand, pool) {
             }
         }
     }
-    return new VillagePool(pool_1.Kittens, pool_1.NextKittenProgress, pool_1.MaxKittens, pool_1.JobValues, pool_1.JobUnlocked, pool_1.Happiness, pool_1.DeathTimeout, pool_1.LeaderSeed, pool_1.Traits);
+    return [new VillagePool(pool_1.Kittens, pool_1.NextKittenProgress, pool_1.MaxKittens, pool_1.JobValues, pool_1.JobUnlocked, pool_1.Happiness, pool_1.DeathTimeout, pool_1.LeaderSeed, pool_1.Traits), born];
 }
 
 /**

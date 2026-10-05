@@ -494,6 +494,7 @@ let parseSave (text: string) : State option =
                         Calendar =
                             { s0.Calendar with
                                 Year = float parts.[1]
+                                Season = int parts.[2]
                                 FestivalDays = int parts.[3] }
                         Ticks = (if parts.Length > 4 then int parts.[4] else 0) }
                 | "res" when parts.Length >= 4 ->
@@ -985,7 +986,7 @@ let tick (s: State) : State =
     let vpool1 = Game.Managers.starvationStep catnipVal catnipPerTickTrue 5.0 false maxKittens vpool0
     let growthRate = if starving then 0.0 else kittensPerTick
     let beforeBirths = vpool1.Kittens.Length
-    let vpool2 = Game.Managers.simUpdate maxKittens growthRate 1 s.Rand vpool1
+    let vpool2, births = Game.Managers.simUpdate maxKittens growthRate 1 s.Rand vpool1
     let skillCtx : Game.Managers.SkillContext =
         { AnarchyActive = false
           InternetResearched = (match s2.Wpool.Upgrades |> Map.tryFind "internet" with Some u -> u.Researched | None -> false)
@@ -1022,6 +1023,13 @@ let tick (s: State) : State =
             PollutionHappines = 0.0 }
     let vpool4 = { vpool3 with Happiness = Game.Happiness.updateHappiness hctx vpool3.Kittens.Length vpool3.MaxKittens }
     let s3 = { s2 with Pool = pool2; Vpool = vpool4; Stpool = stpool1 }
+    // orig sim.update (js/village.js L3239-3244): while the village is small
+    // (maxKittens <= 10 && times == 1), every kitten arrival posts
+    // "A kitten has joined your village"
+    let s3 =
+        if maxKittens <= 10 && births > 0 then
+            List.fold (fun st _ -> consoleMsg None "A kitten has joined your village" st) s3 [ 1..births ]
+        else s3
 
     // engineer crafting every tick (workshop fastforward slice)
     let crCtx : Game.Managers.CraftRatioContext =
