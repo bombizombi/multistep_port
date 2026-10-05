@@ -10,13 +10,24 @@ type TipData =
       Flavor: string option
       Prices: kittens_land.KittensState.TipPriceLine list }
 
+/// what a hovered element points at — the view rebuilds TipData from live
+/// state on every render (orig ui.js L636 re-runs tooltipUpdateFunc every
+/// 5 ticks so ETAs count down while the popup is visible)
+type TipSource =
+    | TipBld of string
+    | TipTech of string
+    | TipUp of string
+    | TipRefine
+    | TipRes of string
+    | TipJob of string
+
 type Model =
     { Tab: string
       S: kittens_land.KittensState.State
       Speed: float
       LoopGen: int
       Toast: string
-      Tooltip: (float * float * TipData) option
+      Tooltip: (float * float * TipSource) option
       OptionsOpen: bool
       ResEditMode: bool
       JobsPanelCollapsed: bool
@@ -46,7 +57,7 @@ type Msg =
     | SetTab of string
     | SetRightTab of string
     | SetSpeed of float
-    | SetTip of (float * float * TipData) option
+    | SetTip of (float * float * TipSource) option
     | ToggleOptions
     | ToggleResEditMode
     | ToggleJobsPanel
@@ -169,26 +180,69 @@ let view (model: Model) (dispatch: Msg -> unit) =
 
     // --- tooltip plumbing ----------------------------------------------------
 
-    let tipHandlers (tip: TipData) =
+    let tipHandlers (src: TipSource) =
         [ prop.onMouseEnter (fun ev ->
             let gl, gt = gameLeft ()
-            dispatch (SetTip(Some(ev.clientX - gl + 12.0, ev.clientY - gt + 12.0, tip))))
+            dispatch (SetTip(Some(ev.clientX - gl + 12.0, ev.clientY - gt + 12.0, src))))
           prop.onMouseLeave (fun _ -> dispatch (SetTip None)) ]
 
-    let pricesTip (desc: string) (flavorKey: string option) (prices: kittens_land.KittensState.PriceRow list) : TipData =
-        { Desc = desc
-          Flavor = flavorKey |> Option.map Game.Labels.get |> Option.filter (fun f -> f <> "" && f <> flavorKey.Value)
-          Prices = kittens_land.KittensState.priceLines s false prices }
-
-    let bldTip (name: string) (prices: kittens_land.KittensState.PriceRow list) =
-        pricesTip
-            (Game.Labels.get ("bld." + name + ".desc"))
-            (Some("bld." + name + ".flavor"))
-            prices
+    /// rebuild tooltip content from the CURRENT game state — called on every
+    /// render (i.e. every tick), which is what makes ETAs count down while
+    /// the popup is visible, like orig ui.js L636 -> core.js L2799
+    let renderTip (src: TipSource) : TipData =
+        let pricesTip desc flavorKey prices =
+            { Desc = desc
+              Flavor = flavorKey |> Option.map Game.Labels.get |> Option.filter (fun f -> f <> "" && f <> flavorKey.Value)
+              Prices = kittens_land.KittensState.priceLines s false prices }
+        match src with
+        | TipBld name ->
+            let prices =
+                kittens_land.KittensState.buildingRows s
+                |> List.tryFind (fun b -> b.Name = name)
+                |> Option.map (fun b -> b.Prices)
+                |> Option.defaultValue []
+            pricesTip (Game.Labels.get ("bld." + name + ".desc")) (Some("bld." + name + ".flavor")) prices
+        | TipTech name -> pricesTip (Game.Labels.get ("tech." + name + ".desc")) (Some("tech." + name + ".flavor")) (kittens_land.KittensState.techRows s |> List.find (fun t -> t.Name = name)).Prices
+        | TipUp name -> pricesTip (Game.Labels.get ("up." + name + ".desc")) (Some("up." + name + ".flavor")) (kittens_land.KittensState.upgradeRows s |> List.find (fun u -> u.Name = name)).Prices
+        | TipRefine ->
+            let refinePrice = 100.0
+            pricesTip (Game.Labels.get "bld.refineCatnip.desc") None
+                [ { Resource = "catnip"; Val = refinePrice } ]
+        | TipRes name ->
+            let r = kittens_land.KittensState.resRows s |> List.find (fun r -> r.Name = name)
+            let baseProd, village, net = kittens_land.KittensState.productionBreakdown s name
+            let line label (v: float) =
+                "<div>" + label + ": " + (if v >= 0.0 then "+" else "") + kittens_land.KittensState.fmtRes v + "</div>"
+            let body =
+                if name = "kittens" then
+                    let progress = s.Vpool.NextKittenProgress
+                    let perTickKittens = 0.01 * (1.0 + getEffect s "kittenGrowthRatio")
+                    "<div>[" + sprintf "%.0f" (progress * 100.0) + "%]</div>"
+                    + "<div>" + Game.Labels.get "res.toNextKitten" + ": "
+                    + kittens_land.KittensState.toDisplaySeconds ((1.0 - progress) / (perTickKittens * 10.0)) + "</div>"
+                else
+                    (if baseProd <> 0.0 then line (Game.Labels.get "res.stack.production") baseProd else "")
+                    + (if village <> 0.0 then line (Game.Labels.get "res.stack.village") village else "")
+                    + (if net < 0.0 then
+                            "<div>" + Game.Labels.get "res.toZero" + ": "
+                            + kittens_land.KittensState.toDisplaySeconds (r.Value / (-net * 10.0)) + "</div>"
+                       elif net > 0.0 && r.Max > 0.0 && r.Value < r.Max then
+                            "<div>" + Game.Labels.get "res.toCap" + ": "
+                            + kittens_land.KittensState.toDisplaySeconds ((r.Max - r.Value) / (net * 10.0)) + "</div>"
+                       else "")
+            { Desc = body; Flavor = None; Prices = [] }
+        | TipJob name ->
+            let descKey = "job." + name + ".desc"
+            let flavorKey = "job." + name + ".flavor"
+            let desc = Game.Labels.get descKey
+            let flavor = Game.Labels.get flavorKey
+            { Desc = (if desc <> "" && desc <> descKey then desc else "")
+              Flavor = (if flavor <> "" && flavor <> flavorKey then Some flavor else None)
+              Prices = [] }
 
     // --- orig modern button --------------------------------------------------
 
-    let modernBtn (key: string) (label: string) (amtText: string) (enabled: bool) (tip: TipData option) (onClick: unit -> unit) =
+    let modernBtn (key: string) (label: string) (amtText: string) (enabled: bool) (tip: TipSource option) (onClick: unit -> unit) =
         Html.div [
             prop.key key
             prop.className (if enabled then "btn nosel modern" else "btn nosel modern disabled")
@@ -243,38 +297,13 @@ let view (model: Model) (dispatch: Msg -> unit) =
         if v <> 0.0 then kittens_land.KittensState.fmtRes v + (if usePerSecond then "/s" else "")
         else ""
 
-    let resTip (r: kittens_land.KittensState.ResRow) : TipData =
-        // orig getDetailedResMap: production breakdown + to-zero/to-cap timers;
-        // kittens get next-kitten progress instead
-        let baseProd, village, net = kittens_land.KittensState.productionBreakdown s r.Name
-        let line label (v: float) =
-            "<div>" + label + ": " + (if v >= 0.0 then "+" else "") + kittens_land.KittensState.fmtRes v + "</div>"
-        let body =
-            if r.Name = "kittens" then
-                let progress = s.Vpool.NextKittenProgress
-                let perTickKittens = 0.01 * (1.0 + getEffect s "kittenGrowthRatio")
-                "<div>[" + sprintf "%.0f" (progress * 100.0) + "%]</div>"
-                + "<div>" + Game.Labels.get "res.toNextKitten" + ": "
-                + kittens_land.KittensState.toDisplaySeconds ((1.0 - progress) / (perTickKittens * 10.0)) + "</div>"
-            else
-                (if baseProd <> 0.0 then line (Game.Labels.get "res.stack.production") baseProd else "")
-                + (if village <> 0.0 then line (Game.Labels.get "res.stack.village") village else "")
-                + (if net < 0.0 then
-                        "<div>" + Game.Labels.get "res.toZero" + ": "
-                        + kittens_land.KittensState.toDisplaySeconds (r.Value / (-net * 10.0)) + "</div>"
-                   elif net > 0.0 && r.Max > 0.0 && r.Value < r.Max then
-                        "<div>" + Game.Labels.get "res.toCap" + ": "
-                        + kittens_land.KittensState.toDisplaySeconds ((r.Max - r.Value) / (net * 10.0)) + "</div>"
-                   else "")
-        { Desc = body; Flavor = None; Prices = [] }
-
     let resRow (r: kittens_land.KittensState.ResRow) =
         // hidden resources show only in edit mode or when "show hidden" is on
         if not r.Show then Html.none
         elif r.Hidden && not model.ResEditMode && not s.ShowHiddenRes then Html.none
         else
             let perTick = rateDisplay r.PerTick
-            let tip = resTip r
+            let tipSrc = TipRes r.Name
             Html.div [
                 prop.key r.Name
                 prop.role "row"
@@ -295,7 +324,7 @@ let view (model: Model) (dispatch: Msg -> unit) =
                         ]
                     Html.div [
                         prop.className "res-cell resource-name"
-                        if tip.Desc <> "" then yield! tipHandlers tip
+                        yield! tipHandlers tipSrc
                         prop.text r.Title
                     ]
                     Html.div [ prop.className "res-cell resAmount"; prop.text (kittens_land.KittensState.fmtRes r.Value) ]
@@ -405,7 +434,7 @@ let view (model: Model) (dispatch: Msg -> unit) =
             b.Label
             (if b.Val > 0 then "(" + string b.Val + ")" else "")
             b.Enabled
-            (Some(bldTip b.Name b.Prices))
+            (Some(TipBld b.Name))
             (fun () -> dispatch (Buy b.Name))
 
     let techRow (t: kittens_land.KittensState.TechRow) =
@@ -414,7 +443,7 @@ let view (model: Model) (dispatch: Msg -> unit) =
             t.Label
             ""
             t.Enabled
-            (Some(pricesTip (Game.Labels.get ("tech." + t.Name + ".desc")) (Some("tech." + t.Name + ".flavor")) t.Prices))
+            (Some(TipTech t.Name))
             (fun () -> dispatch (Research t.Name))
 
     let upgradeRow (u: kittens_land.KittensState.UpgradeRow) =
@@ -423,7 +452,7 @@ let view (model: Model) (dispatch: Msg -> unit) =
             u.Label
             ""
             u.Enabled
-            (Some(pricesTip (Game.Labels.get ("up." + u.Name + ".desc")) (Some("up." + u.Name + ".flavor")) u.Prices))
+            (Some(TipUp u.Name))
             (fun () -> dispatch (Upgrade u.Name))
 
     // orig village tab job button (com.nuclearunicorn.game.ui.JobButton): a
@@ -439,13 +468,8 @@ let view (model: Model) (dispatch: Msg -> unit) =
             let descKey = "job." + j.Name + ".desc"
             let flavorKey = "job." + j.Name + ".flavor"
             let desc = Game.Labels.get descKey
-            let flavor = Game.Labels.get flavorKey
             let tip =
-                if desc <> "" && desc <> descKey then
-                    Some { Desc = desc
-                           Flavor = (if flavor <> "" && flavor <> flavorKey then Some flavor else None)
-                           Prices = [] }
-                else None
+                if desc <> "" && desc <> descKey then Some(TipJob j.Name) else None
             let jobLink (title: string) (msg: Msg) =
                 Html.a [
                     prop.key (j.Name + title)
@@ -578,12 +602,10 @@ let view (model: Model) (dispatch: Msg -> unit) =
                 let btns =
                     [
                         yield modernBtn "gather" (Game.Labels.get "bld.gatherCatnip") "" true
-                                (Some { Desc = Game.Labels.get "bld.gatherCatnip.desc"; Flavor = None; Prices = [] })
+                                (Some(TipBld "gatherCatnip"))
                                 (fun () -> dispatch Gather)
-                        let refinePrice = 100.0
-                        yield modernBtn "refine" (Game.Labels.get "bld.refineCatnip") "" (getRes s.Pool "catnip" >= refinePrice)
-                                (Some { Desc = Game.Labels.get "bld.refineCatnip.desc"; Flavor = None;
-                                        Prices = kittens_land.KittensState.priceLines s false [ { Resource = "catnip"; Val = refinePrice } ] })
+                        yield modernBtn "refine" (Game.Labels.get "bld.refineCatnip") "" (getRes s.Pool "catnip" >= 100.0)
+                                (Some(TipRefine))
                                 (fun () -> dispatch Refine)
                         yield! List.map buildingRow (kittens_land.KittensState.buildingRows s)
                     ]
@@ -780,7 +802,13 @@ let view (model: Model) (dispatch: Msg -> unit) =
     let tooltip =
         match model.Tooltip with
         | None -> Html.none
-        | Some (x, y, tip) ->
+        | Some (x, y, src) ->
+            // rebuild from the CURRENT state on every render — the whole view
+            // re-renders each tick, so ETAs in the open popup count down
+            // (orig ui.js L636 re-runs tooltipUpdateFunc every 5 ticks)
+            let tip = renderTip src
+            if tip.Desc = "" && tip.Prices.IsEmpty then Html.none
+            else
             Html.div [
                 prop.id "tooltip"
                 prop.className "button_tooltip"
