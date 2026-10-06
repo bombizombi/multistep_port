@@ -94,6 +94,13 @@ for (const [k, v] of Object.entries({
   if (j[`village.tab.title.` + k]) add(`vtab.` + k, j[`village.tab.title.` + k]);
 }
 
+// library tab misc (hide-researched checkbox, complete marker, effect label)
+for (const [k, v] of Object.entries({
+  "science.toggleResearched.label": "Hide researched techs",
+  "btn.complete.capital": "(Complete)",
+  "res.effect": "Effect"
+})) add(k, v);
+
 const esc = (s) => String(s).split("\\").join("\\\\").split('"').join("\\\"");
 let out = [
   "// GENERATED from orig res/i18n/en.json by the V2 view slice — display labels",

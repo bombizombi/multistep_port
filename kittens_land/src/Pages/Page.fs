@@ -67,6 +67,7 @@ type Msg =
     | LoadGame
     | ClearConsole
     | ClearAllJobs
+    | SetHideResearched of bool
     | QAdd of string * string
     | QRemove of int
     | ToggleOption of string
@@ -128,6 +129,7 @@ let update (msg: Msg) (model: Model) =
     | ToggleOptions -> { model with OptionsOpen = not model.OptionsOpen }, Command.none
     | ToggleJobsPanel -> { model with JobsPanelCollapsed = not model.JobsPanelCollapsed }, Command.none
     | ToggleResEditMode -> { model with ResEditMode = not model.ResEditMode }, Command.none
+    | SetHideResearched v -> { model with S = kittens_land.KittensState.setHideResearched v model.S }, Command.none
     | ToggleResHidden name -> { model with S = kittens_land.KittensState.toggleResHidden name model.S }, Command.none
     | SetShowHiddenRes v -> { model with S = kittens_land.KittensState.setShowHiddenRes v model.S }, Command.none
     | SaveGame ->
@@ -202,7 +204,17 @@ let view (model: Model) (dispatch: Msg -> unit) =
                 |> Option.map (fun b -> b.Prices)
                 |> Option.defaultValue []
             pricesTip (Game.Labels.get ("bld." + name + ".desc")) (Some("bld." + name + ".flavor")) prices
-        | TipTech name -> pricesTip (Game.Labels.get ("tech." + name + ".desc")) (Some("tech." + name + ".flavor")) (kittens_land.KittensState.techRows s |> List.find (fun t -> t.Name = name)).Prices
+        | TipTech name ->
+            // orig BuildingNotStackableBtnController.getDescription: the effect
+            // text is appended only once the tech is researched
+            let row = kittens_land.KittensState.techRows s |> List.find (fun t -> t.Name = name)
+            let effectDesc = Game.Labels.get ("tech." + name + ".effectDesc")
+            let desc = Game.Labels.get ("tech." + name + ".desc")
+            let body =
+                if row.Researched && effectDesc <> "" && effectDesc <> ("tech." + name + ".effectDesc") then
+                    desc + "<br>" + Game.Labels.get "res.effect" + ": " + effectDesc
+                else desc
+            pricesTip body (Some("tech." + name + ".flavor")) row.Prices
         | TipUp name -> pricesTip (Game.Labels.get ("up." + name + ".desc")) (Some("up." + name + ".flavor")) (kittens_land.KittensState.upgradeRows s |> List.find (fun u -> u.Name = name)).Prices
         | TipRefine ->
             let refinePrice = 100.0
@@ -438,10 +450,12 @@ let view (model: Model) (dispatch: Msg -> unit) =
             (fun () -> dispatch (Buy b.Name))
 
     let techRow (t: kittens_land.KittensState.TechRow) =
+        // orig BuildingNotStackableBtnController.getName: researched techs get
+        // a "(Complete)" suffix and are disabled (updateEnabled)
         modernBtn
             ("tech." + t.Name)
             t.Label
-            ""
+            (if t.Researched then "(Complete)" else "")
             t.Enabled
             (Some(TipTech t.Name))
             (fun () -> dispatch (Research t.Name))
@@ -545,7 +559,26 @@ let view (model: Model) (dispatch: Msg -> unit) =
                     ]
                 ]
             ]
-        | "Science" -> List.map techRow (kittens_land.KittensState.techRows s)
+        | "Science" ->
+            [
+                // orig Library tab: "Hide researched techs" checkbox floats at
+                // the top right (science.js L2710-2725); the filter mirrors
+                // TechButtonController.updateVisible (L2694)
+                Html.div [
+                    prop.style [ style.float'.right ]
+                    prop.children [
+                        Html.input [
+                            prop.type'.checkbox
+                            prop.isChecked s.HideResearched
+                            prop.onChange (fun (v: bool) -> dispatch (SetHideResearched v))
+                        ]
+                        Html.label [ prop.style [ style.marginLeft 6 ]; prop.text (Game.Labels.get "science.toggleResearched.label") ]
+                    ]
+                ]
+                yield! (kittens_land.KittensState.techRows s
+                        |> List.filter (fun t -> not (t.Researched && s.HideResearched))
+                        |> List.map techRow)
+            ]
         | "Workshop" -> List.map upgradeRow (kittens_land.KittensState.upgradeRows s)
         | "Trade" ->
             kittens_land.KittensState.raceRows s

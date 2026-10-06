@@ -888,6 +888,9 @@ let labels : Map<string, string> =
     ("vtab.union", "Galactic Union");
     ("vtab.elders", "Elders");
     ("vtab.deities", "Deities");
+    ("science.toggleResearched.label", "Hide researched techs");
+    ("btn.complete.capital", "(Complete)");
+    ("res.effect", "Effect");
   ]
 
 let get (key: string) : string = labels |> Map.tryFind key |> Option.defaultValue key
