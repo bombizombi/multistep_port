@@ -891,6 +891,23 @@ let labels : Map<string, string> =
     ("science.toggleResearched.label", "Hide researched techs");
     ("btn.complete.capital", "(Complete)");
     ("res.effect", "Effect");
+    ("filter.all", "All");
+    ("filter.available", "Available");
+    ("filter.enabled", "Enabled");
+    ("filter.togglable", "Togglable");
+    ("village.hunt", "Send hunters");
+    ("planet.cath", "Cath");
+    ("planet.centaurusSystem", "Centaurus System");
+    ("planet.charon", "Charon");
+    ("planet.dune", "Dune");
+    ("planet.furthestRing", "Furthest Ring");
+    ("planet.helios", "Helios");
+    ("planet.kairo", "Kairo");
+    ("planet.moon", "Redmoon");
+    ("planet.piscine", "Piscine");
+    ("planet.terminus", "T-Minus");
+    ("planet.umbra", "Umbra");
+    ("planet.yarn", "Yarn");
   ]
 
 let get (key: string) : string = labels |> Map.tryFind key |> Option.defaultValue key

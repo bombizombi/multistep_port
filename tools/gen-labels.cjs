@@ -101,6 +101,18 @@ for (const [k, v] of Object.entries({
   "res.effect": "Effect"
 })) add(k, v);
 
+// building group filters (Bonfire) + hunt button
+for (const f of ["all", "available", "enabled", "togglable"]) {
+  if (j[`ui.filter.` + f]) add(`filter.` + f, j[`ui.filter.` + f]);
+}
+add("village.hunt", j["village.btn.hunters"] || "Send hunters");
+
+// planet names for the space tab group headers
+for (const k in j) {
+  const m = /^space\.planet\.([a-zA-Z]+)\.label$/.exec(k);
+  if (m) add(`planet.` + m[1], j[k]);
+}
+
 const esc = (s) => String(s).split("\\").join("\\\\").split('"').join("\\\"");
 let out = [
   "// GENERATED from orig res/i18n/en.json by the V2 view slice — display labels",

@@ -3,8 +3,8 @@ import { toString, Record } from "../.elmish-land/App/fable_modules/fable-librar
 import { class_type, list_type, lambda_type, float64_type, unit_type, record_type, bool_type, option_type, string_type, int32_type } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
 import { CraftState, UpgradeState, PolicyState, ResearchState, BuildingState, ResPool, ResourceState, ResPool_$reflection } from "./Game/Game.Types.fs.js";
 import { getAllPrices, update as update_1, build, BldPool, init as init_2, providerEffect, activeEffects, get$ as get$_1, PricingContext, freshPricing, BldPool_$reflection } from "./Game/Game.Buildings.fs.js";
-import { getCraftAllCount, craftByEngineers, learnSkills, SkillContext, simUpdate, starvationStep, unlockRelations, craftAll as craftAll_1, craft as craft_1, buyUpgrade as buyUpgrade_1, getTech, research as research_1, simRemoveJobs, simAssignJob, assignJob as assignJob_1, unlock, CraftRatioContext, getResCraftRatio, calculateMaxKittens, VillagePool, Kitten, kittenFromSeed, WorkshopPool, SciencePool, initVillage, initWorkshop, initScience, getFreeKittens, getResProduction, scienceGroup, workshopEffectsBase, VillagePool_$reflection, WorkshopPool_$reflection, SciencePool_$reflection } from "./Game/Game.Managers.fs.js";
-import { getTU, buyZU as buyZU_1, freezeSolarRevolution, buyRU as buyRU_1, praise as praise_1, ReligionMeta, ReligionPool, getRU, getZU, init as init_3, religionGroup, ReligionPool_$reflection } from "./Game/Game.Religion.fs.js";
+import { getCraftAllCount, craftByEngineers, learnSkills, SkillContext, simUpdate, starvationStep, unlockRelations, craftAll as craftAll_1, craft as craft_1, buyUpgrade as buyUpgrade_1, getTech, research as research_1, simRemoveJobs, simAssignJob, assignJob as assignJob_1, CraftRatioContext, getResCraftRatio, unlock, researchPolicy, PolicyBuyCtx, PolicyCalcCtx, calculateMaxKittens, VillagePool, Kitten, kittenFromSeed, WorkshopPool, SciencePool, initVillage, initWorkshop, initScience, getFreeKittens, getResProduction, scienceGroup, workshopEffectsBase, VillagePool_$reflection, WorkshopPool_$reflection, SciencePool_$reflection } from "./Game/Game.Managers.fs.js";
+import { getTU, buyZU as buyZU_1, freezeSolarRevolution, buyRU as buyRU_1, praise as praise_1, countActivePacts, ReligionMeta, ReligionPool, getRU, getZU, init as init_3, religionGroup, ReligionPool_$reflection } from "./Game/Game.Religion.fs.js";
 import { getTradeBonusEffect, ChallengePool, ChallengeState, init as init_4, challengesGroup, ChallengePool_$reflection } from "./Game/Game.Challenges.fs.js";
 import { getPerk, getBurnedParagonRatio, init as init_5, prestigeGroup, PrestigePool_$reflection } from "./Game/Game.Prestige.fs.js";
 import { hasUnlockedRaces, update as update_2, buyEmbassies, tradeImpl, getTradeVolume, getGoldCost, getManpowerCost, DiplomacyPool, RaceState, DiplomacyContext, init as init_6, DiplomacyPool_$reflection } from "./Game/Game.Diplomacy.fs.js";
@@ -18,21 +18,23 @@ import { toArray, defaultArg } from "../.elmish-land/App/fable_modules/fable-lib
 import { updateMaxValueAll, update, UpdateContext, hasRes as hasRes_1, payPrices, addResEvent, init as init_1, getEnergyDelta, CapContext, get$ } from "./Game/Game.Resources.fs.js";
 import { toList, add as add_1, FSharpMap__get_Item, map as map_1, ofList, filter, tryFind, empty } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Map.js";
 import { equals, disposeSafe, getEnumerator, int32ToString, round, stringHash, comparePrimitives } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
-import { filter as filter_1, find, head, fold, tryFind as tryFind_1, updateAt, removeAt, tryLast, contains, sumBy, tail, singleton, append, maxBy, isEmpty, item, length, map, ofArray, choose, empty as empty_1 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
+import { find, filter as filter_1, head, fold, tryFind as tryFind_1, updateAt, removeAt, tryLast, contains, sumBy, tail, singleton, append, maxBy, isEmpty, item, length, map, ofArray, choose, empty as empty_1 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
 import { baseEffects, bldBase } from "./Game/Game.Catalog.BaseEffects.fs.js";
 import { calcResourcePerTick, fixFloatPointNumber, ProductionContext, freshProductionContext } from "./Game/Game.Production.fs.js";
 import { jobDefs } from "./Game/Game.Catalog.Village.fs.js";
 import { op_BitwiseAnd, toInt64_unchecked, toUInt32_unchecked } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/BigInt.js";
 import { resourceDefs } from "./Game/Game.Catalog.Resources.fs.js";
 import { craftDefs, upgradeDefs, policyDefs, techDefs, buildingDefs } from "./Game/Game.Catalog.Defs.fs.js";
-import { ofList as ofList_1, union, FSharpSet__Add, FSharpSet__Remove, ofArray as ofArray_1, toList as toList_1, FSharpSet__get_IsEmpty, add, FSharpSet__Contains, empty as empty_3 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Set.js";
-import { parse, min } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Double.js";
+import { FSharpSet__Add, FSharpSet__Remove, ofList as ofList_1, union, ofArray as ofArray_1, toList as toList_1, FSharpSet__get_IsEmpty, add, FSharpSet__Contains, empty as empty_3 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Set.js";
+import { isInfinity, parse, min } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Double.js";
 import { getLimitedDR } from "./Game/Game.Math.fs.js";
 import { StringBuilder__AppendLine_Z721C83C5, StringBuilder_$ctor } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/System.Text.js";
 import { trimEnd, replace, split, join, printf, toText } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/String.js";
 import { item as item_1 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Array.js";
 import { parse as parse_1 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Int32.js";
 import { List_countBy } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Seq2.js";
+import { upgrades } from "./Game/Game.Catalog.Policies.fs.js";
+import { huntAll, HuntContext } from "./Game/Game.Village.fs.js";
 import { buildingDefs as buildingDefs_1, programDefs } from "./Game/Game.Catalog.Space.fs.js";
 import { updateHappiness, HappinessContext, freshHappinessContext } from "./Game/Game.Happiness.fs.js";
 import { exists, toList as toList_2 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Seq.js";
@@ -1158,6 +1160,134 @@ export function clearAllJobs(s) {
     return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, vpool$0027, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
 }
 
+function policyVeto(s, name) {
+    let matchValue_2, m, matchValue_3, m_1;
+    const polRes = (n) => {
+        const matchValue = tryFind(n, s.Spool.Policies);
+        if (matchValue == null) {
+            return false;
+        }
+        else {
+            const p = matchValue;
+            return p.Researched;
+        }
+    };
+    const techRes = (n_1) => {
+        const matchValue_1 = tryFind(n_1, s.Spool.Techs);
+        if (matchValue_1 == null) {
+            return false;
+        }
+        else {
+            const t = matchValue_1;
+            return t.Researched;
+        }
+    };
+    const bldVal = (n_2) => {
+        let option_1;
+        return defaultArg((option_1 = get$_1(s.Bpool, n_2), (option_1 != null) ? option_1.Val : undefined), 0) | 0;
+    };
+    const challengeActive = (n_3) => FSharpMap__get_Item(s.Cpool.Challenges, n_3).Active;
+    switch (name) {
+        case "liberalism":
+            return !((polRes("monarchy") ? true : polRes("republic")) && (bldVal("factory") > 0));
+        case "communism":
+            return !((polRes("republic") ? true : polRes("authocracy")) && (bldVal("factory") > 0));
+        case "fascism":
+            return !((polRes("monarchy") ? true : polRes("authocracy")) && (bldVal("factory") > 0));
+        case "scientificCommunism":
+            return !(((bldVal("workshop") < 2) && (bldVal("factory") < 1)) && polRes("socialism"));
+        case "knowledgeSharing":
+        case "culturalExchange":
+            return !(techRes("diplomacy") && techRes("astronomy"));
+        case "bigStickPolicy":
+            return !((polRes("isolationism") && techRes("astronomy")) && !challengeActive("pacifism"));
+        case "cityOnAHill":
+            return !(polRes("isolationism") && techRes("astronomy"));
+        case "outerSpaceTreaty":
+            return !(bldVal("sattelite") > 0);
+        case "militarizeSpace":
+            return !((bldVal("sattelite") > 0) && !challengeActive("pacifism"));
+        case "sustainability":
+        case "fullIndustrialization":
+            return !((polRes("stripMining") ? true : polRes("clearCutting")) && techRes("industrialization"));
+        case "conservation":
+        case "openWoodlands":
+            return !(polRes("environmentalism") && techRes("ecology"));
+        case "siphoning":
+        case "feedingFrenzy":
+        case "upfrontPayment":
+            return !((((matchValue_2 = tryFind("mausoleum", s.Rpool.TUs), (matchValue_2 == null) ? 0 : ((m = matchValue_2, m.Val)))) > 0) && (((matchValue_3 = tryFind("marker", s.Rpool.ZUs), (matchValue_3 == null) ? 0 : ((m_1 = matchValue_3, m_1.Val)))) > 0));
+        default:
+            return false;
+    }
+}
+
+/**
+ * orig PolicyBtnController.buyItem → science.researchPolicy full purchase
+ * chain, then onPurchase unlock/upgrade fan-out (tools/patch23b-runner.js)
+ */
+export function researchPolicyAction(name, s) {
+    let matchValue, p, option_1, option_4, bind$0040;
+    const calc = new PolicyCalcCtx(s.IronWill, FSharpMap__get_Item(s.Dpool.Races, "nagas").EmbassyLevel, FSharpMap__get_Item(s.Dpool.Races, "spiders").EmbassyLevel, s.Calendar.CycleYear, getEffect_1(s.Cache, "pactsAvailable"), (matchValue = tryFind("fractured", s.Rpool.Pacts), (matchValue == null) ? 0 : ((p = matchValue, p.On))), 0);
+    let priestLeader;
+    const matchValue_1 = s.Vpool.LeaderSeed;
+    if (matchValue_1 == null) {
+        priestLeader = false;
+    }
+    else {
+        const seed = matchValue_1 | 0;
+        priestLeader = defaultArg((option_1 = tryFind_1((k) => (k.Seed === seed), s.Vpool.Kittens), (option_1 != null) ? equals(option_1.Job, "priest") : undefined), false);
+    }
+    const aiLevel = defaultArg((option_4 = get$_1(s.Bpool, "aiCore"), (option_4 != null) ? tryFind("aiLevel", option_4.Def.Effects) : undefined), 0);
+    const bctx = new PolicyBuyCtx(calc, (name_1) => getEffect_1(s.Cache, name_1), priestLeader, aiLevel, resValue(s, "necrocorn"), countActivePacts(s.Rpool));
+    const patternInput = researchPolicy(s.CalendarDay, name, bctx, s.Pool, s.Spool);
+    const spool$0027 = patternInput[1];
+    const result = patternInput[2];
+    const pool$0027 = patternInput[0];
+    if (result !== "OkBought") {
+        return s;
+    }
+    else {
+        const s1 = new State(pool$0027, s.Bpool, spool$0027, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+        let s2;
+        const matchValue_2 = FSharpMap__get_Item(s1.Spool.Policies, name).Def.Unlocks;
+        if (matchValue_2 == null) {
+            s2 = s1;
+        }
+        else {
+            const u = matchValue_2;
+            const pols = filter_1((p0) => !policyVeto(s1, p0), u.Policies);
+            const patternInput_1 = unlock(u.Buildings, u.Tabs, empty_1(), u.Tech, pols, u.Upgrades, u.ZebraUpgrades, u.Crafts, s1.Bpool, s1.Spool, s1.Wpool);
+            const wp2 = patternInput_1[2];
+            const sp2 = patternInput_1[1];
+            const bp2 = patternInput_1[0];
+            s2 = (new State(s1.Pool, bp2, sp2, wp2, (bind$0040 = s1.Vpool, new VillagePool(bind$0040.Kittens, bind$0040.NextKittenProgress, bind$0040.MaxKittens, bind$0040.JobValues, union(ofList_1(u.Jobs, {
+                Compare: (x, y) => (comparePrimitives(x, y) | 0),
+            }), s1.Vpool.JobUnlocked), bind$0040.Happiness, bind$0040.DeathTimeout, bind$0040.LeaderSeed, bind$0040.Traits)), s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, union(ofList_1(u.Tabs, {
+                Compare: (x_1, y_1) => (comparePrimitives(x_1, y_1) | 0),
+            }), s1.TabsUnlocked)));
+        }
+        const ups = defaultArg(tryFind(name, upgrades), empty_1());
+        if (!equals(ups, empty_1())) {
+            return refreshCache(refreshCache(s2));
+        }
+        else {
+            return s2;
+        }
+    }
+}
+
+/**
+ * orig village huntAll — one click spends full squads of manpower for
+ * catnip/furs/unicorn rolls (js/village.js huntAll → huntFraction x1)
+ */
+export function huntAction(s) {
+    let matchValue, t, matchValue_1, p;
+    const ctx = new HuntContext((name) => getEffect(s, name), s.Rand, resValue(s, "zebras"), s.IronWill, (matchValue = tryFind("goldOre", s.Spool.Techs), (matchValue == null) ? false : ((t = matchValue, t.Researched))), (matchValue_1 = tryFind("unicornmancy", s.Ppool.Perks), (matchValue_1 == null) ? false : ((p = matchValue_1, p.Researched))), 0, 0);
+    const pool$0027 = huntAll(ctx, s.Pool);
+    return refreshCache(new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked));
+}
+
 export function gatherCatnip(s) {
     const pool1 = addResEvent(s.CalendarDay, "catnip", 1, s.Pool)[0];
     return new State(pool1, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
@@ -2086,7 +2216,7 @@ export function priceLines(s, simplePrices, prices) {
             const matchValue = tryFind(resource, s.Wpool.Crafts);
             let matchResult, c_1;
             if (matchValue != null) {
-                if ((c = matchValue, c.Unlocked && null)) {
+                if ((c = matchValue, c.Unlocked && !(isInfinity(val_ - value) ? true : Number.isNaN(val_ - value)))) {
                     matchResult = 0;
                     c_1 = matchValue;
                 }
@@ -2104,7 +2234,7 @@ export function priceLines(s, simplePrices, prices) {
                     children = map((comp) => {
                         let v_1 = Math.ceil((comp.Val * diff) / (1 + ratio));
                         const rem = v_1 % comp.Val;
-                        if ((rem !== 0) && null) {
+                        if ((rem !== 0) && !(isInfinity(rem) ? true : Number.isNaN(rem))) {
                             v_1 = ((v_1 + comp.Val) - rem);
                         }
                         return line(comp.Resource, v_1, comp.Val, indent + 1);
@@ -2125,19 +2255,20 @@ export function priceLines(s, simplePrices, prices) {
 }
 
 export class BuildingRow extends Record {
-    constructor(Name, Label, Visible, Enabled, Val, Prices) {
+    constructor(Name, Label, Visible, Enabled, Val, Togglable, Prices) {
         super();
         this.Name = Name;
         this.Label = Label;
         this.Visible = Visible;
         this.Enabled = Enabled;
         this.Val = (Val | 0);
+        this.Togglable = Togglable;
         this.Prices = Prices;
     }
 }
 
 export function BuildingRow_$reflection() {
-    return record_type("kittens_land.KittensState.BuildingRow", [], BuildingRow, () => [["Name", string_type], ["Label", string_type], ["Visible", bool_type], ["Enabled", bool_type], ["Val", int32_type], ["Prices", list_type(PriceRow_$reflection())]]);
+    return record_type("kittens_land.KittensState.BuildingRow", [], BuildingRow, () => [["Name", string_type], ["Label", string_type], ["Visible", bool_type], ["Enabled", bool_type], ["Val", int32_type], ["Togglable", bool_type], ["Prices", list_type(PriceRow_$reflection())]]);
 }
 
 export class JobRow extends Record {
@@ -2237,6 +2368,51 @@ export function techRows(s) {
                 return undefined;
         }
     }, s.Spool.TechOrder);
+}
+
+export class PolicyRow extends Record {
+    constructor(Name, Label, Prices, Unlocked, Researched, Enabled) {
+        super();
+        this.Name = Name;
+        this.Label = Label;
+        this.Prices = Prices;
+        this.Unlocked = Unlocked;
+        this.Researched = Researched;
+        this.Enabled = Enabled;
+    }
+}
+
+export function PolicyRow_$reflection() {
+    return record_type("kittens_land.KittensState.PolicyRow", [], PolicyRow, () => [["Name", string_type], ["Label", string_type], ["Prices", list_type(PriceRow_$reflection())], ["Unlocked", bool_type], ["Researched", bool_type], ["Enabled", bool_type]]);
+}
+
+export function policyRows(s) {
+    return choose((n) => {
+        let p;
+        const matchValue = tryFind(n, s.Spool.Policies);
+        let matchResult, p_1;
+        if (matchValue != null) {
+            if ((p = matchValue, p.Unlocked)) {
+                matchResult = 0;
+                p_1 = matchValue;
+            }
+            else {
+                matchResult = 1;
+            }
+        }
+        else {
+            matchResult = 1;
+        }
+        switch (matchResult) {
+            case 0: {
+                const prices = map((p0) => (new PriceRow(p0.Resource, p0.Val)), p_1.Def.Prices);
+                const affordable = hasRes_1(s.Pool, map((p0_1) => [p0_1.Resource, p0_1.Val], p_1.Def.Prices), 0);
+                return new PolicyRow(n, get$_2("pol." + n), prices, true, p_1.Researched, affordable && !p_1.Researched);
+            }
+            default:
+                return undefined;
+        }
+    }, s.Spool.PolicyOrder);
 }
 
 export function upgradeRows(s) {
@@ -2369,18 +2545,19 @@ export function religionRows(s) {
 }
 
 export class SpaceRow extends Record {
-    constructor(Name, Label, Kind, Val, Enabled) {
+    constructor(Name, Label, Kind, Val, Enabled, Planet) {
         super();
         this.Name = Name;
         this.Label = Label;
         this.Kind = Kind;
         this.Val = (Val | 0);
         this.Enabled = Enabled;
+        this.Planet = Planet;
     }
 }
 
 export function SpaceRow_$reflection() {
-    return record_type("kittens_land.KittensState.SpaceRow", [], SpaceRow, () => [["Name", string_type], ["Label", string_type], ["Kind", string_type], ["Val", int32_type], ["Enabled", bool_type]]);
+    return record_type("kittens_land.KittensState.SpaceRow", [], SpaceRow, () => [["Name", string_type], ["Label", string_type], ["Kind", string_type], ["Val", int32_type], ["Enabled", bool_type], ["Planet", string_type]]);
 }
 
 export function spaceRows(s) {
@@ -2388,7 +2565,7 @@ export function spaceRows(s) {
         const m = getProgram(s.Spacep, n_1);
         const def = find((d) => (d.Name === n_1), programDefs);
         const affordable = hasRes_1(s.Pool, map((p) => [p.Resource, p.Val], def.Prices), 0);
-        return new SpaceRow(n_1, get$_2("mission." + n_1), "mission", m.Val, affordable);
+        return new SpaceRow(n_1, get$_2("mission." + n_1), "mission", m.Val, affordable, "");
     }, filter_1((n) => {
         if (getProgram(s.Spacep, n).Unlocked) {
             return getProgram(s.Spacep, n).Val === 0;
@@ -2405,7 +2582,7 @@ export function spaceRows(s) {
             return [p_1.Resource, p_1.Val * ratio];
         }, def_1.Prices);
         const affordable_1 = hasRes_1(s.Pool, prices, 0);
-        return new SpaceRow(n_3, get$_2("sbld." + n_3), "sbld", m_1.Val, affordable_1);
+        return new SpaceRow(n_3, get$_2("sbld." + n_3), "sbld", m_1.Val, affordable_1, def_1.Planet);
     }, filter_1((n_2) => getBuilding(s.Spacep, n_2).Unlocked, s.Spacep.BuildingOrder));
     return append(progRows, bldRows);
 }
@@ -2514,7 +2691,7 @@ export function buildingRows(s) {
             else {
                 const prices = getAllPrices(s.Cache, pctx(s), b);
                 const affordable = hasRes_1(s.Pool, map((p) => [p.Resource, p.Val], prices), 0);
-                return new BuildingRow(n, get$_2("bld." + n), true, affordable, b.Val, map((p_1) => (new PriceRow(p_1.Resource, p_1.Val)), prices));
+                return new BuildingRow(n, get$_2("bld." + n), true, affordable, b.Val, b.Def.TogglableOnOff, map((p_1) => (new PriceRow(p_1.Resource, p_1.Val)), prices));
             }
         }
         else {

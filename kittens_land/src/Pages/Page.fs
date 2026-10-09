@@ -10,7 +10,7 @@ type TipData =
       Flavor: string option
       Prices: kittens_land.KittensState.TipPriceLine list }
 
-/// what a hovered element points at — the view rebuilds TipData from live
+/// what a hovered element points at â the view rebuilds TipData from live
 /// state on every render (orig ui.js L636 re-runs tooltipUpdateFunc every
 /// 5 ticks so ETAs count down while the popup is visible)
 type TipSource =
@@ -30,6 +30,7 @@ type Model =
       Tooltip: (float * float * TipSource) option
       OptionsOpen: bool
       ResEditMode: bool
+      BuildingFilter: string
       JobsPanelCollapsed: bool
       RightTab: string }
 
@@ -68,6 +69,9 @@ type Msg =
     | ClearConsole
     | ClearAllJobs
     | SetHideResearched of bool
+    | SetBuildingFilter of string
+    | ResearchPolicy of string
+    | Hunt
     | QAdd of string * string
     | QRemove of int
     | ToggleOption of string
@@ -93,6 +97,7 @@ let init () =
       Tooltip = None
       OptionsOpen = false
       ResEditMode = false
+      BuildingFilter = "all"
       JobsPanelCollapsed = false
       RightTab = "Log" },
     Command.batch [ Command.none; tickCmd 1.0 1 ]
@@ -130,6 +135,9 @@ let update (msg: Msg) (model: Model) =
     | ToggleJobsPanel -> { model with JobsPanelCollapsed = not model.JobsPanelCollapsed }, Command.none
     | ToggleResEditMode -> { model with ResEditMode = not model.ResEditMode }, Command.none
     | SetHideResearched v -> { model with S = kittens_land.KittensState.setHideResearched v model.S }, Command.none
+    | SetBuildingFilter f -> { model with BuildingFilter = f }, Command.none
+    | ResearchPolicy name -> { model with S = kittens_land.KittensState.researchPolicyAction name model.S }, Command.none
+    | Hunt -> { model with S = kittens_land.KittensState.huntAction model.S }, Command.none
     | ToggleResHidden name -> { model with S = kittens_land.KittensState.toggleResHidden name model.S }, Command.none
     | SetShowHiddenRes v -> { model with S = kittens_land.KittensState.setShowHiddenRes v model.S }, Command.none
     | SaveGame ->
@@ -188,7 +196,7 @@ let view (model: Model) (dispatch: Msg -> unit) =
             dispatch (SetTip(Some(ev.clientX - gl + 12.0, ev.clientY - gt + 12.0, src))))
           prop.onMouseLeave (fun _ -> dispatch (SetTip None)) ]
 
-    /// rebuild tooltip content from the CURRENT game state — called on every
+    /// rebuild tooltip content from the CURRENT game state â called on every
     /// render (i.e. every tick), which is what makes ETAs count down while
     /// the popup is visible, like orig ui.js L636 -> core.js L2799
     let renderTip (src: TipSource) : TipData =
@@ -258,7 +266,7 @@ let view (model: Model) (dispatch: Msg -> unit) =
         Html.div [
             prop.key key
             prop.className (if enabled then "btn nosel modern" else "btn nosel modern disabled")
-            // orig Button.render: display block, fixed 264px — tabs are single
+            // orig Button.render: display block, fixed 264px â tabs are single
             // column unless the tab's renderer splits into left/right rows
             // (Bonfire's "all" group does; see bldTopContainer below)
             prop.style [ style.position.relative; style.display.block; style.marginBottom 8; style.width 264 ]
@@ -535,6 +543,25 @@ let view (model: Model) (dispatch: Msg -> unit) =
                     prop.style [ style.marginBottom 10 ]
                     prop.text ("Kittens: " + string kittens + "/" + string maxKittens + " - happiness: " + sprintf "%.0f%%" (happiness * 100.0))
                 ]
+                // orig village management panel hunt button: visible once archery
+                // is researched (canHunt), enabled when a full squad of catpower
+                let huntCost = 100.0 - getEffect s "huntCatpowerDiscount"
+                let archeryResearched =
+                    (match s.Spool.Techs |> Map.tryFind "archery" with Some t -> t.Researched | None -> false)
+                let pacifismActive = s.Cpool.Challenges.["pacifism"].Active
+                let manpower = getRes s.Pool "manpower"
+                if archeryResearched && not pacifismActive then
+                    Html.div [
+                        prop.className (if manpower >= huntCost then "btn nosel" else "btn nosel disabled")
+                        prop.style [ style.display.inlineBlock; style.marginBottom 10; style.cursor "pointer" ]
+                        prop.onClick (fun _ -> if manpower >= huntCost then dispatch Hunt)
+                        prop.children [
+                            Html.div [
+                                prop.className "btnContent"
+                                prop.children [ Html.span [ prop.className "btnTitle"; prop.text (Game.Labels.get "village.hunt") ] ]
+                            ]
+                        ]
+                    ]
                 // orig com.nuclearunicorn.game.ui.Panel: bordered panel with a
                 // title and a +/- collapse toggle, content padded 10px
                 Html.div [
@@ -578,13 +605,47 @@ let view (model: Model) (dispatch: Msg -> unit) =
                 yield! (kittens_land.KittensState.techRows s
                         |> List.filter (fun t -> not (t.Researched && s.HideResearched))
                         |> List.map techRow)
+                // orig Library tab policy panel (classes.ui.PolicyPanel): unlocked
+                // policies with research buttons below the tech table
+                Html.div [
+                    prop.className "panelContainer"
+                    prop.style [ style.marginTop 15 ]
+                    prop.children [
+                        Html.div [ prop.className "title"; prop.text "Policies" ]
+                        Html.div [
+                            prop.className "container"
+                            prop.children [
+                                yield! (kittens_land.KittensState.policyRows s
+                                        |> List.filter (fun p -> not (p.Researched && s.HideResearched))
+                                        |> List.map (fun p ->
+                                            modernBtn ("pol." + p.Name) p.Label
+                                                (if p.Researched then "(Complete)" else "")
+                                                p.Enabled None
+                                                (fun () -> dispatch (ResearchPolicy p.Name))))
+                                if kittens_land.KittensState.policyRows s |> List.isEmpty then
+                                    Html.div [
+                                        prop.style [ style.fontSize 12; style.color "#777" ]
+                                        prop.text "No policies unlocked yet."
+                                    ]
+                            ]
+                        ]
+                    ]
+                ]
             ]
         | "Workshop" -> List.map upgradeRow (kittens_land.KittensState.upgradeRows s)
         | "Trade" ->
             kittens_land.KittensState.raceRows s
             |> List.collect (fun r ->
-                [ modernBtn ("race." + r.Name) ("Trade with " + r.Label) "" r.Tradeable None (fun () -> dispatch (Trade r.Name))
-                  modernBtn ("emb." + r.Name) ("Embassy of " + r.Label) ("(" + string r.EmbassyLevel + ")") r.Tradeable None (fun () -> dispatch (Embassy r.Name)) ])
+                [
+                    // orig diplomacy race panel shows standing + embassies per race
+                    Html.div [
+                        prop.key ("info." + r.Name)
+                        prop.style [ style.marginBottom 4 ]
+                        prop.text (r.Label + " — standing " + sprintf "%.2f" r.Standing + ", embassies: " + string r.EmbassyLevel)
+                    ]
+                    modernBtn ("race." + r.Name) ("Trade with " + r.Label) "" r.Tradeable None (fun () -> dispatch (Trade r.Name))
+                    modernBtn ("emb." + r.Name) ("Embassy of " + r.Label) ("(" + string r.EmbassyLevel + ")") r.Tradeable None (fun () -> dispatch (Embassy r.Name))
+                ])
         | "Religion" ->
             [
                 Html.div [
@@ -599,12 +660,38 @@ let view (model: Model) (dispatch: Msg -> unit) =
                         (fun () -> if r.Kind = "zu" then dispatch (BuyZU r.Name) else dispatch (BuyRU r.Name))))
             ]
         | "Space" ->
-            kittens_land.KittensState.spaceRows s
-            |> List.map (fun r ->
-                modernBtn ("sp." + r.Name) r.Label
-                    (if r.Val > 0 then "(" + string r.Val + ")" else "")
-                    r.Enabled None
-                    (fun () -> if r.Kind = "mission" then dispatch (Mission r.Name) else dispatch (SpaceBuy r.Name)))
+            [
+                // orig space tab groups buildings under planet headers
+                // (space.planet.*.label), missions listed on top
+                let spaceRows = kittens_land.KittensState.spaceRows s
+                let planetOrder =
+                    Game.Catalog.World.planetDefs |> List.map (fun p -> p.Name)
+                let groups =
+                    spaceRows
+                    |> List.filter (fun r -> r.Kind = "sbld")
+                    |> List.groupBy (fun r -> r.Planet)
+                    |> List.sortBy (fun (planet, _) ->
+                        planetOrder |> List.tryFindIndex (fun p -> p = planet) |> Option.defaultValue 999)
+                yield! (spaceRows
+                        |> List.filter (fun r -> r.Kind = "mission")
+                        |> List.map (fun r ->
+                            modernBtn ("sp." + r.Name) r.Label
+                                (if r.Val > 0 then "(" + string r.Val + ")" else "")
+                                r.Enabled None
+                                (fun () -> dispatch (Mission r.Name))))
+                for (planet, rows) in groups do
+                    if planet <> "" then
+                        yield Html.div [
+                            prop.key ("planet." + planet)
+                            prop.style [ style.marginTop 12; style.marginBottom 6; style.fontWeight.bold ]
+                            prop.text (Game.Labels.get ("planet." + planet))
+                        ]
+                    yield! (rows |> List.map (fun r ->
+                        modernBtn ("sp." + r.Name) r.Label
+                            (if r.Val > 0 then "(" + string r.Val + ")" else "")
+                            r.Enabled None
+                            (fun () -> dispatch (SpaceBuy r.Name))))
+            ]
         | "Time" ->
             [
                 Html.div [
@@ -629,9 +716,30 @@ let view (model: Model) (dispatch: Msg -> unit) =
                     (fun () -> dispatch (ChallengeToggle c.Name)))
         | _ ->
             [
-                // orig BonfireTab: the "all" group renders with twoRows = true —
-                // a table with left/right cells, buttons alternating even/odd
-                // (initRenderer + getElementContainer, buildings.js L3690)
+                // orig BonfireTab: building group filters (getBuildingGroups:
+                // all/available/enabled/togglable) + the "all" group renders
+                // with twoRows = true - a table with left/right cells, buttons
+                // alternating even/odd (initRenderer + getElementContainer)
+                let rows = kittens_land.KittensState.buildingRows s
+                let filteredRows =
+                    match model.BuildingFilter with
+                    | "available" | "enabled" -> rows |> List.filter (fun b -> b.Enabled)
+                    | "togglable" -> rows |> List.filter (fun b -> b.Togglable)
+                    | _ -> rows
+                Html.div [
+                    prop.style [ style.marginBottom 8 ]
+                    prop.children [
+                        for fid, fkey in [ "all", "filter.all"; "available", "filter.available"; "enabled", "filter.enabled"; "togglable", "filter.togglable" ] do
+                            yield Html.a [
+                                prop.key fid
+                                prop.className (if model.BuildingFilter = fid then "activeTab" else "")
+                                prop.href "#"
+                                prop.style [ style.marginRight 6 ]
+                                prop.onClick (fun _ -> dispatch (SetBuildingFilter fid))
+                                prop.text (Game.Labels.get fkey)
+                            ]
+                    ]
+                ]
                 let btns =
                     [
                         yield modernBtn "gather" (Game.Labels.get "bld.gatherCatnip") "" true
@@ -640,7 +748,7 @@ let view (model: Model) (dispatch: Msg -> unit) =
                         yield modernBtn "refine" (Game.Labels.get "bld.refineCatnip") "" (getRes s.Pool "catnip" >= 100.0)
                                 (Some(TipRefine))
                                 (fun () -> dispatch Refine)
-                        yield! List.map buildingRow (kittens_land.KittensState.buildingRows s)
+                        yield! List.map buildingRow filteredRows
                     ]
                 let left = btns |> List.indexed |> List.filter (fun (i, _) -> i % 2 = 0) |> List.map snd
                 let right = btns |> List.indexed |> List.filter (fun (i, _) -> i % 2 = 1) |> List.map snd
@@ -836,7 +944,7 @@ let view (model: Model) (dispatch: Msg -> unit) =
         match model.Tooltip with
         | None -> Html.none
         | Some (x, y, src) ->
-            // rebuild from the CURRENT state on every render — the whole view
+            // rebuild from the CURRENT state on every render â the whole view
             // re-renders each tick, so ETAs in the open popup count down
             // (orig ui.js L636 re-runs tooltipUpdateFunc every 5 ticks)
             let tip = renderTip src

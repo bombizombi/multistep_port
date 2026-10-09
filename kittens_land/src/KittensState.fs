@@ -662,6 +662,100 @@ let clearAllJobs (s: State) : State =
             Kittens = s.Vpool.Kittens |> List.map (fun k -> { k with Job = None }) }
     { s with Vpool = vpool' }
 
+// --- V7: policies + hunt (orig library policy panel + village hunt) ---------
+
+/// orig evaluateLocks vetoes for non-relation policies (harness policyVeto,
+/// tools/patch23b-runner.js — game.js L6070 skips vetoed unlock entries)
+let private policyVeto (s: State) (name: string) : bool =
+    let polRes n = (match s.Spool.Policies |> Map.tryFind n with Some p -> p.Researched | None -> false)
+    let techRes n = (match s.Spool.Techs |> Map.tryFind n with Some t -> t.Researched | None -> false)
+    let bldVal n = (Game.Buildings.get s.Bpool n |> Option.map (fun b -> b.Val) |> Option.defaultValue 0)
+    let challengeActive n = s.Cpool.Challenges.[n].Active
+    match name with
+    | "liberalism" -> not ((polRes "monarchy" || polRes "republic") && bldVal "factory" > 0)
+    | "communism" -> not ((polRes "republic" || polRes "authocracy") && bldVal "factory" > 0)
+    | "fascism" -> not ((polRes "monarchy" || polRes "authocracy") && bldVal "factory" > 0)
+    | "scientificCommunism" -> not (bldVal "workshop" < 2 && bldVal "factory" < 1 && polRes "socialism")
+    | "knowledgeSharing" | "culturalExchange" -> not (techRes "diplomacy" && techRes "astronomy")
+    | "bigStickPolicy" -> not (polRes "isolationism" && techRes "astronomy" && not (challengeActive "pacifism"))
+    | "cityOnAHill" -> not (polRes "isolationism" && techRes "astronomy")
+    | "outerSpaceTreaty" -> not (bldVal "sattelite" > 0)
+    | "militarizeSpace" -> not (bldVal "sattelite" > 0 && not (challengeActive "pacifism"))
+    | "sustainability" | "fullIndustrialization" -> not ((polRes "stripMining" || polRes "clearCutting") && techRes "industrialization")
+    | "conservation" | "openWoodlands" -> not (polRes "environmentalism" && techRes "ecology")
+    | "siphoning" | "feedingFrenzy" | "upfrontPayment" ->
+        not ((match s.Rpool.TUs |> Map.tryFind "mausoleum" with Some m -> m.Val | None -> 0) > 0
+             && (match s.Rpool.ZUs |> Map.tryFind "marker" with Some m -> m.Val | None -> 0) > 0)
+    | _ -> false
+
+/// orig PolicyBtnController.buyItem → science.researchPolicy full purchase
+/// chain, then onPurchase unlock/upgrade fan-out (tools/patch23b-runner.js)
+let researchPolicyAction (name: string) (s: State) : State =
+    let calc : Game.Managers.PolicyCalcCtx =
+        { IronWill = s.IronWill
+          NagaEmbassies = s.Dpool.Races.["nagas"].EmbassyLevel
+          SpiderEmbassies = s.Dpool.Races.["spiders"].EmbassyLevel
+          CycleYear = s.Calendar.CycleYear
+          PactsAvailable = Game.Effects.getEffect s.Cache "pactsAvailable"
+          FracturedOn = (match s.Rpool.Pacts |> Map.tryFind "fractured" with Some p -> p.On | None -> 0)
+          UncappedHousing = 0 }
+    let priestLeader =
+        match s.Vpool.LeaderSeed with
+        | Some seed ->
+            s.Vpool.Kittens
+            |> List.tryFind (fun k -> k.Seed = seed)
+            |> Option.map (fun k -> k.Job = Some "priest")
+            |> Option.defaultValue false
+        | None -> false
+    let aiLevel =
+        (Game.Buildings.get s.Bpool "aiCore"
+         |> Option.bind (fun b -> b.Def.Effects |> Map.tryFind "aiLevel")
+         |> Option.defaultValue 0.0)
+    let bctx : Game.Managers.PolicyBuyCtx =
+        { Calc = calc
+          GetEffect = Game.Effects.getEffect s.Cache
+          PriestLeader = priestLeader
+          AiLevel = aiLevel
+          Necrocorns = resValue s "necrocorn"
+          ActivePacts = Game.Religion.countActivePacts s.Rpool }
+    let pool', spool', result = Game.Managers.researchPolicy s.CalendarDay name bctx s.Pool s.Spool
+    if result <> "OkBought" then s
+    else
+        let s1 = { s with Pool = pool'; Spool = spool' }
+        let s2 =
+            match s1.Spool.Policies.[name].Def.Unlocks with
+            | Some u ->
+                let pols = u.Policies |> List.filter (fun p0 -> not (policyVeto s1 p0))
+                let bp2, sp2, wp2 =
+                    Game.Managers.unlock u.Buildings u.Tabs [] u.Tech pols u.Upgrades u.ZebraUpgrades u.Crafts
+                        s1.Bpool s1.Spool s1.Wpool
+                { s1 with
+                    Bpool = bp2
+                    Spool = sp2
+                    Wpool = wp2
+                    Vpool = { s1.Vpool with JobUnlocked = s1.Vpool.JobUnlocked |> Set.union (Set.ofList u.Jobs) }
+                    TabsUnlocked = s1.TabsUnlocked |> Set.union (Set.ofList u.Tabs) }
+            | None -> s1
+        let ups = Game.Catalog.Policies.upgrades |> Map.tryFind name |> Option.defaultValue []
+        if ups <> [] then refreshCache s2 |> refreshCache else s2
+
+/// orig village huntAll — one click spends full squads of manpower for
+/// catnip/furs/unicorn rolls (js/village.js huntAll → huntFraction x1)
+let huntAction (s: State) : State =
+    let ctx : Game.Village.HuntContext =
+        { GetEffect = getEffect s
+          Rand = s.Rand
+          Zebras = resValue s "zebras"
+          IronWill = s.IronWill
+          GoldOreResearched =
+            (match s.Spool.Techs |> Map.tryFind "goldOre" with Some t -> t.Researched | None -> false)
+          AlicornmancyResearched =
+            (match s.Ppool.Perks |> Map.tryFind "unicornmancy" with Some p -> p.Researched | None -> false)
+          UnicornPastureVal = 0
+          LeaderManagerBonus = 0.0 }
+    let pool' = Game.Village.huntAll ctx s.Pool
+    refreshCache { s with Pool = pool' }
+
 let gatherCatnip (s: State) : State =
     let pool1, _ = Game.Resources.addResEvent s.CalendarDay "catnip" 1.0 s.Pool
     { s with Pool = pool1 }
@@ -1258,14 +1352,14 @@ let priceLines (s: State) (simplePrices: bool) (prices: PriceRow list) : TipPric
         let children =
             if not hasRes && craftable && resource <> "wood" && not simplePrices then
                 match s.Wpool.Crafts |> Map.tryFind resource with
-                | Some c when c.Unlocked && System.Double.IsFinite(val_ - value) ->
+                | Some c when c.Unlocked && not (System.Double.IsInfinity(val_ - value) || System.Double.IsNaN(val_ - value)) ->
                     let diff = val_ - value
                     let ratio = Game.Managers.getResCraftRatio s.Cache (crCtxFor s) resource
                     c.Def.Prices
                     |> List.map (fun comp ->
                         let mutable v = System.Math.Ceiling(comp.Val * diff / (1.0 + ratio))
                         let rem = v % comp.Val
-                        if rem <> 0.0 && System.Double.IsFinite(rem) then v <- v + comp.Val - rem
+                        if rem <> 0.0 && not (System.Double.IsInfinity(rem) || System.Double.IsNaN(rem)) then v <- v + comp.Val - rem
                         line comp.Resource v (Some comp.Val) (indent + 1))
                 | _ -> []
             else []
@@ -1279,7 +1373,7 @@ let priceLines (s: State) (simplePrices: bool) (prices: PriceRow list) : TipPric
     prices |> List.map (fun p -> line p.Resource p.Val None 0)
 
 type BuildingRow =
-    { Name: string; Label: string; Visible: bool; Enabled: bool; Val: int; Prices: PriceRow list }
+    { Name: string; Label: string; Visible: bool; Enabled: bool; Val: int; Togglable: bool; Prices: PriceRow list }
 
 type JobRow =
     { Name: string; Label: string; Assigned: int; Unlocked: bool }
@@ -1312,6 +1406,19 @@ let techRows (s: State) : TechRow list =
             let prices = t.Def.Prices |> List.map (fun p -> { Resource = p.Resource; Val = p.Val })
             let affordable = Game.Resources.hasRes s.Pool (t.Def.Prices |> List.map (fun p -> (p.Resource, p.Val))) 0.0
             Some { Name = n; Label = Game.Labels.get ("tech." + n); Prices = prices; Unlocked = true; Researched = t.Researched; Enabled = affordable && not t.Researched }
+        | _ -> None)
+
+type PolicyRow =
+    { Name: string; Label: string; Prices: PriceRow list; Unlocked: bool; Researched: bool; Enabled: bool }
+
+let policyRows (s: State) : PolicyRow list =
+    s.Spool.PolicyOrder
+    |> List.choose (fun n ->
+        match s.Spool.Policies |> Map.tryFind n with
+        | Some p when p.Unlocked ->
+            let prices = p.Def.Prices |> List.map (fun p0 -> { Resource = p0.Resource; Val = p0.Val })
+            let affordable = Game.Resources.hasRes s.Pool (p.Def.Prices |> List.map (fun p0 -> (p0.Resource, p0.Val))) 0.0
+            Some { Name = n; Label = Game.Labels.get ("pol." + n); Prices = prices; Unlocked = true; Researched = p.Researched; Enabled = affordable && not p.Researched }
         | _ -> None)
 
 let upgradeRows (s: State) : UpgradeRow list =
@@ -1378,7 +1485,7 @@ let religionRows (s: State) : ReligionRow list =
     zuRows @ ruRows
 
 type SpaceRow =
-    { Name: string; Label: string; Kind: string; Val: int; Enabled: bool }
+    { Name: string; Label: string; Kind: string; Val: int; Enabled: bool; Planet: string }
 
 let spaceRows (s: State) : SpaceRow list =
     let progRows =
@@ -1388,7 +1495,7 @@ let spaceRows (s: State) : SpaceRow list =
             let m = Game.Space.getProgram s.Spacep n
             let def = Game.Catalog.Space.programDefs |> List.find (fun d -> d.Name = n)
             let affordable = Game.Resources.hasRes s.Pool (def.Prices |> List.map (fun p -> (p.Resource, p.Val))) 0.0
-            { Name = n; Label = Game.Labels.get ("mission." + n); Kind = "mission"; Val = m.Val; Enabled = affordable })
+            { Name = n; Label = Game.Labels.get ("mission." + n); Kind = "mission"; Val = m.Val; Enabled = affordable; Planet = "" })
     let bldRows =
         s.Spacep.BuildingOrder
         |> List.filter (fun n -> (Game.Space.getBuilding s.Spacep n).Unlocked)
@@ -1401,7 +1508,7 @@ let spaceRows (s: State) : SpaceRow list =
                     let ratio = 1.05 ** float m.Val // verified oil ladder (space-10)
                     (p.Resource, p.Val * ratio))
             let affordable = Game.Resources.hasRes s.Pool prices 0.0
-            { Name = n; Label = Game.Labels.get ("sbld." + n); Kind = "sbld"; Val = m.Val; Enabled = affordable })
+            { Name = n; Label = Game.Labels.get ("sbld." + n); Kind = "sbld"; Val = m.Val; Enabled = affordable; Planet = def.Planet })
     progRows @ bldRows
 
 type TimeRow =
@@ -1461,6 +1568,7 @@ let buildingRows (s: State) : BuildingRow list =
                       Visible = true
                       Enabled = affordable
                       Val = b.Val
+                      Togglable = b.Def.TogglableOnOff
                       Prices = prices |> List.map (fun p -> { Resource = p.Resource; Val = p.Val }) }
                 ))
 
