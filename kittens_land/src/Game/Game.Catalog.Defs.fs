@@ -30,8 +30,8 @@ let buildingDefs : BuildingDef list =
         NoStackable = false; BreaksIronWill = false;
         Effects = Map.empty; StartsUnlocked = false; StartsUnlockable = false;
         Stages = [
-        { StageKey = None; Prices = [{ Resource = "catnip"; Val = 100 }; { Resource = "wood"; Val = 10 }]; UnlockRatio = None; Effects = Map.ofList ["catnipDemandRatio", -0.005] }
-        { StageKey = None; Prices = [{ Resource = "titanium"; Val = 250 }]; UnlockRatio = None; Effects = Map.empty }
+        { StageKey = None; Prices = [{ Resource = "catnip"; Val = 100 }; { Resource = "wood"; Val = 10 }]; PriceRatio = Some 1.15; UnlockRatio = None; Effects = Map.ofList ["catnipDemandRatio", -0.005] }
+        { StageKey = None; Prices = [{ Resource = "titanium"; Val = 250 }]; PriceRatio = Some 1.15; UnlockRatio = None; Effects = Map.empty }
       ];
         Unlocks = None; Upgrades = None;
         UnlockScheme = None }
@@ -42,8 +42,8 @@ let buildingDefs : BuildingDef list =
         NoStackable = false; BreaksIronWill = false;
         Effects = Map.ofList ["catnipRatio", 0; "energyProduction", 0]; StartsUnlocked = false; StartsUnlockable = false;
         Stages = [
-        { StageKey = None; Prices = [{ Resource = "minerals"; Val = 75 }]; UnlockRatio = None; Effects = Map.ofList ["catnipRatio", 0.03] }
-        { StageKey = None; Prices = [{ Resource = "titanium"; Val = 2500 }; { Resource = "concrate"; Val = 100 }; { Resource = "gear"; Val = 5 }]; UnlockRatio = None; Effects = Map.ofList ["energyProduction", 5] }
+        { PriceRatio = Some 1.12; StageKey = None; Prices = [{ Resource = "minerals"; Val = 75 }]; UnlockRatio = None; Effects = Map.ofList ["catnipRatio", 0.03] }
+        { PriceRatio = Some 1.15; StageKey = None; Prices = [{ Resource = "titanium"; Val = 2500 }; { Resource = "concrate"; Val = 100 }; { Resource = "gear"; Val = 5 }]; UnlockRatio = None; Effects = Map.ofList ["energyProduction", 5] }
       ];
         Unlocks = None; Upgrades = Some({ Buildings = ["magneto"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] });
         UnlockScheme = None }
@@ -81,8 +81,8 @@ let buildingDefs : BuildingDef list =
         NoStackable = false; BreaksIronWill = false;
         Effects = Map.empty; StartsUnlocked = false; StartsUnlockable = true;
         Stages = [
-        { StageKey = None; Prices = [{ Resource = "wood"; Val = 25 }]; UnlockRatio = Some 0.3; Effects = Map.ofList ["scienceRatio", 0.1; "scienceMax", 250; "cultureMax", 10] }
-        { StageKey = None; Prices = [{ Resource = "steel"; Val = 100 }; { Resource = "concrate"; Val = 10 }; { Resource = "microchip"; Val = 5 }]; UnlockRatio = None; Effects = Map.ofList ["scienceMaxCompendia", 1000; "cultureMax", 25; "energyConsumption", 2] }
+        { PriceRatio = None; StageKey = None; Prices = [{ Resource = "wood"; Val = 25 }]; UnlockRatio = Some 0.3; Effects = Map.ofList ["scienceRatio", 0.1; "scienceMax", 250; "cultureMax", 10] }
+        { PriceRatio = None; StageKey = None; Prices = [{ Resource = "steel"; Val = 100 }; { Resource = "concrate"; Val = 10 }; { Resource = "microchip"; Val = 5 }]; UnlockRatio = None; Effects = Map.ofList ["scienceMaxCompendia", 1000; "cultureMax", 25; "energyConsumption", 2] }
       ];
         Unlocks = Some({ Buildings = []; Tabs = ["science"]; Jobs = ["scholar"]; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = ["biolab"; "observatory"]; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] });
         UnlockScheme = None }
@@ -129,8 +129,8 @@ let buildingDefs : BuildingDef list =
         NoStackable = false; BreaksIronWill = false;
         Effects = Map.empty; StartsUnlocked = false; StartsUnlockable = false;
         Stages = [
-        { StageKey = None; Prices = [{ Resource = "beam"; Val = 1.5 }; { Resource = "slab"; Val = 2 }]; UnlockRatio = None; Effects = Map.ofList ["catnipMax", 0; "woodMax", 150; "mineralsMax", 200; "coalMax", 30; "ironMax", 25; "titaniumMax", 10; "goldMax", 5] }
-        { StageKey = None; Prices = [{ Resource = "titanium"; Val = 10000 }; { Resource = "eludium"; Val = 500 }; { Resource = "kerosene"; Val = 1000 }; { Resource = "blueprint"; Val = 500 }; { Resource = "starchart"; Val = 100000 }]; UnlockRatio = None; Effects = Map.ofList ["moonBaseStorageBonus", 0; "planetCrackerStorageBonus", 0; "cryostationStorageBonus", 0; "energyConsumption", 0; "tradeVolume", 0] }
+        { PriceRatio = Some 1.15; StageKey = None; Prices = [{ Resource = "beam"; Val = 1.5 }; { Resource = "slab"; Val = 2 }]; UnlockRatio = None; Effects = Map.ofList ["catnipMax", 0; "woodMax", 150; "mineralsMax", 200; "coalMax", 30; "ironMax", 25; "titaniumMax", 10; "goldMax", 5] }
+        { PriceRatio = Some 1.15; StageKey = None; Prices = [{ Resource = "titanium"; Val = 10000 }; { Resource = "eludium"; Val = 500 }; { Resource = "kerosene"; Val = 1000 }; { Resource = "blueprint"; Val = 500 }; { Resource = "starchart"; Val = 100000 }]; UnlockRatio = None; Effects = Map.ofList ["moonBaseStorageBonus", 0; "planetCrackerStorageBonus", 0; "cryostationStorageBonus", 0; "energyConsumption", 0; "tradeVolume", 0] }
       ];
         Unlocks = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = ["transportSuperposition"]; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] }); Upgrades = Some({ Buildings = []; Tabs = []; Jobs = []; Tech = []; Policies = []; Upgrades = []; ZebraUpgrades = []; Religion = []; Crafts = []; Perks = []; Stages = [] });
         UnlockScheme = Some("minimalist", 10) }
@@ -285,8 +285,8 @@ let buildingDefs : BuildingDef list =
         NoStackable = false; BreaksIronWill = false;
         Effects = Map.ofList ["unhappinessRatio", 0; "culturePerTickBase", 0; "cultureMax", 0]; StartsUnlocked = false; StartsUnlockable = false;
         Stages = [
-        { StageKey = None; Prices = [{ Resource = "wood"; Val = 200 }; { Resource = "minerals"; Val = 1200 }; { Resource = "parchment"; Val = 3 }]; UnlockRatio = None; Effects = Map.ofList ["unhappinessRatio", -0.048; "culturePerTickBase", 0.005; "cultureMax", 50] }
-        { StageKey = None; Prices = [{ Resource = "iron"; Val = 1250 }; { Resource = "titanium"; Val = 75 }]; UnlockRatio = None; Effects = Map.ofList ["unhappinessRatio", -0.75; "culturePerTickBase", 1; "cultureMax", 300] }
+        { PriceRatio = Some 1.15; StageKey = None; Prices = [{ Resource = "wood"; Val = 200 }; { Resource = "minerals"; Val = 1200 }; { Resource = "parchment"; Val = 3 }]; UnlockRatio = None; Effects = Map.ofList ["unhappinessRatio", -0.048; "culturePerTickBase", 0.005; "cultureMax", 50] }
+        { PriceRatio = Some 1.18; StageKey = None; Prices = [{ Resource = "iron"; Val = 1250 }; { Resource = "titanium"; Val = 75 }]; UnlockRatio = None; Effects = Map.ofList ["unhappinessRatio", -0.75; "culturePerTickBase", 1; "cultureMax", 300] }
       ];
         Unlocks = None; Upgrades = None;
         UnlockScheme = None }

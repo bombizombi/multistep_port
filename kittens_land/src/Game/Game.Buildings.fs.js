@@ -117,21 +117,21 @@ export const freshPricing = new PricingContext(ofList_1(singleton("stasisPod"), 
  * getExtraPrices (paid on buy, never refunded).
  */
 export function getPricesWith(cache, pctx, additionalBought, b) {
-    let s, s_1, arg0__25, arg1__21;
+    let s, s_1, s_2, s_3, arg0__25, arg1__21;
     const def = b.Def;
     const stage = (length(def.Stages) > 0) ? item(b.Stage, def.Stages) : undefined;
     const prices = (stage != null) ? (((s = stage, length(s.Prices) > 0)) ? ((s_1 = stage, s_1.Prices)) : def.Prices) : def.Prices;
-    const ratio = defaultArg(b.Def.PriceRatio, 1);
+    const ratio = (stage != null) ? (((s_2 = stage, length(s_2.Prices) > 0)) ? ((s_3 = stage, defaultArg(s_3.PriceRatio, 1))) : defaultArg(b.Def.PriceRatio, 1)) : defaultArg(b.Def.PriceRatio, 1);
     const eff = (name) => getEffect(cache, name);
     const pricesDiscount = getLimitedDR(eff(def.Name + "CostReduction"), 1);
     const priceModifier = 1 - pricesDiscount;
     const fakeBought = eff(def.Name + "FakeBought") + additionalBought;
     const valExp = b.Val + fakeBought;
     const baseLoop = map((p) => {
-        let s_2, s_3;
+        let s_4, s_5;
         const resPriceDiscount = getLimitedDR(eff(p.Resource + "CostReduction"), 1);
         const resPriceModifier = 1 - resPriceDiscount;
-        const resourcePriceRatio = (stage != null) ? (((s_2 = stage, length(s_2.Prices) > 0)) ? ((s_3 = stage, ratio)) : ratio) : ratio;
+        const resourcePriceRatio = (stage != null) ? (((s_4 = stage, length(s_4.Prices) > 0)) ? ((s_5 = stage, ratio)) : ratio) : ratio;
         return new Price(p.Resource, ((p.Val * Math.pow(resourcePriceRatio, valExp)) * resPriceModifier) * priceModifier);
     }, prices);
     let priceRulesBranch;
@@ -211,21 +211,21 @@ export function getExtraPrices(cache, pctx, b) {
  * Normal (refundable) ladder with the priceRules specials.
  */
 export function getPrices(cache, pctx, b) {
-    let s, s_1;
+    let s, s_1, s_2, s_3;
     const def = b.Def;
     const stage = (length(def.Stages) > 0) ? item(b.Stage, def.Stages) : undefined;
     const prices = (stage != null) ? (((s = stage, length(s.Prices) > 0)) ? ((s_1 = stage, s_1.Prices)) : def.Prices) : def.Prices;
-    const ratio = defaultArg(b.Def.PriceRatio, 1);
+    const ratio = (stage != null) ? (((s_2 = stage, length(s_2.Prices) > 0)) ? ((s_3 = stage, defaultArg(s_3.PriceRatio, 1))) : defaultArg(b.Def.PriceRatio, 1)) : defaultArg(b.Def.PriceRatio, 1);
     const eff = (name) => getEffect(cache, name);
     const pricesDiscount = getLimitedDR(eff(def.Name + "CostReduction"), 1);
     const priceModifier = 1 - pricesDiscount;
     const fakeBought = eff(def.Name + "FakeBought");
     const valExp = b.Val + fakeBought;
     const baseLoop = map((p) => {
-        let s_2, s_3;
+        let s_4, s_5;
         const resPriceDiscount = getLimitedDR(eff(p.Resource + "CostReduction"), 1);
         const resPriceModifier = 1 - resPriceDiscount;
-        const resourcePriceRatio = (stage != null) ? (((s_2 = stage, length(s_2.Prices) > 0)) ? ((s_3 = stage, ratio)) : ratio) : ratio;
+        const resourcePriceRatio = (stage != null) ? (((s_4 = stage, length(s_4.Prices) > 0)) ? ((s_5 = stage, ratio)) : ratio) : ratio;
         return new Price(p.Resource, ((p.Val * Math.pow(resourcePriceRatio, valExp)) * resPriceModifier) * priceModifier);
     }, prices);
     let priceRulesBranch;

@@ -8,15 +8,15 @@ export const buildingDefs = ofArray([new BuildingDef("field", undefined, 0, 0.3,
     Compare: (x, y) => (comparePrimitives(x, y) | 0),
 }), false, true, empty(), undefined, undefined, ["catnip", 56]), new BuildingDef("pasture", undefined, 0, 0.3, false, empty(), undefined, undefined, false, false, false, empty_1({
     Compare: (x_1, y_1) => (comparePrimitives(x_1, y_1) | 0),
-}), false, false, ofArray([new StageDef(undefined, ofArray([new Price("catnip", 100), new Price("wood", 10)]), undefined, ofList(singleton(["catnipDemandRatio", -0.005]), {
+}), false, false, ofArray([new StageDef(undefined, ofArray([new Price("catnip", 100), new Price("wood", 10)]), 1.15, undefined, ofList(singleton(["catnipDemandRatio", -0.005]), {
     Compare: (x_2, y_2) => (comparePrimitives(x_2, y_2) | 0),
-})), new StageDef(undefined, singleton(new Price("titanium", 250)), undefined, empty_1({
+})), new StageDef(undefined, singleton(new Price("titanium", 250)), 1.15, undefined, empty_1({
     Compare: (x_3, y_3) => (comparePrimitives(x_3, y_3) | 0),
 }))]), undefined, undefined, undefined), new BuildingDef("aqueduct", undefined, 0, 0.3, false, empty(), undefined, undefined, false, false, false, ofList(ofArray([["catnipRatio", 0], ["energyProduction", 0]]), {
     Compare: (x_4, y_4) => (comparePrimitives(x_4, y_4) | 0),
-}), false, false, ofArray([new StageDef(undefined, singleton(new Price("minerals", 75)), undefined, ofList(singleton(["catnipRatio", 0.03]), {
+}), false, false, ofArray([new StageDef(undefined, singleton(new Price("minerals", 75)), 1.12, undefined, ofList(singleton(["catnipRatio", 0.03]), {
     Compare: (x_5, y_5) => (comparePrimitives(x_5, y_5) | 0),
-})), new StageDef(undefined, ofArray([new Price("titanium", 2500), new Price("concrate", 100), new Price("gear", 5)]), undefined, ofList(singleton(["energyProduction", 5]), {
+})), new StageDef(undefined, ofArray([new Price("titanium", 2500), new Price("concrate", 100), new Price("gear", 5)]), 1.15, undefined, ofList(singleton(["energyProduction", 5]), {
     Compare: (x_6, y_6) => (comparePrimitives(x_6, y_6) | 0),
 }))]), undefined, new UnlockList(singleton("magneto"), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty()), undefined), new BuildingDef("hut", undefined, 0, 0.3, true, singleton(new Price("wood", 5)), 2.5, undefined, false, false, true, ofList(ofArray([["manpowerMax", 75], ["maxKittens", 2]]), {
     Compare: (x_7, y_7) => (comparePrimitives(x_7, y_7) | 0),
@@ -26,9 +26,9 @@ export const buildingDefs = ofArray([new BuildingDef("field", undefined, 0, 0.3,
     Compare: (x_9, y_9) => (comparePrimitives(x_9, y_9) | 0),
 }), false, false, empty(), new UnlockList(empty(), singleton("village"), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty()), new UnlockList(empty(), empty(), empty(), empty(), singleton("authocracy"), empty(), empty(), empty(), empty(), empty(), empty()), undefined), new BuildingDef("library", undefined, 0, undefined, true, empty(), 1.15, undefined, false, false, false, empty_1({
     Compare: (x_10, y_10) => (comparePrimitives(x_10, y_10) | 0),
-}), false, true, ofArray([new StageDef(undefined, singleton(new Price("wood", 25)), 0.3, ofList(ofArray([["scienceRatio", 0.1], ["scienceMax", 250], ["cultureMax", 10]]), {
+}), false, true, ofArray([new StageDef(undefined, singleton(new Price("wood", 25)), undefined, 0.3, ofList(ofArray([["scienceRatio", 0.1], ["scienceMax", 250], ["cultureMax", 10]]), {
     Compare: (x_11, y_11) => (comparePrimitives(x_11, y_11) | 0),
-})), new StageDef(undefined, ofArray([new Price("steel", 100), new Price("concrate", 10), new Price("microchip", 5)]), undefined, ofList(ofArray([["scienceMaxCompendia", 1000], ["cultureMax", 25], ["energyConsumption", 2]]), {
+})), new StageDef(undefined, ofArray([new Price("steel", 100), new Price("concrate", 10), new Price("microchip", 5)]), undefined, undefined, ofList(ofArray([["scienceMaxCompendia", 1000], ["cultureMax", 25], ["energyConsumption", 2]]), {
     Compare: (x_12, y_12) => (comparePrimitives(x_12, y_12) | 0),
 }))]), new UnlockList(empty(), singleton("science"), singleton("scholar"), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty()), new UnlockList(ofArray(["biolab", "observatory"]), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty()), undefined), new BuildingDef("academy", undefined, 0, 0.3, false, ofArray([new Price("wood", 50), new Price("minerals", 70), new Price("science", 100)]), 1.15, undefined, false, false, false, ofList(ofArray([["scienceRatio", 0.2], ["skillXP", 0.0005], ["scienceMax", 500], ["cultureMax", 25], ["academyMeteorBonus", 0]]), {
     Compare: (x_13, y_13) => (comparePrimitives(x_13, y_13) | 0),
@@ -40,9 +40,9 @@ export const buildingDefs = ofArray([new BuildingDef("field", undefined, 0, 0.3,
     Compare: (x_16, y_16) => (comparePrimitives(x_16, y_16) | 0),
 }), false, false, empty(), undefined, undefined, undefined), new BuildingDef("warehouse", undefined, 0, undefined, false, empty(), undefined, undefined, false, false, false, empty_1({
     Compare: (x_17, y_17) => (comparePrimitives(x_17, y_17) | 0),
-}), false, false, ofArray([new StageDef(undefined, ofArray([new Price("beam", 1.5), new Price("slab", 2)]), undefined, ofList(ofArray([["catnipMax", 0], ["woodMax", 150], ["mineralsMax", 200], ["coalMax", 30], ["ironMax", 25], ["titaniumMax", 10], ["goldMax", 5]]), {
+}), false, false, ofArray([new StageDef(undefined, ofArray([new Price("beam", 1.5), new Price("slab", 2)]), 1.15, undefined, ofList(ofArray([["catnipMax", 0], ["woodMax", 150], ["mineralsMax", 200], ["coalMax", 30], ["ironMax", 25], ["titaniumMax", 10], ["goldMax", 5]]), {
     Compare: (x_18, y_18) => (comparePrimitives(x_18, y_18) | 0),
-})), new StageDef(undefined, ofArray([new Price("titanium", 10000), new Price("eludium", 500), new Price("kerosene", 1000), new Price("blueprint", 500), new Price("starchart", 100000)]), undefined, ofList(ofArray([["moonBaseStorageBonus", 0], ["planetCrackerStorageBonus", 0], ["cryostationStorageBonus", 0], ["energyConsumption", 0], ["tradeVolume", 0]]), {
+})), new StageDef(undefined, ofArray([new Price("titanium", 10000), new Price("eludium", 500), new Price("kerosene", 1000), new Price("blueprint", 500), new Price("starchart", 100000)]), 1.15, undefined, ofList(ofArray([["moonBaseStorageBonus", 0], ["planetCrackerStorageBonus", 0], ["cryostationStorageBonus", 0], ["energyConsumption", 0], ["tradeVolume", 0]]), {
     Compare: (x_19, y_19) => (comparePrimitives(x_19, y_19) | 0),
 }))]), new UnlockList(empty(), empty(), empty(), empty(), empty(), singleton("transportSuperposition"), empty(), empty(), empty(), empty(), empty()), new UnlockList(empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty(), empty()), ["minimalist", 10]), new BuildingDef("harbor", undefined, 0, undefined, false, ofArray([new Price("slab", 50), new Price("plate", 75), new Price("scaffold", 5)]), 1.15, undefined, false, false, false, ofList(ofArray([["catnipMax", 2500], ["woodMax", 700], ["mineralsMax", 950], ["coalMax", 100], ["ironMax", 150], ["titaniumMax", 50], ["goldMax", 25]]), {
     Compare: (x_20, y_20) => (comparePrimitives(x_20, y_20) | 0),
@@ -78,9 +78,9 @@ export const buildingDefs = ofArray([new BuildingDef("field", undefined, 0, 0.3,
     Compare: (x_35, y_35) => (comparePrimitives(x_35, y_35) | 0),
 }), false, false, empty(), new UnlockList(empty(), empty(), empty(), empty(), empty(), empty(), singleton("darkBrew"), empty(), empty(), empty(), empty()), undefined, ["chocolate", 10]), new BuildingDef("amphitheatre", undefined, 0, undefined, false, empty(), undefined, undefined, false, false, false, ofList(ofArray([["unhappinessRatio", 0], ["culturePerTickBase", 0], ["cultureMax", 0]]), {
     Compare: (x_36, y_36) => (comparePrimitives(x_36, y_36) | 0),
-}), false, false, ofArray([new StageDef(undefined, ofArray([new Price("wood", 200), new Price("minerals", 1200), new Price("parchment", 3)]), undefined, ofList(ofArray([["unhappinessRatio", -0.048], ["culturePerTickBase", 0.005], ["cultureMax", 50]]), {
+}), false, false, ofArray([new StageDef(undefined, ofArray([new Price("wood", 200), new Price("minerals", 1200), new Price("parchment", 3)]), 1.15, undefined, ofList(ofArray([["unhappinessRatio", -0.048], ["culturePerTickBase", 0.005], ["cultureMax", 50]]), {
     Compare: (x_37, y_37) => (comparePrimitives(x_37, y_37) | 0),
-})), new StageDef(undefined, ofArray([new Price("iron", 1250), new Price("titanium", 75)]), undefined, ofList(ofArray([["unhappinessRatio", -0.75], ["culturePerTickBase", 1], ["cultureMax", 300]]), {
+})), new StageDef(undefined, ofArray([new Price("iron", 1250), new Price("titanium", 75)]), 1.18, undefined, ofList(ofArray([["unhappinessRatio", -0.75], ["culturePerTickBase", 1], ["cultureMax", 300]]), {
     Compare: (x_38, y_38) => (comparePrimitives(x_38, y_38) | 0),
 }))]), undefined, undefined, undefined), new BuildingDef("chapel", undefined, 0, undefined, false, ofArray([new Price("minerals", 2000), new Price("culture", 250), new Price("parchment", 250)]), 1.15, undefined, false, false, false, ofList(ofArray([["culturePerTickBase", 0.05], ["faithPerTickBase", 0.005], ["cultureMax", 200], ["faithMax", 0]]), {
     Compare: (x_39, y_39) => (comparePrimitives(x_39, y_39) | 0),

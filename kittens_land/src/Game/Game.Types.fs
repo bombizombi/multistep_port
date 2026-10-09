@@ -69,6 +69,7 @@ type UnlockList =
 type StageDef =
     { StageKey: string option
       Prices: Price list
+      PriceRatio: float option
       UnlockRatio: float option
       Effects: Map<string, float> }
 

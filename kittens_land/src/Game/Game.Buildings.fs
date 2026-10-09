@@ -90,7 +90,12 @@ let getPricesWith (cache: Game.Effects.EffectsCache) (pctx: PricingContext) (add
         match stage with
         | Some s when s.Prices.Length > 0 -> s.Prices
         | _ -> def.Prices
-    let ratio = b.Def.PriceRatio |> Option.defaultValue 1.0
+    // staged buildings mutate meta.priceRatio to the active stage's ratio
+    // (orig getPriceRatioWithAccessor reads bld.get("priceRatio"))
+    let ratio =
+        match stage with
+        | Some s when s.Prices.Length > 0 -> s.PriceRatio |> Option.defaultValue 1.0
+        | _ -> b.Def.PriceRatio |> Option.defaultValue 1.0
 
     let eff = Game.Effects.getEffect cache
     let pricesDiscount = getLimitedDR (eff (def.Name + "CostReduction")) 1.0
@@ -187,7 +192,12 @@ let getPrices (cache: Game.Effects.EffectsCache) (pctx: PricingContext) (b: Buil
         match stage with
         | Some s when s.Prices.Length > 0 -> s.Prices
         | _ -> def.Prices
-    let ratio = b.Def.PriceRatio |> Option.defaultValue 1.0
+    // staged buildings mutate meta.priceRatio to the active stage ratio
+    // (orig getPriceRatioWithAccessor reads bld.get("priceRatio"))
+    let ratio =
+        match stage with
+        | Some s when s.Prices.Length > 0 -> s.PriceRatio |> Option.defaultValue 1.0
+        | _ -> b.Def.PriceRatio |> Option.defaultValue 1.0
 
     let eff = Game.Effects.getEffect cache
     let pricesDiscount = getLimitedDR (eff (def.Name + "CostReduction")) 1.0

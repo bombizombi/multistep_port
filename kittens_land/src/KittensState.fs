@@ -501,8 +501,12 @@ let parseSave (text: string) : State option =
     let lines = text.Replace("\r", "").Split('\n') |> List.ofArray
     match lines with
     | "klv1" :: _ ->
+        // defensive like the orig migrateSave: an unknown id or malformed line
+        // (older/newer save format) must skip the line, never crash the load —
+        // a throw here kills the Elmish dispatch loop and freezes the app
         let folded =
             lines |> List.fold (fun (s0: State) (ln: string) ->
+                try
                 let parts = ln.Split('|')
                 match parts.[0] with
                 | "cal" when parts.Length >= 4 ->
@@ -625,7 +629,8 @@ let parseSave (text: string) : State option =
                     { s0 with HideResearchedUpgrades = parts.[1] = "1" }
                 | "opt" when parts.Length >= 3 ->
                     { s0 with Opts = { s0.Opts with Bools = s0.Opts.Bools |> Map.add parts.[1] (parts.[2] = "1") } }
-                | _ -> s0)
+                | _ -> s0
+                with _ -> s0)
                   (init ())
         Some folded
     | _ -> None
@@ -644,6 +649,39 @@ let applyLoaded (loaded: State) (old: State) : State =
         s1.Vpool.JobValues
         |> Map.map (fun name _ -> counts |> Map.tryFind name |> Option.defaultValue 0)
     let s1 = { s1 with Vpool = { s1.Vpool with JobValues = repairedJobs } }
+    // orig science.afterLoad (js/science.js): researched techs and policies
+    // re-fire their unlock fan-outs on load — without this, buildings whose
+    // button came from a tech (e.g. pasture <- animal) lose their unlockable
+    // flag (unlockable is not persisted) and vanish on the first tick
+    let refireUnlock (st: State) (u: Game.Types.UnlockList) : State =
+        let pols = u.Policies
+        let bp2, sp2, wp2 =
+            Game.Managers.unlock u.Buildings u.Tabs [] u.Tech pols u.Upgrades u.ZebraUpgrades u.Crafts
+                st.Bpool st.Spool st.Wpool
+        { st with
+            Bpool = bp2
+            Spool = sp2
+            Wpool = wp2
+            Vpool = { st.Vpool with JobUnlocked = st.Vpool.JobUnlocked |> Set.union (Set.ofList u.Jobs) }
+            TabsUnlocked = st.TabsUnlocked |> Set.union (Set.ofList u.Tabs) }
+    let s1 =
+        (s1, s1.Spool.TechOrder)
+        ||> List.fold (fun st name ->
+            match st.Spool.Techs |> Map.tryFind name with
+            | Some t when t.Researched ->
+                match t.Def.Unlocks with
+                | Some u -> refireUnlock st u
+                | None -> st
+            | _ -> st)
+    let s1 =
+        (s1, s1.Spool.PolicyOrder)
+        ||> List.fold (fun st name ->
+            match st.Spool.Policies |> Map.tryFind name with
+            | Some pol when pol.Researched ->
+                match pol.Def.Unlocks with
+                | Some u -> refireUnlock st u
+                | None -> st
+            | _ -> st)
     // rebuild maxKittens + kittens resource from the loaded village
     let maxKittens = Game.Managers.calculateMaxKittens s1.Cache s1.Vpool
     let s2 = { s1 with Vpool = { s1.Vpool with MaxKittens = maxKittens } }
@@ -1232,6 +1270,12 @@ let tick (s: State) : State =
     let pool3, wpool1, _ =
         Game.Managers.craftByEngineers s3.CalendarDay s3.Cache false crCtx (resValue s3) prod false 1.0 s3.Pool s3.Wpool
     let pool4 = Game.Resources.updateMaxValueAll (capCtx s3) pool3
+    // orig updateResources tail (game.js L4535-4539): "kittens are not a
+    // resource anymore" — value/maxValue force-synced from the village AFTER
+    // updateMaxValue, which would otherwise zero kittensMax
+    let pool4 =
+        let k = pool4.ByName["kittens"]
+        { pool4 with ByName = pool4.ByName |> Map.add "kittens" { k with Value = float vpool4.Kittens.Length; MaxValue = float vpool4.MaxKittens } }
 
     let calCtx : Game.Calendar.CalendarContext =
         { GetEffect = Game.Effects.getEffect s3.Cache
@@ -1436,17 +1480,29 @@ let priceLines (s: State) (simplePrices: bool) (prices: PriceRow list) : TipPric
           Children = children }
     prices |> List.map (fun p -> line p.Resource p.Val None 0)
 
+/// orig resPool.isStorageLimited (js/resources.js L1060): a price can never be
+/// met because it exceeds storage (or is infinite). The craft.isLimited clause
+/// (engineer-craft shortfalls) is not tracked in this slice.
+let isStorageLimited (s: State) (prices: PriceRow list) : bool =
+    prices
+    |> List.exists (fun p0 ->
+        match Game.Resources.get s.Pool p0.Resource with
+        | Some r ->
+            System.Double.IsInfinity p0.Val
+            || (r.MaxValue > 0.0 && p0.Val > r.MaxValue && p0.Val > r.Value)
+        | None -> false)
+
 type BuildingRow =
-    { Name: string; Label: string; Visible: bool; Enabled: bool; Val: int; Togglable: bool; Prices: PriceRow list }
+    { Name: string; Label: string; Visible: bool; Enabled: bool; Val: int; Togglable: bool; Limited: bool; Prices: PriceRow list }
 
 type JobRow =
     { Name: string; Label: string; Assigned: int; Unlocked: bool }
 
 type TechRow =
-    { Name: string; Label: string; Prices: PriceRow list; Unlocked: bool; Researched: bool; Enabled: bool }
+    { Name: string; Label: string; Prices: PriceRow list; Unlocked: bool; Researched: bool; Enabled: bool; Limited: bool }
 
 type UpgradeRow =
-    { Name: string; Label: string; Prices: PriceRow list; Unlocked: bool; Researched: bool; Enabled: bool }
+    { Name: string; Label: string; Prices: PriceRow list; Unlocked: bool; Researched: bool; Enabled: bool; Limited: bool }
 
 type CraftRow =
     { Name: string; Label: string; Prices: PriceRow list; Value: float; Unlocked: bool; AllCount: int }
@@ -1469,7 +1525,7 @@ let techRows (s: State) : TechRow list =
         | Some t when t.Unlocked ->
             let prices = t.Def.Prices |> List.map (fun p -> { Resource = p.Resource; Val = p.Val })
             let affordable = Game.Resources.hasRes s.Pool (t.Def.Prices |> List.map (fun p -> (p.Resource, p.Val))) 0.0
-            Some { Name = n; Label = Game.Labels.get ("tech." + n); Prices = prices; Unlocked = true; Researched = t.Researched; Enabled = affordable && not t.Researched }
+            Some { Name = n; Label = Game.Labels.get ("tech." + n); Prices = prices; Unlocked = true; Researched = t.Researched; Enabled = affordable && not t.Researched; Limited = isStorageLimited s prices }
         | _ -> None)
 
 type PolicyRow =
@@ -1492,7 +1548,7 @@ let upgradeRows (s: State) : UpgradeRow list =
         | Some u when u.Unlocked ->
             let prices = u.Def.Prices |> List.map (fun p -> { Resource = p.Resource; Val = p.Val })
             let affordable = Game.Resources.hasRes s.Pool (u.Def.Prices |> List.map (fun p -> (p.Resource, p.Val))) 0.0
-            Some { Name = n; Label = Game.Labels.get ("up." + n); Prices = prices; Unlocked = true; Researched = u.Researched; Enabled = affordable && not u.Researched }
+            Some { Name = n; Label = Game.Labels.get ("up." + n); Prices = prices; Unlocked = true; Researched = u.Researched; Enabled = affordable && not u.Researched; Limited = isStorageLimited s prices }
         | _ -> None)
 
 let craftRows (s: State) : CraftRow list =
@@ -1633,6 +1689,7 @@ let buildingRows (s: State) : BuildingRow list =
                       Enabled = affordable
                       Val = b.Val
                       Togglable = b.Def.TogglableOnOff
+                      Limited = isStorageLimited s (prices |> List.map (fun p -> { Resource = p.Resource; Val = p.Val }))
                       Prices = prices |> List.map (fun p -> { Resource = p.Resource; Val = p.Val }) }
                 ))
 

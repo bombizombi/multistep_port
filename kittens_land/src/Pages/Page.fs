@@ -289,10 +289,13 @@ let view (model: Model) (dispatch: Msg -> unit) =
 
     // --- orig modern button --------------------------------------------------
 
-    let modernBtnL (key: string) (label: string) (amtText: string) (enabled: bool) (tip: TipSource option) (onClick: unit -> unit) (extraLinks: ReactElement list) =
+    let modernBtnL (key: string) (label: string) (amtText: string) (enabled: bool) (limited: bool) (tip: TipSource option) (onClick: unit -> unit) (extraLinks: ReactElement list) =
+        // orig Button.update: disabled buttons whose price exceeds storage get
+        // the red "limited" class, but only with highlightUnavailable opt on
+        let limitedCls = not enabled && limited && s.Opts.Bools.["highlightUnavailable"]
         Html.div [
             prop.key key
-            prop.className (if enabled then "btn nosel modern" else "btn nosel modern disabled")
+            prop.className (if enabled then "btn nosel modern" else "btn nosel modern disabled" + (if limitedCls then " limited" else ""))
             // orig Button.render: display block, fixed 264px â tabs are single
             // column unless the tab's renderer splits into left/right rows
             // (Bonfire's "all" group does; see bldTopContainer below)
@@ -322,7 +325,7 @@ let view (model: Model) (dispatch: Msg -> unit) =
         ]
 
     let modernBtn (key: string) (label: string) (amtText: string) (enabled: bool) (tip: TipSource option) (onClick: unit -> unit) =
-        modernBtnL key label amtText enabled tip onClick []
+        modernBtnL key label amtText enabled false tip onClick []
 
     let plainBtn (key: string) (label: string) (onClick: unit -> unit) =
         Html.div [
@@ -487,6 +490,7 @@ let view (model: Model) (dispatch: Msg -> unit) =
             b.Label
             (if b.Val > 0 then "(" + string b.Val + ")" else "")
             b.Enabled
+            b.Limited
             (Some(TipBld b.Name))
             (fun () -> dispatch (Buy b.Name))
             (if b.Val > 0 && not (s.Opts.Bools.["hideSell"]) then
@@ -505,22 +509,26 @@ let view (model: Model) (dispatch: Msg -> unit) =
     let techRow (t: kittens_land.KittensState.TechRow) =
         // orig BuildingNotStackableBtnController.getName: researched techs get
         // a "(Complete)" suffix and are disabled (updateEnabled)
-        modernBtn
+        modernBtnL
             ("tech." + t.Name)
             t.Label
             (if t.Researched then "(Complete)" else "")
             t.Enabled
+            t.Limited
             (Some(TipTech t.Name))
             (fun () -> dispatch (Research t.Name))
+            []
 
     let upgradeRow (u: kittens_land.KittensState.UpgradeRow) =
-        modernBtn
+        modernBtnL
             ("up." + u.Name)
             u.Label
             ""
             u.Enabled
+            u.Limited
             (Some(TipUp u.Name))
             (fun () -> dispatch (Upgrade u.Name))
+            []
 
     // orig village tab job button (com.nuclearunicorn.game.ui.JobButton): a
     // btn.nosel.modern titled "Woodcutter (3)" with [-]/[+] link strips on the
@@ -610,7 +618,7 @@ let view (model: Model) (dispatch: Msg -> unit) =
                 // orig FestivalButton: hold/extend a festival for a year
                 let festivalPrices = [ { Resource = "manpower"; Val = 1500.0 }; { Resource = "culture"; Val = 5000.0 }; { Resource = "parchment"; Val = 2500.0 } ]
                 let festivalAffordable = Game.Resources.hasRes s.Pool (festivalPrices |> List.map (fun p0 -> (p0.Resource, p0.Val))) 0.0
-                yield modernBtnL "festival" (Game.Labels.get "village.btn.festival") "" festivalAffordable
+                yield modernBtnL "festival" (Game.Labels.get "village.btn.festival") "" festivalAffordable false
                     (Some TipFestival)
                     (fun () -> dispatch HoldFestival)
                     []
@@ -758,6 +766,7 @@ let view (model: Model) (dispatch: Msg -> unit) =
                                 modernBtnL ("craft." + c.Name) c.Label
                                     (if c.Value > 0.0 then "(" + kittens_land.KittensState.fmtRes c.Value + ")" else "")
                                     affordable
+                                    (kittens_land.KittensState.isStorageLimited s c.Prices)
                                     (Some(TipCraft c.Name))
                                     (fun () -> dispatch (Craft (c.Name, 1.0)))
                                     []))
@@ -789,12 +798,12 @@ let view (model: Model) (dispatch: Msg -> unit) =
                 // worship to epiphany; transcend burns epiphany for tiers —
                 // both appear once the Transcendence upgrade is built
                 if (Game.Religion.getRU s.Rpool "transcendence").Val > 0 then
-                    yield modernBtnL "adore" (Game.Labels.get "religion.adoreBtn.label") "" true
+                    yield modernBtnL "adore" (Game.Labels.get "religion.adoreBtn.label") "" true false
                             None (fun () -> dispatch Adore) []
                     let nextPrice = Game.Religion.getTranscendNextPrice s.Rpool
                     yield modernBtnL "transcend" (Game.Labels.get "religion.transcendBtn.label")
                             (if s.Rpool.TranscendenceTier > 0 then "(T" + string s.Rpool.TranscendenceTier + ")" else "")
-                            (s.Rpool.FaithRatio > nextPrice) None
+                            (s.Rpool.FaithRatio > nextPrice) false None
                             (fun () -> dispatch Transcend) []
                     yield Html.div [
                         prop.style [ style.marginBottom 10; style.fontSize 12; style.color "#777" ]
