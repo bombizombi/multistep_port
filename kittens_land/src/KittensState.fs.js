@@ -10,7 +10,7 @@ import { getPerk, getBurnedParagonRatio, buyPerk, init as init_5, prestigeGroup,
 import { hasUnlockedRaces, update as update_2, buyEmbassies, tradeImpl, getTradeVolume, getGoldCost, getManpowerCost, DiplomacyPool, RaceState, DiplomacyContext, init as init_6, DiplomacyPool_$reflection } from "./Game/Game.Diplomacy.fs.js";
 import { vsuDef, buyVSU as buyVSU_1, cfuCalculate, cfuDef, buyCFU as buyCFU_1, TimeCalcContext, TimePool, TimeMeta, init as init_7, timeGroup as timeGroup_1, TimePool_$reflection } from "./Game/Game.Time.fs.js";
 import { buyBuilding as buyBuilding_1, buyProgram as buyProgram_1, SpacePool, SpaceMeta, getProgram, getBuilding, init as init_8, spaceGroup, SpacePool_$reflection } from "./Game/Game.Space.fs.js";
-import { bumpStat, init as init_9, StatsPool_$reflection } from "./Game/Game.Stats.fs.js";
+import { getStatCurrent, StatsContext, getStat, bumpStat, init as init_9, StatsPool_$reflection } from "./Game/Game.Stats.fs.js";
 import { tick as tick_1, cycleYearColors, holdFestival, CalendarState, seasons, init as init_10, CalendarContext, CalendarState_$reflection } from "./Game/Game.Calendar.fs.js";
 import { empty as empty_2, updateCaches, ManagerGroup, getEffect as getEffect_1, EffectsCache_$reflection } from "./Game/Game.Effects.fs.js";
 import { settingsArr, OptsState, setBool, freshOpts, OptsState_$reflection } from "./Game/Game.Settings.fs.js";
@@ -40,7 +40,7 @@ import { updateHappiness, HappinessContext, freshHappinessContext } from "./Game
 import { exists, toList as toList_2 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Seq.js";
 import { rangeDouble } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Range.js";
 import { get$ as get$_2 } from "./Game.Labels.fs.js";
-import { ruDefs, raceDefs } from "./Game/Game.Catalog.World.fs.js";
+import { ruDefs, raceDefs, statDefs } from "./Game/Game.Catalog.World.fs.js";
 
 /**
  * core.js logmsg subset — browser console panel
@@ -2233,6 +2233,62 @@ export function TipPriceLine_$reflection() {
 }
 
 /**
+ * orig StatsTab (js/stats.js L205-241): two groups (all-time / current),
+ * unlocked once val != 0, title falls back to "???" while locked
+ */
+export class StatRow extends Record {
+    constructor(Title, Value, Unlocked) {
+        super();
+        this.Title = Title;
+        this.Value = Value;
+        this.Unlocked = Unlocked;
+    }
+}
+
+export function StatRow_$reflection() {
+    return record_type("kittens_land.KittensState.StatRow", [], StatRow, () => [["Title", string_type], ["Value", float64_type], ["Unlocked", bool_type]]);
+}
+
+export function statRows(s) {
+    const ctx = new StatsContext(getStat(s.Stpool, "totalYears"), s.Rpool.TranscendenceTier, getRes(s.Pool, "kittens"), s.Calendar.Year, 0);
+    const order = map((d) => d.Name, statDefs);
+    const renderGroup = (title, getVal) => [title, map((n) => {
+        const v = getVal(n);
+        const unlocked = v !== 0;
+        const title_1 = unlocked ? get$_2("stat." + n) : "???";
+        return new StatRow(title_1, v, unlocked);
+    }, order)];
+    return ofArray([renderGroup(get$_2("stats.group.all"), (name) => getStat(s.Stpool, name)), renderGroup(get$_2("stats.group.current"), (n_1) => getStatCurrent(s.Stpool, ctx, n_1))]);
+}
+
+/**
+ * orig census record (js/village.js L5385): "Name, N years old, Trait" + job
+ */
+export class CensusRow extends Record {
+    constructor(Name, Age, Trait, Job) {
+        super();
+        this.Name = Name;
+        this.Age = (Age | 0);
+        this.Trait = Trait;
+        this.Job = Job;
+    }
+}
+
+export function CensusRow_$reflection() {
+    return record_type("kittens_land.KittensState.CensusRow", [], CensusRow, () => [["Name", string_type], ["Age", int32_type], ["Trait", string_type], ["Job", option_type(string_type)]]);
+}
+
+export function censusRows(s) {
+    return map((k) => {
+        let jobLabel;
+        const option_1 = k.Job;
+        jobLabel = ((option_1 != null) ? get$_2("job." + option_1) : undefined);
+        const traitTitle = get$_2("trait." + k.Trait);
+        return new CensusRow(((k.Name + " ") + k.Surname).trim(), ~~Math.floor(k.Age), ((traitTitle !== "") && (traitTitle !== ("trait." + k.Trait))) ? traitTitle : k.Trait, jobLabel);
+    }, s.Vpool.Kittens);
+}
+
+/**
  * orig village.getVillageTitle (js/village.js L5977): tab title by population
  */
 export function villageTitle(kittens) {
@@ -2971,13 +3027,27 @@ export function tabVisible(s, tabId) {
             return FSharpSet__Contains(s.TabsUnlocked, "time");
         case "Queue":
             return FSharpSet__Contains(s.TabsUnlocked, "queue");
+        case "Stats":
+            if (s.Pool.KarmaKittens > 0) {
+                return true;
+            }
+            else {
+                const matchValue = tryFind("math", s.Spool.Techs);
+                if (matchValue == null) {
+                    return false;
+                }
+                else {
+                    const t = matchValue;
+                    return t.Researched;
+                }
+            }
         case "Challenges": {
-            const matchValue = tryFind("adjustmentBureau", s.Ppool.Perks);
-            if (matchValue == null) {
+            const matchValue_1 = tryFind("adjustmentBureau", s.Ppool.Perks);
+            if (matchValue_1 == null) {
                 return false;
             }
             else {
-                const p = matchValue;
+                const p = matchValue_1;
                 return p.Researched;
             }
         }

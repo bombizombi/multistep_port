@@ -645,6 +645,25 @@ let view (model: Model) (dispatch: Msg -> unit) =
                             ]
                     ]
                 ]
+                // orig CensusPanel (js/village.js L5385): "Name, N years old,
+                // Trait" per kitten, styled as a panel under Jobs
+                yield Html.div [
+                    prop.className "panelContainer"
+                    prop.style [ style.marginTop 15 ]
+                    prop.children [
+                        Html.div [ prop.className "title"; prop.text "Census" ]
+                        Html.div [
+                            prop.className "container"
+                            prop.children (kittens_land.KittensState.censusRows s |> List.map (fun k ->
+                                let jobText = k.Job |> Option.map (fun j -> ", " + j) |> Option.defaultValue ""
+                                Html.div [
+                                    prop.key ("cen." + k.Name + string k.Age)
+                                    prop.style [ style.marginBottom 2 ]
+                                    prop.text (k.Name + ", " + string k.Age + " years old, " + k.Trait + jobText)
+                                ]))
+                        ]
+                    ]
+                ]
             ]
         | "Science" ->
             [
@@ -860,6 +879,25 @@ let view (model: Model) (dispatch: Msg -> unit) =
                         r.Enabled None
                         (fun () -> if r.Kind = "cfu" then dispatch (CFUBuy r.Name) else dispatch (VSUBuy r.Name))))
             ]
+        | "Stats" ->
+            [
+                // orig StatsTab (js/stats.js L205-241): h1 group title + table
+                // of unlocked stats ("???" while locked); totalResets shows +1
+                for title, rows in kittens_land.KittensState.statRows s do
+                    yield Html.h1 [ prop.style [ style.fontSize 18; style.marginTop 14 ]; prop.text title ]
+                    yield Html.table [
+                        prop.className "statTable"
+                        prop.children (rows |> List.map (fun r ->
+                            Html.tr [
+                                prop.key ("stat." + r.Title)
+                                prop.children [
+                                    Html.td [ prop.text (if r.Unlocked then r.Title else "???") ]
+                                    Html.td [ prop.style [ style.paddingLeft 14 ]
+                                              prop.text (if r.Unlocked then fmt r.Value else "") ]
+                                ]
+                            ]))
+                    ]
+            ]
         | "Challenges" ->
             kittens_land.KittensState.challengeRows s
             |> List.map (fun c ->
@@ -932,7 +970,7 @@ let view (model: Model) (dispatch: Msg -> unit) =
 
     // --- mid column ----------------------------------------------------------
 
-    let midTabIds = [ "Bonfire"; "Village"; "Science"; "Workshop"; "Trade"; "Religion"; "Space"; "Time"; "Challenges" ]
+    let midTabIds = [ "Bonfire"; "Village"; "Science"; "Workshop"; "Trade"; "Religion"; "Space"; "Time"; "Challenges"; "Stats" ]
     let visibleTabs = midTabIds |> List.filter (kittens_land.KittensState.tabVisible s)
     let activeTab = if visibleTabs |> List.contains model.Tab then model.Tab else "Bonfire"
 

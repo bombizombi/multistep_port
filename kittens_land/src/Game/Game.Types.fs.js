@@ -123,17 +123,18 @@ export function UnlockList_$reflection() {
 }
 
 export class StageDef extends Record {
-    constructor(StageKey, Prices, UnlockRatio, Effects) {
+    constructor(StageKey, Prices, PriceRatio, UnlockRatio, Effects) {
         super();
         this.StageKey = StageKey;
         this.Prices = Prices;
+        this.PriceRatio = PriceRatio;
         this.UnlockRatio = UnlockRatio;
         this.Effects = Effects;
     }
 }
 
 export function StageDef_$reflection() {
-    return record_type("Game.Types.StageDef", [], StageDef, () => [["StageKey", option_type(string_type)], ["Prices", list_type(Price_$reflection())], ["UnlockRatio", option_type(float64_type)], ["Effects", class_type("Microsoft.FSharp.Collections.FSharpMap`2", [string_type, float64_type])]]);
+    return record_type("Game.Types.StageDef", [], StageDef, () => [["StageKey", option_type(string_type)], ["Prices", list_type(Price_$reflection())], ["PriceRatio", option_type(float64_type)], ["UnlockRatio", option_type(float64_type)], ["Effects", class_type("Microsoft.FSharp.Collections.FSharpMap`2", [string_type, float64_type])]]);
 }
 
 export class BuildingDef extends Record {

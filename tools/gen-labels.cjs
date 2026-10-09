@@ -113,6 +113,28 @@ for (const k in j) {
   if (m) add(`planet.` + m[1], j[k]);
 }
 
+// stats tab titles (stats.js statDefs use varied i18n keys; map by stat name)
+const statTitleKeys = {
+  totalKittens: "stats.kittens.total", kittensDead: "stats.kittens.dead",
+  totalYears: "stats.years.total", totalResets: "stats.run.number",
+  totalParagon: "stats.paragon.total", eventsObserved: "stats.events.total",
+  unicornsSacrificed: "stats.unicorns", buildingsConstructed: "stats.buildings",
+  totalClicks: "stats.clicks.total", totalTrades: "stats.trades.total",
+  totalCrafts: "stats.crafts.total", averageKittens: "stats.kittens.avg",
+  transcendenceTier: "stats.transcendenceTier",
+  totalChallengesCompleted: "stats.challenges.total"
+};
+for (const [name, key] of Object.entries(statTitleKeys)) {
+  if (j[key]) add(`stat.${name}`, j[key]);
+}
+if (j["stats.group.all"]) add("stats.group.all", j["stats.group.all"]);
+if (j["stats.group.current"]) add("stats.group.current", j["stats.group.current"]);
+if (j["stats.time.current"]) add("stats.time.current", j["stats.time.current"]);
+for (const t of ["scientist","manager","engineer","merchant","wise","metallurgist","chemist","none"]) {
+  if (j[`village.trait.` + t]) add(`trait.` + t, j[`village.trait.` + t]);
+}
+for (const k of ["village.census.age"]) { if (j[k]) add(k, j[k]); }
+
 // workshop tab panels + hide-researched
 for (const k of [
   "workshop.upgradePanel.label", "workshop.craftPanel.label",

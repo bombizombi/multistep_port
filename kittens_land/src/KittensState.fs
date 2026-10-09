@@ -1362,6 +1362,44 @@ type TipPriceLine =
 
 // toDisplaySeconds is already ported (game-12 verified) further up this module
 
+/// orig StatsTab (js/stats.js L205-241): two groups (all-time / current),
+/// unlocked once val != 0, title falls back to "???" while locked
+type StatRow = { Title: string; Value: float; Unlocked: bool }
+
+let statRows (s: State) : (string * StatRow list) list =
+    let ctx : Game.Stats.StatsContext =
+        { TotalYears = Game.Stats.getStat s.Stpool "totalYears"
+          TranscendenceTier = s.Rpool.TranscendenceTier
+          KittensResValue = getRes s.Pool "kittens"
+          CalendarYear = s.Calendar.Year
+          ChallengeCompletions = 0 }
+    let order = Game.Catalog.World.statDefs |> List.map (fun d -> d.Name)
+    let renderGroup (title: string) (getVal: string -> float) =
+        order
+        |> List.map (fun n ->
+            let v = getVal n
+            let unlocked = v <> 0.0
+            let title = if unlocked then Game.Labels.get ("stat." + n) else "???"
+            { Title = title; Value = v; Unlocked = unlocked })
+        |> fun rows -> (title, rows)
+    [ renderGroup (Game.Labels.get "stats.group.all") (Game.Stats.getStat s.Stpool)
+      renderGroup (Game.Labels.get "stats.group.current") (fun n -> Game.Stats.getStatCurrent s.Stpool ctx n) ]
+
+/// orig census record (js/village.js L5385): "Name, N years old, Trait" + job
+type CensusRow =
+    { Name: string; Age: int; Trait: string; Job: string option }
+
+let censusRows (s: State) : CensusRow list =
+    s.Vpool.Kittens
+    |> List.map (fun k ->
+        let jobLabel =
+            k.Job |> Option.map (fun j -> Game.Labels.get ("job." + j))
+        let traitTitle = Game.Labels.get ("trait." + k.Trait)
+        { Name = (k.Name + " " + k.Surname).Trim()
+          Age = floor k.Age |> int
+          Trait = (if traitTitle <> "" && traitTitle <> ("trait." + k.Trait) then traitTitle else k.Trait)
+          Job = jobLabel })
+
 /// orig village.getVillageTitle (js/village.js L5977): tab title by population
 let villageTitle (kittens: int) : string =
     let key =
@@ -1709,6 +1747,12 @@ let tabVisible (s: State) (tabId: string) : bool =
     | "Time" -> s.TabsUnlocked.Contains "time"
     // right-column queue tab unlocks with agriculture (orig tech "agriculture")
     | "Queue" -> s.TabsUnlocked.Contains "queue"
+    // orig game.js L3179: karmaKittens > 0 || math tech researched
+    | "Stats" ->
+        s.Pool.KarmaKittens > 0
+        || (match s.Spool.Techs |> Map.tryFind "math" with
+            | Some t -> t.Researched
+            | None -> false)
     // orig: adjustmentBureau perk researched or reserved
     | "Challenges" ->
         (match s.Ppool.Perks |> Map.tryFind "adjustmentBureau" with
