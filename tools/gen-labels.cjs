@@ -113,6 +113,12 @@ for (const k in j) {
   if (m) add(`planet.` + m[1], j[k]);
 }
 
+// workshop tab panels + hide-researched
+for (const k of [
+  "workshop.upgradePanel.label", "workshop.craftPanel.label",
+  "workshop.toggleResearched.label", "workshop.craft.effectiveness"
+]) { if (j[k]) add(k, j[k]); }
+
 // festival + sell + religion adore/transcend + metaphysics labels
 for (const k of [
   "village.btn.festival", "village.btn.festival.desc",

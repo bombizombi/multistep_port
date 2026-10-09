@@ -908,6 +908,10 @@ let labels : Map<string, string> =
     ("planet.terminus", "T-Minus");
     ("planet.umbra", "Umbra");
     ("planet.yarn", "Yarn");
+    ("workshop.upgradePanel.label", "Upgrades");
+    ("workshop.craftPanel.label", "Crafting");
+    ("workshop.toggleResearched.label", "Hide researched upgrades");
+    ("workshop.craft.effectiveness", "Craft effectiveness: +{0}%");
     ("village.btn.festival", "Hold Festival");
     ("village.btn.festival.desc", "Hold a cultural festival to make your kittens happy. (+30% to happiness and double growth rate for a year)");
     ("village.festival.msg.start", "The cultural festival has started");

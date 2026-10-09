@@ -52,6 +52,8 @@ type State =
       ShowHiddenRes: bool
       // orig science.hideResearched (library tab checkbox)
       HideResearched: bool
+      // orig workshop.hideResearched (workshop tab checkbox)
+      HideResearchedUpgrades: bool
       // orig game.tabs visible flags — lowercase tabIds unlocked via unlock({tabs:[...]})
       TabsUnlocked: Set<string> }
 
@@ -235,6 +237,7 @@ let initSeeded (seed: int64) : State =
           ResHidden = Set.empty
           ShowHiddenRes = false
           HideResearched = false
+          HideResearchedUpgrades = false
           TabsUnlocked = Set.empty }
     fresh |> refreshCache
 
@@ -489,6 +492,7 @@ let buildSaveString (s: State) : string =
         line ("reshid|" + (s.ResHidden |> Set.toList |> String.concat ","))
     line (sprintf "shh|%d" (if s.ShowHiddenRes then 1 else 0))
     line (sprintf "hr|%d" (if s.HideResearched then 1 else 0))
+    line (sprintf "hru|%d" (if s.HideResearchedUpgrades then 1 else 0))
     for b in Game.Settings.settingsArr do
         line (sprintf "opt|%s|%d" b.Name (if s.Opts.Bools.[b.Name] then 1 else 0))
     sb.ToString()
@@ -617,6 +621,8 @@ let parseSave (text: string) : State option =
                     { s0 with ShowHiddenRes = parts.[1] = "1" }
                 | "hr" when parts.Length >= 2 ->
                     { s0 with HideResearched = parts.[1] = "1" }
+                | "hru" when parts.Length >= 2 ->
+                    { s0 with HideResearchedUpgrades = parts.[1] = "1" }
                 | "opt" when parts.Length >= 3 ->
                     { s0 with Opts = { s0.Opts with Bools = s0.Opts.Bools |> Map.add parts.[1] (parts.[2] = "1") } }
                 | _ -> s0)
@@ -828,6 +834,10 @@ let setShowHiddenRes (v: bool) (s: State) : State =
 /// orig science.hideResearched ("Hide researched techs" library checkbox)
 let setHideResearched (v: bool) (s: State) : State =
     { s with HideResearched = v }
+
+/// orig workshop.hideResearched ("Hide researched upgrades" workshop checkbox)
+let setHideResearchedUpgrades (v: bool) (s: State) : State =
+    { s with HideResearchedUpgrades = v }
 
 /// orig bld.refineCatnip + RefineCatnipButtonController: pay 100 catnip
 /// (50 with advancedRefinement), gain 1 wood x craft ratio

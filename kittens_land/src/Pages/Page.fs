@@ -21,6 +21,7 @@ type TipSource =
     | TipRes of string
     | TipJob of string
     | TipFestival
+    | TipCraft of string
 
 type Model =
     { Tab: string
@@ -70,6 +71,7 @@ type Msg =
     | ClearConsole
     | ClearAllJobs
     | SetHideResearched of bool
+    | SetHideResearchedUpgrades of bool
     | SetBuildingFilter of string
     | ResearchPolicy of string
     | Hunt
@@ -141,6 +143,7 @@ let update (msg: Msg) (model: Model) =
     | ToggleJobsPanel -> { model with JobsPanelCollapsed = not model.JobsPanelCollapsed }, Command.none
     | ToggleResEditMode -> { model with ResEditMode = not model.ResEditMode }, Command.none
     | SetHideResearched v -> { model with S = kittens_land.KittensState.setHideResearched v model.S }, Command.none
+    | SetHideResearchedUpgrades v -> { model with S = kittens_land.KittensState.setHideResearchedUpgrades v model.S }, Command.none
     | SetBuildingFilter f -> { model with BuildingFilter = f }, Command.none
     | ResearchPolicy name -> { model with S = kittens_land.KittensState.researchPolicyAction name model.S }, Command.none
     | Hunt -> { model with S = kittens_land.KittensState.huntAction model.S }, Command.none
@@ -262,6 +265,16 @@ let view (model: Model) (dispatch: Msg -> unit) =
                             + kittens_land.KittensState.toDisplaySeconds ((r.Max - r.Value) / (net * 10.0)) + "</div>"
                        else "")
             { Desc = body; Flavor = None; Prices = [] }
+        | TipCraft name ->
+            let row = kittens_land.KittensState.craftRows s |> List.find (fun c0 -> c0.Name = name)
+            let ratio = Game.Managers.getResCraftRatio s.Cache (kittens_land.KittensState.crCtxFor s) name
+            let bonus = if name = "wood" then 0.0 else ratio - (Game.Effects.getEffect s.Cache "craftRatio")
+            let descKey = "craft." + name + ".desc"
+            let baseDesc = Game.Labels.get descKey
+            let desc =
+                (if baseDesc <> "" && baseDesc <> descKey then baseDesc else "")
+                + (if bonus > 0.0 then "<br><br>Effectiveness bonus: +" + kittens_land.KittensState.fmtRes (100.0 * bonus) + "%" else "")
+            pricesTip desc None row.Prices
         | TipFestival ->
             pricesTip (Game.Labels.get "village.btn.festival.desc") None
                 [ { Resource = "manpower"; Val = 1500.0 }; { Resource = "culture"; Val = 5000.0 }; { Resource = "parchment"; Val = 2500.0 } ]
@@ -700,7 +713,58 @@ let view (model: Model) (dispatch: Msg -> unit) =
                         ]
                     ]
             ]
-        | "Workshop" -> List.map upgradeRow (kittens_land.KittensState.upgradeRows s)
+        | "Workshop" ->
+            [
+                // orig workshop tab (js/workshop.js L3319+): effectiveness line,
+                // hide-researched checkbox, Upgrades panel, Crafting panel
+                let craftRatio = getEffect s "craftRatio"
+                yield Html.div [
+                    prop.style [ style.float'.left ]
+                    prop.text (sprintf "Craft effectiveness: +%d%%" (int (craftRatio * 100.0)))
+                ]
+                yield Html.div [
+                    prop.style [ style.float'.right ]
+                    prop.children [
+                        Html.input [
+                            prop.type'.checkbox
+                            prop.isChecked s.HideResearchedUpgrades
+                            prop.onChange (fun (v: bool) -> dispatch (SetHideResearchedUpgrades v))
+                        ]
+                        Html.label [ prop.style [ style.marginLeft 6 ]; prop.text (Game.Labels.get "workshop.toggleResearched.label") ]
+                    ]
+                ]
+                yield Html.div [ prop.style [ style.custom ("clear", "both") ] ]
+                yield Html.div [
+                    prop.className "panelContainer"
+                    prop.children [
+                        Html.div [ prop.className "title"; prop.text (Game.Labels.get "workshop.upgradePanel.label") ]
+                        Html.div [
+                            prop.className "container"
+                            prop.children (kittens_land.KittensState.upgradeRows s
+                                |> List.filter (fun u -> not (u.Researched && s.HideResearchedUpgrades))
+                                |> List.map upgradeRow)
+                        ]
+                    ]
+                ]
+                yield Html.div [
+                    prop.className "panelContainer"
+                    prop.style [ style.marginTop 15 ]
+                    prop.children [
+                        Html.div [ prop.className "title"; prop.text (Game.Labels.get "workshop.craftPanel.label") ]
+                        Html.div [
+                            prop.className "container"
+                            prop.children (kittens_land.KittensState.craftRows s |> List.map (fun c ->
+                                let affordable = Game.Resources.hasRes s.Pool (c.Prices |> List.map (fun p0 -> (p0.Resource, p0.Val * 1.0))) 0.0
+                                modernBtnL ("craft." + c.Name) c.Label
+                                    (if c.Value > 0.0 then "(" + kittens_land.KittensState.fmtRes c.Value + ")" else "")
+                                    affordable
+                                    (Some(TipCraft c.Name))
+                                    (fun () -> dispatch (Craft (c.Name, 1.0)))
+                                    []))
+                        ]
+                    ]
+                ]
+            ]
         | "Trade" ->
             kittens_land.KittensState.raceRows s
             |> List.collect (fun r ->

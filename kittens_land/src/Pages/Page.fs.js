@@ -1,7 +1,7 @@
 
 import { Union, Record } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Types.js";
 import { bool_type, tuple_type, int32_type, float64_type, union_type, record_type, list_type, option_type, string_type } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
-import { calendarText, villageTabLabel, tabVisible, challengeRows, timeRows, spaceRows as spaceRows_1, religionRows, raceRows, policyRows, jobRows, getRes, jobLimit, queueLength, queueCap as queueCap_1, kittenSummary, craftRows, buildingRows, toDisplaySeconds, getEffect, fmtRes, productionBreakdown, resRows, PriceRow, upgradeRows, techRows, priceLines, tick, resetGame, setNotation, setBoolOption, removeFromQueue, addToQueue, clearAllJobs, consoleClear, applyLoaded, parseSave, buildSaveString, saveKey, setShowHiddenRes, toggleResHidden, buyPerkAction, transcendAction, adoreAction, sellBuilding, holdFestivalAction, huntAction, researchPolicyAction, setHideResearched, toggleChallengePending, buyVSU, buyCFU, buySpaceBuilding, buyProgram, buyEmbassy, trade, buyZU, buyRU, praise, craftAll, craft, buyUpgrade, research, unassignJob, assignJob, buyBuilding, refineCatnip, gatherCatnip, init as init_1, State_$reflection, TipPriceLine_$reflection } from "../KittensState.fs.js";
+import { calendarText, villageTabLabel, tabVisible, challengeRows, timeRows, spaceRows as spaceRows_1, religionRows, raceRows, policyRows, jobRows, getRes, jobLimit, queueLength, queueCap as queueCap_1, kittenSummary, buildingRows, crCtxFor, craftRows, toDisplaySeconds, getEffect, fmtRes, productionBreakdown, resRows, PriceRow, upgradeRows, techRows, priceLines, tick, resetGame, setNotation, setBoolOption, removeFromQueue, addToQueue, clearAllJobs, consoleClear, applyLoaded, parseSave, buildSaveString, saveKey, setShowHiddenRes, toggleResHidden, buyPerkAction, transcendAction, adoreAction, sellBuilding, holdFestivalAction, huntAction, researchPolicyAction, setHideResearchedUpgrades, setHideResearched, toggleChallengePending, buyVSU, buyCFU, buySpaceBuilding, buyProgram, buyEmbassy, trade, buyZU, buyRU, praise, craftAll, craft, buyUpgrade, research, unassignJob, assignJob, buyBuilding, refineCatnip, gatherCatnip, init as init_1, State_$reflection, TipPriceLine_$reflection } from "../KittensState.fs.js";
 import { Msg_$reflection as Msg_$reflection_1 } from "./Layout.fs.js";
 import { Command_none, Command_batch, Command_ofAsync } from "../../.elmish-land/Base/Command.fs.js";
 import { singleton } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/AsyncBuilder.js";
@@ -11,14 +11,15 @@ import { comparePrimitives, stringHash, int32ToString, defaultOf } from "../../.
 import { forAll, tryFind as tryFind_1, FSharpMap__get_Item } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Map.js";
 import { replicate, join, printf, toText } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/String.js";
 import { get$ } from "../Game.Labels.fs.js";
-import { defaultArg, value as value_765 } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Option.js";
+import { defaultArg, value as value_807 } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Option.js";
+import { getFreeKittens, getResCraftRatio } from "../Game/Game.Managers.fs.js";
+import { getEffect as getEffect_1 } from "../Game/Game.Effects.fs.js";
 import { HtmlHelper_createElement } from "../../.elmish-land/App/fable_modules/Feliz.3.3.3/./Html.fs.js";
 import { map as map_1, collect as collect_1, empty as empty_1, singleton as singleton_2, append, delay, toList } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Seq.js";
 import { defaultOf as defaultOf_1 } from "../../.elmish-land/App/fable_modules/Feliz.3.3.3/../../../../src/Pages/../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
 import { get$ as get$_1 } from "../Game/Game.Buildings.fs.js";
 import { hasRes } from "../Game/Game.Resources.fs.js";
 import { max } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Double.js";
-import { getFreeKittens } from "../Game/Game.Managers.fs.js";
 import { planetDefs, perkDefs } from "../Game/Game.Catalog.World.fs.js";
 import { getTranscendNextPrice, getRU } from "../Game/Game.Religion.fs.js";
 import { List_groupBy } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Seq2.js";
@@ -52,14 +53,14 @@ export class TipSource extends Union {
         this.fields = fields;
     }
     cases() {
-        return ["TipBld", "TipTech", "TipUp", "TipRefine", "TipRes", "TipJob", "TipFestival"];
+        return ["TipBld", "TipTech", "TipUp", "TipRefine", "TipRes", "TipJob", "TipFestival", "TipCraft"];
     }
     static TipRefine = new TipSource(3, []);
     static TipFestival = new TipSource(6, []);
 }
 
 export function TipSource_$reflection() {
-    return union_type("kittens_land.Pages.Page.TipSource", [], TipSource, () => [[["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [], [["Item", string_type]], [["Item", string_type]], []]);
+    return union_type("kittens_land.Pages.Page.TipSource", [], TipSource, () => [[["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [], [["Item", string_type]], [["Item", string_type]], [], [["Item", string_type]]]);
 }
 
 export class Model extends Record {
@@ -90,7 +91,7 @@ export class Msg extends Union {
         this.fields = fields;
     }
     cases() {
-        return ["Tick", "Gather", "Refine", "Buy", "Assign", "Unassign", "Research", "Upgrade", "Craft", "CraftAll", "Praise", "BuyRU", "BuyZU", "Trade", "Embassy", "Mission", "SpaceBuy", "CFUBuy", "VSUBuy", "ChallengeToggle", "SetTab", "SetRightTab", "SetSpeed", "SetTip", "ToggleOptions", "ToggleResEditMode", "ToggleJobsPanel", "ToggleResHidden", "SetShowHiddenRes", "SaveGame", "LoadGame", "ClearConsole", "ClearAllJobs", "SetHideResearched", "SetBuildingFilter", "ResearchPolicy", "Hunt", "HoldFestival", "Sell", "Adore", "Transcend", "BuyPerk", "QAdd", "QRemove", "ToggleOption", "SetNotation", "ResetGame", "LayoutMsg"];
+        return ["Tick", "Gather", "Refine", "Buy", "Assign", "Unassign", "Research", "Upgrade", "Craft", "CraftAll", "Praise", "BuyRU", "BuyZU", "Trade", "Embassy", "Mission", "SpaceBuy", "CFUBuy", "VSUBuy", "ChallengeToggle", "SetTab", "SetRightTab", "SetSpeed", "SetTip", "ToggleOptions", "ToggleResEditMode", "ToggleJobsPanel", "ToggleResHidden", "SetShowHiddenRes", "SaveGame", "LoadGame", "ClearConsole", "ClearAllJobs", "SetHideResearched", "SetHideResearchedUpgrades", "SetBuildingFilter", "ResearchPolicy", "Hunt", "HoldFestival", "Sell", "Adore", "Transcend", "BuyPerk", "QAdd", "QRemove", "ToggleOption", "SetNotation", "ResetGame", "LayoutMsg"];
     }
     static Gather = new Msg(1, []);
     static Refine = new Msg(2, []);
@@ -102,15 +103,15 @@ export class Msg extends Union {
     static LoadGame = new Msg(30, []);
     static ClearConsole = new Msg(31, []);
     static ClearAllJobs = new Msg(32, []);
-    static Hunt = new Msg(36, []);
-    static HoldFestival = new Msg(37, []);
-    static Adore = new Msg(39, []);
-    static Transcend = new Msg(40, []);
-    static ResetGame = new Msg(46, []);
+    static Hunt = new Msg(37, []);
+    static HoldFestival = new Msg(38, []);
+    static Adore = new Msg(40, []);
+    static Transcend = new Msg(41, []);
+    static ResetGame = new Msg(47, []);
 }
 
 export function Msg_$reflection() {
-    return union_type("kittens_land.Pages.Page.Msg", [], Msg, () => [[["Item", int32_type]], [], [], [["Item", string_type]], [["Item1", string_type], ["Item2", int32_type]], [["Item1", string_type], ["Item2", int32_type]], [["Item", string_type]], [["Item", string_type]], [["Item1", string_type], ["Item2", float64_type]], [["Item", string_type]], [], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", float64_type]], [["Item", option_type(tuple_type(float64_type, float64_type, TipSource_$reflection()))]], [], [], [], [["Item", string_type]], [["Item", bool_type]], [], [], [], [], [["Item", bool_type]], [["Item", string_type]], [["Item", string_type]], [], [], [["Item", string_type]], [], [], [["Item", string_type]], [["Item1", string_type], ["Item2", string_type]], [["Item", int32_type]], [["Item", string_type]], [["Item", string_type]], [], [["Item", Msg_$reflection_1()]]]);
+    return union_type("kittens_land.Pages.Page.Msg", [], Msg, () => [[["Item", int32_type]], [], [], [["Item", string_type]], [["Item1", string_type], ["Item2", int32_type]], [["Item1", string_type], ["Item2", int32_type]], [["Item", string_type]], [["Item", string_type]], [["Item1", string_type], ["Item2", float64_type]], [["Item", string_type]], [], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", float64_type]], [["Item", option_type(tuple_type(float64_type, float64_type, TipSource_$reflection()))]], [], [], [], [["Item", string_type]], [["Item", bool_type]], [], [], [], [], [["Item", bool_type]], [["Item", bool_type]], [["Item", string_type]], [["Item", string_type]], [], [], [["Item", string_type]], [], [], [["Item", string_type]], [["Item1", string_type], ["Item2", string_type]], [["Item", int32_type]], [["Item", string_type]], [["Item", string_type]], [], [["Item", Msg_$reflection_1()]]]);
 }
 
 export function tickCmd(speed, gen) {
@@ -223,26 +224,30 @@ export function update(msg, model) {
             return [new Model(model.Tab, setHideResearched(v, model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
         }
         case 34: {
+            const v_1 = msg.fields[0];
+            return [new Model(model.Tab, setHideResearchedUpgrades(v_1, model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
+        }
+        case 35: {
             const f = msg.fields[0];
             return [new Model(model.Tab, model.S, model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, f, model.JobsPanelCollapsed, model.RightTab), Command_none()];
         }
-        case 35: {
+        case 36: {
             const name_12 = msg.fields[0];
             return [new Model(model.Tab, researchPolicyAction(name_12, model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
         }
-        case 36:
-            return [new Model(model.Tab, huntAction(model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
         case 37:
+            return [new Model(model.Tab, huntAction(model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
+        case 38:
             return [new Model(model.Tab, holdFestivalAction(model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
-        case 38: {
+        case 39: {
             const name_13 = msg.fields[0];
             return [new Model(model.Tab, sellBuilding(name_13, model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
         }
-        case 39:
-            return [new Model(model.Tab, adoreAction(model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
         case 40:
+            return [new Model(model.Tab, adoreAction(model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
+        case 41:
             return [new Model(model.Tab, transcendAction(model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
-        case 41: {
+        case 42: {
             const name_14 = msg.fields[0];
             return [new Model(model.Tab, buyPerkAction(name_14, model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
         }
@@ -251,8 +256,8 @@ export function update(msg, model) {
             return [new Model(model.Tab, toggleResHidden(name_15, model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
         }
         case 28: {
-            const v_1 = msg.fields[0];
-            return [new Model(model.Tab, setShowHiddenRes(v_1, model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
+            const v_2 = msg.fields[0];
+            return [new Model(model.Tab, setShowHiddenRes(v_2, model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
         }
         case 29: {
             window.localStorage.setItem(saveKey, buildSaveString(model.S));
@@ -278,28 +283,28 @@ export function update(msg, model) {
             return [new Model(model.Tab, consoleClear(model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
         case 32:
             return [new Model(model.Tab, clearAllJobs(model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
-        case 42: {
+        case 43: {
             const qtype = msg.fields[1];
             const name_16 = msg.fields[0];
             return [new Model(model.Tab, addToQueue(name_16, qtype, model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
         }
-        case 43: {
+        case 44: {
             const idx = msg.fields[0] | 0;
             return [new Model(model.Tab, removeFromQueue(idx, model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
         }
-        case 44: {
+        case 45: {
             const name_17 = msg.fields[0];
             return [new Model(model.Tab, setBoolOption(name_17, !FSharpMap__get_Item(model.S.Opts.Bools, name_17), model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
         }
-        case 45: {
+        case 46: {
             const n_2 = msg.fields[0];
             return [new Model(model.Tab, setNotation(n_2, model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
         }
-        case 46: {
+        case 47: {
             const s$0027 = resetGame(model.S);
             return [new Model("Bonfire", s$0027, model.Speed, model.LoopGen + 1, "Game reset", model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_batch(ofArray([Command_none(), tickCmd(model.Speed, model.LoopGen + 1)]))];
         }
-        case 47:
+        case 48:
             return [model, Command_none()];
         default: {
             const gen = msg.fields[0] | 0;
@@ -326,7 +331,7 @@ export function fmt(v) {
 }
 
 export function view(model, dispatch) {
-    let option_8, value_685;
+    let option_8, value_727;
     const s = model.S;
     const cal = s.Calendar;
     const fmtSigned = (v) => (((v > 0) ? "+" : "") + fmt(v));
@@ -346,7 +351,7 @@ export function view(model, dispatch) {
         let arg, option_5;
         const pricesTip = (desc, flavorKey, prices) => {
             let option_3, option_1, f;
-            return new TipData(desc, (option_3 = ((option_1 = flavorKey, (option_1 != null) ? get$(option_1) : undefined)), (option_3 != null) ? (((f = option_3, (f !== "") && (f !== value_765(flavorKey)))) ? option_3 : undefined) : undefined), priceLines(s, false, prices));
+            return new TipData(desc, (option_3 = ((option_1 = flavorKey, (option_1 != null) ? get$(option_1) : undefined)), (option_3 != null) ? (((f = option_3, (f !== "") && (f !== value_807(flavorKey)))) ? option_3 : undefined) : undefined), priceLines(s, false, prices));
         };
         switch (src_1.tag) {
             case 1: {
@@ -384,15 +389,25 @@ export function view(model, dispatch) {
                 }
                 return new TipData(body_1, undefined, empty());
             }
+            case 7: {
+                const name_4 = src_1.fields[0];
+                const row_1 = find((c0) => (c0.Name === name_4), craftRows(s));
+                const ratio = getResCraftRatio(s.Cache, crCtxFor(s), name_4);
+                const bonus = (name_4 === "wood") ? 0 : (ratio - getEffect_1(s.Cache, "craftRatio"));
+                const descKey = ("craft." + name_4) + ".desc";
+                const baseDesc = get$(descKey);
+                const desc_2 = (((baseDesc !== "") && (baseDesc !== descKey)) ? baseDesc : "") + ((bonus > 0) ? (("<br><br>Effectiveness bonus: +" + fmtRes(100 * bonus)) + "%") : "");
+                return pricesTip(desc_2, undefined, row_1.Prices);
+            }
             case 6:
                 return pricesTip(get$("village.btn.festival.desc"), undefined, ofArray([new PriceRow("manpower", 1500), new PriceRow("culture", 5000), new PriceRow("parchment", 2500)]));
             case 5: {
-                const name_4 = src_1.fields[0];
-                const descKey = ("job." + name_4) + ".desc";
-                const flavorKey_1 = ("job." + name_4) + ".flavor";
-                const desc_2 = get$(descKey);
+                const name_5 = src_1.fields[0];
+                const descKey_1 = ("job." + name_5) + ".desc";
+                const flavorKey_1 = ("job." + name_5) + ".flavor";
+                const desc_3 = get$(descKey_1);
                 const flavor = get$(flavorKey_1);
-                return new TipData(((desc_2 !== "") && (desc_2 !== descKey)) ? desc_2 : "", ((flavor !== "") && (flavor !== flavorKey_1)) ? flavor : undefined, empty());
+                return new TipData(((desc_3 !== "") && (desc_3 !== descKey_1)) ? desc_3 : "", ((flavor !== "") && (flavor !== flavorKey_1)) ? flavor : undefined, empty());
             }
             default: {
                 const name = src_1.fields[0];
@@ -406,7 +421,7 @@ export function view(model, dispatch) {
         display: "block",
         marginBottom: 8,
         width: 264,
-    }]), delay(() => append(singleton_2(["tabIndex", 0]), delay(() => append((tip != null) ? tipHandlers(value_765(tip)) : empty_1(), delay(() => append(singleton_2(["onClick", (_arg_1) => {
+    }]), delay(() => append(singleton_2(["tabIndex", 0]), delay(() => append((tip != null) ? tipHandlers(value_807(tip)) : empty_1(), delay(() => append(singleton_2(["onClick", (_arg_1) => {
         if (enabled) {
             onClick();
         }
@@ -492,7 +507,7 @@ export function view(model, dispatch) {
         cursor: "pointer",
     }], ["onClick", (ev_3) => {
         ev_3.stopPropagation();
-        dispatch(new Msg(/* Sell */ 38, [b_3.Name]));
+        dispatch(new Msg(/* Sell */ 39, [b_3.Name]));
     }], ["children", singleton_1(get$("btn.sell"))]]))) : empty());
     const techRow = (t_1) => modernBtn("tech." + t_1.Name, t_1.Label, t_1.Researched ? "(Complete)" : "", t_1.Enabled, new TipSource(/* TipTech */ 1, [t_1.Name]), () => {
         dispatch(new Msg(/* Research */ 6, [t_1.Name]));
@@ -508,10 +523,10 @@ export function view(model, dispatch) {
             const free = getFreeKittens(s.Vpool) | 0;
             const limit = jobLimit(s, j.Name) | 0;
             const canAssign = (free > 0) && (j.Assigned < limit);
-            const descKey_1 = ("job." + j.Name) + ".desc";
+            const descKey_2 = ("job." + j.Name) + ".desc";
             const flavorKey_2 = ("job." + j.Name) + ".flavor";
-            const desc_3 = get$(descKey_1);
-            const tip_2 = ((desc_3 !== "") && (desc_3 !== descKey_1)) ? (new TipSource(/* TipJob */ 5, [j.Name])) : undefined;
+            const desc_4 = get$(descKey_2);
+            const tip_2 = ((desc_4 !== "") && (desc_4 !== descKey_2)) ? (new TipSource(/* TipJob */ 5, [j.Name])) : undefined;
             const jobLink = (title, msg) => HtmlHelper_createElement("a", ofArray([["key", j.Name + title], ["href", "#"], ["className", (title.length > 4) ? "small" : ""], ["style", {
                 paddingLeft: 2,
                 float: "right",
@@ -525,7 +540,7 @@ export function view(model, dispatch) {
                 display: "block",
                 marginBottom: 8,
                 width: 264,
-            }]), delay(() => append(singleton_2(["tabIndex", 0]), delay(() => append((tip_2 != null) ? tipHandlers(value_765(tip_2)) : empty_1(), delay(() => append(singleton_2(["onClick", (ev_5) => {
+            }]), delay(() => append(singleton_2(["tabIndex", 0]), delay(() => append((tip_2 != null) ? tipHandlers(value_807(tip_2)) : empty_1(), delay(() => append(singleton_2(["onClick", (ev_5) => {
                 if (canAssign) {
                     dispatch(ev_5.ctrlKey ? (new Msg(/* Assign */ 4, [j.Name, 10])) : (new Msg(/* Assign */ 4, [j.Name, 1])));
                 }
@@ -584,7 +599,7 @@ export function view(model, dispatch) {
     }], ["children", singleton_1(get$("science.toggleResearched.label"))]]))]]]))), delay(() => append(map(techRow, filter((t_3) => !(t_3.Researched && s.HideResearched), techRows(s))), delay(() => append(singleton_2(HtmlHelper_createElement("div", ofArray([["className", "panelContainer"], ["style", {
         marginTop: 15,
     }], ["children", [HtmlHelper_createElement("div", ofArray([["className", "title"], ["children", singleton_1("Policies")]])), HtmlHelper_createElement("div", ofArray([["className", "container"], ["children", toList(delay(() => append(map((p_2) => modernBtn("pol." + p_2.Name, p_2.Label, p_2.Researched ? "(Complete)" : "", p_2.Enabled, undefined, () => {
-        dispatch(new Msg(/* ResearchPolicy */ 35, [p_2.Name]));
+        dispatch(new Msg(/* ResearchPolicy */ 36, [p_2.Name]));
     }), filter((p_1) => !(p_1.Researched && s.HideResearched), policyRows(s))), delay(() => (isEmpty(policyRows(s)) ? singleton_2(HtmlHelper_createElement("div", ofArray([["style", {
         fontSize: 12 + "px",
         color: "#777",
@@ -604,7 +619,7 @@ export function view(model, dispatch) {
         }], ["children", [HtmlHelper_createElement("div", ofArray([["className", "title"], ["children", singleton_1(get$("prestige.panel.label"))]])), HtmlHelper_createElement("div", ofArray([["className", "container"], ["children", toList(delay(() => append(map((d_1) => {
             const affordable = hasRes(s.Pool, map((p0_1) => [p0_1.Resource, p0_1.Val], d_1.Prices), 0);
             return modernBtn("perk." + d_1.Name, get$("perk." + d_1.Name), isEmpty(d_1.Prices) ? "" : (("(" + fmtRes(head(d_1.Prices).Val)) + " paragon)"), affordable, undefined, () => {
-                dispatch(new Msg(/* BuyPerk */ 41, [d_1.Name]));
+                dispatch(new Msg(/* BuyPerk */ 42, [d_1.Name]));
             });
         }, filter((d) => {
             const matchValue_3 = tryFind_1(d.Name, s.Ppool.Perks);
@@ -619,7 +634,28 @@ export function view(model, dispatch) {
             fontSize: 12 + "px",
             color: "#777",
         }], ["children", singleton_1("All perks researched.")]]))) : empty_1())))))]]))]]]))) : empty_1();
-    })))))))) : ((matchValue === "Workshop") ? map(upgradeRow, upgradeRows(s)) : ((matchValue === "Trade") ? collect((r_3) => ofArray([HtmlHelper_createElement("div", ofArray([["key", "info." + r_3.Name], ["style", {
+    })))))))) : ((matchValue === "Workshop") ? toList(delay(() => {
+        let arg_2;
+        const craftRatio = getEffect(s, "craftRatio");
+        return append(singleton_2(HtmlHelper_createElement("div", ofArray([["style", {
+            float: "left",
+        }], ["children", singleton_1((arg_2 = (~~(craftRatio * 100) | 0), toText(printf("Craft effectiveness: +%d%%"))(arg_2)))]]))), delay(() => append(singleton_2(HtmlHelper_createElement("div", ofArray([["style", {
+            float: "right",
+        }], ["children", [HtmlHelper_createElement("input", ofArray([["type", "checkbox"], ["checked", s.HideResearchedUpgrades], ["onChange", (ev_7) => {
+            dispatch(new Msg(/* SetHideResearchedUpgrades */ 34, [ev_7.target.checked]));
+        }]])), HtmlHelper_createElement("label", ofArray([["style", {
+            marginLeft: 6,
+        }], ["children", singleton_1(get$("workshop.toggleResearched.label"))]]))]]]))), delay(() => append(singleton_2(HtmlHelper_createElement("div", singleton_1(["style", {
+            clear: "both",
+        }]))), delay(() => append(singleton_2(HtmlHelper_createElement("div", ofArray([["className", "panelContainer"], ["children", [HtmlHelper_createElement("div", ofArray([["className", "title"], ["children", singleton_1(get$("workshop.upgradePanel.label"))]])), HtmlHelper_createElement("div", ofArray([["className", "container"], ["children", map(upgradeRow, filter((u_2) => !(u_2.Researched && s.HideResearchedUpgrades), upgradeRows(s)))]]))]]]))), delay(() => singleton_2(HtmlHelper_createElement("div", ofArray([["className", "panelContainer"], ["style", {
+            marginTop: 15,
+        }], ["children", [HtmlHelper_createElement("div", ofArray([["className", "title"], ["children", singleton_1(get$("workshop.craftPanel.label"))]])), HtmlHelper_createElement("div", ofArray([["className", "container"], ["children", map((c_1) => {
+            const affordable_1 = hasRes(s.Pool, map((p0_2) => [p0_2.Resource, p0_2.Val * 1], c_1.Prices), 0);
+            return modernBtnL("craft." + c_1.Name, c_1.Label, (c_1.Value > 0) ? (("(" + fmtRes(c_1.Value)) + ")") : "", affordable_1, new TipSource(/* TipCraft */ 7, [c_1.Name]), () => {
+                dispatch(new Msg(/* Craft */ 8, [c_1.Name, 1]));
+            }, empty());
+        }, craftRows(s))]]))]]])))))))))));
+    })) : ((matchValue === "Trade") ? collect((r_3) => ofArray([HtmlHelper_createElement("div", ofArray([["key", "info." + r_3.Name], ["style", {
         marginBottom: 4,
     }], ["children", singleton_1((((r_3.Label + " — standing ") + toText(printf("%.2f"))(r_3.Standing)) + ", embassies: ") + int32ToString(r_3.EmbassyLevel))]])), modernBtn("race." + r_3.Name, "Trade with " + r_3.Label, "", r_3.Tradeable, undefined, () => {
         dispatch(new Msg(/* Trade */ 13, [r_3.Name]));
@@ -681,10 +717,10 @@ export function view(model, dispatch) {
         else {
             dispatch(new Msg(/* VSUBuy */ 18, [r_10.Name]));
         }
-    }), timeRows(s)))))) : ((matchValue === "Challenges") ? map((c_1) => {
-        const action = c_1.Pending ? "Unmark" : (c_1.Active ? "Active!" : (c_1.Researched ? "Completed" : "Mark"));
-        return modernBtn("ch." + c_1.Name, c_1.Label, action, !c_1.Researched, undefined, () => {
-            dispatch(new Msg(/* ChallengeToggle */ 19, [c_1.Name]));
+    }), timeRows(s)))))) : ((matchValue === "Challenges") ? map((c_2) => {
+        const action = c_2.Pending ? "Unmark" : (c_2.Active ? "Active!" : (c_2.Researched ? "Completed" : "Mark"));
+        return modernBtn("ch." + c_2.Name, c_2.Label, action, !c_2.Researched, undefined, () => {
+            dispatch(new Msg(/* ChallengeToggle */ 19, [c_2.Name]));
         });
     }, challengeRows(s)) : toList(delay(() => {
         const rows_1 = buildingRows(s);
@@ -711,7 +747,7 @@ export function view(model, dispatch) {
             return singleton_2(HtmlHelper_createElement("a", ofArray([["key", fid], ["className", (model.BuildingFilter === fid) ? "activeTab" : ""], ["href", "#"], ["style", {
                 marginRight: 6,
             }], ["onClick", (_arg_11) => {
-                dispatch(new Msg(/* SetBuildingFilter */ 34, [fid]));
+                dispatch(new Msg(/* SetBuildingFilter */ 35, [fid]));
             }], ["children", singleton_1(get$(fkey))]])));
         }, [["all", "filter.all"], ["available", "filter.available"], ["enabled", "filter.enabled"], ["togglable", "filter.togglable"]])))]]))), delay(() => {
             let children;
@@ -774,7 +810,7 @@ export function view(model, dispatch) {
         paddingRight: 8,
         cursor: "pointer",
     }], ["onClick", (_arg_15) => {
-        dispatch(new Msg(/* QRemove */ 43, [i_3]));
+        dispatch(new Msg(/* QRemove */ 44, [i_3]));
     }], ["children", singleton_1("[x]")]])), HtmlHelper_createElement("span", singleton_1(["children", singleton_1((((q.QName + " (") + q.QType) + ") x") + int32ToString(q.QValue))]))]]])), s.QueueItems);
     const rightColumn = HtmlHelper_createElement("div", ofArray([["id", "rightColumn"], ["className", "column"], ["style", {
         paddingLeft: 15,
@@ -787,7 +823,7 @@ export function view(model, dispatch) {
     }], ["children", singleton_1("Queue")]]))) : empty_1())))))]]))), delay(() => ((model.RightTab === "Queue") ? singleton_2(HtmlHelper_createElement("div", ofArray([["className", "right-tab"], ["id", "rightTabQueue"], ["children", toList(delay(() => append(singleton_2(HtmlHelper_createElement("div", ofArray([["style", {
         marginBottom: 6,
     }], ["children", singleton_1((("Queue " + int32ToString(queueLen)) + "/") + int32ToString(queueCap))]]))), delay(() => append(queueRows, delay(() => singleton_2(plainBtn("qhut", "Queue a Hut", () => {
-        dispatch(new Msg(/* QAdd */ 42, ["hut", "buildings"]));
+        dispatch(new Msg(/* QAdd */ 43, ["hut", "buildings"]));
     }))))))))]]))) : singleton_2(HtmlHelper_createElement("div", ofArray([["className", "right-tab"], ["id", "rightTabLog"], ["children", [HtmlHelper_createElement("div", singleton_1(["children", [HtmlHelper_createElement("div", ofArray([["className", "console-intro"], ["style", {
         paddingTop: 10,
         borderTop: (((1 + "px ") + "solid") + " ") + "gray",
@@ -854,8 +890,8 @@ export function view(model, dispatch) {
         dispatch(Msg.ToggleOptions);
     }], ["children", singleton_1("close")]])), HtmlHelper_createElement("div", ofArray([["style", {
         marginBottom: 10,
-    }], ["children", [HtmlHelper_createElement("label", ofArray([["htmlFor", "notationSelector"], ["children", singleton_1("Notation:")]])), HtmlHelper_createElement("br", empty()), HtmlHelper_createElement("select", ofArray([["id", "notationSelector"], ["value", s.Opts.Notation], ["onChange", (ev_7) => {
-        dispatch(new Msg(/* SetNotation */ 45, [ev_7.target.value]));
+    }], ["children", [HtmlHelper_createElement("label", ofArray([["htmlFor", "notationSelector"], ["children", singleton_1("Notation:")]])), HtmlHelper_createElement("br", empty()), HtmlHelper_createElement("select", ofArray([["id", "notationSelector"], ["value", s.Opts.Notation], ["onChange", (ev_8) => {
+        dispatch(new Msg(/* SetNotation */ 46, [ev_8.target.value]));
     }], ["children", toList(delay(() => map_1((n) => HtmlHelper_createElement("option", ofArray([["key", n], ["value", n], ["children", singleton_1(n)]])), ["si", "e", "sie"])))]]))]]])), HtmlHelper_createElement("div", ofArray([["style", {
         marginBottom: 10,
     }], ["children", toList(delay(() => append(singleton_2(HtmlHelper_createElement("label", singleton_1(["children", singleton_1(("Game speed: " + model.Speed.toString()) + "x")]))), delay(() => append(singleton_2(HtmlHelper_createElement("br", empty())), delay(() => map_1((mult) => HtmlHelper_createElement("button", ofArray([["key", mult.toString()], ["style", {
@@ -867,9 +903,9 @@ export function view(model, dispatch) {
         marginBottom: 10,
     }], ["children", toList(delay(() => map_1((o) => HtmlHelper_createElement("div", ofArray([["key", o.Name], ["style", {
         marginBottom: 2,
-    }], ["children", [HtmlHelper_createElement("input", ofArray([["id", "opt." + o.Name], ["type", "checkbox"], ["checked", FSharpMap__get_Item(s.Opts.Bools, o.Name)], ["onChange", (ev_8) => {
-        ev_8.target.checked;
-        dispatch(new Msg(/* ToggleOption */ 44, [o.Name]));
+    }], ["children", [HtmlHelper_createElement("input", ofArray([["id", "opt." + o.Name], ["type", "checkbox"], ["checked", FSharpMap__get_Item(s.Opts.Bools, o.Name)], ["onChange", (ev_9) => {
+        ev_9.target.checked;
+        dispatch(new Msg(/* ToggleOption */ 45, [o.Name]));
     }]])), HtmlHelper_createElement("label", ofArray([["htmlFor", "opt." + o.Name], ["style", {
         marginLeft: 6,
         cursor: "pointer",
@@ -883,7 +919,7 @@ export function view(model, dispatch) {
         fontSize: 12 + "px",
         marginTop: 8,
         color: "#666",
-    }], (value_685 = "Save stores to this browser\'s localStorage under its own key - the original game\'s saves are untouched.", ["children", singleton_1(value_685)])]))]]]));
+    }], (value_727 = "Save stores to this browser\'s localStorage under its own key - the original game\'s saves are untouched.", ["children", singleton_1(value_727)])]))]]]));
     const topBar = HtmlHelper_createElement("div", ofArray([["id", "topBar"], ["children", [HtmlHelper_createElement("div", ofArray([["style", {
         paddingLeft: 10,
         minWidth: 0,
@@ -919,6 +955,6 @@ export function view(model, dispatch) {
 }
 
 export function page(_shared, _route) {
-    return Page_from(init, update, view, undefined, (lm) => (new Msg(/* LayoutMsg */ 47, [lm])));
+    return Page_from(init, update, view, undefined, (lm) => (new Msg(/* LayoutMsg */ 48, [lm])));
 }
 

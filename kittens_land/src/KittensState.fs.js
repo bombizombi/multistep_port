@@ -79,7 +79,7 @@ export function QueueItem_$reflection() {
 }
 
 export class State extends Record {
-    constructor(Pool, Bpool, Spool, Wpool, Vpool, Rpool, Cpool, Ppool, Dpool, Tpool, Spacep, Stpool, Calendar, Cache, CalendarDay, Ticks, IronWill, Rand, ConsoleMsgs, ConsoleUnlocked, QueueItems, Opts, ResHidden, ShowHiddenRes, HideResearched, TabsUnlocked) {
+    constructor(Pool, Bpool, Spool, Wpool, Vpool, Rpool, Cpool, Ppool, Dpool, Tpool, Spacep, Stpool, Calendar, Cache, CalendarDay, Ticks, IronWill, Rand, ConsoleMsgs, ConsoleUnlocked, QueueItems, Opts, ResHidden, ShowHiddenRes, HideResearched, HideResearchedUpgrades, TabsUnlocked) {
         super();
         this.Pool = Pool;
         this.Bpool = Bpool;
@@ -106,12 +106,13 @@ export class State extends Record {
         this.ResHidden = ResHidden;
         this.ShowHiddenRes = ShowHiddenRes;
         this.HideResearched = HideResearched;
+        this.HideResearchedUpgrades = HideResearchedUpgrades;
         this.TabsUnlocked = TabsUnlocked;
     }
 }
 
 export function State_$reflection() {
-    return record_type("kittens_land.KittensState.State", [], State, () => [["Pool", ResPool_$reflection()], ["Bpool", BldPool_$reflection()], ["Spool", SciencePool_$reflection()], ["Wpool", WorkshopPool_$reflection()], ["Vpool", VillagePool_$reflection()], ["Rpool", ReligionPool_$reflection()], ["Cpool", ChallengePool_$reflection()], ["Ppool", PrestigePool_$reflection()], ["Dpool", DiplomacyPool_$reflection()], ["Tpool", TimePool_$reflection()], ["Spacep", SpacePool_$reflection()], ["Stpool", StatsPool_$reflection()], ["Calendar", CalendarState_$reflection()], ["Cache", EffectsCache_$reflection()], ["CalendarDay", int32_type], ["Ticks", int32_type], ["IronWill", bool_type], ["Rand", lambda_type(unit_type, float64_type)], ["ConsoleMsgs", list_type(ConsoleMsg_$reflection())], ["ConsoleUnlocked", class_type("Microsoft.FSharp.Collections.FSharpSet`1", [string_type])], ["QueueItems", list_type(QueueItem_$reflection())], ["Opts", OptsState_$reflection()], ["ResHidden", class_type("Microsoft.FSharp.Collections.FSharpSet`1", [string_type])], ["ShowHiddenRes", bool_type], ["HideResearched", bool_type], ["TabsUnlocked", class_type("Microsoft.FSharp.Collections.FSharpSet`1", [string_type])]]);
+    return record_type("kittens_land.KittensState.State", [], State, () => [["Pool", ResPool_$reflection()], ["Bpool", BldPool_$reflection()], ["Spool", SciencePool_$reflection()], ["Wpool", WorkshopPool_$reflection()], ["Vpool", VillagePool_$reflection()], ["Rpool", ReligionPool_$reflection()], ["Cpool", ChallengePool_$reflection()], ["Ppool", PrestigePool_$reflection()], ["Dpool", DiplomacyPool_$reflection()], ["Tpool", TimePool_$reflection()], ["Spacep", SpacePool_$reflection()], ["Stpool", StatsPool_$reflection()], ["Calendar", CalendarState_$reflection()], ["Cache", EffectsCache_$reflection()], ["CalendarDay", int32_type], ["Ticks", int32_type], ["IronWill", bool_type], ["Rand", lambda_type(unit_type, float64_type)], ["ConsoleMsgs", list_type(ConsoleMsg_$reflection())], ["ConsoleUnlocked", class_type("Microsoft.FSharp.Collections.FSharpSet`1", [string_type])], ["QueueItems", list_type(QueueItem_$reflection())], ["Opts", OptsState_$reflection()], ["ResHidden", class_type("Microsoft.FSharp.Collections.FSharpSet`1", [string_type])], ["ShowHiddenRes", bool_type], ["HideResearched", bool_type], ["HideResearchedUpgrades", bool_type], ["TabsUnlocked", class_type("Microsoft.FSharp.Collections.FSharpSet`1", [string_type])]]);
 }
 
 export function getRes(pool, name) {
@@ -191,7 +192,7 @@ export function groups(s) {
 
 export function refreshCache(s) {
     const cache1 = updateCaches(s.Cache, groups(s));
-    const s1 = new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, cache1, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+    const s1 = new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, cache1, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
     let prodCtx;
     const calCtx = new CalendarContext((name) => getEffect_1(s1.Cache, name), 0, false, false, false, false, false, false, false, false, false, () => 0.5, (st) => st, (st_1) => st_1, (st_4) => st_4, (st_2) => st_2, (_arg) => {
     }, (st_3) => st_3);
@@ -224,7 +225,7 @@ export function refreshCache(s) {
             return res;
         }
     }, s1.Pool.ByName), bind$0040.KarmaKittens, bind$0040.EnergyProd, bind$0040.EnergyWinterProd, bind$0040.EnergyCons));
-    return new State(pool1, s1.Bpool, s1.Spool, s1.Wpool, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, s1.TabsUnlocked);
+    return new State(pool1, s1.Bpool, s1.Spool, s1.Wpool, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, s1.HideResearchedUpgrades, s1.TabsUnlocked);
 }
 
 export function makeRand(seed) {
@@ -261,7 +262,7 @@ export function initSeeded(seed) {
         Compare: (x, y) => (comparePrimitives(x, y) | 0),
     }), empty_1(), freshOpts(), empty_3({
         Compare: (x_1, y_1) => (comparePrimitives(x_1, y_1) | 0),
-    }), false, false, empty_3({
+    }), false, false, false, empty_3({
         Compare: (x_2, y_2) => (comparePrimitives(x_2, y_2) | 0),
     }));
     return refreshCache(fresh);
@@ -314,16 +315,16 @@ export function consoleMsg(tag, text, s) {
         }
         const msg = new ConsoleMsg(nextId, text, tag, hasCal, ~~s.Calendar.Year + 1, ~~s.Calendar.Day + 1, item(s.Calendar.Season, seasons).Name);
         const msgs_1 = append(s.ConsoleMsgs, singleton(msg));
-        return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, (length(msgs_1) > 40) ? tail(msgs_1) : msgs_1, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+        return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, (length(msgs_1) > 40) ? tail(msgs_1) : msgs_1, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
     }
 }
 
 export function consoleUnlockedFor(s, tag) {
-    return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, add(tag, s.ConsoleUnlocked), s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+    return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, add(tag, s.ConsoleUnlocked), s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
 }
 
 export function consoleClear(s) {
-    return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, empty_1(), s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+    return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, empty_1(), s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
 }
 
 export function queueCap(s) {
@@ -384,10 +385,10 @@ export function addToQueue(name, qtype, s) {
             switch (matchResult) {
                 case 0: {
                     const items = append(removeAt(length(s.QueueItems) - 1, s.QueueItems), singleton(new QueueItem(last_1.QName, last_1.QType, last_1.QValue + amt)));
-                    return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, items, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+                    return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, items, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
                 }
                 default:
-                    return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, append(s.QueueItems, singleton(new QueueItem(name, qtype, amt))), s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+                    return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, append(s.QueueItems, singleton(new QueueItem(name, qtype, amt))), s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
             }
         }
     }
@@ -400,10 +401,10 @@ export function removeFromQueue(index, s) {
     else {
         const it = item(index, s.QueueItems);
         if ((it.QValue - 1) === 0) {
-            return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, removeAt(index, s.QueueItems), s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+            return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, removeAt(index, s.QueueItems), s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
         }
         else {
-            return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, updateAt(index, new QueueItem(it.QName, it.QType, it.QValue - 1), s.QueueItems), s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+            return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, updateAt(index, new QueueItem(it.QName, it.QType, it.QValue - 1), s.QueueItems), s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
         }
     }
 }
@@ -459,12 +460,12 @@ export function setBoolOption(name, value, s) {
     const patternInput = setBool(name, value, s.Opts);
     const opts$0027 = patternInput[0];
     const _sellBcoin = patternInput[1];
-    return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, opts$0027, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+    return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, opts$0027, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
 }
 
 export function setNotation(n, s) {
     let bind$0040;
-    return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, (bind$0040 = s.Opts, new OptsState(bind$0040.Bools, n, bind$0040.BatchSize)), s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+    return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, (bind$0040 = s.Opts, new OptsState(bind$0040.Bools, n, bind$0040.BatchSize)), s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
 }
 
 /**
@@ -527,13 +528,13 @@ export function resetGame(s) {
     const KarmaKittens = (s.Pool.KarmaKittens + karmaKittens) | 0;
     pool2 = (new ResPool(bind$0040_1.Order, (table_4 = ((table_3 = ((table_2 = add_1("paragon", (bind$0040_2 = FSharpMap__get_Item(fresh.Pool.ByName, "paragon"), new ResourceState(bind$0040_2.Def, paragonPoints, bind$0040_2.Unlocked, bind$0040_2.MaxValue, bind$0040_2.PerTickCached)), fresh.Pool.ByName), add_1("burnedParagon", (bind$0040_3 = FSharpMap__get_Item(fresh.Pool.ByName, "burnedParagon"), new ResourceState(bind$0040_3.Def, getRes(s.Pool, "burnedParagon"), bind$0040_3.Unlocked, bind$0040_3.MaxValue, bind$0040_3.PerTickCached)), table_2))), add_1("temporalFlux", (bind$0040_4 = FSharpMap__get_Item(fresh.Pool.ByName, "temporalFlux"), new ResourceState(bind$0040_4.Def, getRes(s.Pool, "temporalFlux"), bind$0040_4.Unlocked, bind$0040_4.MaxValue, bind$0040_4.PerTickCached)), table_3))), add_1("timeCrystal", (bind$0040_5 = FSharpMap__get_Item(fresh.Pool.ByName, "timeCrystal"), new ResourceState(bind$0040_5.Def, getRes(s.Pool, "timeCrystal"), bind$0040_5.Unlocked, bind$0040_5.MaxValue, bind$0040_5.PerTickCached)), table_4)), KarmaKittens, bind$0040_1.EnergyProd, bind$0040_1.EnergyWinterProd, bind$0040_1.EnergyCons));
     const stpool2 = bumpStat("totalResets", 1, bumpStat("totalParagon", paragonPoints, fresh.Stpool));
-    return new State(pool2, fresh.Bpool, fresh.Spool, fresh.Wpool, fresh.Vpool, fresh.Rpool, cpool2, fresh.Ppool, fresh.Dpool, fresh.Tpool, fresh.Spacep, stpool2, fresh.Calendar, fresh.Cache, fresh.CalendarDay, fresh.Ticks, fresh.IronWill, s.Rand, empty_1(), fresh.ConsoleUnlocked, fresh.QueueItems, s.Opts, fresh.ResHidden, fresh.ShowHiddenRes, fresh.HideResearched, fresh.TabsUnlocked);
+    return new State(pool2, fresh.Bpool, fresh.Spool, fresh.Wpool, fresh.Vpool, fresh.Rpool, cpool2, fresh.Ppool, fresh.Dpool, fresh.Tpool, fresh.Spacep, stpool2, fresh.Calendar, fresh.Cache, fresh.CalendarDay, fresh.Ticks, fresh.IronWill, s.Rand, empty_1(), fresh.ConsoleUnlocked, fresh.QueueItems, s.Opts, fresh.ResHidden, fresh.ShowHiddenRes, fresh.HideResearched, fresh.HideResearchedUpgrades, fresh.TabsUnlocked);
 }
 
 export const saveKey = "kittens_land.savedata.v1";
 
 export function buildSaveString(s) {
-    let arg, arg_1, arg_52, arg_53;
+    let arg, arg_1, arg_52, arg_53, arg_54;
     const sb = StringBuilder_$ctor();
     const line = (x) => {
         StringBuilder__AppendLine_Z721C83C5(sb, x);
@@ -791,12 +792,13 @@ export function buildSaveString(s) {
     }
     line((arg_52 = ((s.ShowHiddenRes ? 1 : 0) | 0), toText(printf("shh|%d"))(arg_52)));
     line((arg_53 = ((s.HideResearched ? 1 : 0) | 0), toText(printf("hr|%d"))(arg_53)));
+    line((arg_54 = ((s.HideResearchedUpgrades ? 1 : 0) | 0), toText(printf("hru|%d"))(arg_54)));
     const enumerator_16 = getEnumerator(settingsArr);
     try {
         while (enumerator_16["System.Collections.IEnumerator.MoveNext"]()) {
-            let arg_55;
+            let arg_56;
             const b_2 = enumerator_16["System.Collections.Generic.IEnumerator`1.get_Current"]();
-            line((arg_55 = ((FSharpMap__get_Item(s.Opts.Bools, b_2.Name) ? 1 : 0) | 0), toText(printf("opt|%s|%d"))(b_2.Name)(arg_55)));
+            line((arg_56 = ((FSharpMap__get_Item(s.Opts.Bools, b_2.Name) ? 1 : 0) | 0), toText(printf("opt|%s|%d"))(b_2.Name)(arg_56)));
         }
     }
     finally {
@@ -832,7 +834,7 @@ export function parseSave(text) {
                             matchResult_1 = 0;
                         }
                         else {
-                            matchResult_1 = 24;
+                            matchResult_1 = 25;
                         }
                         break;
                     }
@@ -841,7 +843,7 @@ export function parseSave(text) {
                             matchResult_1 = 1;
                         }
                         else {
-                            matchResult_1 = 24;
+                            matchResult_1 = 25;
                         }
                         break;
                     }
@@ -850,7 +852,7 @@ export function parseSave(text) {
                             matchResult_1 = 2;
                         }
                         else {
-                            matchResult_1 = 24;
+                            matchResult_1 = 25;
                         }
                         break;
                     }
@@ -859,7 +861,7 @@ export function parseSave(text) {
                             matchResult_1 = 3;
                         }
                         else {
-                            matchResult_1 = 24;
+                            matchResult_1 = 25;
                         }
                         break;
                     }
@@ -868,7 +870,7 @@ export function parseSave(text) {
                             matchResult_1 = 4;
                         }
                         else {
-                            matchResult_1 = 24;
+                            matchResult_1 = 25;
                         }
                         break;
                     }
@@ -877,7 +879,7 @@ export function parseSave(text) {
                             matchResult_1 = 5;
                         }
                         else {
-                            matchResult_1 = 24;
+                            matchResult_1 = 25;
                         }
                         break;
                     }
@@ -886,7 +888,7 @@ export function parseSave(text) {
                             matchResult_1 = 6;
                         }
                         else {
-                            matchResult_1 = 24;
+                            matchResult_1 = 25;
                         }
                         break;
                     }
@@ -895,7 +897,7 @@ export function parseSave(text) {
                             matchResult_1 = 7;
                         }
                         else {
-                            matchResult_1 = 24;
+                            matchResult_1 = 25;
                         }
                         break;
                     }
@@ -904,7 +906,7 @@ export function parseSave(text) {
                             matchResult_1 = 8;
                         }
                         else {
-                            matchResult_1 = 24;
+                            matchResult_1 = 25;
                         }
                         break;
                     }
@@ -913,7 +915,7 @@ export function parseSave(text) {
                             matchResult_1 = 9;
                         }
                         else {
-                            matchResult_1 = 24;
+                            matchResult_1 = 25;
                         }
                         break;
                     }
@@ -922,7 +924,7 @@ export function parseSave(text) {
                             matchResult_1 = 10;
                         }
                         else {
-                            matchResult_1 = 24;
+                            matchResult_1 = 25;
                         }
                         break;
                     }
@@ -931,7 +933,7 @@ export function parseSave(text) {
                             matchResult_1 = 11;
                         }
                         else {
-                            matchResult_1 = 24;
+                            matchResult_1 = 25;
                         }
                         break;
                     }
@@ -940,7 +942,7 @@ export function parseSave(text) {
                             matchResult_1 = 12;
                         }
                         else {
-                            matchResult_1 = 24;
+                            matchResult_1 = 25;
                         }
                         break;
                     }
@@ -949,7 +951,7 @@ export function parseSave(text) {
                             matchResult_1 = 13;
                         }
                         else {
-                            matchResult_1 = 24;
+                            matchResult_1 = 25;
                         }
                         break;
                     }
@@ -958,7 +960,7 @@ export function parseSave(text) {
                             matchResult_1 = 14;
                         }
                         else {
-                            matchResult_1 = 24;
+                            matchResult_1 = 25;
                         }
                         break;
                     }
@@ -967,7 +969,7 @@ export function parseSave(text) {
                             matchResult_1 = 15;
                         }
                         else {
-                            matchResult_1 = 24;
+                            matchResult_1 = 25;
                         }
                         break;
                     }
@@ -976,7 +978,7 @@ export function parseSave(text) {
                             matchResult_1 = 16;
                         }
                         else {
-                            matchResult_1 = 24;
+                            matchResult_1 = 25;
                         }
                         break;
                     }
@@ -985,7 +987,7 @@ export function parseSave(text) {
                             matchResult_1 = 17;
                         }
                         else {
-                            matchResult_1 = 24;
+                            matchResult_1 = 25;
                         }
                         break;
                     }
@@ -994,7 +996,7 @@ export function parseSave(text) {
                             matchResult_1 = 18;
                         }
                         else {
-                            matchResult_1 = 24;
+                            matchResult_1 = 25;
                         }
                         break;
                     }
@@ -1003,7 +1005,7 @@ export function parseSave(text) {
                             matchResult_1 = 19;
                         }
                         else {
-                            matchResult_1 = 24;
+                            matchResult_1 = 25;
                         }
                         break;
                     }
@@ -1012,7 +1014,7 @@ export function parseSave(text) {
                             matchResult_1 = 20;
                         }
                         else {
-                            matchResult_1 = 24;
+                            matchResult_1 = 25;
                         }
                         break;
                     }
@@ -1021,7 +1023,7 @@ export function parseSave(text) {
                             matchResult_1 = 21;
                         }
                         else {
-                            matchResult_1 = 24;
+                            matchResult_1 = 25;
                         }
                         break;
                     }
@@ -1030,92 +1032,103 @@ export function parseSave(text) {
                             matchResult_1 = 22;
                         }
                         else {
-                            matchResult_1 = 24;
+                            matchResult_1 = 25;
+                        }
+                        break;
+                    }
+                    case "hru": {
+                        if (parts.length >= 2) {
+                            matchResult_1 = 23;
+                        }
+                        else {
+                            matchResult_1 = 25;
                         }
                         break;
                     }
                     case "opt": {
                         if (parts.length >= 3) {
-                            matchResult_1 = 23;
+                            matchResult_1 = 24;
                         }
                         else {
-                            matchResult_1 = 24;
+                            matchResult_1 = 25;
                         }
                         break;
                     }
                     default:
-                        matchResult_1 = 24;
+                        matchResult_1 = 25;
                 }
                 switch (matchResult_1) {
                     case 0:
-                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, (bind$0040 = s0.Calendar, new CalendarState(parse(item_1(1, parts)), bind$0040.Day, parse_1(item_1(2, parts), 511, false, 32), bind$0040.Weather, bind$0040.Cycle, bind$0040.CycleYear, bind$0040.EventChance, parse_1(item_1(3, parts), 511, false, 32), bind$0040.CryptoPrice, bind$0040.ObserveRemainingTime)), s0.Cache, s0.CalendarDay, (parts.length > 4) ? parse_1(item_1(4, parts), 511, false, 32) : 0, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.TabsUnlocked);
+                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, (bind$0040 = s0.Calendar, new CalendarState(parse(item_1(1, parts)), bind$0040.Day, parse_1(item_1(2, parts), 511, false, 32), bind$0040.Weather, bind$0040.Cycle, bind$0040.CycleYear, bind$0040.EventChance, parse_1(item_1(3, parts), 511, false, 32), bind$0040.CryptoPrice, bind$0040.ObserveRemainingTime)), s0.Cache, s0.CalendarDay, (parts.length > 4) ? parse_1(item_1(4, parts), 511, false, 32) : 0, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.HideResearchedUpgrades, s0.TabsUnlocked);
                     case 1:
-                        return new State((bind$0040_1 = s0.Pool, new ResPool(bind$0040_1.Order, add_1(item_1(1, parts), (bind$0040_2 = FSharpMap__get_Item(s0.Pool.ByName, item_1(1, parts)), new ResourceState(bind$0040_2.Def, parse(item_1(2, parts)), item_1(3, parts) === "1", bind$0040_2.MaxValue, bind$0040_2.PerTickCached)), s0.Pool.ByName), bind$0040_1.KarmaKittens, bind$0040_1.EnergyProd, bind$0040_1.EnergyWinterProd, bind$0040_1.EnergyCons)), s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.TabsUnlocked);
+                        return new State((bind$0040_1 = s0.Pool, new ResPool(bind$0040_1.Order, add_1(item_1(1, parts), (bind$0040_2 = FSharpMap__get_Item(s0.Pool.ByName, item_1(1, parts)), new ResourceState(bind$0040_2.Def, parse(item_1(2, parts)), item_1(3, parts) === "1", bind$0040_2.MaxValue, bind$0040_2.PerTickCached)), s0.Pool.ByName), bind$0040_1.KarmaKittens, bind$0040_1.EnergyProd, bind$0040_1.EnergyWinterProd, bind$0040_1.EnergyCons)), s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.HideResearchedUpgrades, s0.TabsUnlocked);
                     case 2:
-                        return new State(s0.Pool, new BldPool(s0.Bpool.Order, add_1(item_1(1, parts), (bind$0040_4 = FSharpMap__get_Item(s0.Bpool.ByName, item_1(1, parts)), new BuildingState(bind$0040_4.Def, parse_1(item_1(2, parts), 511, false, 32), parse_1(item_1(3, parts), 511, false, 32), item_1(4, parts) === "1", bind$0040_4.Unlockable, bind$0040_4.Stage)), s0.Bpool.ByName)), s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.TabsUnlocked);
+                        return new State(s0.Pool, new BldPool(s0.Bpool.Order, add_1(item_1(1, parts), (bind$0040_4 = FSharpMap__get_Item(s0.Bpool.ByName, item_1(1, parts)), new BuildingState(bind$0040_4.Def, parse_1(item_1(2, parts), 511, false, 32), parse_1(item_1(3, parts), 511, false, 32), item_1(4, parts) === "1", bind$0040_4.Unlockable, bind$0040_4.Stage)), s0.Bpool.ByName)), s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.HideResearchedUpgrades, s0.TabsUnlocked);
                     case 3:
-                        return new State(s0.Pool, s0.Bpool, (bind$0040_5 = s0.Spool, new SciencePool(bind$0040_5.TechOrder, add_1(item_1(1, parts), new ResearchState(FSharpMap__get_Item(s0.Spool.Techs, item_1(1, parts)).Def, item_1(2, parts) === "1", item_1(3, parts) === "1"), s0.Spool.Techs), bind$0040_5.PolicyOrder, bind$0040_5.Policies)), s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.TabsUnlocked);
+                        return new State(s0.Pool, s0.Bpool, (bind$0040_5 = s0.Spool, new SciencePool(bind$0040_5.TechOrder, add_1(item_1(1, parts), new ResearchState(FSharpMap__get_Item(s0.Spool.Techs, item_1(1, parts)).Def, item_1(2, parts) === "1", item_1(3, parts) === "1"), s0.Spool.Techs), bind$0040_5.PolicyOrder, bind$0040_5.Policies)), s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.HideResearchedUpgrades, s0.TabsUnlocked);
                     case 4:
-                        return new State(s0.Pool, s0.Bpool, (bind$0040_7 = s0.Spool, new SciencePool(bind$0040_7.TechOrder, bind$0040_7.Techs, bind$0040_7.PolicyOrder, add_1(item_1(1, parts), (bind$0040_8 = FSharpMap__get_Item(s0.Spool.Policies, item_1(1, parts)), new PolicyState(bind$0040_8.Def, item_1(2, parts) === "1", item_1(3, parts) === "1", bind$0040_8.Blocked, bind$0040_8.Effects)), s0.Spool.Policies))), s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.TabsUnlocked);
+                        return new State(s0.Pool, s0.Bpool, (bind$0040_7 = s0.Spool, new SciencePool(bind$0040_7.TechOrder, bind$0040_7.Techs, bind$0040_7.PolicyOrder, add_1(item_1(1, parts), (bind$0040_8 = FSharpMap__get_Item(s0.Spool.Policies, item_1(1, parts)), new PolicyState(bind$0040_8.Def, item_1(2, parts) === "1", item_1(3, parts) === "1", bind$0040_8.Blocked, bind$0040_8.Effects)), s0.Spool.Policies))), s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.HideResearchedUpgrades, s0.TabsUnlocked);
                     case 5:
-                        return new State(s0.Pool, s0.Bpool, s0.Spool, (bind$0040_9 = s0.Wpool, new WorkshopPool(bind$0040_9.UpgradeOrder, add_1(item_1(1, parts), new UpgradeState(FSharpMap__get_Item(s0.Wpool.Upgrades, item_1(1, parts)).Def, item_1(2, parts) === "1", item_1(3, parts) === "1"), s0.Wpool.Upgrades), bind$0040_9.CraftOrder, bind$0040_9.Crafts, bind$0040_9.ZebraOrder, bind$0040_9.ZebraUpgrades)), s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.TabsUnlocked);
+                        return new State(s0.Pool, s0.Bpool, s0.Spool, (bind$0040_9 = s0.Wpool, new WorkshopPool(bind$0040_9.UpgradeOrder, add_1(item_1(1, parts), new UpgradeState(FSharpMap__get_Item(s0.Wpool.Upgrades, item_1(1, parts)).Def, item_1(2, parts) === "1", item_1(3, parts) === "1"), s0.Wpool.Upgrades), bind$0040_9.CraftOrder, bind$0040_9.Crafts, bind$0040_9.ZebraOrder, bind$0040_9.ZebraUpgrades)), s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.HideResearchedUpgrades, s0.TabsUnlocked);
                     case 6:
-                        return new State(s0.Pool, s0.Bpool, s0.Spool, (bind$0040_11 = s0.Wpool, new WorkshopPool(bind$0040_11.UpgradeOrder, bind$0040_11.Upgrades, bind$0040_11.CraftOrder, add_1(item_1(1, parts), (bind$0040_12 = FSharpMap__get_Item(s0.Wpool.Crafts, item_1(1, parts)), new CraftState(bind$0040_12.Def, true, parse(item_1(2, parts)), bind$0040_12.Progress, bind$0040_12.IsLimited, bind$0040_12.IsLimitedAmt)), s0.Wpool.Crafts), bind$0040_11.ZebraOrder, bind$0040_11.ZebraUpgrades)), s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.TabsUnlocked);
+                        return new State(s0.Pool, s0.Bpool, s0.Spool, (bind$0040_11 = s0.Wpool, new WorkshopPool(bind$0040_11.UpgradeOrder, bind$0040_11.Upgrades, bind$0040_11.CraftOrder, add_1(item_1(1, parts), (bind$0040_12 = FSharpMap__get_Item(s0.Wpool.Crafts, item_1(1, parts)), new CraftState(bind$0040_12.Def, true, parse(item_1(2, parts)), bind$0040_12.Progress, bind$0040_12.IsLimited, bind$0040_12.IsLimitedAmt)), s0.Wpool.Crafts), bind$0040_11.ZebraOrder, bind$0040_11.ZebraUpgrades)), s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.HideResearchedUpgrades, s0.TabsUnlocked);
                     case 7: {
                         const k = kittenFromSeed(parse(item_1(1, parts)));
                         const k2 = (item_1(2, parts) === "-") ? k : (new Kitten(k.Name, k.Surname, item_1(2, parts), k.Rank, k.Exp, k.Seed, k.Trait, k.Age, k.Color, k.Variety, k.Rarity, k.IsLeader, k.Skills, k.EngineerSpeciality));
-                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, (bind$0040_13 = s0.Vpool, new VillagePool(append(s0.Vpool.Kittens, singleton(k2)), bind$0040_13.NextKittenProgress, bind$0040_13.MaxKittens, bind$0040_13.JobValues, bind$0040_13.JobUnlocked, bind$0040_13.Happiness, bind$0040_13.DeathTimeout, bind$0040_13.LeaderSeed, bind$0040_13.Traits)), s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.TabsUnlocked);
+                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, (bind$0040_13 = s0.Vpool, new VillagePool(append(s0.Vpool.Kittens, singleton(k2)), bind$0040_13.NextKittenProgress, bind$0040_13.MaxKittens, bind$0040_13.JobValues, bind$0040_13.JobUnlocked, bind$0040_13.Happiness, bind$0040_13.DeathTimeout, bind$0040_13.LeaderSeed, bind$0040_13.Traits)), s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.HideResearchedUpgrades, s0.TabsUnlocked);
                     }
                     case 8:
-                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, (bind$0040_14 = s0.Vpool, new VillagePool(bind$0040_14.Kittens, bind$0040_14.NextKittenProgress, bind$0040_14.MaxKittens, add_1(item_1(1, parts), parse_1(item_1(2, parts), 511, false, 32), s0.Vpool.JobValues), bind$0040_14.JobUnlocked, bind$0040_14.Happiness, bind$0040_14.DeathTimeout, bind$0040_14.LeaderSeed, bind$0040_14.Traits)), s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.TabsUnlocked);
+                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, (bind$0040_14 = s0.Vpool, new VillagePool(bind$0040_14.Kittens, bind$0040_14.NextKittenProgress, bind$0040_14.MaxKittens, add_1(item_1(1, parts), parse_1(item_1(2, parts), 511, false, 32), s0.Vpool.JobValues), bind$0040_14.JobUnlocked, bind$0040_14.Happiness, bind$0040_14.DeathTimeout, bind$0040_14.LeaderSeed, bind$0040_14.Traits)), s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.HideResearchedUpgrades, s0.TabsUnlocked);
                     case 9:
-                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, (bind$0040_15 = s0.Rpool, new ReligionPool(parse(item_1(1, parts)), parse(item_1(2, parts)), bind$0040_15.Tcratio, parse_1(item_1(3, parts), 511, false, 32), bind$0040_15.Corruption, bind$0040_15.NecrocornDeficit, bind$0040_15.FractureThreshold, bind$0040_15.Pacts, bind$0040_15.PactOrder, bind$0040_15.ActiveHolyGenocide, bind$0040_15.ZUs, bind$0040_15.RUs, bind$0040_15.TUs, bind$0040_15.ZuOrder, bind$0040_15.RuOrder, bind$0040_15.TuOrder)), s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.TabsUnlocked);
+                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, (bind$0040_15 = s0.Rpool, new ReligionPool(parse(item_1(1, parts)), parse(item_1(2, parts)), bind$0040_15.Tcratio, parse_1(item_1(3, parts), 511, false, 32), bind$0040_15.Corruption, bind$0040_15.NecrocornDeficit, bind$0040_15.FractureThreshold, bind$0040_15.Pacts, bind$0040_15.PactOrder, bind$0040_15.ActiveHolyGenocide, bind$0040_15.ZUs, bind$0040_15.RUs, bind$0040_15.TUs, bind$0040_15.ZuOrder, bind$0040_15.RuOrder, bind$0040_15.TuOrder)), s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.HideResearchedUpgrades, s0.TabsUnlocked);
                     case 10: {
                         const m = getZU(s0.Rpool, item_1(1, parts));
-                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, (bind$0040_16 = s0.Rpool, new ReligionPool(bind$0040_16.Faith, bind$0040_16.FaithRatio, bind$0040_16.Tcratio, bind$0040_16.TranscendenceTier, bind$0040_16.Corruption, bind$0040_16.NecrocornDeficit, bind$0040_16.FractureThreshold, bind$0040_16.Pacts, bind$0040_16.PactOrder, bind$0040_16.ActiveHolyGenocide, add_1(item_1(1, parts), new ReligionMeta(parse_1(item_1(2, parts), 511, false, 32), m.On, true, m.Researched, m.FrozenEffects), s0.Rpool.ZUs), bind$0040_16.RUs, bind$0040_16.TUs, bind$0040_16.ZuOrder, bind$0040_16.RuOrder, bind$0040_16.TuOrder)), s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.TabsUnlocked);
+                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, (bind$0040_16 = s0.Rpool, new ReligionPool(bind$0040_16.Faith, bind$0040_16.FaithRatio, bind$0040_16.Tcratio, bind$0040_16.TranscendenceTier, bind$0040_16.Corruption, bind$0040_16.NecrocornDeficit, bind$0040_16.FractureThreshold, bind$0040_16.Pacts, bind$0040_16.PactOrder, bind$0040_16.ActiveHolyGenocide, add_1(item_1(1, parts), new ReligionMeta(parse_1(item_1(2, parts), 511, false, 32), m.On, true, m.Researched, m.FrozenEffects), s0.Rpool.ZUs), bind$0040_16.RUs, bind$0040_16.TUs, bind$0040_16.ZuOrder, bind$0040_16.RuOrder, bind$0040_16.TuOrder)), s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.HideResearchedUpgrades, s0.TabsUnlocked);
                     }
                     case 11: {
                         const m_1 = getRU(s0.Rpool, item_1(1, parts));
-                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, (bind$0040_17 = s0.Rpool, new ReligionPool(bind$0040_17.Faith, bind$0040_17.FaithRatio, bind$0040_17.Tcratio, bind$0040_17.TranscendenceTier, bind$0040_17.Corruption, bind$0040_17.NecrocornDeficit, bind$0040_17.FractureThreshold, bind$0040_17.Pacts, bind$0040_17.PactOrder, bind$0040_17.ActiveHolyGenocide, bind$0040_17.ZUs, add_1(item_1(1, parts), new ReligionMeta(parse_1(item_1(2, parts), 511, false, 32), m_1.On, m_1.Unlocked, m_1.Researched, m_1.FrozenEffects), s0.Rpool.RUs), bind$0040_17.TUs, bind$0040_17.ZuOrder, bind$0040_17.RuOrder, bind$0040_17.TuOrder)), s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.TabsUnlocked);
+                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, (bind$0040_17 = s0.Rpool, new ReligionPool(bind$0040_17.Faith, bind$0040_17.FaithRatio, bind$0040_17.Tcratio, bind$0040_17.TranscendenceTier, bind$0040_17.Corruption, bind$0040_17.NecrocornDeficit, bind$0040_17.FractureThreshold, bind$0040_17.Pacts, bind$0040_17.PactOrder, bind$0040_17.ActiveHolyGenocide, bind$0040_17.ZUs, add_1(item_1(1, parts), new ReligionMeta(parse_1(item_1(2, parts), 511, false, 32), m_1.On, m_1.Unlocked, m_1.Researched, m_1.FrozenEffects), s0.Rpool.RUs), bind$0040_17.TUs, bind$0040_17.ZuOrder, bind$0040_17.RuOrder, bind$0040_17.TuOrder)), s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.HideResearchedUpgrades, s0.TabsUnlocked);
                     }
                     case 12: {
                         const r0 = FSharpMap__get_Item(s0.Dpool.Races, item_1(1, parts));
-                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, (bind$0040_18 = s0.Dpool, new DiplomacyPool(add_1(item_1(1, parts), new RaceState(true, parse_1(item_1(2, parts), 511, false, 32), r0.Energy, r0.Duration, r0.Sells, r0.Buys), s0.Dpool.Races), bind$0040_18.RaceOrder, bind$0040_18.NonRandomTrades, bind$0040_18.NonRandomResetDays, bind$0040_18.BaseGoldCost, bind$0040_18.BaseManpowerCost)), s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.TabsUnlocked);
+                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, (bind$0040_18 = s0.Dpool, new DiplomacyPool(add_1(item_1(1, parts), new RaceState(true, parse_1(item_1(2, parts), 511, false, 32), r0.Energy, r0.Duration, r0.Sells, r0.Buys), s0.Dpool.Races), bind$0040_18.RaceOrder, bind$0040_18.NonRandomTrades, bind$0040_18.NonRandomResetDays, bind$0040_18.BaseGoldCost, bind$0040_18.BaseManpowerCost)), s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.HideResearchedUpgrades, s0.TabsUnlocked);
                     }
                     case 13: {
                         const m_2 = getProgram(s0.Spacep, item_1(1, parts));
-                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, (bind$0040_19 = s0.Spacep, new SpacePool(add_1(item_1(1, parts), new SpaceMeta(parse_1(item_1(2, parts), 511, false, 32), parse_1(item_1(3, parts), 511, false, 32), true, m_2.Effects), s0.Spacep.Programs), bind$0040_19.ProgramOrder, bind$0040_19.Buildings, bind$0040_19.BuildingOrder, bind$0040_19.Planets, bind$0040_19.PlanetOrder)), s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.TabsUnlocked);
+                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, (bind$0040_19 = s0.Spacep, new SpacePool(add_1(item_1(1, parts), new SpaceMeta(parse_1(item_1(2, parts), 511, false, 32), parse_1(item_1(3, parts), 511, false, 32), true, m_2.Effects), s0.Spacep.Programs), bind$0040_19.ProgramOrder, bind$0040_19.Buildings, bind$0040_19.BuildingOrder, bind$0040_19.Planets, bind$0040_19.PlanetOrder)), s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.HideResearchedUpgrades, s0.TabsUnlocked);
                     }
                     case 14: {
                         const m_3 = getBuilding(s0.Spacep, item_1(1, parts));
-                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, (bind$0040_20 = s0.Spacep, new SpacePool(bind$0040_20.Programs, bind$0040_20.ProgramOrder, add_1(item_1(1, parts), new SpaceMeta(parse_1(item_1(2, parts), 511, false, 32), m_3.On, true, m_3.Effects), s0.Spacep.Buildings), bind$0040_20.BuildingOrder, bind$0040_20.Planets, bind$0040_20.PlanetOrder)), s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.TabsUnlocked);
+                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, (bind$0040_20 = s0.Spacep, new SpacePool(bind$0040_20.Programs, bind$0040_20.ProgramOrder, add_1(item_1(1, parts), new SpaceMeta(parse_1(item_1(2, parts), 511, false, 32), m_3.On, true, m_3.Effects), s0.Spacep.Buildings), bind$0040_20.BuildingOrder, bind$0040_20.Planets, bind$0040_20.PlanetOrder)), s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.HideResearchedUpgrades, s0.TabsUnlocked);
                     }
                     case 15: {
                         const m_4 = FSharpMap__get_Item(s0.Tpool.CFUs, item_1(1, parts));
-                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, (bind$0040_21 = s0.Tpool, new TimePool(bind$0040_21.Flux, bind$0040_21.Heat, bind$0040_21.IsAccelerated, bind$0040_21.TestShatter, add_1(item_1(1, parts), new TimeMeta(parse_1(item_1(2, parts), 511, false, 32), parse_1(item_1(3, parts), 511, false, 32), true, m_4.Researched, parse(item_1(4, parts)), m_4.DelayTicks, m_4.IsAutomationEnabled, m_4.Eff, m_4.PriceRatioDyn), s0.Tpool.CFUs), bind$0040_21.CfuOrder, bind$0040_21.VSUs, bind$0040_21.VsuOrder)), s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.TabsUnlocked);
+                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, (bind$0040_21 = s0.Tpool, new TimePool(bind$0040_21.Flux, bind$0040_21.Heat, bind$0040_21.IsAccelerated, bind$0040_21.TestShatter, add_1(item_1(1, parts), new TimeMeta(parse_1(item_1(2, parts), 511, false, 32), parse_1(item_1(3, parts), 511, false, 32), true, m_4.Researched, parse(item_1(4, parts)), m_4.DelayTicks, m_4.IsAutomationEnabled, m_4.Eff, m_4.PriceRatioDyn), s0.Tpool.CFUs), bind$0040_21.CfuOrder, bind$0040_21.VSUs, bind$0040_21.VsuOrder)), s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.HideResearchedUpgrades, s0.TabsUnlocked);
                     }
                     case 16: {
                         const m_5 = FSharpMap__get_Item(s0.Tpool.VSUs, item_1(1, parts));
-                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, (bind$0040_22 = s0.Tpool, new TimePool(bind$0040_22.Flux, bind$0040_22.Heat, bind$0040_22.IsAccelerated, bind$0040_22.TestShatter, bind$0040_22.CFUs, bind$0040_22.CfuOrder, add_1(item_1(1, parts), new TimeMeta(parse_1(item_1(2, parts), 511, false, 32), m_5.On, true, m_5.Researched, m_5.Heat, m_5.DelayTicks, m_5.IsAutomationEnabled, m_5.Eff, m_5.PriceRatioDyn), s0.Tpool.VSUs), bind$0040_22.VsuOrder)), s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.TabsUnlocked);
+                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, (bind$0040_22 = s0.Tpool, new TimePool(bind$0040_22.Flux, bind$0040_22.Heat, bind$0040_22.IsAccelerated, bind$0040_22.TestShatter, bind$0040_22.CFUs, bind$0040_22.CfuOrder, add_1(item_1(1, parts), new TimeMeta(parse_1(item_1(2, parts), 511, false, 32), m_5.On, true, m_5.Researched, m_5.Heat, m_5.DelayTicks, m_5.IsAutomationEnabled, m_5.Eff, m_5.PriceRatioDyn), s0.Tpool.VSUs), bind$0040_22.VsuOrder)), s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.HideResearchedUpgrades, s0.TabsUnlocked);
                     }
                     case 17:
-                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, append(s0.QueueItems, singleton((QType = item_1(1, parts), new QueueItem(item_1(2, parts), QType, parse_1(item_1(3, parts), 511, false, 32))))), s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.TabsUnlocked);
+                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, append(s0.QueueItems, singleton((QType = item_1(1, parts), new QueueItem(item_1(2, parts), QType, parse_1(item_1(3, parts), 511, false, 32))))), s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.HideResearchedUpgrades, s0.TabsUnlocked);
                     case 18:
-                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, new OptsState(s0.Opts.Bools, item_1(1, parts), parse(item_1(2, parts))), s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.TabsUnlocked);
+                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, new OptsState(s0.Opts.Bools, item_1(1, parts), parse(item_1(2, parts))), s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.HideResearchedUpgrades, s0.TabsUnlocked);
                     case 19:
-                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, ofArray_1(split(item_1(1, parts), [","], undefined, 0), {
+                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.HideResearchedUpgrades, ofArray_1(split(item_1(1, parts), [","], undefined, 0), {
                             Compare: (x, y) => (comparePrimitives(x, y) | 0),
                         }));
                     case 20:
                         return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, ofArray_1(split(item_1(1, parts), [","], undefined, 0), {
                             Compare: (x_1, y_1) => (comparePrimitives(x_1, y_1) | 0),
-                        }), s0.ShowHiddenRes, s0.HideResearched, s0.TabsUnlocked);
+                        }), s0.ShowHiddenRes, s0.HideResearched, s0.HideResearchedUpgrades, s0.TabsUnlocked);
                     case 21:
-                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, item_1(1, parts) === "1", s0.HideResearched, s0.TabsUnlocked);
+                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, item_1(1, parts) === "1", s0.HideResearched, s0.HideResearchedUpgrades, s0.TabsUnlocked);
                     case 22:
-                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, item_1(1, parts) === "1", s0.TabsUnlocked);
+                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, item_1(1, parts) === "1", s0.HideResearchedUpgrades, s0.TabsUnlocked);
                     case 23:
-                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, (bind$0040_24 = s0.Opts, new OptsState(add_1(item_1(1, parts), item_1(2, parts) === "1", s0.Opts.Bools), bind$0040_24.Notation, bind$0040_24.BatchSize)), s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.TabsUnlocked);
+                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, s0.Opts, s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, item_1(1, parts) === "1", s0.TabsUnlocked);
+                    case 24:
+                        return new State(s0.Pool, s0.Bpool, s0.Spool, s0.Wpool, s0.Vpool, s0.Rpool, s0.Cpool, s0.Ppool, s0.Dpool, s0.Tpool, s0.Spacep, s0.Stpool, s0.Calendar, s0.Cache, s0.CalendarDay, s0.Ticks, s0.IronWill, s0.Rand, s0.ConsoleMsgs, s0.ConsoleUnlocked, s0.QueueItems, (bind$0040_24 = s0.Opts, new OptsState(add_1(item_1(1, parts), item_1(2, parts) === "1", s0.Opts.Bools), bind$0040_24.Notation, bind$0040_24.BatchSize)), s0.ResHidden, s0.ShowHiddenRes, s0.HideResearched, s0.HideResearchedUpgrades, s0.TabsUnlocked);
                     default:
                         return s0;
                 }
@@ -1129,7 +1142,7 @@ export function parseSave(text) {
 
 export function applyLoaded(loaded, old) {
     let bind$0040, bind$0040_1;
-    const s1 = new State(loaded.Pool, loaded.Bpool, loaded.Spool, loaded.Wpool, loaded.Vpool, loaded.Rpool, loaded.Cpool, loaded.Ppool, loaded.Dpool, loaded.Tpool, loaded.Spacep, loaded.Stpool, loaded.Calendar, loaded.Cache, loaded.CalendarDay, loaded.Ticks, loaded.IronWill, loaded.Rand, old.ConsoleMsgs, old.ConsoleUnlocked, loaded.QueueItems, loaded.Opts, loaded.ResHidden, loaded.ShowHiddenRes, loaded.HideResearched, loaded.TabsUnlocked);
+    const s1 = new State(loaded.Pool, loaded.Bpool, loaded.Spool, loaded.Wpool, loaded.Vpool, loaded.Rpool, loaded.Cpool, loaded.Ppool, loaded.Dpool, loaded.Tpool, loaded.Spacep, loaded.Stpool, loaded.Calendar, loaded.Cache, loaded.CalendarDay, loaded.Ticks, loaded.IronWill, loaded.Rand, old.ConsoleMsgs, old.ConsoleUnlocked, loaded.QueueItems, loaded.Opts, loaded.ResHidden, loaded.ShowHiddenRes, loaded.HideResearched, loaded.HideResearchedUpgrades, loaded.TabsUnlocked);
     let repairedJobs;
     const counts = ofList(List_countBy((x) => x, choose((k) => k.Job, s1.Vpool.Kittens), {
         Equals: (x_1, y) => (x_1 === y),
@@ -1138,14 +1151,14 @@ export function applyLoaded(loaded, old) {
         Compare: (x_2, y_1) => (comparePrimitives(x_2, y_1) | 0),
     });
     repairedJobs = map_1((name, _arg) => (defaultArg(tryFind(name, counts), 0) | 0), s1.Vpool.JobValues);
-    const s1_1 = new State(s1.Pool, s1.Bpool, s1.Spool, s1.Wpool, (bind$0040 = s1.Vpool, new VillagePool(bind$0040.Kittens, bind$0040.NextKittenProgress, bind$0040.MaxKittens, repairedJobs, bind$0040.JobUnlocked, bind$0040.Happiness, bind$0040.DeathTimeout, bind$0040.LeaderSeed, bind$0040.Traits)), s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, s1.TabsUnlocked);
+    const s1_1 = new State(s1.Pool, s1.Bpool, s1.Spool, s1.Wpool, (bind$0040 = s1.Vpool, new VillagePool(bind$0040.Kittens, bind$0040.NextKittenProgress, bind$0040.MaxKittens, repairedJobs, bind$0040.JobUnlocked, bind$0040.Happiness, bind$0040.DeathTimeout, bind$0040.LeaderSeed, bind$0040.Traits)), s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, s1.HideResearchedUpgrades, s1.TabsUnlocked);
     const maxKittens = calculateMaxKittens(s1_1.Cache, s1_1.Vpool) | 0;
-    const s2 = new State(s1_1.Pool, s1_1.Bpool, s1_1.Spool, s1_1.Wpool, (bind$0040_1 = s1_1.Vpool, new VillagePool(bind$0040_1.Kittens, bind$0040_1.NextKittenProgress, maxKittens, bind$0040_1.JobValues, bind$0040_1.JobUnlocked, bind$0040_1.Happiness, bind$0040_1.DeathTimeout, bind$0040_1.LeaderSeed, bind$0040_1.Traits)), s1_1.Rpool, s1_1.Cpool, s1_1.Ppool, s1_1.Dpool, s1_1.Tpool, s1_1.Spacep, s1_1.Stpool, s1_1.Calendar, s1_1.Cache, s1_1.CalendarDay, s1_1.Ticks, s1_1.IronWill, s1_1.Rand, s1_1.ConsoleMsgs, s1_1.ConsoleUnlocked, s1_1.QueueItems, s1_1.Opts, s1_1.ResHidden, s1_1.ShowHiddenRes, s1_1.HideResearched, s1_1.TabsUnlocked);
+    const s2 = new State(s1_1.Pool, s1_1.Bpool, s1_1.Spool, s1_1.Wpool, (bind$0040_1 = s1_1.Vpool, new VillagePool(bind$0040_1.Kittens, bind$0040_1.NextKittenProgress, maxKittens, bind$0040_1.JobValues, bind$0040_1.JobUnlocked, bind$0040_1.Happiness, bind$0040_1.DeathTimeout, bind$0040_1.LeaderSeed, bind$0040_1.Traits)), s1_1.Rpool, s1_1.Cpool, s1_1.Ppool, s1_1.Dpool, s1_1.Tpool, s1_1.Spacep, s1_1.Stpool, s1_1.Calendar, s1_1.Cache, s1_1.CalendarDay, s1_1.Ticks, s1_1.IronWill, s1_1.Rand, s1_1.ConsoleMsgs, s1_1.ConsoleUnlocked, s1_1.QueueItems, s1_1.Opts, s1_1.ResHidden, s1_1.ShowHiddenRes, s1_1.HideResearched, s1_1.HideResearchedUpgrades, s1_1.TabsUnlocked);
     const kittensRes = FSharpMap__get_Item(s2.Pool.ByName, "kittens");
     let pool2;
     const bind$0040_2 = s2.Pool;
     pool2 = (new ResPool(bind$0040_2.Order, add_1("kittens", new ResourceState(kittensRes.Def, length(s2.Vpool.Kittens), length(s2.Vpool.Kittens) > 0, s2.Vpool.MaxKittens, kittensRes.PerTickCached), s2.Pool.ByName), bind$0040_2.KarmaKittens, bind$0040_2.EnergyProd, bind$0040_2.EnergyWinterProd, bind$0040_2.EnergyCons));
-    return refreshCache(new State(pool2, s2.Bpool, s2.Spool, s2.Wpool, s2.Vpool, s2.Rpool, s2.Cpool, s2.Ppool, s2.Dpool, s2.Tpool, s2.Spacep, s2.Stpool, s2.Calendar, s2.Cache, s2.CalendarDay, s2.Ticks, s2.IronWill, s2.Rand, s2.ConsoleMsgs, s2.ConsoleUnlocked, s2.QueueItems, s2.Opts, s2.ResHidden, s2.ShowHiddenRes, s2.HideResearched, s2.TabsUnlocked));
+    return refreshCache(new State(pool2, s2.Bpool, s2.Spool, s2.Wpool, s2.Vpool, s2.Rpool, s2.Cpool, s2.Ppool, s2.Dpool, s2.Tpool, s2.Spacep, s2.Stpool, s2.Calendar, s2.Cache, s2.CalendarDay, s2.Ticks, s2.IronWill, s2.Rand, s2.ConsoleMsgs, s2.ConsoleUnlocked, s2.QueueItems, s2.Opts, s2.ResHidden, s2.ShowHiddenRes, s2.HideResearched, s2.HideResearchedUpgrades, s2.TabsUnlocked));
 }
 
 /**
@@ -1157,7 +1170,7 @@ export function clearAllJobs(s) {
     const bind$0040 = s.Vpool;
     const JobValues = map_1((_arg, _arg_1) => 0, s.Vpool.JobValues);
     vpool$0027 = (new VillagePool(map((k) => (new Kitten(k.Name, k.Surname, undefined, k.Rank, k.Exp, k.Seed, k.Trait, k.Age, k.Color, k.Variety, k.Rarity, k.IsLeader, k.Skills, k.EngineerSpeciality)), s.Vpool.Kittens), bind$0040.NextKittenProgress, bind$0040.MaxKittens, JobValues, bind$0040.JobUnlocked, bind$0040.Happiness, bind$0040.DeathTimeout, bind$0040.LeaderSeed, bind$0040.Traits));
-    return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, vpool$0027, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+    return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, vpool$0027, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
 }
 
 function policyVeto(s, name) {
@@ -1248,7 +1261,7 @@ export function researchPolicyAction(name, s) {
         return s;
     }
     else {
-        const s1 = new State(pool$0027, s.Bpool, spool$0027, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+        const s1 = new State(pool$0027, s.Bpool, spool$0027, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
         let s2;
         const matchValue_2 = FSharpMap__get_Item(s1.Spool.Policies, name).Def.Unlocks;
         if (matchValue_2 == null) {
@@ -1263,7 +1276,7 @@ export function researchPolicyAction(name, s) {
             const bp2 = patternInput_1[0];
             s2 = (new State(s1.Pool, bp2, sp2, wp2, (bind$0040 = s1.Vpool, new VillagePool(bind$0040.Kittens, bind$0040.NextKittenProgress, bind$0040.MaxKittens, bind$0040.JobValues, union(ofList_1(u.Jobs, {
                 Compare: (x, y) => (comparePrimitives(x, y) | 0),
-            }), s1.Vpool.JobUnlocked), bind$0040.Happiness, bind$0040.DeathTimeout, bind$0040.LeaderSeed, bind$0040.Traits)), s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, union(ofList_1(u.Tabs, {
+            }), s1.Vpool.JobUnlocked), bind$0040.Happiness, bind$0040.DeathTimeout, bind$0040.LeaderSeed, bind$0040.Traits)), s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, s1.HideResearchedUpgrades, union(ofList_1(u.Tabs, {
                 Compare: (x_1, y_1) => (comparePrimitives(x_1, y_1) | 0),
             }), s1.TabsUnlocked)));
         }
@@ -1285,7 +1298,7 @@ export function huntAction(s) {
     let matchValue, t, matchValue_1, p;
     const ctx = new HuntContext((name) => getEffect(s, name), s.Rand, resValue(s, "zebras"), s.IronWill, (matchValue = tryFind("goldOre", s.Spool.Techs), (matchValue == null) ? false : ((t = matchValue, t.Researched))), (matchValue_1 = tryFind("unicornmancy", s.Ppool.Perks), (matchValue_1 == null) ? false : ((p = matchValue_1, p.Researched))), 0, 0);
     const pool$0027 = huntAll(ctx, s.Pool);
-    return refreshCache(new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked));
+    return refreshCache(new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked));
 }
 
 /**
@@ -1310,7 +1323,7 @@ export function holdFestivalAction(s) {
         }
         const wasRunning = s.Calendar.FestivalDays > 0;
         const cal$0027 = holdFestival(carnivals, 1, s.Calendar);
-        const s1 = new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, cal$0027, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+        const s1 = new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, cal$0027, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
         if (FSharpSet__Contains(s1.ConsoleUnlocked, "festival")) {
             return consoleMsg("festival", wasRunning ? "The cultural festival has been extended" : "The cultural festival has started", s1);
         }
@@ -1330,7 +1343,7 @@ export function sellBuilding(name, s) {
     const pool$0027 = patternInput[1];
     const bpool$0027 = patternInput[0];
     if (sold) {
-        return refreshCache(new State(pool$0027, bpool$0027, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked));
+        return refreshCache(new State(pool$0027, bpool$0027, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked));
     }
     else {
         return s;
@@ -1343,7 +1356,7 @@ export function sellBuilding(name, s) {
  */
 export function adoreAction(s) {
     const rpool$0027 = adoreInternal(s.Rpool, 1.01);
-    return refreshCache(new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, rpool$0027, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked));
+    return refreshCache(new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, rpool$0027, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked));
 }
 
 /**
@@ -1354,7 +1367,7 @@ export function transcendAction(s) {
     const transcended = patternInput[1];
     const rpool$0027 = patternInput[0];
     if (transcended) {
-        return refreshCache(new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, rpool$0027, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked));
+        return refreshCache(new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, rpool$0027, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked));
     }
     else {
         return s;
@@ -1383,7 +1396,7 @@ export function buyPerkAction(name, s) {
         return s;
     }
     else {
-        const s1 = new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, pp$0027, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+        const s1 = new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, pp$0027, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
         let s2;
         const matchValue_1 = res.UnlockFanOut;
         if (matchValue_1 == null) {
@@ -1395,7 +1408,7 @@ export function buyPerkAction(name, s) {
             const wp2 = patternInput_1[2];
             const sp2 = patternInput_1[1];
             const bp2 = patternInput_1[0];
-            s2 = (new State(s1.Pool, bp2, sp2, wp2, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, union(ofList_1(u.Tabs, {
+            s2 = (new State(s1.Pool, bp2, sp2, wp2, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, s1.HideResearchedUpgrades, union(ofList_1(u.Tabs, {
                 Compare: (x, y) => (comparePrimitives(x, y) | 0),
             }), s1.TabsUnlocked)));
         }
@@ -1405,7 +1418,7 @@ export function buyPerkAction(name, s) {
 
 export function gatherCatnip(s) {
     const pool1 = addResEvent(s.CalendarDay, "catnip", 1, s.Pool)[0];
-    return new State(pool1, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+    return new State(pool1, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
 }
 
 /**
@@ -1414,10 +1427,10 @@ export function gatherCatnip(s) {
  */
 export function toggleResHidden(name, s) {
     if (FSharpSet__Contains(s.ResHidden, name)) {
-        return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, FSharpSet__Remove(s.ResHidden, name), s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+        return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, FSharpSet__Remove(s.ResHidden, name), s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
     }
     else {
-        return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, FSharpSet__Add(s.ResHidden, name), s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+        return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, FSharpSet__Add(s.ResHidden, name), s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
     }
 }
 
@@ -1425,14 +1438,21 @@ export function toggleResHidden(name, s) {
  * orig resPool.showHiddenResources toggle ("show hidden" checkbox in edit mode)
  */
 export function setShowHiddenRes(v, s) {
-    return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, v, s.HideResearched, s.TabsUnlocked);
+    return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, v, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
 }
 
 /**
  * orig science.hideResearched ("Hide researched techs" library checkbox)
  */
 export function setHideResearched(v, s) {
-    return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, v, s.TabsUnlocked);
+    return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, v, s.HideResearchedUpgrades, s.TabsUnlocked);
+}
+
+/**
+ * orig workshop.hideResearched ("Hide researched upgrades" workshop checkbox)
+ */
+export function setHideResearchedUpgrades(v, s) {
+    return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, v, s.TabsUnlocked);
 }
 
 /**
@@ -1461,7 +1481,7 @@ export function refineCatnip(s) {
         }), "wood");
         const pool1 = payPrices(s.CalendarDay, s.Pool, singleton(["catnip", price]));
         const pool2 = addResEvent(s.CalendarDay, "wood", 1 + ratio, pool1)[0];
-        return refreshCache(new State(pool2, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked));
+        return refreshCache(new State(pool2, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked));
     }
 }
 
@@ -1481,8 +1501,8 @@ export function buyBuilding(name, s) {
             return s;
         }
         else {
-            const s1 = new State(pool$0027, bpool$0027, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
-            const s2 = FSharpMap__get_Item(s1.Bpool.ByName, name).Def.BreaksIronWill ? (new State(s1.Pool, s1.Bpool, s1.Spool, s1.Wpool, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, false, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, s1.TabsUnlocked)) : s1;
+            const s1 = new State(pool$0027, bpool$0027, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
+            const s2 = FSharpMap__get_Item(s1.Bpool.ByName, name).Def.BreaksIronWill ? (new State(s1.Pool, s1.Bpool, s1.Spool, s1.Wpool, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, false, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, s1.HideResearchedUpgrades, s1.TabsUnlocked)) : s1;
             let s3;
             const matchValue_1 = FSharpMap__get_Item(s2.Bpool.ByName, name).Def.Unlocks;
             if (matchValue_1 == null) {
@@ -1496,7 +1516,7 @@ export function buyBuilding(name, s) {
                 const bp2 = patternInput_1[0];
                 s3 = (new State(s2.Pool, bp2, sp2, wp2, (bind$0040 = s2.Vpool, new VillagePool(bind$0040.Kittens, bind$0040.NextKittenProgress, bind$0040.MaxKittens, bind$0040.JobValues, union(ofList_1(u.Jobs, {
                     Compare: (x, y) => (comparePrimitives(x, y) | 0),
-                }), s2.Vpool.JobUnlocked), bind$0040.Happiness, bind$0040.DeathTimeout, bind$0040.LeaderSeed, bind$0040.Traits)), s2.Rpool, s2.Cpool, s2.Ppool, s2.Dpool, s2.Tpool, s2.Spacep, s2.Stpool, s2.Calendar, s2.Cache, s2.CalendarDay, s2.Ticks, s2.IronWill, s2.Rand, s2.ConsoleMsgs, s2.ConsoleUnlocked, s2.QueueItems, s2.Opts, s2.ResHidden, s2.ShowHiddenRes, s2.HideResearched, union(ofList_1(u.Tabs, {
+                }), s2.Vpool.JobUnlocked), bind$0040.Happiness, bind$0040.DeathTimeout, bind$0040.LeaderSeed, bind$0040.Traits)), s2.Rpool, s2.Cpool, s2.Ppool, s2.Dpool, s2.Tpool, s2.Spacep, s2.Stpool, s2.Calendar, s2.Cache, s2.CalendarDay, s2.Ticks, s2.IronWill, s2.Rand, s2.ConsoleMsgs, s2.ConsoleUnlocked, s2.QueueItems, s2.Opts, s2.ResHidden, s2.ShowHiddenRes, s2.HideResearched, s2.HideResearchedUpgrades, union(ofList_1(u.Tabs, {
                     Compare: (x_1, y_1) => (comparePrimitives(x_1, y_1) | 0),
                 }), s2.TabsUnlocked)));
             }
@@ -1551,7 +1571,7 @@ export function assignJob(jobName, n, s) {
     const assigned = defaultArg(tryFind(jobName, vpool1.JobValues), 0) | 0;
     if (assigned > before) {
         const vpool2 = simAssignJob(jobName, assigned - before, vpool1);
-        return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, vpool2, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+        return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, vpool2, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
     }
     else {
         return s;
@@ -1565,7 +1585,7 @@ export function unassignJob(jobName, n, s) {
         return s;
     }
     else {
-        return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, simRemoveJobs(jobName, amt, s.Vpool), s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+        return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, simRemoveJobs(jobName, amt, s.Vpool), s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
     }
 }
 
@@ -1579,7 +1599,7 @@ export function research(name, s) {
         return s;
     }
     else {
-        const s1 = new State(pool$0027, s.Bpool, spool$0027, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+        const s1 = new State(pool$0027, s.Bpool, spool$0027, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
         let s2;
         const matchValue = getTech(spool$0027, name);
         let matchResult, t_1;
@@ -1622,7 +1642,7 @@ export function research(name, s) {
                 const bp2 = patternInput_1[0];
                 s3 = (new State(s2.Pool, bp2, sp2, wp2, (bind$0040 = s2.Vpool, new VillagePool(bind$0040.Kittens, bind$0040.NextKittenProgress, bind$0040.MaxKittens, bind$0040.JobValues, union(ofList_1(u.Jobs, {
                     Compare: (x, y) => (comparePrimitives(x, y) | 0),
-                }), s2.Vpool.JobUnlocked), bind$0040.Happiness, bind$0040.DeathTimeout, bind$0040.LeaderSeed, bind$0040.Traits)), s2.Rpool, s2.Cpool, s2.Ppool, s2.Dpool, s2.Tpool, s2.Spacep, s2.Stpool, s2.Calendar, s2.Cache, s2.CalendarDay, s2.Ticks, s2.IronWill, s2.Rand, s2.ConsoleMsgs, s2.ConsoleUnlocked, s2.QueueItems, s2.Opts, s2.ResHidden, s2.ShowHiddenRes, s2.HideResearched, union(ofList_1(u.Tabs, {
+                }), s2.Vpool.JobUnlocked), bind$0040.Happiness, bind$0040.DeathTimeout, bind$0040.LeaderSeed, bind$0040.Traits)), s2.Rpool, s2.Cpool, s2.Ppool, s2.Dpool, s2.Tpool, s2.Spacep, s2.Stpool, s2.Calendar, s2.Cache, s2.CalendarDay, s2.Ticks, s2.IronWill, s2.Rand, s2.ConsoleMsgs, s2.ConsoleUnlocked, s2.QueueItems, s2.Opts, s2.ResHidden, s2.ShowHiddenRes, s2.HideResearched, s2.HideResearchedUpgrades, union(ofList_1(u.Tabs, {
                     Compare: (x_1, y_1) => (comparePrimitives(x_1, y_1) | 0),
                 }), s2.TabsUnlocked)));
             }
@@ -1637,7 +1657,7 @@ export function buyUpgrade(name, s) {
     const pool$0027 = patternInput[0];
     const ok = patternInput[2];
     if (ok) {
-        return refreshCache(new State(pool$0027, s.Bpool, s.Spool, wpool$0027, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked));
+        return refreshCache(new State(pool$0027, s.Bpool, s.Spool, wpool$0027, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked));
     }
     else {
         return s;
@@ -1663,7 +1683,7 @@ export function craft(name, amt, s) {
             const c = matchValue;
             wp2 = (new WorkshopPool(wpool$0027.UpgradeOrder, wpool$0027.Upgrades, wpool$0027.CraftOrder, add_1(name, new CraftState(c.Def, c.Unlocked, c.Value + (Math.ceil(amt) * (1 + ratio)), c.Progress, c.IsLimited, c.IsLimitedAmt), wpool$0027.Crafts), wpool$0027.ZebraOrder, wpool$0027.ZebraUpgrades));
         }
-        return refreshCache(new State(pool$0027, s.Bpool, s.Spool, wp2, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked));
+        return refreshCache(new State(pool$0027, s.Bpool, s.Spool, wp2, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked));
     }
 }
 
@@ -1677,7 +1697,7 @@ export function craftAll(name, s) {
     }
     else {
         const s1 = FSharpSet__Contains(s.ConsoleUnlocked, "craft") ? consoleMsg("craft", "You crafted " + name, s) : consoleUnlockedFor(s, "craft");
-        return refreshCache(new State(pool$0027, s1.Bpool, s1.Spool, wpool$0027, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, s1.TabsUnlocked));
+        return refreshCache(new State(pool$0027, s1.Bpool, s1.Spool, wpool$0027, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, s1.HideResearchedUpgrades, s1.TabsUnlocked));
     }
 }
 
@@ -1689,7 +1709,7 @@ export function praise(s) {
     const bind$0040 = s.Pool;
     pool$0027 = (new ResPool(bind$0040.Order, add_1("faith", (bind$0040_1 = FSharpMap__get_Item(s.Pool.ByName, "faith"), new ResourceState(bind$0040_1.Def, 0.0001, bind$0040_1.Unlocked, bind$0040_1.MaxValue, bind$0040_1.PerTickCached)), s.Pool.ByName), bind$0040.KarmaKittens, bind$0040.EnergyProd, bind$0040.EnergyWinterProd, bind$0040.EnergyCons));
     const s1 = FSharpSet__Contains(s.ConsoleUnlocked, "faith") ? consoleMsg("faith", ("You praise the gods: +" + toText(printf("%.1f"))(faithValue)) + " faith", s) : consoleUnlockedFor(s, "faith");
-    return new State(pool$0027, s1.Bpool, s1.Spool, s1.Wpool, s1.Vpool, rpool$0027, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, s1.TabsUnlocked);
+    return new State(pool$0027, s1.Bpool, s1.Spool, s1.Wpool, s1.Vpool, rpool$0027, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, s1.HideResearchedUpgrades, s1.TabsUnlocked);
 }
 
 export function buyRU(name, s) {
@@ -1702,7 +1722,7 @@ export function buyRU(name, s) {
     }
     else {
         const rpool2 = freezeSolarRevolution(s.Cache, rpool$0027);
-        const s1 = new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, rpool2, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+        const s1 = new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, rpool2, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
         let s2;
         const matchValue = res.UnlockFanOut;
         if (matchValue == null) {
@@ -1714,7 +1734,7 @@ export function buyRU(name, s) {
             const wp2 = patternInput_1[2];
             const sp2 = patternInput_1[1];
             const bp2 = patternInput_1[0];
-            s2 = (new State(s1.Pool, bp2, sp2, wp2, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, union(ofList_1(u.Tabs, {
+            s2 = (new State(s1.Pool, bp2, sp2, wp2, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, s1.HideResearchedUpgrades, union(ofList_1(u.Tabs, {
                 Compare: (x, y) => (comparePrimitives(x, y) | 0),
             }), s1.TabsUnlocked)));
         }
@@ -1731,7 +1751,7 @@ export function buyZU(name, s) {
         return s;
     }
     else {
-        const s1 = new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, rpool$0027, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+        const s1 = new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, rpool$0027, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
         let s2;
         const matchValue = res.UnlockFanOut;
         if (matchValue == null) {
@@ -1743,7 +1763,7 @@ export function buyZU(name, s) {
             const wp2 = patternInput_1[2];
             const sp2 = patternInput_1[1];
             const bp2 = patternInput_1[0];
-            s2 = (new State(s1.Pool, bp2, sp2, wp2, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, union(ofList_1(u.Tabs, {
+            s2 = (new State(s1.Pool, bp2, sp2, wp2, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, s1.HideResearchedUpgrades, union(ofList_1(u.Tabs, {
                 Compare: (x, y) => (comparePrimitives(x, y) | 0),
             }), s1.TabsUnlocked)));
         }
@@ -1771,7 +1791,7 @@ export function trade(raceName, s) {
         const dp$0027 = tradeImpl(s.Dpool, dctx, s.Rand, raceName, 1, empty({
             Compare: (x_1, y_1) => (comparePrimitives(x_1, y_1) | 0),
         }), getEffect_1(s.Cache, "standingRatio") * 0.015, false, getEffect_1(s.Cache, "neutralRaceEmbassyStanding"), tradeBonus, 0, false)[0];
-        return refreshCache(new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, dp$0027, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked));
+        return refreshCache(new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, dp$0027, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked));
     }
 }
 
@@ -1784,11 +1804,11 @@ export function buyEmbassy(raceName, s) {
         return s;
     }
     else {
-        const s1 = new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, dp$0027, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+        const s1 = new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, dp$0027, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
         let s2;
         if (getPerk(s.Ppool, "diplomacy").Researched) {
             const spool$0027 = unlockRelations(true, (r) => (FSharpMap__get_Item(s1.Dpool.Races, r).EmbassyLevel | 0), s1.Spool)[0];
-            s2 = (new State(s1.Pool, s1.Bpool, spool$0027, s1.Wpool, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, s1.TabsUnlocked));
+            s2 = (new State(s1.Pool, s1.Bpool, spool$0027, s1.Wpool, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, s1.HideResearchedUpgrades, s1.TabsUnlocked));
         }
         else {
             s2 = s1;
@@ -1807,7 +1827,7 @@ export function buyProgram(name, s) {
         return s;
     }
     else {
-        const s1 = new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, sp$0027, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+        const s1 = new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, sp$0027, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
         const def = find((d) => (d.Name === name), programDefs);
         const spool2 = map_1((k, v) => {
             if (contains(k, def.UnlocksPolicies, {
@@ -1820,7 +1840,7 @@ export function buyProgram(name, s) {
                 return v;
             }
         }, s1.Spool.Policies);
-        return refreshCache(new State(s1.Pool, s1.Bpool, (bind$0040 = s1.Spool, new SciencePool(bind$0040.TechOrder, bind$0040.Techs, bind$0040.PolicyOrder, spool2)), s1.Wpool, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, s1.TabsUnlocked));
+        return refreshCache(new State(s1.Pool, s1.Bpool, (bind$0040 = s1.Spool, new SciencePool(bind$0040.TechOrder, bind$0040.Techs, bind$0040.PolicyOrder, spool2)), s1.Wpool, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, s1.HideResearchedUpgrades, s1.TabsUnlocked));
     }
 }
 
@@ -1833,7 +1853,7 @@ export function buySpaceBuilding(name, s) {
         return s;
     }
     else {
-        return refreshCache(new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, sp$0027, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked));
+        return refreshCache(new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, sp$0027, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked));
     }
 }
 
@@ -1850,7 +1870,7 @@ export function buyCFU(name, s) {
         return s;
     }
     else {
-        const s1 = new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, tp$0027, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+        const s1 = new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, tp$0027, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
         const def = cfuDef(name);
         const wp2 = fold((acc, up) => {
             const matchValue = tryFind(up, acc.Upgrades);
@@ -1866,8 +1886,8 @@ export function buyCFU(name, s) {
             const m$0027 = FSharpMap__get_Item(acc_1.CFUs, cfuName);
             return new TimePool(acc_1.Flux, acc_1.Heat, acc_1.IsAccelerated, acc_1.TestShatter, add_1(cfuName, new TimeMeta(m$0027.Val, m$0027.On, true, m$0027.Researched, m$0027.Heat, m$0027.DelayTicks, m$0027.IsAutomationEnabled, m$0027.Eff, m$0027.PriceRatioDyn), acc_1.CFUs), acc_1.CfuOrder, acc_1.VSUs, acc_1.VsuOrder);
         }, s1.Tpool, def.UnlocksCFU);
-        const s2 = new State(s1.Pool, s1.Bpool, s1.Spool, wp2, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, tp2, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, s1.TabsUnlocked);
-        const s3 = new State(s2.Pool, s2.Bpool, s2.Spool, s2.Wpool, s2.Vpool, s2.Rpool, s2.Cpool, s2.Ppool, s2.Dpool, cfuCalculate(timeCalcCtxFor(s2), name, s2.Tpool), s2.Spacep, s2.Stpool, s2.Calendar, s2.Cache, s2.CalendarDay, s2.Ticks, s2.IronWill, s2.Rand, s2.ConsoleMsgs, s2.ConsoleUnlocked, s2.QueueItems, s2.Opts, s2.ResHidden, s2.ShowHiddenRes, s2.HideResearched, s2.TabsUnlocked);
+        const s2 = new State(s1.Pool, s1.Bpool, s1.Spool, wp2, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, tp2, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, s1.HideResearchedUpgrades, s1.TabsUnlocked);
+        const s3 = new State(s2.Pool, s2.Bpool, s2.Spool, s2.Wpool, s2.Vpool, s2.Rpool, s2.Cpool, s2.Ppool, s2.Dpool, cfuCalculate(timeCalcCtxFor(s2), name, s2.Tpool), s2.Spacep, s2.Stpool, s2.Calendar, s2.Cache, s2.CalendarDay, s2.Ticks, s2.IronWill, s2.Rand, s2.ConsoleMsgs, s2.ConsoleUnlocked, s2.QueueItems, s2.Opts, s2.ResHidden, s2.ShowHiddenRes, s2.HideResearched, s2.HideResearchedUpgrades, s2.TabsUnlocked);
         return refreshCache(s3);
     }
 }
@@ -1883,12 +1903,12 @@ export function buyVSU(name, s) {
         return s;
     }
     else {
-        const s1 = new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, tp$0027, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
-        const s2 = equals(vsuDef(name).BreaksIronWill, true) ? (new State(s1.Pool, s1.Bpool, s1.Spool, s1.Wpool, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, false, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, s1.TabsUnlocked)) : s1;
+        const s1 = new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, tp$0027, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
+        const s2 = equals(vsuDef(name).BreaksIronWill, true) ? (new State(s1.Pool, s1.Bpool, s1.Spool, s1.Wpool, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, false, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, s1.HideResearchedUpgrades, s1.TabsUnlocked)) : s1;
         let s3;
         if (name === "cryochambers") {
             const m$0027 = FSharpMap__get_Item(s2.Tpool.VSUs, "cryochambers");
-            s3 = (new State(s2.Pool, s2.Bpool, s2.Spool, s2.Wpool, s2.Vpool, s2.Rpool, s2.Cpool, s2.Ppool, s2.Dpool, (bind$0040 = s2.Tpool, new TimePool(bind$0040.Flux, bind$0040.Heat, bind$0040.IsAccelerated, bind$0040.TestShatter, bind$0040.CFUs, bind$0040.CfuOrder, add_1("cryochambers", new TimeMeta(m$0027.Val, m$0027.On, true, m$0027.Researched, m$0027.Heat, m$0027.DelayTicks, m$0027.IsAutomationEnabled, m$0027.Eff, m$0027.PriceRatioDyn), s2.Tpool.VSUs), bind$0040.VsuOrder)), s2.Spacep, s2.Stpool, s2.Calendar, s2.Cache, s2.CalendarDay, s2.Ticks, s2.IronWill, s2.Rand, s2.ConsoleMsgs, s2.ConsoleUnlocked, s2.QueueItems, s2.Opts, s2.ResHidden, s2.ShowHiddenRes, s2.HideResearched, s2.TabsUnlocked));
+            s3 = (new State(s2.Pool, s2.Bpool, s2.Spool, s2.Wpool, s2.Vpool, s2.Rpool, s2.Cpool, s2.Ppool, s2.Dpool, (bind$0040 = s2.Tpool, new TimePool(bind$0040.Flux, bind$0040.Heat, bind$0040.IsAccelerated, bind$0040.TestShatter, bind$0040.CFUs, bind$0040.CfuOrder, add_1("cryochambers", new TimeMeta(m$0027.Val, m$0027.On, true, m$0027.Researched, m$0027.Heat, m$0027.DelayTicks, m$0027.IsAutomationEnabled, m$0027.Eff, m$0027.PriceRatioDyn), s2.Tpool.VSUs), bind$0040.VsuOrder)), s2.Spacep, s2.Stpool, s2.Calendar, s2.Cache, s2.CalendarDay, s2.Ticks, s2.IronWill, s2.Rand, s2.ConsoleMsgs, s2.ConsoleUnlocked, s2.QueueItems, s2.Opts, s2.ResHidden, s2.ShowHiddenRes, s2.HideResearched, s2.HideResearchedUpgrades, s2.TabsUnlocked));
         }
         else {
             s3 = s2;
@@ -1899,7 +1919,7 @@ export function buyVSU(name, s) {
 
 export function toggleChallengePending(name, s) {
     const c = FSharpMap__get_Item(s.Cpool.Challenges, name);
-    return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, new ChallengePool(add_1(name, new ChallengeState(c.Unlocked, !c.Pending, c.Active, c.Researched, c.On), s.Cpool.Challenges), s.Cpool.Order), s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+    return new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, new ChallengePool(add_1(name, new ChallengeState(c.Unlocked, !c.Pending, c.Active, c.Researched, c.On), s.Cpool.Challenges), s.Cpool.Order), s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.HideResearchedUpgrades, s.TabsUnlocked);
 }
 
 export function queueTick(s) {
@@ -1926,7 +1946,7 @@ export function queueTick(s) {
         const s2 = patternInput[0];
         const bought = patternInput[1];
         if (bought) {
-            return new State(s2.Pool, s2.Bpool, s2.Spool, s2.Wpool, s2.Vpool, s2.Rpool, s2.Cpool, s2.Ppool, s2.Dpool, s2.Tpool, s2.Spacep, s2.Stpool, s2.Calendar, s2.Cache, s2.CalendarDay, s2.Ticks, s2.IronWill, s2.Rand, s2.ConsoleMsgs, s2.ConsoleUnlocked, (matchValue_2 = s2.QueueItems, !isEmpty(matchValue_2) ? ((rest = tail(matchValue_2), rest)) : empty_1()), s2.Opts, s2.ResHidden, s2.ShowHiddenRes, s2.HideResearched, s2.TabsUnlocked);
+            return new State(s2.Pool, s2.Bpool, s2.Spool, s2.Wpool, s2.Vpool, s2.Rpool, s2.Cpool, s2.Ppool, s2.Dpool, s2.Tpool, s2.Spacep, s2.Stpool, s2.Calendar, s2.Cache, s2.CalendarDay, s2.Ticks, s2.IronWill, s2.Rand, s2.ConsoleMsgs, s2.ConsoleUnlocked, (matchValue_2 = s2.QueueItems, !isEmpty(matchValue_2) ? ((rest = tail(matchValue_2), rest)) : empty_1()), s2.Opts, s2.ResHidden, s2.ShowHiddenRes, s2.HideResearched, s2.HideResearchedUpgrades, s2.TabsUnlocked);
         }
         else {
             return s2;
@@ -1965,7 +1985,7 @@ export function tick(s) {
     }, s1.Calendar.Season, defaultArg((option_1 = get$_1(s1.Bpool, "pasture"), (option_1 != null) ? option_1.On : undefined), 0), 0, false, false);
     const pool1 = update(uctx, s1.CalendarDay, s1.Pool);
     const bpool1 = update_1(pool1, s1.Bpool);
-    const s2 = new State(pool1, bpool1, s1.Spool, s1.Wpool, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, s1.TabsUnlocked);
+    const s2 = new State(pool1, bpool1, s1.Spool, s1.Wpool, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, s1.HideResearchedUpgrades, s1.TabsUnlocked);
     const maxKittens = calculateMaxKittens(s2.Cache, s2.Vpool) | 0;
     let vpool0;
     const bind$0040 = s2.Vpool;
@@ -2031,7 +2051,7 @@ export function tick(s) {
     }) | 0;
     const hctx = new HappinessContext((name_2) => getEffect_1(s2.Cache, name_2), freshHappinessContext.FascismResearched, s2.Calendar.FestivalDays, freshHappinessContext.Karma, freshHappinessContext.UpfrontPaymentResearched, luxCount, 0, freshHappinessContext.ElderBoxWithPaper, freshHappinessContext.ConsumableLuxuryCount);
     const vpool4 = new VillagePool(vpool3.Kittens, vpool3.NextKittenProgress, vpool3.MaxKittens, vpool3.JobValues, vpool3.JobUnlocked, updateHappiness(hctx, length(vpool3.Kittens), vpool3.MaxKittens), vpool3.DeathTimeout, vpool3.LeaderSeed, vpool3.Traits);
-    const s3 = new State(pool2, s2.Bpool, s2.Spool, s2.Wpool, vpool4, s2.Rpool, s2.Cpool, s2.Ppool, s2.Dpool, s2.Tpool, s2.Spacep, stpool1, s2.Calendar, s2.Cache, s2.CalendarDay, s2.Ticks, s2.IronWill, s2.Rand, s2.ConsoleMsgs, s2.ConsoleUnlocked, s2.QueueItems, s2.Opts, s2.ResHidden, s2.ShowHiddenRes, s2.HideResearched, s2.TabsUnlocked);
+    const s3 = new State(pool2, s2.Bpool, s2.Spool, s2.Wpool, vpool4, s2.Rpool, s2.Cpool, s2.Ppool, s2.Dpool, s2.Tpool, s2.Spacep, stpool1, s2.Calendar, s2.Cache, s2.CalendarDay, s2.Ticks, s2.IronWill, s2.Rand, s2.ConsoleMsgs, s2.ConsoleUnlocked, s2.QueueItems, s2.Opts, s2.ResHidden, s2.ShowHiddenRes, s2.HideResearched, s2.HideResearchedUpgrades, s2.TabsUnlocked);
     const s3_1 = ((maxKittens <= 10) && (births > 0)) ? fold((st, _arg) => consoleMsg(undefined, "A kitten has joined your village", st), s3, toList_2(rangeDouble(1, 1, births))) : s3;
     const crCtx = new CraftRatioContext(s3_1.IronWill, undefined, 0, false, (n_4) => {
         let option_5;
@@ -2050,8 +2070,8 @@ export function tick(s) {
     let dp1;
     const dctx0 = dctxFor(s3_1);
     dp1 = update_2(s3_1.Dpool, dctx0, s3_1.Calendar.Year, s3_1.Pool.KarmaKittens, () => s.Rand())[0];
-    const s4 = new State(pool4, s3_1.Bpool, s3_1.Spool, wpool1, s3_1.Vpool, s3_1.Rpool, s3_1.Cpool, s3_1.Ppool, dp1, s3_1.Tpool, s3_1.Spacep, s3_1.Stpool, calendar1, s3_1.Cache, ~~calendar1.Day, s3_1.Ticks + 1, s3_1.IronWill, s3_1.Rand, s3_1.ConsoleMsgs, s3_1.ConsoleUnlocked, s3_1.QueueItems, s3_1.Opts, s3_1.ResHidden, s3_1.ShowHiddenRes, s3_1.HideResearched, s3_1.TabsUnlocked);
-    const s4_1 = new State(s4.Pool, s4.Bpool, s4.Spool, s4.Wpool, s4.Vpool, s4.Rpool, s4.Cpool, s4.Ppool, s4.Dpool, s4.Tpool, s4.Spacep, s4.Stpool, s4.Calendar, s4.Cache, s4.CalendarDay, s4.Ticks, s4.IronWill, s4.Rand, s4.ConsoleMsgs, s4.ConsoleUnlocked, s4.QueueItems, s4.Opts, s4.ResHidden, s4.ShowHiddenRes, s4.HideResearched, (tabs_1 = ((tabs = s4.TabsUnlocked, (getRes(s4.Pool, "faith") > 0) ? add("religion", tabs) : tabs)), hasUnlockedRaces(s4.Dpool) ? add("trade", tabs_1) : tabs_1));
+    const s4 = new State(pool4, s3_1.Bpool, s3_1.Spool, wpool1, s3_1.Vpool, s3_1.Rpool, s3_1.Cpool, s3_1.Ppool, dp1, s3_1.Tpool, s3_1.Spacep, s3_1.Stpool, calendar1, s3_1.Cache, ~~calendar1.Day, s3_1.Ticks + 1, s3_1.IronWill, s3_1.Rand, s3_1.ConsoleMsgs, s3_1.ConsoleUnlocked, s3_1.QueueItems, s3_1.Opts, s3_1.ResHidden, s3_1.ShowHiddenRes, s3_1.HideResearched, s3_1.HideResearchedUpgrades, s3_1.TabsUnlocked);
+    const s4_1 = new State(s4.Pool, s4.Bpool, s4.Spool, s4.Wpool, s4.Vpool, s4.Rpool, s4.Cpool, s4.Ppool, s4.Dpool, s4.Tpool, s4.Spacep, s4.Stpool, s4.Calendar, s4.Cache, s4.CalendarDay, s4.Ticks, s4.IronWill, s4.Rand, s4.ConsoleMsgs, s4.ConsoleUnlocked, s4.QueueItems, s4.Opts, s4.ResHidden, s4.ShowHiddenRes, s4.HideResearched, s4.HideResearchedUpgrades, (tabs_1 = ((tabs = s4.TabsUnlocked, (getRes(s4.Pool, "faith") > 0) ? add("religion", tabs) : tabs)), hasUnlockedRaces(s4.Dpool) ? add("trade", tabs_1) : tabs_1));
     const s5 = queueTick(s4_1);
     return refreshCache(s5);
 }
