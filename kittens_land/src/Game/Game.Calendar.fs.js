@@ -2,7 +2,7 @@
 import { Record } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Types.js";
 import { unit_type, bool_type, lambda_type, option_type, int32_type, record_type, class_type, float64_type, string_type } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
 import { tryFind, ofList } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Map.js";
-import { length, item, ofArray, singleton } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
+import { item, length, ofArray, singleton } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
 import { equals, comparePrimitives } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
 import { defaultArg } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Option.js";
 import { loopOrGaussianApproximation, log1p, getLimitedDR, uniformRandomInteger, jsRound } from "./Game.Math.fs.js";
@@ -56,6 +56,21 @@ export class CalendarState extends Record {
 
 export function CalendarState_$reflection() {
     return record_type("Game.Calendar.CalendarState", [], CalendarState, () => [["Year", float64_type], ["Day", float64_type], ["Season", int32_type], ["Weather", option_type(string_type)], ["Cycle", int32_type], ["CycleYear", int32_type], ["EventChance", float64_type], ["FestivalDays", int32_type], ["CryptoPrice", float64_type], ["ObserveRemainingTime", int32_type]]);
+}
+
+/**
+ * orig village.holdFestival (js/village.js L1131): the carnivals perk extends
+ * the festival by a year per hold, otherwise it (re)sets to one year
+ * (daysPerSeason x seasonsPerYear = 400 days). Returns updated calendar.
+ */
+export function holdFestival(carnivalsResearched, amt, st) {
+    const yearDays = ~~(daysPerSeason * length(seasons)) | 0;
+    if (carnivalsResearched) {
+        return new CalendarState(st.Year, st.Day, st.Season, st.Weather, st.Cycle, st.CycleYear, st.EventChance, st.FestivalDays + (yearDays * amt), st.CryptoPrice, st.ObserveRemainingTime);
+    }
+    else {
+        return new CalendarState(st.Year, st.Day, st.Season, st.Weather, st.Cycle, st.CycleYear, st.EventChance, yearDays, st.CryptoPrice, st.ObserveRemainingTime);
+    }
 }
 
 export const init = new CalendarState(0, 0, 0, undefined, 0, 0, 0, 0, 1000, 0);

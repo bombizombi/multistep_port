@@ -756,6 +756,60 @@ let huntAction (s: State) : State =
     let pool' = Game.Village.huntAll ctx s.Pool
     refreshCache { s with Pool = pool' }
 
+/// orig FestivalButton: pays manpower 1500 / culture 5000 / parchment 2500,
+/// then village.holdFestival(1) with the carnivals perk extension rule
+let holdFestivalAction (s: State) : State =
+    let prices = [ ("manpower", 1500.0); ("culture", 5000.0); ("parchment", 2500.0) ]
+    if not (Game.Resources.hasRes s.Pool prices 0.0) then s
+    else
+        let pool' = Game.Resources.payPrices s.CalendarDay s.Pool prices
+        let carnivals =
+            (match s.Ppool.Perks |> Map.tryFind "carnivals" with Some p -> p.Researched | None -> false)
+        let wasRunning = s.Calendar.FestivalDays > 0
+        let cal' = Game.Calendar.holdFestival carnivals 1 s.Calendar
+        let s1 = { s with Pool = pool'; Calendar = cal' }
+        if s1.ConsoleUnlocked.Contains "festival" then
+            consoleMsg (Some "festival")
+                (if wasRunning then "The cultural festival has been extended" else "The cultural festival has started") s1
+        else consoleUnlockedFor s1 "festival"
+
+/// orig BuildingBtnController sell link (game-19): sell ONE unit at the
+/// current ladder with a 50% refund of refundable price resources
+let sellBuilding (name: string) (s: State) : State =
+    let bpool', pool', sold = Game.Buildings.sellOne s.CalendarDay s.Cache (pctx s) s.Pool name 0.5 s.Bpool
+    if sold then refreshCache { s with Bpool = bpool'; Pool = pool' } else s
+
+/// orig ResetFaithBtnController "Adore the galaxy": resetFaith(1.01) converts
+/// worship into epiphany (adoreInternal, religion-08)
+let adoreAction (s: State) : State =
+    let rpool' = Game.Religion.adoreInternal s.Rpool 1.01
+    refreshCache { s with Rpool = rpool' }
+
+/// orig transcend button handler: game.religion.transcend() + TU unlock scan
+let transcendAction (s: State) : State =
+    let rpool', transcended = Game.Religion.transcend s.Rpool
+    if transcended then refreshCache { s with Rpool = rpool' } else s
+
+/// orig metaphysics panel perk purchase (prestige-05): pays paragon prices,
+/// marks researched, runs unlock/upgrade fan-outs
+let buyPerkAction (name: string) (s: State) : State =
+    let metaphysicsResearched =
+        (match s.Spool.Techs |> Map.tryFind "metaphysics" with Some t -> t.Researched | None -> false)
+    let pp', pool', res = Game.Prestige.buyPerk s.CalendarDay metaphysicsResearched s.Pool name s.Ppool
+    if not res.Bought then s
+    else
+        let s1 = { s with Ppool = pp'; Pool = pool' }
+        let s2 =
+            match res.UnlockFanOut with
+            | Some u ->
+                let bp2, sp2, wp2 =
+                    Game.Managers.unlock u.Buildings u.Tabs [] u.Tech u.Policies u.Upgrades u.ZebraUpgrades u.Crafts
+                        s1.Bpool s1.Spool s1.Wpool
+                { s1 with Bpool = bp2; Spool = sp2; Wpool = wp2;
+                          TabsUnlocked = s1.TabsUnlocked |> Set.union (Set.ofList u.Tabs) }
+            | None -> s1
+        refreshCache s2
+
 let gatherCatnip (s: State) : State =
     let pool1, _ = Game.Resources.addResEvent s.CalendarDay "catnip" 1.0 s.Pool
     { s with Pool = pool1 }

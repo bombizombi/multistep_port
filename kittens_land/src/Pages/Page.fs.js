@@ -1,17 +1,17 @@
 
 import { Union, Record } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Types.js";
 import { bool_type, tuple_type, int32_type, float64_type, union_type, record_type, list_type, option_type, string_type } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
-import { calendarText, villageTabLabel, tabVisible, challengeRows, timeRows, spaceRows as spaceRows_1, religionRows, raceRows, policyRows, jobRows, getRes, jobLimit, queueLength, queueCap as queueCap_1, kittenSummary, craftRows, buildingRows, toDisplaySeconds, getEffect, fmtRes, productionBreakdown, resRows, PriceRow, upgradeRows, techRows, priceLines, tick, resetGame, setNotation, setBoolOption, removeFromQueue, addToQueue, clearAllJobs, consoleClear, applyLoaded, parseSave, buildSaveString, saveKey, setShowHiddenRes, toggleResHidden, huntAction, researchPolicyAction, setHideResearched, toggleChallengePending, buyVSU, buyCFU, buySpaceBuilding, buyProgram, buyEmbassy, trade, buyZU, buyRU, praise, craftAll, craft, buyUpgrade, research, unassignJob, assignJob, buyBuilding, refineCatnip, gatherCatnip, init as init_1, State_$reflection, TipPriceLine_$reflection } from "../KittensState.fs.js";
+import { calendarText, villageTabLabel, tabVisible, challengeRows, timeRows, spaceRows as spaceRows_1, religionRows, raceRows, policyRows, jobRows, getRes, jobLimit, queueLength, queueCap as queueCap_1, kittenSummary, craftRows, buildingRows, toDisplaySeconds, getEffect, fmtRes, productionBreakdown, resRows, PriceRow, upgradeRows, techRows, priceLines, tick, resetGame, setNotation, setBoolOption, removeFromQueue, addToQueue, clearAllJobs, consoleClear, applyLoaded, parseSave, buildSaveString, saveKey, setShowHiddenRes, toggleResHidden, buyPerkAction, transcendAction, adoreAction, sellBuilding, holdFestivalAction, huntAction, researchPolicyAction, setHideResearched, toggleChallengePending, buyVSU, buyCFU, buySpaceBuilding, buyProgram, buyEmbassy, trade, buyZU, buyRU, praise, craftAll, craft, buyUpgrade, research, unassignJob, assignJob, buyBuilding, refineCatnip, gatherCatnip, init as init_1, State_$reflection, TipPriceLine_$reflection } from "../KittensState.fs.js";
 import { Msg_$reflection as Msg_$reflection_1 } from "./Layout.fs.js";
 import { Command_none, Command_batch, Command_ofAsync } from "../../.elmish-land/Base/Command.fs.js";
 import { singleton } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/AsyncBuilder.js";
 import { sleep } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Async.js";
-import { mapIndexed, length, contains, indexed, tryFindIndex, sortBy, collect, isEmpty, filter, map, tryFind, empty, singleton as singleton_1, find, ofArray } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
+import { mapIndexed, length, contains, indexed, tryFindIndex, sortBy, collect, head, isEmpty, filter, map, tryFind, empty, singleton as singleton_1, find, ofArray } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
 import { comparePrimitives, stringHash, int32ToString, defaultOf } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
-import { tryFind as tryFind_1, FSharpMap__get_Item } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Map.js";
+import { forAll, tryFind as tryFind_1, FSharpMap__get_Item } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Map.js";
 import { replicate, join, printf, toText } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/String.js";
 import { get$ } from "../Game.Labels.fs.js";
-import { defaultArg, value as value_719 } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Option.js";
+import { defaultArg, value as value_759 } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Option.js";
 import { HtmlHelper_createElement } from "../../.elmish-land/App/fable_modules/Feliz.3.3.3/./Html.fs.js";
 import { map as map_1, collect as collect_1, empty as empty_1, singleton as singleton_2, append, delay, toList } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Seq.js";
 import { defaultOf as defaultOf_1 } from "../../.elmish-land/App/fable_modules/Feliz.3.3.3/../../../../src/Pages/../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
@@ -19,7 +19,8 @@ import { get$ as get$_1 } from "../Game/Game.Buildings.fs.js";
 import { hasRes } from "../Game/Game.Resources.fs.js";
 import { max } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Double.js";
 import { getFreeKittens } from "../Game/Game.Managers.fs.js";
-import { planetDefs } from "../Game/Game.Catalog.World.fs.js";
+import { planetDefs, perkDefs } from "../Game/Game.Catalog.World.fs.js";
+import { getTranscendNextPrice, getRU } from "../Game/Game.Religion.fs.js";
 import { List_groupBy } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Seq2.js";
 import { createElement } from "react";
 import { defaultOf as defaultOf_2 } from "../../.elmish-land/App/fable_modules/Feliz.3.3.3/React/../../../../../src/Pages/../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
@@ -51,13 +52,14 @@ export class TipSource extends Union {
         this.fields = fields;
     }
     cases() {
-        return ["TipBld", "TipTech", "TipUp", "TipRefine", "TipRes", "TipJob"];
+        return ["TipBld", "TipTech", "TipUp", "TipRefine", "TipRes", "TipJob", "TipFestival"];
     }
     static TipRefine = new TipSource(3, []);
+    static TipFestival = new TipSource(6, []);
 }
 
 export function TipSource_$reflection() {
-    return union_type("kittens_land.Pages.Page.TipSource", [], TipSource, () => [[["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [], [["Item", string_type]], [["Item", string_type]]]);
+    return union_type("kittens_land.Pages.Page.TipSource", [], TipSource, () => [[["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [], [["Item", string_type]], [["Item", string_type]], []]);
 }
 
 export class Model extends Record {
@@ -88,7 +90,7 @@ export class Msg extends Union {
         this.fields = fields;
     }
     cases() {
-        return ["Tick", "Gather", "Refine", "Buy", "Assign", "Unassign", "Research", "Upgrade", "Craft", "CraftAll", "Praise", "BuyRU", "BuyZU", "Trade", "Embassy", "Mission", "SpaceBuy", "CFUBuy", "VSUBuy", "ChallengeToggle", "SetTab", "SetRightTab", "SetSpeed", "SetTip", "ToggleOptions", "ToggleResEditMode", "ToggleJobsPanel", "ToggleResHidden", "SetShowHiddenRes", "SaveGame", "LoadGame", "ClearConsole", "ClearAllJobs", "SetHideResearched", "SetBuildingFilter", "ResearchPolicy", "Hunt", "QAdd", "QRemove", "ToggleOption", "SetNotation", "ResetGame", "LayoutMsg"];
+        return ["Tick", "Gather", "Refine", "Buy", "Assign", "Unassign", "Research", "Upgrade", "Craft", "CraftAll", "Praise", "BuyRU", "BuyZU", "Trade", "Embassy", "Mission", "SpaceBuy", "CFUBuy", "VSUBuy", "ChallengeToggle", "SetTab", "SetRightTab", "SetSpeed", "SetTip", "ToggleOptions", "ToggleResEditMode", "ToggleJobsPanel", "ToggleResHidden", "SetShowHiddenRes", "SaveGame", "LoadGame", "ClearConsole", "ClearAllJobs", "SetHideResearched", "SetBuildingFilter", "ResearchPolicy", "Hunt", "HoldFestival", "Sell", "Adore", "Transcend", "BuyPerk", "QAdd", "QRemove", "ToggleOption", "SetNotation", "ResetGame", "LayoutMsg"];
     }
     static Gather = new Msg(1, []);
     static Refine = new Msg(2, []);
@@ -101,11 +103,14 @@ export class Msg extends Union {
     static ClearConsole = new Msg(31, []);
     static ClearAllJobs = new Msg(32, []);
     static Hunt = new Msg(36, []);
-    static ResetGame = new Msg(41, []);
+    static HoldFestival = new Msg(37, []);
+    static Adore = new Msg(39, []);
+    static Transcend = new Msg(40, []);
+    static ResetGame = new Msg(46, []);
 }
 
 export function Msg_$reflection() {
-    return union_type("kittens_land.Pages.Page.Msg", [], Msg, () => [[["Item", int32_type]], [], [], [["Item", string_type]], [["Item1", string_type], ["Item2", int32_type]], [["Item1", string_type], ["Item2", int32_type]], [["Item", string_type]], [["Item", string_type]], [["Item1", string_type], ["Item2", float64_type]], [["Item", string_type]], [], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", float64_type]], [["Item", option_type(tuple_type(float64_type, float64_type, TipSource_$reflection()))]], [], [], [], [["Item", string_type]], [["Item", bool_type]], [], [], [], [], [["Item", bool_type]], [["Item", string_type]], [["Item", string_type]], [], [["Item1", string_type], ["Item2", string_type]], [["Item", int32_type]], [["Item", string_type]], [["Item", string_type]], [], [["Item", Msg_$reflection_1()]]]);
+    return union_type("kittens_land.Pages.Page.Msg", [], Msg, () => [[["Item", int32_type]], [], [], [["Item", string_type]], [["Item1", string_type], ["Item2", int32_type]], [["Item1", string_type], ["Item2", int32_type]], [["Item", string_type]], [["Item", string_type]], [["Item1", string_type], ["Item2", float64_type]], [["Item", string_type]], [], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", float64_type]], [["Item", option_type(tuple_type(float64_type, float64_type, TipSource_$reflection()))]], [], [], [], [["Item", string_type]], [["Item", bool_type]], [], [], [], [], [["Item", bool_type]], [["Item", string_type]], [["Item", string_type]], [], [], [["Item", string_type]], [], [], [["Item", string_type]], [["Item1", string_type], ["Item2", string_type]], [["Item", int32_type]], [["Item", string_type]], [["Item", string_type]], [], [["Item", Msg_$reflection_1()]]]);
 }
 
 export function tickCmd(speed, gen) {
@@ -227,9 +232,23 @@ export function update(msg, model) {
         }
         case 36:
             return [new Model(model.Tab, huntAction(model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
-        case 27: {
+        case 37:
+            return [new Model(model.Tab, holdFestivalAction(model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
+        case 38: {
             const name_13 = msg.fields[0];
-            return [new Model(model.Tab, toggleResHidden(name_13, model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
+            return [new Model(model.Tab, sellBuilding(name_13, model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
+        }
+        case 39:
+            return [new Model(model.Tab, adoreAction(model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
+        case 40:
+            return [new Model(model.Tab, transcendAction(model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
+        case 41: {
+            const name_14 = msg.fields[0];
+            return [new Model(model.Tab, buyPerkAction(name_14, model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
+        }
+        case 27: {
+            const name_15 = msg.fields[0];
+            return [new Model(model.Tab, toggleResHidden(name_15, model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
         }
         case 28: {
             const v_1 = msg.fields[0];
@@ -259,28 +278,28 @@ export function update(msg, model) {
             return [new Model(model.Tab, consoleClear(model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
         case 32:
             return [new Model(model.Tab, clearAllJobs(model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
-        case 37: {
+        case 42: {
             const qtype = msg.fields[1];
-            const name_14 = msg.fields[0];
-            return [new Model(model.Tab, addToQueue(name_14, qtype, model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
+            const name_16 = msg.fields[0];
+            return [new Model(model.Tab, addToQueue(name_16, qtype, model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
         }
-        case 38: {
+        case 43: {
             const idx = msg.fields[0] | 0;
             return [new Model(model.Tab, removeFromQueue(idx, model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
         }
-        case 39: {
-            const name_15 = msg.fields[0];
-            return [new Model(model.Tab, setBoolOption(name_15, !FSharpMap__get_Item(model.S.Opts.Bools, name_15), model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
+        case 44: {
+            const name_17 = msg.fields[0];
+            return [new Model(model.Tab, setBoolOption(name_17, !FSharpMap__get_Item(model.S.Opts.Bools, name_17), model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
         }
-        case 40: {
+        case 45: {
             const n_2 = msg.fields[0];
             return [new Model(model.Tab, setNotation(n_2, model.S), model.Speed, model.LoopGen, model.Toast, model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_none()];
         }
-        case 41: {
+        case 46: {
             const s$0027 = resetGame(model.S);
             return [new Model("Bonfire", s$0027, model.Speed, model.LoopGen + 1, "Game reset", model.Tooltip, model.OptionsOpen, model.ResEditMode, model.BuildingFilter, model.JobsPanelCollapsed, model.RightTab), Command_batch(ofArray([Command_none(), tickCmd(model.Speed, model.LoopGen + 1)]))];
         }
-        case 42:
+        case 47:
             return [model, Command_none()];
         default: {
             const gen = msg.fields[0] | 0;
@@ -307,7 +326,7 @@ export function fmt(v) {
 }
 
 export function view(model, dispatch) {
-    let option_8, value_639;
+    let option_8, value_679;
     const s = model.S;
     const cal = s.Calendar;
     const fmtSigned = (v) => (((v > 0) ? "+" : "") + fmt(v));
@@ -327,7 +346,7 @@ export function view(model, dispatch) {
         let arg, option_5;
         const pricesTip = (desc, flavorKey, prices) => {
             let option_3, option_1, f;
-            return new TipData(desc, (option_3 = ((option_1 = flavorKey, (option_1 != null) ? get$(option_1) : undefined)), (option_3 != null) ? (((f = option_3, (f !== "") && (f !== value_719(flavorKey)))) ? option_3 : undefined) : undefined), priceLines(s, false, prices));
+            return new TipData(desc, (option_3 = ((option_1 = flavorKey, (option_1 != null) ? get$(option_1) : undefined)), (option_3 != null) ? (((f = option_3, (f !== "") && (f !== value_759(flavorKey)))) ? option_3 : undefined) : undefined), priceLines(s, false, prices));
         };
         switch (src_1.tag) {
             case 1: {
@@ -365,6 +384,8 @@ export function view(model, dispatch) {
                 }
                 return new TipData(body_1, undefined, empty());
             }
+            case 6:
+                return pricesTip(get$("village.btn.festival.desc"), undefined, ofArray([new PriceRow("manpower", 1500), new PriceRow("culture", 5000), new PriceRow("parchment", 2500)]));
             case 5: {
                 const name_4 = src_1.fields[0];
                 const descKey = ("job." + name_4) + ".desc";
@@ -380,23 +401,24 @@ export function view(model, dispatch) {
             }
         }
     };
-    const modernBtn = (key_3, label_1, amtText, enabled, tip, onClick) => HtmlHelper_createElement("div", toList(delay(() => append(singleton_2(["key", key_3]), delay(() => append(singleton_2(["className", enabled ? "btn nosel modern" : "btn nosel modern disabled"]), delay(() => append(singleton_2(["style", {
+    const modernBtnL = (key_3, label_1, amtText, enabled, tip, onClick, extraLinks) => HtmlHelper_createElement("div", toList(delay(() => append(singleton_2(["key", key_3]), delay(() => append(singleton_2(["className", enabled ? "btn nosel modern" : "btn nosel modern disabled"]), delay(() => append(singleton_2(["style", {
         position: "relative",
         display: "block",
         marginBottom: 8,
         width: 264,
-    }]), delay(() => append(singleton_2(["tabIndex", 0]), delay(() => append((tip != null) ? tipHandlers(value_719(tip)) : empty_1(), delay(() => append(singleton_2(["onClick", (_arg_1) => {
+    }]), delay(() => append(singleton_2(["tabIndex", 0]), delay(() => append((tip != null) ? tipHandlers(value_759(tip)) : empty_1(), delay(() => append(singleton_2(["onClick", (_arg_1) => {
         if (enabled) {
             onClick();
         }
-    }]), delay(() => singleton_2(["children", [HtmlHelper_createElement("div", ofArray([["className", "btnContent"], ["children", [HtmlHelper_createElement("span", ofArray([["className", "btnTitle"], ["children", toList(delay(() => append(singleton_2(HtmlHelper_createElement("div", ofArray([["className", "label"], ["children", [HtmlHelper_createElement("span", ofArray([["className", "label-content"], ["children", singleton_1(label_1)]]))]]]))), delay(() => ((amtText !== "") ? singleton_2(HtmlHelper_createElement("div", ofArray([["className", "amt"], ["children", singleton_1(amtText)]]))) : empty_1())))))]]))]]]))]]))))))))))))))));
-    const plainBtn = (key_24, label_2, onClick_1) => HtmlHelper_createElement("div", ofArray([["key", key_24], ["className", "btn nosel"], ["style", {
+    }]), delay(() => singleton_2(["children", [HtmlHelper_createElement("div", ofArray([["className", "btnContent"], ["children", toList(delay(() => append(singleton_2(HtmlHelper_createElement("span", ofArray([["className", "btnTitle"], ["children", toList(delay(() => append(singleton_2(HtmlHelper_createElement("div", ofArray([["className", "label"], ["children", [HtmlHelper_createElement("span", ofArray([["className", "label-content"], ["children", singleton_1(label_1)]]))]]]))), delay(() => ((amtText !== "") ? singleton_2(HtmlHelper_createElement("div", ofArray([["className", "amt"], ["children", singleton_1(amtText)]]))) : empty_1())))))]]))), delay(() => extraLinks))))]]))]]))))))))))))))));
+    const modernBtn = (key_24, label_2, amtText_1, enabled_1, tip_1, onClick_1) => modernBtnL(key_24, label_2, amtText_1, enabled_1, tip_1, onClick_1, empty());
+    const plainBtn = (key_25, label_3, onClick_2) => HtmlHelper_createElement("div", ofArray([["key", key_25], ["className", "btn nosel"], ["style", {
         display: "inline-block",
         marginBottom: 8,
         cursor: "pointer",
     }], ["onClick", (_arg_2) => {
-        onClick_1();
-    }], ["children", [HtmlHelper_createElement("div", ofArray([["className", "btnContent"], ["children", [HtmlHelper_createElement("span", ofArray([["className", "btnTitle"], ["children", singleton_1(label_2)]]))]]]))]]]));
+        onClick_2();
+    }], ["children", [HtmlHelper_createElement("div", ofArray([["className", "btnContent"], ["children", [HtmlHelper_createElement("span", ofArray([["className", "btnTitle"], ["children", singleton_1(label_3)]]))]]]))]]]));
     const usePerSecond = FSharpMap__get_Item(s.Opts.Bools, "usePerSecondValues");
     const rateDisplay = (perTick) => {
         const v_2 = usePerSecond ? (perTick * 10) : perTick;
@@ -462,9 +484,16 @@ export function view(model, dispatch) {
     const happiness = patternInput_2[2];
     const queueCap = queueCap_1(s) | 0;
     const queueLen = queueLength(s) | 0;
-    const buildingRow = (b_3) => modernBtn("bld." + b_3.Name, b_3.Label, (b_3.Val > 0) ? (("(" + int32ToString(b_3.Val)) + ")") : "", b_3.Enabled, new TipSource(/* TipBld */ 0, [b_3.Name]), () => {
+    const buildingRow = (b_3) => modernBtnL("bld." + b_3.Name, b_3.Label, (b_3.Val > 0) ? (("(" + int32ToString(b_3.Val)) + ")") : "", b_3.Enabled, new TipSource(/* TipBld */ 0, [b_3.Name]), () => {
         dispatch(new Msg(/* Buy */ 3, [b_3.Name]));
-    });
+    }, (b_3.Val > 0) ? singleton_1(HtmlHelper_createElement("a", ofArray([["key", "sell." + b_3.Name], ["href", "#"], ["className", "small"], ["style", {
+        paddingLeft: 2,
+        float: "right",
+        cursor: "pointer",
+    }], ["onClick", (ev_3) => {
+        ev_3.stopPropagation();
+        dispatch(new Msg(/* Sell */ 38, [b_3.Name]));
+    }], ["children", singleton_1(get$("btn.sell"))]]))) : empty());
     const techRow = (t_1) => modernBtn("tech." + t_1.Name, t_1.Label, t_1.Researched ? "(Complete)" : "", t_1.Enabled, new TipSource(/* TipTech */ 1, [t_1.Name]), () => {
         dispatch(new Msg(/* Research */ 6, [t_1.Name]));
     });
@@ -482,13 +511,13 @@ export function view(model, dispatch) {
             const descKey_1 = ("job." + j.Name) + ".desc";
             const flavorKey_2 = ("job." + j.Name) + ".flavor";
             const desc_3 = get$(descKey_1);
-            const tip_1 = ((desc_3 !== "") && (desc_3 !== descKey_1)) ? (new TipSource(/* TipJob */ 5, [j.Name])) : undefined;
+            const tip_2 = ((desc_3 !== "") && (desc_3 !== descKey_1)) ? (new TipSource(/* TipJob */ 5, [j.Name])) : undefined;
             const jobLink = (title, msg) => HtmlHelper_createElement("a", ofArray([["key", j.Name + title], ["href", "#"], ["className", (title.length > 4) ? "small" : ""], ["style", {
                 paddingLeft: 2,
                 float: "right",
                 cursor: "pointer",
-            }], ["onClick", (ev_3) => {
-                ev_3.stopPropagation();
+            }], ["onClick", (ev_4) => {
+                ev_4.stopPropagation();
                 dispatch(msg);
             }], ["children", singleton_1(title)]]));
             return HtmlHelper_createElement("div", toList(delay(() => append(singleton_2(["key", j.Name]), delay(() => append(singleton_2(["className", canAssign ? "btn nosel modern" : "btn nosel modern disabled"]), delay(() => append(singleton_2(["style", {
@@ -496,9 +525,9 @@ export function view(model, dispatch) {
                 display: "block",
                 marginBottom: 8,
                 width: 264,
-            }]), delay(() => append(singleton_2(["tabIndex", 0]), delay(() => append((tip_1 != null) ? tipHandlers(value_719(tip_1)) : empty_1(), delay(() => append(singleton_2(["onClick", (ev_4) => {
+            }]), delay(() => append(singleton_2(["tabIndex", 0]), delay(() => append((tip_2 != null) ? tipHandlers(value_759(tip_2)) : empty_1(), delay(() => append(singleton_2(["onClick", (ev_5) => {
                 if (canAssign) {
-                    dispatch(ev_4.ctrlKey ? (new Msg(/* Assign */ 4, [j.Name, 10])) : (new Msg(/* Assign */ 4, [j.Name, 1])));
+                    dispatch(ev_5.ctrlKey ? (new Msg(/* Assign */ 4, [j.Name, 10])) : (new Msg(/* Assign */ 4, [j.Name, 1])));
                 }
             }]), delay(() => singleton_2(["children", [HtmlHelper_createElement("div", ofArray([["className", "btnContent"], ["children", [HtmlHelper_createElement("span", ofArray([["className", "btnTitle"], ["children", singleton_1(((j.Label + " (") + int32ToString(j.Assigned)) + ")")]])), HtmlHelper_createElement("div", ofArray([["style", {
                 float: "right",
@@ -532,28 +561,65 @@ export function view(model, dispatch) {
                 if (manpower >= huntCost) {
                     dispatch(Msg.Hunt);
                 }
-            }], ["children", [HtmlHelper_createElement("div", ofArray([["className", "btnContent"], ["children", [HtmlHelper_createElement("span", ofArray([["className", "btnTitle"], ["children", singleton_1(get$("village.hunt"))]]))]]]))]]]))) : empty_1(), delay(() => singleton_2(HtmlHelper_createElement("div", ofArray([["className", "panelContainer"], ["children", toList(delay(() => append(singleton_2(HtmlHelper_createElement("div", ofArray([["className", "toggle"], ["style", {
-                float: "right",
-            }], ["onClick", (_arg_8) => {
-                dispatch(Msg.ToggleJobsPanel);
-            }], ["children", singleton_1(model.JobsPanelCollapsed ? "+" : "-")]]))), delay(() => append(singleton_2(HtmlHelper_createElement("div", ofArray([["className", "title"], ["children", singleton_1("Jobs")]]))), delay(() => (!model.JobsPanelCollapsed ? singleton_2(HtmlHelper_createElement("div", ofArray([["className", "container"], ["children", toList(delay(() => append(map(jobRow, jobRows(s)), delay(() => singleton_2(plainBtn("clearJobs", "Clear", () => {
-                dispatch(Msg.ClearAllJobs);
-            }))))))]]))) : empty_1())))))))]])))));
+            }], ["children", [HtmlHelper_createElement("div", ofArray([["className", "btnContent"], ["children", [HtmlHelper_createElement("span", ofArray([["className", "btnTitle"], ["children", singleton_1(get$("village.hunt"))]]))]]]))]]]))) : empty_1(), delay(() => {
+                const festivalPrices = ofArray([new PriceRow("manpower", 1500), new PriceRow("culture", 5000), new PriceRow("parchment", 2500)]);
+                const festivalAffordable = hasRes(s.Pool, map((p0) => [p0.Resource, p0.Val], festivalPrices), 0);
+                return append(singleton_2(modernBtnL("festival", get$("village.btn.festival"), "", festivalAffordable, TipSource.TipFestival, () => {
+                    dispatch(Msg.HoldFestival);
+                }, empty())), delay(() => singleton_2(HtmlHelper_createElement("div", ofArray([["className", "panelContainer"], ["children", toList(delay(() => append(singleton_2(HtmlHelper_createElement("div", ofArray([["className", "toggle"], ["style", {
+                    float: "right",
+                }], ["onClick", (_arg_8) => {
+                    dispatch(Msg.ToggleJobsPanel);
+                }], ["children", singleton_1(model.JobsPanelCollapsed ? "+" : "-")]]))), delay(() => append(singleton_2(HtmlHelper_createElement("div", ofArray([["className", "title"], ["children", singleton_1("Jobs")]]))), delay(() => (!model.JobsPanelCollapsed ? singleton_2(HtmlHelper_createElement("div", ofArray([["className", "container"], ["children", toList(delay(() => append(map(jobRow, jobRows(s)), delay(() => singleton_2(plainBtn("clearJobs", "Clear", () => {
+                    dispatch(Msg.ClearAllJobs);
+                }))))))]]))) : empty_1())))))))]])))));
+            }));
         }));
     })) : ((matchValue === "Science") ? toList(delay(() => append(singleton_2(HtmlHelper_createElement("div", ofArray([["style", {
         float: "right",
-    }], ["children", [HtmlHelper_createElement("input", ofArray([["type", "checkbox"], ["checked", s.HideResearched], ["onChange", (ev_5) => {
-        dispatch(new Msg(/* SetHideResearched */ 33, [ev_5.target.checked]));
+    }], ["children", [HtmlHelper_createElement("input", ofArray([["type", "checkbox"], ["checked", s.HideResearched], ["onChange", (ev_6) => {
+        dispatch(new Msg(/* SetHideResearched */ 33, [ev_6.target.checked]));
     }]])), HtmlHelper_createElement("label", ofArray([["style", {
         marginLeft: 6,
-    }], ["children", singleton_1(get$("science.toggleResearched.label"))]]))]]]))), delay(() => append(map(techRow, filter((t_3) => !(t_3.Researched && s.HideResearched), techRows(s))), delay(() => singleton_2(HtmlHelper_createElement("div", ofArray([["className", "panelContainer"], ["style", {
+    }], ["children", singleton_1(get$("science.toggleResearched.label"))]]))]]]))), delay(() => append(map(techRow, filter((t_3) => !(t_3.Researched && s.HideResearched), techRows(s))), delay(() => append(singleton_2(HtmlHelper_createElement("div", ofArray([["className", "panelContainer"], ["style", {
         marginTop: 15,
     }], ["children", [HtmlHelper_createElement("div", ofArray([["className", "title"], ["children", singleton_1("Policies")]])), HtmlHelper_createElement("div", ofArray([["className", "container"], ["children", toList(delay(() => append(map((p_2) => modernBtn("pol." + p_2.Name, p_2.Label, p_2.Researched ? "(Complete)" : "", p_2.Enabled, undefined, () => {
         dispatch(new Msg(/* ResearchPolicy */ 35, [p_2.Name]));
     }), filter((p_1) => !(p_1.Researched && s.HideResearched), policyRows(s))), delay(() => (isEmpty(policyRows(s)) ? singleton_2(HtmlHelper_createElement("div", ofArray([["style", {
         fontSize: 12 + "px",
         color: "#777",
-    }], ["children", singleton_1("No policies unlocked yet.")]]))) : empty_1())))))]]))]]]))))))))) : ((matchValue === "Workshop") ? map(upgradeRow, upgradeRows(s)) : ((matchValue === "Trade") ? collect((r_3) => ofArray([HtmlHelper_createElement("div", ofArray([["key", "info." + r_3.Name], ["style", {
+    }], ["children", singleton_1("No policies unlocked yet.")]]))) : empty_1())))))]]))]]]))), delay(() => {
+        let metaphysicsResearched;
+        const matchValue_2 = tryFind_1("metaphysics", s.Spool.Techs);
+        if (matchValue_2 == null) {
+            metaphysicsResearched = false;
+        }
+        else {
+            const t_4 = matchValue_2;
+            metaphysicsResearched = t_4.Researched;
+        }
+        const paragon = getRes(s.Pool, "paragon");
+        return (metaphysicsResearched && (paragon > 0)) ? singleton_2(HtmlHelper_createElement("div", ofArray([["className", "panelContainer"], ["style", {
+            marginTop: 15,
+        }], ["children", [HtmlHelper_createElement("div", ofArray([["className", "title"], ["children", singleton_1(get$("prestige.panel.label"))]])), HtmlHelper_createElement("div", ofArray([["className", "container"], ["children", toList(delay(() => append(map((d_1) => {
+            const affordable = hasRes(s.Pool, map((p0_1) => [p0_1.Resource, p0_1.Val], d_1.Prices), 0);
+            return modernBtn("perk." + d_1.Name, get$("perk." + d_1.Name), isEmpty(d_1.Prices) ? "" : (("(" + fmtRes(head(d_1.Prices).Val)) + " paragon)"), affordable, undefined, () => {
+                dispatch(new Msg(/* BuyPerk */ 41, [d_1.Name]));
+            });
+        }, filter((d) => {
+            const matchValue_3 = tryFind_1(d.Name, s.Ppool.Perks);
+            if (matchValue_3 == null) {
+                return false;
+            }
+            else {
+                const m = matchValue_3;
+                return !m.Researched;
+            }
+        }, perkDefs)), delay(() => (forAll((_arg_9, m_1) => m_1.Researched, s.Ppool.Perks) ? singleton_2(HtmlHelper_createElement("div", ofArray([["style", {
+            fontSize: 12 + "px",
+            color: "#777",
+        }], ["children", singleton_1("All perks researched.")]]))) : empty_1())))))]]))]]]))) : empty_1();
+    })))))))) : ((matchValue === "Workshop") ? map(upgradeRow, upgradeRows(s)) : ((matchValue === "Trade") ? collect((r_3) => ofArray([HtmlHelper_createElement("div", ofArray([["key", "info." + r_3.Name], ["style", {
         marginBottom: 4,
     }], ["children", singleton_1((((r_3.Label + " — standing ") + toText(printf("%.2f"))(r_3.Standing)) + ", embassies: ") + int32ToString(r_3.EmbassyLevel))]])), modernBtn("race." + r_3.Name, "Trade with " + r_3.Label, "", r_3.Tradeable, undefined, () => {
         dispatch(new Msg(/* Trade */ 13, [r_3.Name]));
@@ -563,14 +629,25 @@ export function view(model, dispatch) {
         marginBottom: 10,
     }], ["children", singleton_1((("Faith: " + fmt(getRes(s.Pool, "faith"))) + " - worship: ") + toText(printf("%.1f"))(s.Rpool.Faith))]]))), delay(() => append(singleton_2(plainBtn("praise", "Praise the sun!", () => {
         dispatch(Msg.Praise);
-    })), delay(() => map((r_4) => modernBtn("rel." + r_4.Name, r_4.Label, (r_4.Val > 0) ? (("(" + int32ToString(r_4.Val)) + ")") : "", r_4.Enabled, undefined, () => {
+    })), delay(() => append((getRU(s.Rpool, "transcendence").Val > 0) ? append(singleton_2(modernBtnL("adore", get$("religion.adoreBtn.label"), "", true, undefined, () => {
+        dispatch(Msg.Adore);
+    }, empty())), delay(() => {
+        const nextPrice = getTranscendNextPrice(s.Rpool);
+        return append(singleton_2(modernBtnL("transcend", get$("religion.transcendBtn.label"), (s.Rpool.TranscendenceTier > 0) ? (("(T" + int32ToString(s.Rpool.TranscendenceTier)) + ")") : "", s.Rpool.FaithRatio > nextPrice, undefined, () => {
+            dispatch(Msg.Transcend);
+        }, empty())), delay(() => singleton_2(HtmlHelper_createElement("div", ofArray([["style", {
+            marginBottom: 10,
+            fontSize: 12 + "px",
+            color: "#777",
+        }], ["children", singleton_1((("epiphany: " + fmtRes(s.Rpool.FaithRatio)) + " - next tier: ") + fmtRes(nextPrice))]])))));
+    })) : empty_1(), delay(() => map((r_4) => modernBtn("rel." + r_4.Name, r_4.Label, (r_4.Val > 0) ? (("(" + int32ToString(r_4.Val)) + ")") : "", r_4.Enabled, undefined, () => {
         if (r_4.Kind === "zu") {
             dispatch(new Msg(/* BuyZU */ 12, [r_4.Name]));
         }
         else {
             dispatch(new Msg(/* BuyRU */ 11, [r_4.Name]));
         }
-    }), religionRows(s)))))))) : ((matchValue === "Space") ? toList(delay(() => {
+    }), religionRows(s)))))))))) : ((matchValue === "Space") ? toList(delay(() => {
         const spaceRows = spaceRows_1(s);
         const planetOrder = map((p_3) => p_3.Name, planetDefs);
         const groups = sortBy((tupledArg) => {
@@ -584,9 +661,9 @@ export function view(model, dispatch) {
         });
         return append(map((r_8) => modernBtn("sp." + r_8.Name, r_8.Label, (r_8.Val > 0) ? (("(" + int32ToString(r_8.Val)) + ")") : "", r_8.Enabled, undefined, () => {
             dispatch(new Msg(/* Mission */ 15, [r_8.Name]));
-        }), filter((r_7) => (r_7.Kind === "mission"), spaceRows)), delay(() => collect_1((matchValue_2) => {
-            const rows = matchValue_2[1];
-            const planet_1 = matchValue_2[0];
+        }), filter((r_7) => (r_7.Kind === "mission"), spaceRows)), delay(() => collect_1((matchValue_4) => {
+            const rows = matchValue_4[1];
+            const planet_1 = matchValue_4[0];
             return append((planet_1 !== "") ? singleton_2(HtmlHelper_createElement("div", ofArray([["key", "planet." + planet_1], ["style", {
                 marginTop: 12,
                 marginBottom: 6,
@@ -612,8 +689,8 @@ export function view(model, dispatch) {
     }, challengeRows(s)) : toList(delay(() => {
         const rows_1 = buildingRows(s);
         let filteredRows;
-        const matchValue_3 = model.BuildingFilter;
-        switch (matchValue_3) {
+        const matchValue_5 = model.BuildingFilter;
+        switch (matchValue_5) {
             case "available":
             case "enabled": {
                 filteredRows = filter((b_4) => b_4.Enabled, rows_1);
@@ -628,12 +705,12 @@ export function view(model, dispatch) {
         }
         return append(singleton_2(HtmlHelper_createElement("div", ofArray([["style", {
             marginBottom: 8,
-        }], ["children", toList(delay(() => collect_1((matchValue_4) => {
-            const fkey = matchValue_4[1];
-            const fid = matchValue_4[0];
+        }], ["children", toList(delay(() => collect_1((matchValue_6) => {
+            const fkey = matchValue_6[1];
+            const fid = matchValue_6[0];
             return singleton_2(HtmlHelper_createElement("a", ofArray([["key", fid], ["className", (model.BuildingFilter === fid) ? "activeTab" : ""], ["href", "#"], ["style", {
                 marginRight: 6,
-            }], ["onClick", (_arg_10) => {
+            }], ["onClick", (_arg_11) => {
                 dispatch(new Msg(/* SetBuildingFilter */ 34, [fid]));
             }], ["children", singleton_1(get$(fkey))]])));
         }, [["all", "filter.all"], ["available", "filter.available"], ["enabled", "filter.enabled"], ["togglable", "filter.togglable"]])))]]))), delay(() => {
@@ -668,55 +745,55 @@ export function view(model, dispatch) {
         Equals: (x_2, y_2) => (x_2 === y_2),
         GetHashCode: (x_2) => (stringHash(x_2) | 0),
     }) ? model.Tab : "Bonfire";
-    const midColumn = HtmlHelper_createElement("div", ofArray([["id", "midColumn"], ["className", "column"], ["children", [HtmlHelper_createElement("div", ofArray([["className", "tabsContainer"], ["children", toList(delay(() => collect_1((matchValue_5) => {
-        const t_4 = matchValue_5[1];
-        const i_2 = matchValue_5[0] | 0;
-        let label_3;
-        if (t_4 === "Village") {
+    const midColumn = HtmlHelper_createElement("div", ofArray([["id", "midColumn"], ["className", "column"], ["children", [HtmlHelper_createElement("div", ofArray([["className", "tabsContainer"], ["children", toList(delay(() => collect_1((matchValue_7) => {
+        const t_5 = matchValue_7[1];
+        const i_2 = matchValue_7[0] | 0;
+        let label_4;
+        if (t_5 === "Village") {
             const patternInput_3 = villageTabLabel(s);
             const title_1 = patternInput_3[0];
             const free_1 = patternInput_3[1] | 0;
-            label_3 = ((free_1 > 0) ? HtmlHelper_createElement("span", singleton_1(["children", [HtmlHelper_createElement("span", singleton_1(["children", singleton_1(title_1)])), HtmlHelper_createElement("span", ofArray([["className", "genericWarning"], ["children", singleton_1(("(" + int32ToString(free_1)) + ")")]]))]])) : HtmlHelper_createElement("span", singleton_1(["children", singleton_1(title_1)])));
+            label_4 = ((free_1 > 0) ? HtmlHelper_createElement("span", singleton_1(["children", [HtmlHelper_createElement("span", singleton_1(["children", singleton_1(title_1)])), HtmlHelper_createElement("span", ofArray([["className", "genericWarning"], ["children", singleton_1(("(" + int32ToString(free_1)) + ")")]]))]])) : HtmlHelper_createElement("span", singleton_1(["children", singleton_1(title_1)])));
         }
         else {
-            label_3 = HtmlHelper_createElement("span", singleton_1(["children", singleton_1(get$("tab." + t_4))]));
+            label_4 = HtmlHelper_createElement("span", singleton_1(["children", singleton_1(get$("tab." + t_5))]));
         }
-        return append(singleton_2(HtmlHelper_createElement("a", ofArray([["key", t_4], ["className", (t_4 === activeTab) ? (("tab " + t_4) + " activeTab") : ("tab " + t_4)], ["href", "#"], ["style", {
+        return append(singleton_2(HtmlHelper_createElement("a", ofArray([["key", t_5], ["className", (t_5 === activeTab) ? (("tab " + t_5) + " activeTab") : ("tab " + t_5)], ["href", "#"], ["style", {
             whiteSpace: "nowrap",
-        }], ["onClick", (_arg_13) => {
-            dispatch(new Msg(/* SetTab */ 20, [t_4]));
-        }], ["children", [label_3]]]))), delay(() => ((i_2 < (length(visibleTabs) - 1)) ? singleton_2(HtmlHelper_createElement("span", ofArray([["key", "sep" + t_4], ["children", singleton_1(" | ")]]))) : empty_1())));
+        }], ["onClick", (_arg_14) => {
+            dispatch(new Msg(/* SetTab */ 20, [t_5]));
+        }], ["children", [label_4]]]))), delay(() => ((i_2 < (length(visibleTabs) - 1)) ? singleton_2(HtmlHelper_createElement("span", ofArray([["key", "sep" + t_5], ["children", singleton_1(" | ")]]))) : empty_1())));
     }, indexed(visibleTabs))))]])), HtmlHelper_createElement("div", ofArray([["className", "tabInner " + activeTab], ["children", tabContent]]))]]]));
-    const consoleRows = map((m) => HtmlHelper_createElement("div", ofArray([["key", int32ToString(m.CmId)], ["className", "msg"], ["children", toList(delay(() => append(m.CmHasCal ? singleton_2(HtmlHelper_createElement("span", ofArray([["style", {
+    const consoleRows = map((m_2) => HtmlHelper_createElement("div", ofArray([["key", int32ToString(m_2.CmId)], ["className", "msg"], ["children", toList(delay(() => append(m_2.CmHasCal ? singleton_2(HtmlHelper_createElement("span", ofArray([["style", {
         color: "#ff7f50",
         marginRight: 8,
-    }], ["children", singleton_1(((((("Y" + int32ToString(m.CmYear)) + " D") + int32ToString(m.CmDay)) + " ") + m.CmSeason) + " - ")]]))) : empty_1(), delay(() => singleton_2(HtmlHelper_createElement("span", singleton_1(["children", singleton_1(m.CmText)])))))))]])), s.ConsoleMsgs);
+    }], ["children", singleton_1(((((("Y" + int32ToString(m_2.CmYear)) + " D") + int32ToString(m_2.CmDay)) + " ") + m_2.CmSeason) + " - ")]]))) : empty_1(), delay(() => singleton_2(HtmlHelper_createElement("span", singleton_1(["children", singleton_1(m_2.CmText)])))))))]])), s.ConsoleMsgs);
     const queueRows = mapIndexed((i_3, q) => HtmlHelper_createElement("div", ofArray([["key", int32ToString(i_3) + q.QName], ["style", {
         marginBottom: 4,
     }], ["children", [HtmlHelper_createElement("a", ofArray([["className", "link"], ["style", {
         paddingRight: 8,
         cursor: "pointer",
-    }], ["onClick", (_arg_14) => {
-        dispatch(new Msg(/* QRemove */ 38, [i_3]));
+    }], ["onClick", (_arg_15) => {
+        dispatch(new Msg(/* QRemove */ 43, [i_3]));
     }], ["children", singleton_1("[x]")]])), HtmlHelper_createElement("span", singleton_1(["children", singleton_1((((q.QName + " (") + q.QType) + ") x") + int32ToString(q.QValue))]))]]])), s.QueueItems);
     const rightColumn = HtmlHelper_createElement("div", ofArray([["id", "rightColumn"], ["className", "column"], ["style", {
         paddingLeft: 15,
         paddingRight: 15,
         width: 300,
-    }], ["children", toList(delay(() => append(singleton_2(HtmlHelper_createElement("div", singleton_1(["children", [HtmlHelper_createElement("span", singleton_1(["id", "calendarSign"])), HtmlHelper_createElement("span", ofArray([["id", "calendarDiv"], ["children", singleton_1(calendarText(s))]]))]]))), delay(() => append(singleton_2(HtmlHelper_createElement("div", ofArray([["className", "right-tab-header"], ["children", toList(delay(() => append(singleton_2(HtmlHelper_createElement("a", ofArray([["id", "logLink"], ["className", (model.RightTab === "Log") ? "active" : ""], ["href", "#"], ["onClick", (_arg_15) => {
+    }], ["children", toList(delay(() => append(singleton_2(HtmlHelper_createElement("div", singleton_1(["children", [HtmlHelper_createElement("span", singleton_1(["id", "calendarSign"])), HtmlHelper_createElement("span", ofArray([["id", "calendarDiv"], ["children", singleton_1(calendarText(s))]]))]]))), delay(() => append(singleton_2(HtmlHelper_createElement("div", ofArray([["className", "right-tab-header"], ["children", toList(delay(() => append(singleton_2(HtmlHelper_createElement("a", ofArray([["id", "logLink"], ["className", (model.RightTab === "Log") ? "active" : ""], ["href", "#"], ["onClick", (_arg_16) => {
         dispatch(new Msg(/* SetRightTab */ 21, ["Log"]));
-    }], ["children", singleton_1("Log")]]))), delay(() => (tabVisible(s, "Queue") ? singleton_2(HtmlHelper_createElement("a", ofArray([["id", "queueLink"], ["className", "queueLink" + ((model.RightTab === "Queue") ? " active" : "")], ["href", "#"], ["onClick", (_arg_16) => {
+    }], ["children", singleton_1("Log")]]))), delay(() => (tabVisible(s, "Queue") ? singleton_2(HtmlHelper_createElement("a", ofArray([["id", "queueLink"], ["className", "queueLink" + ((model.RightTab === "Queue") ? " active" : "")], ["href", "#"], ["onClick", (_arg_17) => {
         dispatch(new Msg(/* SetRightTab */ 21, ["Queue"]));
     }], ["children", singleton_1("Queue")]]))) : empty_1())))))]]))), delay(() => ((model.RightTab === "Queue") ? singleton_2(HtmlHelper_createElement("div", ofArray([["className", "right-tab"], ["id", "rightTabQueue"], ["children", toList(delay(() => append(singleton_2(HtmlHelper_createElement("div", ofArray([["style", {
         marginBottom: 6,
     }], ["children", singleton_1((("Queue " + int32ToString(queueLen)) + "/") + int32ToString(queueCap))]]))), delay(() => append(queueRows, delay(() => singleton_2(plainBtn("qhut", "Queue a Hut", () => {
-        dispatch(new Msg(/* QAdd */ 37, ["hut", "buildings"]));
+        dispatch(new Msg(/* QAdd */ 42, ["hut", "buildings"]));
     }))))))))]]))) : singleton_2(HtmlHelper_createElement("div", ofArray([["className", "right-tab"], ["id", "rightTabLog"], ["children", [HtmlHelper_createElement("div", singleton_1(["children", [HtmlHelper_createElement("div", ofArray([["className", "console-intro"], ["style", {
         paddingTop: 10,
         borderTop: (((1 + "px ") + "solid") + " ") + "gray",
     }], ["children", singleton_1(get$("console.intro"))]])), HtmlHelper_createElement("span", ofArray([["id", "clearLog"], ["style", {
         paddingTop: 5,
-    }], ["children", [HtmlHelper_createElement("a", ofArray([["id", "clearLogHref"], ["href", "#"], ["onClick", (_arg_17) => {
+    }], ["children", [HtmlHelper_createElement("a", ofArray([["id", "clearLogHref"], ["href", "#"], ["onClick", (_arg_18) => {
         dispatch(Msg.ClearConsole);
     }], ["children", singleton_1("Clear log")]]))]]]))]])), HtmlHelper_createElement("div", ofArray([["id", "gameLog"], ["style", {
         overflowY: "auto",
@@ -724,20 +801,20 @@ export function view(model, dispatch) {
         height: 100 + "%",
     }], ["children", consoleRows]]))]]]))))))))))]]));
     let tooltip;
-    const matchValue_6 = model.Tooltip;
-    if (matchValue_6 != null) {
-        const y_3 = matchValue_6[1];
-        const x_3 = matchValue_6[0];
-        const src_2 = matchValue_6[2];
-        const tip_2 = renderTip(src_2);
-        tooltip = (((tip_2.Desc === "") && isEmpty(tip_2.Prices)) ? defaultOf_1() : HtmlHelper_createElement("div", ofArray([["id", "tooltip"], ["className", "button_tooltip"], ["style", {
+    const matchValue_8 = model.Tooltip;
+    if (matchValue_8 != null) {
+        const y_3 = matchValue_8[1];
+        const x_3 = matchValue_8[0];
+        const src_2 = matchValue_8[2];
+        const tip_3 = renderTip(src_2);
+        tooltip = (((tip_3.Desc === "") && isEmpty(tip_3.Prices)) ? defaultOf_1() : HtmlHelper_createElement("div", ofArray([["id", "tooltip"], ["className", "button_tooltip"], ["style", {
             top: y_3 + "px",
             left: x_3 + "px",
-        }], ["children", toList(delay(() => append(((tip_2.Desc !== "") && (tip_2.Desc !== "-")) ? singleton_2(HtmlHelper_createElement("div", toList(delay(() => append(singleton_2(["className", "desc"]), delay(() => append((length(tip_2.Prices) > 0) ? singleton_2(["style", {
+        }], ["children", toList(delay(() => append(((tip_3.Desc !== "") && (tip_3.Desc !== "-")) ? singleton_2(HtmlHelper_createElement("div", toList(delay(() => append(singleton_2(["className", "desc"]), delay(() => append((length(tip_3.Prices) > 0) ? singleton_2(["style", {
             borderBottom: (((1 + "px ") + "solid") + " ") + "gray",
             paddingBottom: 8,
         }]) : empty_1(), delay(() => singleton_2(["dangerouslySetInnerHTML", {
-            __html: tip_2.Desc,
+            __html: tip_3.Desc,
         }]))))))))) : empty_1(), delay(() => {
             const renderLine = (l) => HtmlHelper_createElement("div", ofArray([["key", ("price" + int32ToString(l.Indent)) + l.Title], ["className", "price-block"], ["style", {
                 overflow: "hidden",
@@ -748,13 +825,13 @@ export function view(model, dispatch) {
             }], ["children", singleton_1(replicate(l.Indent * 3, " ") + l.Title)]]))), delay(() => append(singleton_2(HtmlHelper_createElement("span", ofArray([["className", l.HasRes ? "" : "noRes"], ["style", {
                 float: "right",
             }], ["children", singleton_1(l.DisplayValue)]]))), delay(() => map(renderLine, l.Children)))))))]]));
-            return append(map_1(renderLine, tip_2.Prices), delay(() => {
-                const matchValue_7 = tip_2.Flavor;
-                if (matchValue_7 == null) {
+            return append(map_1(renderLine, tip_3.Prices), delay(() => {
+                const matchValue_9 = tip_3.Flavor;
+                if (matchValue_9 == null) {
                     return empty_1();
                 }
                 else {
-                    const flavor_1 = matchValue_7;
+                    const flavor_1 = matchValue_9;
                     return singleton_2(HtmlHelper_createElement("div", ofArray([["className", "flavor"], ["style", {
                         paddingTop: 20,
                         fontSize: 12 + "px",
@@ -773,12 +850,12 @@ export function view(model, dispatch) {
         position: "absolute",
         top: 10,
         right: 15,
-    }], ["onClick", (_arg_18) => {
+    }], ["onClick", (_arg_19) => {
         dispatch(Msg.ToggleOptions);
     }], ["children", singleton_1("close")]])), HtmlHelper_createElement("div", ofArray([["style", {
         marginBottom: 10,
-    }], ["children", [HtmlHelper_createElement("label", ofArray([["htmlFor", "notationSelector"], ["children", singleton_1("Notation:")]])), HtmlHelper_createElement("br", empty()), HtmlHelper_createElement("select", ofArray([["id", "notationSelector"], ["value", s.Opts.Notation], ["onChange", (ev_6) => {
-        dispatch(new Msg(/* SetNotation */ 40, [ev_6.target.value]));
+    }], ["children", [HtmlHelper_createElement("label", ofArray([["htmlFor", "notationSelector"], ["children", singleton_1("Notation:")]])), HtmlHelper_createElement("br", empty()), HtmlHelper_createElement("select", ofArray([["id", "notationSelector"], ["value", s.Opts.Notation], ["onChange", (ev_7) => {
+        dispatch(new Msg(/* SetNotation */ 45, [ev_7.target.value]));
     }], ["children", toList(delay(() => map_1((n) => HtmlHelper_createElement("option", ofArray([["key", n], ["value", n], ["children", singleton_1(n)]])), ["si", "e", "sie"])))]]))]]])), HtmlHelper_createElement("div", ofArray([["style", {
         marginBottom: 10,
     }], ["children", toList(delay(() => {
@@ -787,29 +864,29 @@ export function view(model, dispatch) {
         return map_1((mult) => HtmlHelper_createElement("button", ofArray([["key", mult.toString()], ["style", {
             marginRight: 6,
             cursor: "pointer",
-        }], ["onClick", (_arg_19) => {
+        }], ["onClick", (_arg_20) => {
             dispatch(new Msg(/* SetSpeed */ 22, [mult]));
         }], ["children", singleton_1(mult.toString() + "x")]])), [1, 3, 10]);
     }))]])), HtmlHelper_createElement("div", ofArray([["style", {
         marginBottom: 10,
     }], ["children", toList(delay(() => map_1((o) => HtmlHelper_createElement("div", ofArray([["key", o.Name], ["style", {
         marginBottom: 2,
-    }], ["children", [HtmlHelper_createElement("input", ofArray([["type", "checkbox"], ["checked", FSharpMap__get_Item(s.Opts.Bools, o.Name)], ["onChange", (ev_7) => {
-        ev_7.target.checked;
-        dispatch(new Msg(/* ToggleOption */ 39, [o.Name]));
+    }], ["children", [HtmlHelper_createElement("input", ofArray([["type", "checkbox"], ["checked", FSharpMap__get_Item(s.Opts.Bools, o.Name)], ["onChange", (ev_8) => {
+        ev_8.target.checked;
+        dispatch(new Msg(/* ToggleOption */ 44, [o.Name]));
     }]])), HtmlHelper_createElement("label", ofArray([["style", {
         marginLeft: 6,
-    }], ["children", singleton_1(o.Name)]]))]]])), settingsArr)))]])), HtmlHelper_createElement("div", singleton_1(["children", [HtmlHelper_createElement("input", ofArray([["type", "button"], ["value", "Save"], ["onClick", (_arg_21) => {
+    }], ["children", singleton_1(o.Name)]]))]]])), settingsArr)))]])), HtmlHelper_createElement("div", singleton_1(["children", [HtmlHelper_createElement("input", ofArray([["type", "button"], ["value", "Save"], ["onClick", (_arg_22) => {
         dispatch(Msg.SaveGame);
     }]])), HtmlHelper_createElement("input", ofArray([["type", "button"], ["value", "Load"], ["style", {
         marginLeft: 8,
-    }], ["onClick", (_arg_22) => {
+    }], ["onClick", (_arg_23) => {
         dispatch(Msg.LoadGame);
     }]]))]])), HtmlHelper_createElement("div", ofArray([["style", {
         fontSize: 12 + "px",
         marginTop: 8,
         color: "#666",
-    }], (value_639 = "Save stores to this browser\'s localStorage under its own key - the original game\'s saves are untouched.", ["children", singleton_1(value_639)])]))]]]));
+    }], (value_679 = "Save stores to this browser\'s localStorage under its own key - the original game\'s saves are untouched.", ["children", singleton_1(value_679)])]))]]]));
     const topBar = HtmlHelper_createElement("div", ofArray([["id", "topBar"], ["children", [HtmlHelper_createElement("div", ofArray([["style", {
         paddingLeft: 10,
         minWidth: 0,
@@ -820,11 +897,11 @@ export function view(model, dispatch) {
         paddingTop: 3,
         display: "inline-flex",
         paddingRight: 10,
-    }], ["children", [HtmlHelper_createElement("a", ofArray([["id", "save-link"], ["href", "#"], ["onClick", (_arg_23) => {
+    }], ["children", [HtmlHelper_createElement("a", ofArray([["id", "save-link"], ["href", "#"], ["onClick", (_arg_24) => {
         dispatch(Msg.SaveGame);
-    }], ["children", singleton_1("Save")]])), HtmlHelper_createElement("span", singleton_1(["children", singleton_1(" | ")])), HtmlHelper_createElement("a", ofArray([["id", "options-link"], ["href", "#"], ["onClick", (_arg_24) => {
+    }], ["children", singleton_1("Save")]])), HtmlHelper_createElement("span", singleton_1(["children", singleton_1(" | ")])), HtmlHelper_createElement("a", ofArray([["id", "options-link"], ["href", "#"], ["onClick", (_arg_25) => {
         dispatch(Msg.ToggleOptions);
-    }], ["children", singleton_1("Options")]])), HtmlHelper_createElement("span", singleton_1(["children", singleton_1(" | ")])), HtmlHelper_createElement("a", ofArray([["id", "reset-link"], ["href", "#"], ["onClick", (_arg_25) => {
+    }], ["children", singleton_1("Options")]])), HtmlHelper_createElement("span", singleton_1(["children", singleton_1(" | ")])), HtmlHelper_createElement("a", ofArray([["id", "reset-link"], ["href", "#"], ["onClick", (_arg_26) => {
         if (window.confirm("Are you sure you want to reset the game? All your progress will be lost.")) {
             dispatch(Msg.ResetGame);
         }
@@ -845,6 +922,6 @@ export function view(model, dispatch) {
 }
 
 export function page(_shared, _route) {
-    return Page_from(init, update, view, undefined, (lm) => (new Msg(/* LayoutMsg */ 42, [lm])));
+    return Page_from(init, update, view, undefined, (lm) => (new Msg(/* LayoutMsg */ 47, [lm])));
 }
 

@@ -33,6 +33,7 @@ let cycleNames : string list =
 let ticksPerDay = 10.0
 let daysPerSeason = 100.0
 
+
 // --- state ------------------------------------------------------------------
 
 type CalendarState =
@@ -46,6 +47,15 @@ type CalendarState =
       FestivalDays: int
       CryptoPrice: float     // bcoin random walk (calendar-10)
       ObserveRemainingTime: int }
+
+/// orig village.holdFestival (js/village.js L1131): the carnivals perk extends
+/// the festival by a year per hold, otherwise it (re)sets to one year
+/// (daysPerSeason x seasonsPerYear = 400 days). Returns updated calendar.
+let holdFestival (carnivalsResearched: bool) (amt: int) (st: CalendarState) : CalendarState =
+    let yearDays = int (daysPerSeason * float (List.length seasons))
+    if carnivalsResearched
+    then { st with FestivalDays = st.FestivalDays + yearDays * amt }
+    else { st with FestivalDays = yearDays }
 
 let init : CalendarState =
     { Year = 0.0

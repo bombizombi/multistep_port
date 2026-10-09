@@ -2,20 +2,20 @@
 import { toString, Record } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Types.js";
 import { class_type, list_type, lambda_type, float64_type, unit_type, record_type, bool_type, option_type, string_type, int32_type } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
 import { CraftState, UpgradeState, PolicyState, ResearchState, BuildingState, ResPool, ResourceState, ResPool_$reflection } from "./Game/Game.Types.fs.js";
-import { getAllPrices, update as update_1, build, BldPool, init as init_2, providerEffect, activeEffects, get$ as get$_1, PricingContext, freshPricing, BldPool_$reflection } from "./Game/Game.Buildings.fs.js";
+import { getAllPrices, update as update_1, build, sellOne, BldPool, init as init_2, providerEffect, activeEffects, get$ as get$_1, PricingContext, freshPricing, BldPool_$reflection } from "./Game/Game.Buildings.fs.js";
 import { getCraftAllCount, craftByEngineers, learnSkills, SkillContext, simUpdate, starvationStep, unlockRelations, craftAll as craftAll_1, craft as craft_1, buyUpgrade as buyUpgrade_1, getTech, research as research_1, simRemoveJobs, simAssignJob, assignJob as assignJob_1, CraftRatioContext, getResCraftRatio, unlock, researchPolicy, PolicyBuyCtx, PolicyCalcCtx, calculateMaxKittens, VillagePool, Kitten, kittenFromSeed, WorkshopPool, SciencePool, initVillage, initWorkshop, initScience, getFreeKittens, getResProduction, scienceGroup, workshopEffectsBase, VillagePool_$reflection, WorkshopPool_$reflection, SciencePool_$reflection } from "./Game/Game.Managers.fs.js";
-import { getTU, buyZU as buyZU_1, freezeSolarRevolution, buyRU as buyRU_1, praise as praise_1, countActivePacts, ReligionMeta, ReligionPool, getRU, getZU, init as init_3, religionGroup, ReligionPool_$reflection } from "./Game/Game.Religion.fs.js";
+import { getTU, buyZU as buyZU_1, freezeSolarRevolution, buyRU as buyRU_1, praise as praise_1, transcend, adoreInternal, countActivePacts, ReligionMeta, ReligionPool, getRU, getZU, init as init_3, religionGroup, ReligionPool_$reflection } from "./Game/Game.Religion.fs.js";
 import { getTradeBonusEffect, ChallengePool, ChallengeState, init as init_4, challengesGroup, ChallengePool_$reflection } from "./Game/Game.Challenges.fs.js";
-import { getPerk, getBurnedParagonRatio, init as init_5, prestigeGroup, PrestigePool_$reflection } from "./Game/Game.Prestige.fs.js";
+import { getPerk, getBurnedParagonRatio, buyPerk, init as init_5, prestigeGroup, PrestigePool_$reflection } from "./Game/Game.Prestige.fs.js";
 import { hasUnlockedRaces, update as update_2, buyEmbassies, tradeImpl, getTradeVolume, getGoldCost, getManpowerCost, DiplomacyPool, RaceState, DiplomacyContext, init as init_6, DiplomacyPool_$reflection } from "./Game/Game.Diplomacy.fs.js";
 import { vsuDef, buyVSU as buyVSU_1, cfuCalculate, cfuDef, buyCFU as buyCFU_1, TimeCalcContext, TimePool, TimeMeta, init as init_7, timeGroup as timeGroup_1, TimePool_$reflection } from "./Game/Game.Time.fs.js";
 import { buyBuilding as buyBuilding_1, buyProgram as buyProgram_1, SpacePool, SpaceMeta, getProgram, getBuilding, init as init_8, spaceGroup, SpacePool_$reflection } from "./Game/Game.Space.fs.js";
 import { bumpStat, init as init_9, StatsPool_$reflection } from "./Game/Game.Stats.fs.js";
-import { tick as tick_1, cycleYearColors, CalendarState, seasons, init as init_10, CalendarContext, CalendarState_$reflection } from "./Game/Game.Calendar.fs.js";
+import { tick as tick_1, cycleYearColors, holdFestival, CalendarState, seasons, init as init_10, CalendarContext, CalendarState_$reflection } from "./Game/Game.Calendar.fs.js";
 import { empty as empty_2, updateCaches, ManagerGroup, getEffect as getEffect_1, EffectsCache_$reflection } from "./Game/Game.Effects.fs.js";
 import { settingsArr, OptsState, setBool, freshOpts, OptsState_$reflection } from "./Game/Game.Settings.fs.js";
 import { toArray, defaultArg } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Option.js";
-import { updateMaxValueAll, update, UpdateContext, hasRes as hasRes_1, payPrices, addResEvent, init as init_1, getEnergyDelta, CapContext, get$ } from "./Game/Game.Resources.fs.js";
+import { updateMaxValueAll, update, UpdateContext, addResEvent, payPrices, hasRes as hasRes_1, init as init_1, getEnergyDelta, CapContext, get$ } from "./Game/Game.Resources.fs.js";
 import { toList, add as add_1, FSharpMap__get_Item, map as map_1, ofList, filter, tryFind, empty } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Map.js";
 import { equals, disposeSafe, getEnumerator, int32ToString, round, stringHash, comparePrimitives } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
 import { find, filter as filter_1, head, fold, tryFind as tryFind_1, updateAt, removeAt, tryLast, contains, sumBy, tail, singleton, append, maxBy, isEmpty, item, length, map, ofArray, choose, empty as empty_1 } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/List.js";
@@ -1286,6 +1286,121 @@ export function huntAction(s) {
     const ctx = new HuntContext((name) => getEffect(s, name), s.Rand, resValue(s, "zebras"), s.IronWill, (matchValue = tryFind("goldOre", s.Spool.Techs), (matchValue == null) ? false : ((t = matchValue, t.Researched))), (matchValue_1 = tryFind("unicornmancy", s.Ppool.Perks), (matchValue_1 == null) ? false : ((p = matchValue_1, p.Researched))), 0, 0);
     const pool$0027 = huntAll(ctx, s.Pool);
     return refreshCache(new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked));
+}
+
+/**
+ * orig FestivalButton: pays manpower 1500 / culture 5000 / parchment 2500,
+ * then village.holdFestival(1) with the carnivals perk extension rule
+ */
+export function holdFestivalAction(s) {
+    const prices = ofArray([["manpower", 1500], ["culture", 5000], ["parchment", 2500]]);
+    if (!hasRes_1(s.Pool, prices, 0)) {
+        return s;
+    }
+    else {
+        const pool$0027 = payPrices(s.CalendarDay, s.Pool, prices);
+        let carnivals;
+        const matchValue = tryFind("carnivals", s.Ppool.Perks);
+        if (matchValue == null) {
+            carnivals = false;
+        }
+        else {
+            const p = matchValue;
+            carnivals = p.Researched;
+        }
+        const wasRunning = s.Calendar.FestivalDays > 0;
+        const cal$0027 = holdFestival(carnivals, 1, s.Calendar);
+        const s1 = new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, cal$0027, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+        if (FSharpSet__Contains(s1.ConsoleUnlocked, "festival")) {
+            return consoleMsg("festival", wasRunning ? "The cultural festival has been extended" : "The cultural festival has started", s1);
+        }
+        else {
+            return consoleUnlockedFor(s1, "festival");
+        }
+    }
+}
+
+/**
+ * orig BuildingBtnController sell link (game-19): sell ONE unit at the
+ * current ladder with a 50% refund of refundable price resources
+ */
+export function sellBuilding(name, s) {
+    const patternInput = sellOne(s.CalendarDay, s.Cache, pctx(s), s.Pool, name, 0.5, s.Bpool);
+    const sold = patternInput[2];
+    const pool$0027 = patternInput[1];
+    const bpool$0027 = patternInput[0];
+    if (sold) {
+        return refreshCache(new State(pool$0027, bpool$0027, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked));
+    }
+    else {
+        return s;
+    }
+}
+
+/**
+ * orig ResetFaithBtnController "Adore the galaxy": resetFaith(1.01) converts
+ * worship into epiphany (adoreInternal, religion-08)
+ */
+export function adoreAction(s) {
+    const rpool$0027 = adoreInternal(s.Rpool, 1.01);
+    return refreshCache(new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, rpool$0027, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked));
+}
+
+/**
+ * orig transcend button handler: game.religion.transcend() + TU unlock scan
+ */
+export function transcendAction(s) {
+    const patternInput = transcend(s.Rpool);
+    const transcended = patternInput[1];
+    const rpool$0027 = patternInput[0];
+    if (transcended) {
+        return refreshCache(new State(s.Pool, s.Bpool, s.Spool, s.Wpool, s.Vpool, rpool$0027, s.Cpool, s.Ppool, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked));
+    }
+    else {
+        return s;
+    }
+}
+
+/**
+ * orig metaphysics panel perk purchase (prestige-05): pays paragon prices,
+ * marks researched, runs unlock/upgrade fan-outs
+ */
+export function buyPerkAction(name, s) {
+    let metaphysicsResearched;
+    const matchValue = tryFind("metaphysics", s.Spool.Techs);
+    if (matchValue == null) {
+        metaphysicsResearched = false;
+    }
+    else {
+        const t = matchValue;
+        metaphysicsResearched = t.Researched;
+    }
+    const patternInput = buyPerk(s.CalendarDay, metaphysicsResearched, s.Pool, name, s.Ppool);
+    const res = patternInput[2];
+    const pp$0027 = patternInput[0];
+    const pool$0027 = patternInput[1];
+    if (!res.Bought) {
+        return s;
+    }
+    else {
+        const s1 = new State(pool$0027, s.Bpool, s.Spool, s.Wpool, s.Vpool, s.Rpool, s.Cpool, pp$0027, s.Dpool, s.Tpool, s.Spacep, s.Stpool, s.Calendar, s.Cache, s.CalendarDay, s.Ticks, s.IronWill, s.Rand, s.ConsoleMsgs, s.ConsoleUnlocked, s.QueueItems, s.Opts, s.ResHidden, s.ShowHiddenRes, s.HideResearched, s.TabsUnlocked);
+        let s2;
+        const matchValue_1 = res.UnlockFanOut;
+        if (matchValue_1 == null) {
+            s2 = s1;
+        }
+        else {
+            const u = matchValue_1;
+            const patternInput_1 = unlock(u.Buildings, u.Tabs, empty_1(), u.Tech, u.Policies, u.Upgrades, u.ZebraUpgrades, u.Crafts, s1.Bpool, s1.Spool, s1.Wpool);
+            const wp2 = patternInput_1[2];
+            const sp2 = patternInput_1[1];
+            const bp2 = patternInput_1[0];
+            s2 = (new State(s1.Pool, bp2, sp2, wp2, s1.Vpool, s1.Rpool, s1.Cpool, s1.Ppool, s1.Dpool, s1.Tpool, s1.Spacep, s1.Stpool, s1.Calendar, s1.Cache, s1.CalendarDay, s1.Ticks, s1.IronWill, s1.Rand, s1.ConsoleMsgs, s1.ConsoleUnlocked, s1.QueueItems, s1.Opts, s1.ResHidden, s1.ShowHiddenRes, s1.HideResearched, union(ofList_1(u.Tabs, {
+                Compare: (x, y) => (comparePrimitives(x, y) | 0),
+            }), s1.TabsUnlocked)));
+        }
+        return refreshCache(s2);
+    }
 }
 
 export function gatherCatnip(s) {

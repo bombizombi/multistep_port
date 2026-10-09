@@ -20,6 +20,7 @@ type TipSource =
     | TipRefine
     | TipRes of string
     | TipJob of string
+    | TipFestival
 
 type Model =
     { Tab: string
@@ -72,6 +73,11 @@ type Msg =
     | SetBuildingFilter of string
     | ResearchPolicy of string
     | Hunt
+    | HoldFestival
+    | Sell of string
+    | Adore
+    | Transcend
+    | BuyPerk of string
     | QAdd of string * string
     | QRemove of int
     | ToggleOption of string
@@ -138,6 +144,11 @@ let update (msg: Msg) (model: Model) =
     | SetBuildingFilter f -> { model with BuildingFilter = f }, Command.none
     | ResearchPolicy name -> { model with S = kittens_land.KittensState.researchPolicyAction name model.S }, Command.none
     | Hunt -> { model with S = kittens_land.KittensState.huntAction model.S }, Command.none
+    | HoldFestival -> { model with S = kittens_land.KittensState.holdFestivalAction model.S }, Command.none
+    | Sell name -> { model with S = kittens_land.KittensState.sellBuilding name model.S }, Command.none
+    | Adore -> { model with S = kittens_land.KittensState.adoreAction model.S }, Command.none
+    | Transcend -> { model with S = kittens_land.KittensState.transcendAction model.S }, Command.none
+    | BuyPerk name -> { model with S = kittens_land.KittensState.buyPerkAction name model.S }, Command.none
     | ToggleResHidden name -> { model with S = kittens_land.KittensState.toggleResHidden name model.S }, Command.none
     | SetShowHiddenRes v -> { model with S = kittens_land.KittensState.setShowHiddenRes v model.S }, Command.none
     | SaveGame ->
@@ -251,6 +262,9 @@ let view (model: Model) (dispatch: Msg -> unit) =
                             + kittens_land.KittensState.toDisplaySeconds ((r.Max - r.Value) / (net * 10.0)) + "</div>"
                        else "")
             { Desc = body; Flavor = None; Prices = [] }
+        | TipFestival ->
+            pricesTip (Game.Labels.get "village.btn.festival.desc") None
+                [ { Resource = "manpower"; Val = 1500.0 }; { Resource = "culture"; Val = 5000.0 }; { Resource = "parchment"; Val = 2500.0 } ]
         | TipJob name ->
             let descKey = "job." + name + ".desc"
             let flavorKey = "job." + name + ".flavor"
@@ -262,7 +276,7 @@ let view (model: Model) (dispatch: Msg -> unit) =
 
     // --- orig modern button --------------------------------------------------
 
-    let modernBtn (key: string) (label: string) (amtText: string) (enabled: bool) (tip: TipSource option) (onClick: unit -> unit) =
+    let modernBtnL (key: string) (label: string) (amtText: string) (enabled: bool) (tip: TipSource option) (onClick: unit -> unit) (extraLinks: ReactElement list) =
         Html.div [
             prop.key key
             prop.className (if enabled then "btn nosel modern" else "btn nosel modern disabled")
@@ -288,10 +302,14 @@ let view (model: Model) (dispatch: Msg -> unit) =
                                     Html.div [ prop.className "amt"; prop.text amtText ]
                             ]
                         ]
+                        yield! extraLinks
                     ]
                 ]
             ]
         ]
+
+    let modernBtn (key: string) (label: string) (amtText: string) (enabled: bool) (tip: TipSource option) (onClick: unit -> unit) =
+        modernBtnL key label amtText enabled tip onClick []
 
     let plainBtn (key: string) (label: string) (onClick: unit -> unit) =
         Html.div [
@@ -449,13 +467,27 @@ let view (model: Model) (dispatch: Msg -> unit) =
     let queueLen = kittens_land.KittensState.queueLength s
 
     let buildingRow (b: kittens_land.KittensState.BuildingRow) =
-        modernBtn
+        // orig modern building buttons carry a sell link once built
+        // (showSellLink = metadata.val > 0): sells one unit at 50% refund
+        modernBtnL
             ("bld." + b.Name)
             b.Label
             (if b.Val > 0 then "(" + string b.Val + ")" else "")
             b.Enabled
             (Some(TipBld b.Name))
             (fun () -> dispatch (Buy b.Name))
+            (if b.Val > 0 then
+                [ Html.a [
+                        prop.key ("sell." + b.Name)
+                        prop.href "#"
+                        prop.className "small"
+                        prop.style [ style.paddingLeft 2; style.float'.right; style.cursor "pointer" ]
+                        prop.onClick (fun ev ->
+                            ev.stopPropagation ()
+                            dispatch (Sell b.Name))
+                        prop.text (Game.Labels.get "btn.sell")
+                  ] ]
+             else [])
 
     let techRow (t: kittens_land.KittensState.TechRow) =
         // orig BuildingNotStackableBtnController.getName: researched techs get
@@ -539,7 +571,7 @@ let view (model: Model) (dispatch: Msg -> unit) =
         match model.Tab with
         | "Village" ->
             [
-                Html.div [
+                yield Html.div [
                     prop.style [ style.marginBottom 10 ]
                     prop.text ("Kittens: " + string kittens + "/" + string maxKittens + " - happiness: " + sprintf "%.0f%%" (happiness * 100.0))
                 ]
@@ -551,7 +583,7 @@ let view (model: Model) (dispatch: Msg -> unit) =
                 let pacifismActive = s.Cpool.Challenges.["pacifism"].Active
                 let manpower = getRes s.Pool "manpower"
                 if archeryResearched && not pacifismActive then
-                    Html.div [
+                    yield Html.div [
                         prop.className (if manpower >= huntCost then "btn nosel" else "btn nosel disabled")
                         prop.style [ style.display.inlineBlock; style.marginBottom 10; style.cursor "pointer" ]
                         prop.onClick (fun _ -> if manpower >= huntCost then dispatch Hunt)
@@ -562,9 +594,16 @@ let view (model: Model) (dispatch: Msg -> unit) =
                             ]
                         ]
                     ]
+                // orig FestivalButton: hold/extend a festival for a year
+                let festivalPrices = [ { Resource = "manpower"; Val = 1500.0 }; { Resource = "culture"; Val = 5000.0 }; { Resource = "parchment"; Val = 2500.0 } ]
+                let festivalAffordable = Game.Resources.hasRes s.Pool (festivalPrices |> List.map (fun p0 -> (p0.Resource, p0.Val))) 0.0
+                yield modernBtnL "festival" (Game.Labels.get "village.btn.festival") "" festivalAffordable
+                    (Some TipFestival)
+                    (fun () -> dispatch HoldFestival)
+                    []
                 // orig com.nuclearunicorn.game.ui.Panel: bordered panel with a
                 // title and a +/- collapse toggle, content padded 10px
-                Html.div [
+                yield Html.div [
                     prop.className "panelContainer"
                     prop.children [
                         Html.div [
@@ -591,7 +630,7 @@ let view (model: Model) (dispatch: Msg -> unit) =
                 // orig Library tab: "Hide researched techs" checkbox floats at
                 // the top right (science.js L2710-2725); the filter mirrors
                 // TechButtonController.updateVisible (L2694)
-                Html.div [
+                yield Html.div [
                     prop.style [ style.float'.right ]
                     prop.children [
                         Html.input [
@@ -607,7 +646,7 @@ let view (model: Model) (dispatch: Msg -> unit) =
                         |> List.map techRow)
                 // orig Library tab policy panel (classes.ui.PolicyPanel): unlocked
                 // policies with research buttons below the tech table
-                Html.div [
+                yield Html.div [
                     prop.className "panelContainer"
                     prop.style [ style.marginTop 15 ]
                     prop.children [
@@ -631,6 +670,35 @@ let view (model: Model) (dispatch: Msg -> unit) =
                         ]
                     ]
                 ]
+                // orig metaphysics panel: perks purchasable with paragon once
+                // the metaphysics tech is researched and paragon > 0
+                let metaphysicsResearched =
+                    (match s.Spool.Techs |> Map.tryFind "metaphysics" with Some t -> t.Researched | None -> false)
+                let paragon = getRes s.Pool "paragon"
+                if metaphysicsResearched && paragon > 0.0 then
+                    yield Html.div [
+                        prop.className "panelContainer"
+                        prop.style [ style.marginTop 15 ]
+                        prop.children [
+                            Html.div [ prop.className "title"; prop.text (Game.Labels.get "prestige.panel.label") ]
+                            Html.div [
+                                prop.className "container"
+                                prop.children [
+                                    yield! (Game.Catalog.World.perkDefs
+                                            |> List.filter (fun d ->
+                                                (match s.Ppool.Perks |> Map.tryFind d.Name with Some m -> not m.Researched | None -> false))
+                                            |> List.map (fun d ->
+                                                let affordable = Game.Resources.hasRes s.Pool (d.Prices |> List.map (fun p0 -> (p0.Resource, p0.Val))) 0.0
+                                                modernBtn ("perk." + d.Name) (Game.Labels.get ("perk." + d.Name))
+                                                    (if d.Prices.IsEmpty then "" else "(" + kittens_land.KittensState.fmtRes (d.Prices |> List.head).Val + " paragon)")
+                                                    affordable None
+                                                    (fun () -> dispatch (BuyPerk d.Name))))
+                                    if s.Ppool.Perks |> Map.forall (fun _ m -> m.Researched) then
+                                        Html.div [ prop.style [ style.fontSize 12; style.color "#777" ]; prop.text "All perks researched." ]
+                                ]
+                            ]
+                        ]
+                    ]
             ]
         | "Workshop" -> List.map upgradeRow (kittens_land.KittensState.upgradeRows s)
         | "Trade" ->
@@ -648,11 +716,26 @@ let view (model: Model) (dispatch: Msg -> unit) =
                 ])
         | "Religion" ->
             [
-                Html.div [
+                yield Html.div [
                     prop.style [ style.marginBottom 10 ]
                     prop.text ("Faith: " + fmt (getRes s.Pool "faith") + " - worship: " + sprintf "%.1f" s.Rpool.Faith)
                 ]
-                plainBtn "praise" "Praise the sun!" (fun () -> dispatch Praise)
+                yield plainBtn "praise" "Praise the sun!" (fun () -> dispatch Praise)
+                // orig ResetFaithBtnController + transcendBtn: adore converts
+                // worship to epiphany; transcend burns epiphany for tiers —
+                // both appear once the Transcendence upgrade is built
+                if (Game.Religion.getRU s.Rpool "transcendence").Val > 0 then
+                    yield modernBtnL "adore" (Game.Labels.get "religion.adoreBtn.label") "" true
+                            None (fun () -> dispatch Adore) []
+                    let nextPrice = Game.Religion.getTranscendNextPrice s.Rpool
+                    yield modernBtnL "transcend" (Game.Labels.get "religion.transcendBtn.label")
+                            (if s.Rpool.TranscendenceTier > 0 then "(T" + string s.Rpool.TranscendenceTier + ")" else "")
+                            (s.Rpool.FaithRatio > nextPrice) None
+                            (fun () -> dispatch Transcend) []
+                    yield Html.div [
+                        prop.style [ style.marginBottom 10; style.fontSize 12; style.color "#777" ]
+                        prop.text ("epiphany: " + kittens_land.KittensState.fmtRes s.Rpool.FaithRatio + " - next tier: " + kittens_land.KittensState.fmtRes nextPrice)
+                    ]
                 yield! (kittens_land.KittensState.religionRows s |> List.map (fun r ->
                     modernBtn ("rel." + r.Name) r.Label
                         (if r.Val > 0 then "(" + string r.Val + ")" else "")
@@ -1171,3 +1254,5 @@ let view (model: Model) (dispatch: Msg -> unit) =
 
 let page (_shared: SharedModel) (_route: HomeRoute) =
     Page.from init update view () (fun lm -> LayoutMsg lm)
+
+// touch

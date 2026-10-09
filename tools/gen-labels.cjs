@@ -113,6 +113,19 @@ for (const k in j) {
   if (m) add(`planet.` + m[1], j[k]);
 }
 
+// festival + sell + religion adore/transcend + metaphysics labels
+for (const k of [
+  "village.btn.festival", "village.btn.festival.desc",
+  "village.festival.msg.start", "village.festival.msg.ext",
+  "btn.sell", "religion.adoreBtn.label", "religion.adoreBtn.desc",
+  "religion.transcendBtn.label", "religion.transcendBtn.desc",
+  "prestige.panel.label"
+]) { if (j[k]) add(k, j[k]); }
+for (const k in j) {
+  const m = /^prestige\.([a-zA-Z]+)\.label$/.exec(k);
+  if (m) add(`perk.` + m[1], j[k]);
+}
+
 const esc = (s) => String(s).split("\\").join("\\\\").split('"').join("\\\"");
 let out = [
   "// GENERATED from orig res/i18n/en.json by the V2 view slice — display labels",
