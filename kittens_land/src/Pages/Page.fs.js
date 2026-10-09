@@ -11,7 +11,7 @@ import { comparePrimitives, stringHash, int32ToString, defaultOf } from "../../.
 import { forAll, tryFind as tryFind_1, FSharpMap__get_Item } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Map.js";
 import { replicate, join, printf, toText } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/String.js";
 import { get$ } from "../Game.Labels.fs.js";
-import { defaultArg, value as value_759 } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Option.js";
+import { defaultArg, value as value_765 } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Option.js";
 import { HtmlHelper_createElement } from "../../.elmish-land/App/fable_modules/Feliz.3.3.3/./Html.fs.js";
 import { map as map_1, collect as collect_1, empty as empty_1, singleton as singleton_2, append, delay, toList } from "../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Seq.js";
 import { defaultOf as defaultOf_1 } from "../../.elmish-land/App/fable_modules/Feliz.3.3.3/../../../../src/Pages/../../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Util.js";
@@ -326,7 +326,7 @@ export function fmt(v) {
 }
 
 export function view(model, dispatch) {
-    let option_8, value_679;
+    let option_8, value_685;
     const s = model.S;
     const cal = s.Calendar;
     const fmtSigned = (v) => (((v > 0) ? "+" : "") + fmt(v));
@@ -346,7 +346,7 @@ export function view(model, dispatch) {
         let arg, option_5;
         const pricesTip = (desc, flavorKey, prices) => {
             let option_3, option_1, f;
-            return new TipData(desc, (option_3 = ((option_1 = flavorKey, (option_1 != null) ? get$(option_1) : undefined)), (option_3 != null) ? (((f = option_3, (f !== "") && (f !== value_759(flavorKey)))) ? option_3 : undefined) : undefined), priceLines(s, false, prices));
+            return new TipData(desc, (option_3 = ((option_1 = flavorKey, (option_1 != null) ? get$(option_1) : undefined)), (option_3 != null) ? (((f = option_3, (f !== "") && (f !== value_765(flavorKey)))) ? option_3 : undefined) : undefined), priceLines(s, false, prices));
         };
         switch (src_1.tag) {
             case 1: {
@@ -406,7 +406,7 @@ export function view(model, dispatch) {
         display: "block",
         marginBottom: 8,
         width: 264,
-    }]), delay(() => append(singleton_2(["tabIndex", 0]), delay(() => append((tip != null) ? tipHandlers(value_759(tip)) : empty_1(), delay(() => append(singleton_2(["onClick", (_arg_1) => {
+    }]), delay(() => append(singleton_2(["tabIndex", 0]), delay(() => append((tip != null) ? tipHandlers(value_765(tip)) : empty_1(), delay(() => append(singleton_2(["onClick", (_arg_1) => {
         if (enabled) {
             onClick();
         }
@@ -486,7 +486,7 @@ export function view(model, dispatch) {
     const queueLen = queueLength(s) | 0;
     const buildingRow = (b_3) => modernBtnL("bld." + b_3.Name, b_3.Label, (b_3.Val > 0) ? (("(" + int32ToString(b_3.Val)) + ")") : "", b_3.Enabled, new TipSource(/* TipBld */ 0, [b_3.Name]), () => {
         dispatch(new Msg(/* Buy */ 3, [b_3.Name]));
-    }, (b_3.Val > 0) ? singleton_1(HtmlHelper_createElement("a", ofArray([["key", "sell." + b_3.Name], ["href", "#"], ["className", "small"], ["style", {
+    }, ((b_3.Val > 0) && !FSharpMap__get_Item(s.Opts.Bools, "hideSell")) ? singleton_1(HtmlHelper_createElement("a", ofArray([["key", "sell." + b_3.Name], ["href", "#"], ["className", "small"], ["style", {
         paddingLeft: 2,
         float: "right",
         cursor: "pointer",
@@ -525,7 +525,7 @@ export function view(model, dispatch) {
                 display: "block",
                 marginBottom: 8,
                 width: 264,
-            }]), delay(() => append(singleton_2(["tabIndex", 0]), delay(() => append((tip_2 != null) ? tipHandlers(value_759(tip_2)) : empty_1(), delay(() => append(singleton_2(["onClick", (ev_5) => {
+            }]), delay(() => append(singleton_2(["tabIndex", 0]), delay(() => append((tip_2 != null) ? tipHandlers(value_765(tip_2)) : empty_1(), delay(() => append(singleton_2(["onClick", (ev_5) => {
                 if (canAssign) {
                     dispatch(ev_5.ctrlKey ? (new Msg(/* Assign */ 4, [j.Name, 10])) : (new Msg(/* Assign */ 4, [j.Name, 1])));
                 }
@@ -858,24 +858,21 @@ export function view(model, dispatch) {
         dispatch(new Msg(/* SetNotation */ 45, [ev_7.target.value]));
     }], ["children", toList(delay(() => map_1((n) => HtmlHelper_createElement("option", ofArray([["key", n], ["value", n], ["children", singleton_1(n)]])), ["si", "e", "sie"])))]]))]]])), HtmlHelper_createElement("div", ofArray([["style", {
         marginBottom: 10,
-    }], ["children", toList(delay(() => {
-        HtmlHelper_createElement("label", singleton_1(["children", singleton_1(("Game speed: " + model.Speed.toString()) + "x")]));
-        HtmlHelper_createElement("br", empty());
-        return map_1((mult) => HtmlHelper_createElement("button", ofArray([["key", mult.toString()], ["style", {
-            marginRight: 6,
-            cursor: "pointer",
-        }], ["onClick", (_arg_20) => {
-            dispatch(new Msg(/* SetSpeed */ 22, [mult]));
-        }], ["children", singleton_1(mult.toString() + "x")]])), [1, 3, 10]);
-    }))]])), HtmlHelper_createElement("div", ofArray([["style", {
+    }], ["children", toList(delay(() => append(singleton_2(HtmlHelper_createElement("label", singleton_1(["children", singleton_1(("Game speed: " + model.Speed.toString()) + "x")]))), delay(() => append(singleton_2(HtmlHelper_createElement("br", empty())), delay(() => map_1((mult) => HtmlHelper_createElement("button", ofArray([["key", mult.toString()], ["style", {
+        marginRight: 6,
+        cursor: "pointer",
+    }], ["onClick", (_arg_20) => {
+        dispatch(new Msg(/* SetSpeed */ 22, [mult]));
+    }], ["children", singleton_1(mult.toString() + "x")]])), [1, 3, 10])))))))]])), HtmlHelper_createElement("div", ofArray([["style", {
         marginBottom: 10,
     }], ["children", toList(delay(() => map_1((o) => HtmlHelper_createElement("div", ofArray([["key", o.Name], ["style", {
         marginBottom: 2,
-    }], ["children", [HtmlHelper_createElement("input", ofArray([["type", "checkbox"], ["checked", FSharpMap__get_Item(s.Opts.Bools, o.Name)], ["onChange", (ev_8) => {
+    }], ["children", [HtmlHelper_createElement("input", ofArray([["id", "opt." + o.Name], ["type", "checkbox"], ["checked", FSharpMap__get_Item(s.Opts.Bools, o.Name)], ["onChange", (ev_8) => {
         ev_8.target.checked;
         dispatch(new Msg(/* ToggleOption */ 44, [o.Name]));
-    }]])), HtmlHelper_createElement("label", ofArray([["style", {
+    }]])), HtmlHelper_createElement("label", ofArray([["htmlFor", "opt." + o.Name], ["style", {
         marginLeft: 6,
+        cursor: "pointer",
     }], ["children", singleton_1(o.Name)]]))]]])), settingsArr)))]])), HtmlHelper_createElement("div", singleton_1(["children", [HtmlHelper_createElement("input", ofArray([["type", "button"], ["value", "Save"], ["onClick", (_arg_22) => {
         dispatch(Msg.SaveGame);
     }]])), HtmlHelper_createElement("input", ofArray([["type", "button"], ["value", "Load"], ["style", {
@@ -886,7 +883,7 @@ export function view(model, dispatch) {
         fontSize: 12 + "px",
         marginTop: 8,
         color: "#666",
-    }], (value_679 = "Save stores to this browser\'s localStorage under its own key - the original game\'s saves are untouched.", ["children", singleton_1(value_679)])]))]]]));
+    }], (value_685 = "Save stores to this browser\'s localStorage under its own key - the original game\'s saves are untouched.", ["children", singleton_1(value_685)])]))]]]));
     const topBar = HtmlHelper_createElement("div", ofArray([["id", "topBar"], ["children", [HtmlHelper_createElement("div", ofArray([["style", {
         paddingLeft: 10,
         minWidth: 0,

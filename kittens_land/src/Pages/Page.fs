@@ -476,7 +476,7 @@ let view (model: Model) (dispatch: Msg -> unit) =
             b.Enabled
             (Some(TipBld b.Name))
             (fun () -> dispatch (Buy b.Name))
-            (if b.Val > 0 then
+            (if b.Val > 0 && not (s.Opts.Bools.["hideSell"]) then
                 [ Html.a [
                         prop.key ("sell." + b.Name)
                         prop.href "#"
@@ -1118,8 +1118,8 @@ let view (model: Model) (dispatch: Msg -> unit) =
                     Html.div [
                         prop.style [ style.marginBottom 10 ]
                         prop.children [
-                            Html.label [ prop.text ("Game speed: " + string model.Speed + "x") ]
-                            Html.br []
+                            yield Html.label [ prop.text ("Game speed: " + string model.Speed + "x") ]
+                            yield Html.br []
                             for mult in [ 1.0; 3.0; 10.0 ] ->
                                 Html.button [
                                     prop.key (string mult)
@@ -1138,11 +1138,12 @@ let view (model: Model) (dispatch: Msg -> unit) =
                                     prop.style [ style.marginBottom 2 ]
                                     prop.children [
                                         Html.input [
+                                            prop.id ("opt." + o.Name)
                                             prop.type'.checkbox
                                             prop.isChecked s.Opts.Bools.[o.Name]
                                             prop.onChange (fun (_: bool) -> dispatch (ToggleOption o.Name))
                                         ]
-                                        Html.label [ prop.style [ style.marginLeft 6 ]; prop.text o.Name ]
+                                        Html.label [ prop.htmlFor ("opt." + o.Name); prop.style [ style.marginLeft 6; style.cursor "pointer" ]; prop.text o.Name ]
                                     ]
                                 ]
                         ]
