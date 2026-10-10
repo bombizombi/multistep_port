@@ -89,13 +89,20 @@ let resValue (s: State) (name: string) : float = getRes s.Pool name
 let emptyGroup : Game.Effects.ManagerGroup = { Base = Map.empty; Items = [] }
 
 let groups (s: State) : Game.Effects.ManagerGroup list =
+    // barnRatio/warehouseRatio read from the PREVIOUS cache (one-rebuild-stale,
+    // same as orig calculateEffects calling game.getEffect mid-pass)
+    let storageCtx : Game.Buildings.StorageRatioContext =
+        { BarnRatio = Game.Effects.getEffect s.Cache "barnRatio"
+          WarehouseRatio = Game.Effects.getEffect s.Cache "warehouseRatio"
+          SilosResearched =
+            (match s.Wpool.Upgrades |> Map.tryFind "silos" with Some u -> u.Researched | None -> false) }
     let bldGroup =
         { Base = Game.Catalog.BaseEffects.bldBase
           Items =
             s.Bpool.Order
             |> List.choose (fun n ->
                 match Game.Buildings.get s.Bpool n with
-                | Some b -> Some(Game.Buildings.activeEffects b, (fun name _ -> Game.Buildings.providerEffect b name))
+                | Some b -> Some(Game.Buildings.activeEffects b, (fun name effVal -> Game.Buildings.providerEffect storageCtx b name))
                 | None -> None) }
     let workshopGroup =
         { Base = Game.Managers.workshopEffectsBase s.Cache (resValue s) false

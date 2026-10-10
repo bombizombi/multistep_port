@@ -2,7 +2,7 @@
 import { toString, Record } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Types.js";
 import { class_type, list_type, lambda_type, float64_type, unit_type, record_type, bool_type, option_type, string_type, int32_type } from "../.elmish-land/App/fable_modules/fable-library-js.5.17.0/Reflection.js";
 import { CraftState, UpgradeState, PolicyState, ResearchState, BuildingState, ResPool, ResourceState, ResPool_$reflection } from "./Game/Game.Types.fs.js";
-import { getAllPrices, update as update_1, build, sellOne, BldPool, init as init_2, providerEffect, activeEffects, get$ as get$_1, PricingContext, freshPricing, BldPool_$reflection } from "./Game/Game.Buildings.fs.js";
+import { getAllPrices, update as update_1, build, sellOne, BldPool, init as init_2, providerEffect, activeEffects, get$ as get$_1, StorageRatioContext, PricingContext, freshPricing, BldPool_$reflection } from "./Game/Game.Buildings.fs.js";
 import { getCraftAllCount, craftByEngineers, learnSkills, SkillContext, simUpdate, starvationStep, unlockRelations, craftAll as craftAll_1, craft as craft_1, buyUpgrade as buyUpgrade_1, getTech, research as research_1, simRemoveJobs, simAssignJob, assignJob as assignJob_1, CraftRatioContext, getResCraftRatio, researchPolicy, PolicyBuyCtx, PolicyCalcCtx, calculateMaxKittens, unlock, VillagePool, Kitten, kittenFromSeed, WorkshopPool, SciencePool, initVillage, initWorkshop, initScience, getFreeKittens, getResProduction, scienceGroup, workshopEffectsBase, VillagePool_$reflection, WorkshopPool_$reflection, SciencePool_$reflection } from "./Game/Game.Managers.fs.js";
 import { getTU, buyZU as buyZU_1, freezeSolarRevolution, buyRU as buyRU_1, praise as praise_1, transcend, adoreInternal, countActivePacts, ReligionMeta, ReligionPool, getRU, getZU, init as init_3, religionGroup, ReligionPool_$reflection } from "./Game/Game.Religion.fs.js";
 import { getTradeBonusEffect, ChallengePool, ChallengeState, init as init_4, challengesGroup, ChallengePool_$reflection } from "./Game/Game.Challenges.fs.js";
@@ -146,25 +146,26 @@ export const emptyGroup = new ManagerGroup(empty({
 }), empty_1());
 
 export function groups(s) {
-    let option_1, timeGroup;
+    let matchValue, u, option_1, timeGroup;
+    const storageCtx = new StorageRatioContext(getEffect_1(s.Cache, "barnRatio"), getEffect_1(s.Cache, "warehouseRatio"), (matchValue = tryFind("silos", s.Wpool.Upgrades), (matchValue == null) ? false : ((u = matchValue, u.Researched))));
     const bldGroup = new ManagerGroup(bldBase, choose((n) => {
-        const matchValue = get$_1(s.Bpool, n);
-        if (matchValue == null) {
+        const matchValue_1 = get$_1(s.Bpool, n);
+        if (matchValue_1 == null) {
             return undefined;
         }
         else {
-            const b = matchValue;
-            return [activeEffects(b), (name) => ((_arg) => providerEffect(b, name))];
+            const b = matchValue_1;
+            return [activeEffects(b), (name) => ((effVal) => providerEffect(storageCtx, b, name))];
         }
     }, s.Bpool.Order));
     const workshopGroup = new ManagerGroup(workshopEffectsBase(s.Cache, (name_1) => resValue(s, name_1), false), choose((n_1) => {
-        let u;
-        const matchValue_1 = tryFind(n_1, s.Wpool.Upgrades);
-        let matchResult, u_1;
-        if (matchValue_1 != null) {
-            if ((u = matchValue_1, u.Researched)) {
+        let u_1;
+        const matchValue_2 = tryFind(n_1, s.Wpool.Upgrades);
+        let matchResult, u_2;
+        if (matchValue_2 != null) {
+            if ((u_1 = matchValue_2, u_1.Researched)) {
                 matchResult = 0;
-                u_1 = matchValue_1;
+                u_2 = matchValue_2;
             }
             else {
                 matchResult = 1;
@@ -175,12 +176,12 @@ export function groups(s) {
         }
         switch (matchResult) {
             case 0:
-                return [u_1.Def.Effects, (_arg_1) => ((v) => v)];
+                return [u_2.Def.Effects, (_arg) => ((v) => v)];
             default:
                 return undefined;
         }
     }, s.Wpool.UpgradeOrder));
-    return ofArray([workshopGroup, religionGroup(s.Rpool), bldGroup, challengesGroup(s.Cpool, (name_2) => getEffect(s, name_2), defaultArg((option_1 = get$_1(s.Bpool, "tradepost"), (option_1 != null) ? option_1.Val : undefined), 0)), prestigeGroup(s.Ppool), spaceGroup(s.Pool.EnergyCons, s.Pool.EnergyProd, getEnergyDelta(false, false, s.Pool.EnergyProd, s.Pool.EnergyCons), s.Spacep), (timeGroup = (new ManagerGroup(filter((k, _arg_2) => {
+    return ofArray([workshopGroup, religionGroup(s.Rpool), bldGroup, challengesGroup(s.Cpool, (name_2) => getEffect(s, name_2), defaultArg((option_1 = get$_1(s.Bpool, "tradepost"), (option_1 != null) ? option_1.Val : undefined), 0)), prestigeGroup(s.Ppool), spaceGroup(s.Pool.EnergyCons, s.Pool.EnergyProd, getEnergyDelta(false, false, s.Pool.EnergyProd, s.Pool.EnergyCons), s.Spacep), (timeGroup = (new ManagerGroup(filter((k, _arg_1) => {
         if (k.startsWith("heat")) {
             return true;
         }

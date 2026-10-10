@@ -269,8 +269,24 @@ export function getAllPrices(cache, pctx, b) {
  * orig buildings provider getEffect (js/buildings.js L144-175): Max-suffixed
  * effects (except library) and biolab Ratios scale with VAL; everything else
  * with ON; coalRatioGlobal raw. Stageable buildings read the active stage table.
+ * orig addBarnWarehouseRatio inputs (resources.js L896-911): barn/warehouse
+ * calculateEffects scale their storage tables by the barnRatio/warehouseRatio
+ * upgrade effects; silos boost barn catnip storage when researched.
  */
-export function providerEffect(b, effectName) {
+export class StorageRatioContext extends Record {
+    constructor(BarnRatio, WarehouseRatio, SilosResearched) {
+        super();
+        this.BarnRatio = BarnRatio;
+        this.WarehouseRatio = WarehouseRatio;
+        this.SilosResearched = SilosResearched;
+    }
+}
+
+export function StorageRatioContext_$reflection() {
+    return record_type("Game.Buildings.StorageRatioContext", [], StorageRatioContext, () => [["BarnRatio", float64_type], ["WarehouseRatio", float64_type], ["SilosResearched", bool_type]]);
+}
+
+export function providerEffect(ctx, b, effectName) {
     const def = b.Def;
     let stageTable;
     if (length(def.Stages) > 0) {
@@ -288,14 +304,15 @@ export function providerEffect(b, effectName) {
         const st = stageTable;
         effectValue = (!FSharpMap__get_IsEmpty(st) ? defaultArg(tryFind(effectName, st), 0) : defaultArg(tryFind(effectName, def.Effects), 0));
     }
+    const effectValue_1 = (def.Name === "barn") ? (((effectName === "catnipMax") && ctx.SilosResearched) ? (effectValue * (1 + (ctx.BarnRatio * 0.25))) : ((((effectName === "woodMax") ? true : (effectName === "mineralsMax")) ? true : (effectName === "ironMax")) ? (effectValue * (1 + ctx.BarnRatio)) : effectValue)) : ((def.Name === "warehouse") ? ((((effectName === "woodMax") ? true : (effectName === "mineralsMax")) ? true : (effectName === "ironMax")) ? (effectValue * (1 + ctx.WarehouseRatio)) : effectValue) : effectValue);
     if (effectName === "coalRatioGlobal") {
-        return effectValue;
+        return effectValue_1;
     }
     else if ((effectName.endsWith("Max") && (def.Name !== "library")) ? true : ((def.Name === "biolab") && effectName.endsWith("Ratio"))) {
-        return effectValue * b.Val;
+        return effectValue_1 * b.Val;
     }
     else {
-        return effectValue * b.On;
+        return effectValue_1 * b.On;
     }
 }
 

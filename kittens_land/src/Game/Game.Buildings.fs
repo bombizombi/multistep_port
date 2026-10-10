@@ -248,7 +248,15 @@ let getAllPrices (cache: Game.Effects.EffectsCache) (pctx: PricingContext) (b: B
 /// orig buildings provider getEffect (js/buildings.js L144-175): Max-suffixed
 /// effects (except library) and biolab Ratios scale with VAL; everything else
 /// with ON; coalRatioGlobal raw. Stageable buildings read the active stage table.
-let providerEffect (b: BuildingState) (effectName: string) : float =
+/// orig addBarnWarehouseRatio inputs (resources.js L896-911): barn/warehouse
+/// calculateEffects scale their storage tables by the barnRatio/warehouseRatio
+/// upgrade effects; silos boost barn catnip storage when researched.
+type StorageRatioContext =
+    { BarnRatio: float
+      WarehouseRatio: float
+      SilosResearched: bool }
+
+let providerEffect (ctx: StorageRatioContext) (b: BuildingState) (effectName: string) : float =
     let def = b.Def
     let stageTable =
         if def.Stages.Length > 0 then
@@ -262,6 +270,22 @@ let providerEffect (b: BuildingState) (effectName: string) : float =
             if not st.IsEmpty then st |> Map.tryFind effectName |> Option.defaultValue 0.0
             else def.Effects |> Map.tryFind effectName |> Option.defaultValue 0.0
         | None -> def.Effects |> Map.tryFind effectName |> Option.defaultValue 0.0
+
+    // addBarnWarehouseRatio (one-rebuild-stale: orig calculateEffects read
+    // game.getEffect from the previous cache pass, which already contained
+    // the upgrade contributions)
+    let effectValue =
+        if def.Name = "barn" then
+            if effectName = "catnipMax" && ctx.SilosResearched then
+                effectValue * (1.0 + ctx.BarnRatio * 0.25)
+            elif effectName = "woodMax" || effectName = "mineralsMax" || effectName = "ironMax" then
+                effectValue * (1.0 + ctx.BarnRatio)
+            else effectValue
+        elif def.Name = "warehouse" then
+            if effectName = "woodMax" || effectName = "mineralsMax" || effectName = "ironMax" then
+                effectValue * (1.0 + ctx.WarehouseRatio)
+            else effectValue
+        else effectValue
 
     if effectName = "coalRatioGlobal" then effectValue
     elif (effectName.EndsWith("Max") && def.Name <> "library")
