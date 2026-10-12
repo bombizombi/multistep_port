@@ -1,0 +1,13 @@
+klv1
+cal|0|0|0|100
+bld|field|5|5|1
+bld|hut|1|1|1
+bld|pasture|1|1|1
+kit|777|woodcutter
+job|woodcutter|1
+res|catnip|3000|1
+res|wood|150|1
+res|catpower|60|1
+tabs|village
+ru|transcendence|1
+rel|500|0.02|0
